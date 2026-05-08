@@ -35,7 +35,7 @@ export default function Listar() {
 
               {" "}
 
-              <a href="/itens/1/editar">
+              <a href={`/itens/${item.id}/editar`}>
                 Editar
               </a>
             </div>
