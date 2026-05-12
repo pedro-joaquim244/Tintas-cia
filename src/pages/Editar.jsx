@@ -1,9 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../services/api.js";
+
+import {
+  FiSave,
+  FiArrowLeft,
+  FiTrash2,
+  FiBox,
+  FiGrid,
+  FiUsers,
+  FiSettings,
+  FiLogOut,
+  FiUpload
+} from "react-icons/fi";
+
 import styles from "../styles/Editar.module.css";
 
 export default function Editar() {
+
+  /* ===== STATES ===== */
+
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [preco, setPreco] = useState("");
@@ -13,31 +29,45 @@ export default function Editar() {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  /* ===== CARREGAR ITEM ===== */
+
   useEffect(() => {
+
     async function carregarItem() {
+
       try {
+
         setErro("");
 
         const resposta = await api.get(`/itens/${id}`);
+
         const item = resposta.data;
 
         setNome(item.nome || "");
         setDescricao(item.descricao || "");
         setPreco(item.preco || "");
         setQuantidade(item.quantidade || "");
+
       } catch (erro) {
+
         setErro("Erro ao carregar item");
+
         console.error(erro);
       }
     }
 
     carregarItem();
+
   }, [id]);
 
+  /* ===== EDITAR ITEM ===== */
+
   async function editarItem(event) {
+
     event.preventDefault();
 
     try {
+
       setErro("");
 
       const dados = {
@@ -50,13 +80,19 @@ export default function Editar() {
       await api.put(`/itens/${id}`, dados);
 
       navigate("/");
+
     } catch (erro) {
+
       setErro("Erro ao editar o item");
+
       console.error(erro);
     }
   }
 
+  /* ===== EXCLUIR ITEM ===== */
+
   async function excluirItem() {
+
     const confirmar = window.confirm(
       "Tem certeza que deseja excluir este item?"
     );
@@ -64,20 +100,113 @@ export default function Editar() {
     if (!confirmar) return;
 
     try {
+
       await api.delete(`/itens/${id}`);
+
       navigate("/");
+
     } catch (erro) {
+
       setErro("Erro ao excluir item");
+
       console.error(erro);
     }
   }
 
   return (
+
     <div className={styles.content}>
-      <div className={styles.card}>
-        <h1 className={styles.sectionTitle}>
-          Editar Produto
-        </h1>
+
+      {/* ===== SIDEBAR ===== */}
+
+      <aside className={styles.sidebar}>
+
+        <div>
+
+          <h1 className={styles.logo}>
+            Tintas<span>Fácil</span>
+          </h1>
+
+          <div className={styles.menu}>
+
+            <div className={styles.menuItem}>
+              <FiGrid />
+              Painel
+            </div>
+
+            <div className={`${styles.menuItem} ${styles.active}`}>
+              <FiBox />
+              Produtos
+            </div>
+
+            <div className={styles.menuItem}>
+              <FiUsers />
+              Clientes
+            </div>
+
+            <div className={styles.menuItem}>
+              <FiSettings />
+              Configurações
+            </div>
+
+          </div>
+
+        </div>
+
+        <div className={`${styles.menuItem} ${styles.logout}`}>
+          <FiLogOut />
+          Sair
+        </div>
+
+      </aside>
+
+      {/* ===== MAIN ===== */}
+
+      <main className={styles.main}>
+
+        {/* ===== HEADER ===== */}
+
+        <div className={styles.top}>
+
+          <div className={styles.titleArea}>
+
+            <h1>Editar Produto</h1>
+
+            <div className={styles.breadcrumb}>
+              <span>Início</span>
+              <span>›</span>
+              <span>Produtos</span>
+              <span>›</span>
+              <span>Editar Produto</span>
+            </div>
+
+          </div>
+
+          <div className={styles.actions}>
+
+            <button
+              type="button"
+              className={`${styles.btn} ${styles.btnCancel}`}
+              onClick={() => navigate("/")}
+            >
+              <FiArrowLeft />
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              form="formEditar"
+              className={`${styles.btn} ${styles.btnSave}`}
+            >
+              <FiSave />
+              Salvar alterações
+            </button>
+
+          </div>
+
+        </div>
+
+        {/* ===== ERRO ===== */}
 
         {erro && (
           <p className={styles.error}>
@@ -85,97 +214,132 @@ export default function Editar() {
           </p>
         )}
 
-        <form
-          className={styles.form}
-          onSubmit={editarItem}
-        >
-          <div className={styles.grid2}>
+        {/* ===== CARD ===== */}
 
-            <div className={styles.inputGroup}>
-              <label>Nome</label>
+        <div className={styles.card}>
 
-              <input
-                value={nome}
-                onChange={(event) =>
-                  setNome(event.target.value)
-                }
-                type="text"
-                placeholder="Digite o nome do item"
-              />
+          <form
+            id="formEditar"
+            onSubmit={editarItem}
+          >
+
+            <div className={styles.grid}>
+
+              {/* ===== IMAGE ===== */}
+
+              <div className={styles.imageArea}>
+
+                <h2>Imagem do Produto</h2>
+
+                <div className={styles.preview}>
+
+                  <img
+                    src="https://images.tcdn.com.br/img/img_prod/1203392/tinta_coral_renova_fosco_18l_1109_1_0d85e4eb7c6fbb3d7e57f09f73887dfd.jpg"
+                    alt="Produto"
+                  />
+
+                </div>
+
+                <button
+                  type="button"
+                  className={styles.uploadBtn}
+                >
+                  <FiUpload />
+                  Trocar imagem
+                </button>
+
+              </div>
+
+              {/* ===== FORM ===== */}
+
+              <div className={styles.formArea}>
+
+                <h2>Informações do Produto</h2>
+
+                <div className={styles.formGrid}>
+
+                  <div className={styles.inputGroup}>
+
+                    <label>Nome do produto</label>
+
+                    <input
+                      type="text"
+                      value={nome}
+                      onChange={(event) =>
+                        setNome(event.target.value)
+                      }
+                      placeholder="Digite o nome do produto"
+                    />
+
+                  </div>
+
+                  <div className={styles.inputGroup}>
+
+                    <label>Preço</label>
+
+                    <input
+                      type="number"
+                      value={preco}
+                      onChange={(event) =>
+                        setPreco(event.target.value)
+                      }
+                      placeholder="Digite o preço"
+                    />
+
+                  </div>
+
+                  <div className={styles.inputGroup}>
+
+                    <label>Quantidade</label>
+
+                    <input
+                      type="number"
+                      value={quantidade}
+                      onChange={(event) =>
+                        setQuantidade(event.target.value)
+                      }
+                      placeholder="Digite a quantidade"
+                    />
+
+                  </div>
+
+                  <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
+
+                    <label>Descrição do produto</label>
+
+                    <textarea
+                      value={descricao}
+                      onChange={(event) =>
+                        setDescricao(event.target.value)
+                      }
+                      placeholder="Digite a descrição do produto"
+                    />
+
+                  </div>
+
+                </div>
+
+              </div>
+
             </div>
 
-            <div className={styles.inputGroup}>
-              <label>Preço</label>
+          </form>
 
-              <input
-                value={preco}
-                onChange={(event) =>
-                  setPreco(event.target.value)
-                }
-                type="number"
-                placeholder="Digite o preço"
-              />
-            </div>
+          {/* ===== BOTÃO EXCLUIR ===== */}
 
-          </div>
+          <button
+            type="button"
+            className={styles.btnDanger}
+            onClick={excluirItem}
+          >
+            <FiTrash2 />
+            Excluir item
+          </button>
 
-          <div className={styles.grid2}>
+        </div>
 
-            <div className={styles.inputGroup}>
-              <label>Descrição</label>
+      </main>
 
-              <textarea
-                value={descricao}
-                onChange={(event) =>
-                  setDescricao(event.target.value)
-                }
-                placeholder="Digite a descrição"
-              />
-            </div>
-
-            <div className={styles.inputGroup}>
-              <label>Quantidade</label>
-
-              <input
-                value={quantidade}
-                onChange={(event) =>
-                  setQuantidade(event.target.value)
-                }
-                type="number"
-                placeholder="Digite a quantidade"
-              />
-            </div>
-
-          </div>
-
-          <div className={styles.buttons}>
-
-            <button
-              className={`${styles.btn} ${styles.btnPrimary}`}
-              type="submit"
-            >
-              Salvar
-            </button>
-
-            <button
-              type="button"
-              className={`${styles.btn} ${styles.btnSecondary}`}
-              onClick={() => navigate("/")}
-            >
-              Voltar
-            </button>
-
-          </div>
-        </form>
-
-        <button
-          type="button"
-          className={`${styles.btn} ${styles.btnDanger}`}
-          onClick={excluirItem}
-        >
-          Excluir item
-        </button>
-      </div>
     </div>
   );
 }
