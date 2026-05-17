@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api.js";
 import styles from "../styles/Listar.module.css";
+import Cabeçalho from "../components/Cabecalho.jsx";
 
 export default function Listar() {
 
@@ -21,65 +22,15 @@ export default function Listar() {
 
   return (
 
+
+
+
+
     <div className={styles.container}>
 
       {/* SIDEBAR */}
-      <aside className={styles.sidebar}>
 
-        <div>
-
-          <div className={styles.logo}>
-            <h1>
-              Tintas<span>+</span>
-            </h1>
-
-            <p>Cores que transformam</p>
-          </div>
-
-          <nav className={styles.menu}>
-
-            <a href="/">
-              Dashboard
-            </a>
-
-            <a
-              href="/itens"
-              className={styles.active}
-            >
-              Produtos
-            </a>
-
-            <a href="/">
-              Categorias
-            </a>
-
-            <a href="/">
-              Marcas
-            </a>
-
-            <a href="/">
-              Pedidos
-            </a>
-
-            <a href="/">
-              Clientes
-            </a>
-
-            <a href="/">
-              Configurações
-            </a>
-
-          </nav>
-
-        </div>
-
-        <div className={styles.userBox}>
-          <strong>Administrador</strong>
-          <span>admin@tintas.com</span>
-        </div>
-
-      </aside>
-
+      <Cabeçalho /> 
       {/* CONTENT */}
       <main className={styles.content}>
 
@@ -97,7 +48,31 @@ export default function Listar() {
           </div>
 
         </div>
+<div className={styles.cards}>
 
+  <div className={styles.card}>
+    <span>Total de Produtos</span>
+    <h2>{itens.length}</h2>
+  </div>
+
+  <div className={styles.card}>
+    <span>Baixo Estoque</span>
+    <h2>
+      {itens.filter(item => item.quantidade < 5).length}
+    </h2>
+  </div>
+
+  <div className={styles.card}>
+    <span>Produtos Ativos</span>
+    <h2>{itens.length}</h2>
+  </div>
+
+  <div className={styles.card}>
+    <span>Categorias</span>
+    <h2>12</h2>
+  </div>
+
+</div>
         {/* SEARCH */}
         <div className={styles.searchArea}>
 
@@ -228,11 +203,10 @@ export default function Listar() {
                     <td>
 
                       <span
-                        className={`${styles.status} ${
-                          item.quantidade < 5
+                        className={`${styles.status} ${item.quantidade < 5
                             ? styles.low
                             : ""
-                        }`}
+                          }`}
                       >
 
                         {item.quantidade < 5

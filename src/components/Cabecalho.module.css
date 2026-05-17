@@ -1,0 +1,447 @@
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+  width: 290px;
+  height: 100vh;
+
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  padding: 26px 18px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  overflow-y: auto;
+
+  background:
+    linear-gradient(
+      180deg,
+      #02142f 0%,
+      #03265e 45%,
+      #02142f 100%
+    );
+
+  color: white;
+
+  border-right:
+    1px solid rgba(255,255,255,0.06);
+
+  box-shadow:
+    6px 0 30px rgba(0,0,0,0.25);
+
+  z-index: 1000;
+}
+
+/* =========================
+   LOGO
+========================= */
+
+.logo {
+  padding: 8px 10px;
+
+  margin-bottom: 40px;
+}
+
+.logo h1 {
+  display: flex;
+  align-items: center;
+
+  gap: 4px;
+
+  font-size: 36px;
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.logo span {
+  color: #3b82f6;
+
+  text-shadow:
+    0 0 12px rgba(59,130,246,0.6);
+}
+
+.logo p {
+  margin-top: 6px;
+
+  font-size: 13px;
+
+  color:
+    rgba(255,255,255,0.65);
+}
+
+/* =========================
+   MENU
+========================= */
+
+.menu {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+/* =========================
+   MENU ITEM
+========================= */
+
+.menuItem {
+  height: 58px;
+
+  border-radius: 18px;
+
+  padding: 0 18px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  text-decoration: none;
+
+  color:
+    rgba(255,255,255,0.82);
+
+  font-size: 15px;
+  font-weight: 600;
+
+  position: relative;
+
+  transition:
+    0.25s;
+}
+
+.menuItem:hover {
+  background:
+    rgba(255,255,255,0.08);
+
+  color: white;
+
+  transform:
+    translateX(4px);
+}
+
+/* =========================
+   BARRA HOVER
+========================= */
+
+.menuItem::before {
+  content: "";
+
+  width: 4px;
+  height: 0;
+
+  border-radius: 999px;
+
+  background: #60a5fa;
+
+  position: absolute;
+
+  left: 0;
+
+  transition: 0.25s;
+}
+
+.menuItem:hover::before {
+  height: 60%;
+}
+
+/* =========================
+   ACTIVE
+========================= */
+
+.active {
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #3b82f6
+    );
+
+  color: white;
+
+  transform: translateX(6px);
+
+  box-shadow:
+    0 12px 24px rgba(37,99,235,0.35),
+    inset 0 0 0 1px rgba(255,255,255,0.12);
+
+  position: relative;
+}
+
+/* barra lateral da página ativa */
+
+.active::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  width: 5px;
+  height: 70%;
+
+  border-radius: 999px;
+
+  background: white;
+
+  box-shadow:
+    0 0 12px rgba(255,255,255,0.8);
+}
+
+/* bolinha indicando página ativa */
+
+.active::after {
+  content: "";
+
+  position: absolute;
+
+  right: 16px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  width: 10px;
+  height: 10px;
+
+  border-radius: 50%;
+
+  background: white;
+
+  box-shadow:
+    0 0 12px rgba(255,255,255,0.9);
+}
+
+/* =========================
+   BOTTOM
+========================= */
+
+.bottomArea {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+
+  margin-top: 30px;
+}
+
+/* =========================
+   USER BOX
+========================= */
+
+.userBox {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.08),
+      rgba(255,255,255,0.03)
+    );
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  border-radius: 22px;
+
+  padding: 18px 16px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  backdrop-filter: blur(12px);
+
+  transition: 0.25s;
+}
+
+.userBox:hover {
+  transform:
+    translateY(-2px);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.10),
+      rgba(255,255,255,0.04)
+    );
+}
+
+/* =========================
+   AVATAR
+========================= */
+
+.avatar {
+  min-width: 52px;
+  height: 52px;
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3b82f6,
+      #2563eb
+    );
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+
+  font-size: 18px;
+  font-weight: 800;
+
+  box-shadow:
+    0 10px 22px rgba(37,99,235,0.35);
+}
+
+/* =========================
+   USER INFO
+========================= */
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.userInfo strong {
+  font-size: 15px;
+  font-weight: 700;
+
+  color: white;
+
+  margin-bottom: 4px;
+}
+
+.userInfo span {
+  font-size: 13px;
+
+  color:
+    rgba(255,255,255,0.68);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =========================
+   BOTÃO SAIR
+========================= */
+
+.logoutBtn {
+  height: 56px;
+
+  border: none;
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.08),
+      rgba(255,255,255,0.04)
+    );
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  cursor: pointer;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  transition: 0.25s;
+}
+
+.logoutBtn:hover {
+  background:
+    linear-gradient(
+      135deg,
+      #ef4444,
+      #dc2626
+    );
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 12px 24px rgba(239,68,68,0.3);
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background:
+    rgba(255,255,255,0.18);
+
+  border-radius: 999px;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media (max-width: 900px) {
+
+  .sidebar {
+    width: 92px;
+
+    padding: 20px 10px;
+  }
+
+  .logo p,
+  .menuItem span,
+  .userInfo,
+  .logoutBtn span {
+    display: none;
+  }
+
+  .logo h1 {
+    justify-content: center;
+
+    font-size: 28px;
+  }
+
+  .menuItem {
+    justify-content: center;
+
+    padding: 0;
+  }
+
+  .active::after {
+    display: none;
+  }
+
+  .userBox {
+    justify-content: center;
+
+    padding: 14px;
+  }
+
+  .logoutBtn {
+    justify-content: center;
+  }
+} 

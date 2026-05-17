@@ -1,0 +1,380 @@
+/* GOOGLE FONT */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
+
+/* ========================= */
+/* GERAL */
+/* ========================= */
+
+.container {
+  min-height: 100vh;
+  display: flex;
+
+  background: #eef3fa;
+
+  font-family: "Poppins", sans-serif;
+}
+
+/* ========================= */
+/* LADO ESQUERDO */
+/* ========================= */
+
+.left {
+  flex: 1;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(2, 20, 47, 0.95),
+      rgba(4, 45, 102, 0.88)
+    ),
+    url("https://images.unsplash.com/photo-1562259949-e8e7689d7828?q=80&w=1600&auto=format&fit=crop");
+
+  background-size: cover;
+  background-position: center;
+
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================= */
+/* EFEITOS */
+/* ========================= */
+
+.paint1,
+.paint2,
+.paint3,
+.paint4 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(18px);
+}
+
+.paint1 {
+  width: 280px;
+  height: 280px;
+  background: #0b63f6;
+  top: -90px;
+  right: -90px;
+  opacity: 0.35;
+}
+
+.paint2 {
+  width: 220px;
+  height: 220px;
+  background: #38bdf8;
+  bottom: -70px;
+  left: -70px;
+  opacity: 0.28;
+}
+
+.paint3 {
+  width: 120px;
+  height: 120px;
+  background: white;
+  top: 120px;
+  left: 100px;
+  opacity: 0.08;
+}
+
+.paint4 {
+  width: 180px;
+  height: 180px;
+  background: #2563eb;
+  bottom: 100px;
+  right: 120px;
+  opacity: 0.16;
+}
+
+/* ========================= */
+/* CONTEÚDO ESQUERDO */
+/* ========================= */
+
+.overlay {
+  width: 85%;
+  max-width: 760px;
+
+  color: white;
+
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+
+  text-align: left;
+}
+
+/* ========================= */
+/* LOGO */
+/* ========================= */
+
+.brand {
+  font-size: 5.5rem;
+  font-weight: 900;
+  line-height: 1;
+
+  margin-bottom: 15px;
+
+  letter-spacing: -4px;
+
+  text-transform: uppercase;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand span {
+  color: #4da3ff;
+  text-shadow: 0 0 25px rgba(77, 163, 255, 0.45);
+}
+
+/* ========================= */
+/* TEXTO QUE MUDA */
+/* ========================= */
+
+.changingText {
+  font-size: 4rem;
+  line-height: 1.05;
+
+  margin-bottom: 20px;
+  margin-top: 20px;
+
+  font-weight: 800;
+
+  letter-spacing: -2px;
+
+  max-width: 800px;
+  min-height: 80px;
+
+  text-transform: uppercase;
+
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fadeOut {
+  opacity: 0.15;
+  transform: translateY(-10px);
+}
+
+/* ========================= */
+/* TEXTO ABAIXO */
+/* ========================= */
+
+.overlay p {
+  font-size: 1.15rem;
+  line-height: 1.9;
+  opacity: 0.78;
+  max-width: 620px;
+}
+
+/* ========================= */
+/* LADO DIREITO */
+/* ========================= */
+
+.right {
+  width: 500px;
+  background: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 45px;
+
+  position: relative;
+}
+
+/* ========================= */
+/* CARD */
+/* ========================= */
+
+.card {
+  width: 100%;
+  max-width: 380px;
+}
+
+.top {
+  margin-bottom: 38px;
+}
+
+.top h1 {
+  font-size: 2.5rem;
+  color: #02142f;
+  margin-bottom: 12px;
+  font-weight: 800;
+}
+
+.top p {
+  color: #6b7280;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+/* ========================= */
+/* FORM */
+/* ========================= */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* INPUTS */
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inputGroup label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #02142f;
+}
+
+.inputGroup input {
+  height: 60px;
+
+  border-radius: 18px;
+  border: 2px solid transparent;
+
+  background: #f4f7fb;
+
+  padding: 0 18px;
+
+  font-size: 1rem;
+
+  font-family: "Poppins", sans-serif;
+
+  color: #02142f;
+
+  transition: 0.25s ease;
+}
+
+.inputGroup input:focus {
+  outline: none;
+  border-color: #0b63f6;
+  background: white;
+  transform: translateY(-1px);
+
+  box-shadow: 0 10px 30px rgba(11, 99, 246, 0.12);
+}
+
+/* ========================= */
+/* BOTÃO */
+/* ========================= */
+
+.button {
+  height: 60px;
+
+  border: none;
+  border-radius: 18px;
+
+  background: linear-gradient(135deg, #0b63f6, #0047c7);
+
+  color: white;
+
+  font-size: 1rem;
+  font-weight: 700;
+
+  font-family: "Poppins", sans-serif;
+
+  cursor: pointer;
+
+  transition: 0.25s ease;
+
+  margin-top: 6px;
+}
+
+.button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 35px rgba(11, 99, 246, 0.28);
+}
+
+/* ========================= */
+/* ERRO */
+/* ========================= */
+
+.erro {
+  background: #fee2e2;
+  color: #b91c1c;
+
+  padding: 14px;
+
+  border-radius: 14px;
+
+  font-size: 0.92rem;
+
+  text-align: center;
+
+  margin-bottom: 18px;
+}
+
+/* ========================= */
+/* FOOTER */
+/* ========================= */
+
+.footer {
+  margin-top: 30px;
+
+  text-align: center;
+
+  color: #9ca3af;
+
+  font-size: 0.92rem;
+}
+
+/* ========================= */
+/* RESPONSIVO */
+/* ========================= */
+
+@media (max-width: 1200px) {
+  .brand {
+    font-size: 4.5rem;
+  }
+
+  .changingText {
+    font-size: 3rem;
+  }
+
+  .overlay p {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 980px) {
+  .left {
+    display: none;
+  }
+
+  .right {
+    width: 100%;
+    padding: 25px;
+  }
+
+  .card {
+    max-width: 430px;
+  }
+}
+
+@media (max-width: 500px) {
+  .top h1 {
+    font-size: 2rem;
+  }
+
+  .inputGroup input {
+    height: 56px;
+  }
+
+  .button {
+    height: 56px;
+  }
+}

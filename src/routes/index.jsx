@@ -7,6 +7,7 @@ import Inicial from "../pages/Inicial.jsx";
 import Login from "../pages/Login.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
 import Cadastro from "../pages/Cadastro.jsx";
+import Pedidos from "../pages/Pedidos.jsx";
 
 import RotasPublicas from "./rotasPublicas.jsx";
 import RotasPrivadas from "./rotasPrivadas.jsx";
@@ -19,6 +20,7 @@ export function AppRoutes() {
         <Route path="/itens/:id/editar" element={<EditarItem />} />
         <Route path="/itens/cadastrar" element={<CadastrarItem />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/pedidos" element={<Pedidos />} />   
       </Route>
 
       <Route element={<RotasPublicas />}>
