@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import styles from "../styles/Dashboard.module.css";
 
 import {
@@ -11,6 +13,7 @@ import {
   FiPlus,
   FiArrowUpRight,
   FiClock,
+  FiX,
 } from "react-icons/fi";
 
 import { useNavigate } from "react-router-dom";
@@ -18,12 +21,13 @@ import { useAuth } from "../contexts/authContext.jsx";
 
 import Cabecalho from "../components/Cabecalho.jsx";
 
-
 export default function Dashboard() {
 
   const navigate = useNavigate();
 
   const { usuario, logout } = useAuth();
+
+  const [modalOpen, setModalOpen] = useState(false);
 
   function sair() {
 
@@ -31,6 +35,51 @@ export default function Dashboard() {
 
     navigate("/");
   }
+
+  const comprasSemana = [
+    {
+      id: "#2031",
+      produto: "Tinta Azul Premium",
+      cliente: "Carlos Henrique",
+      valor: "R$ 420",
+      data: "Segunda • 09:32",
+    },
+    {
+      id: "#2030",
+      produto: "Kit Pintura Completo",
+      cliente: "Mariana Souza",
+      valor: "R$ 280",
+      data: "Terça • 11:10",
+    },
+    {
+      id: "#2029",
+      produto: "Verniz Madeira",
+      cliente: "Roberto Lima",
+      valor: "R$ 190",
+      data: "Quarta • 15:20",
+    },
+    {
+      id: "#2028",
+      produto: "Tinta Fosca Branco Neve",
+      cliente: "Felipe Costa",
+      valor: "R$ 510",
+      data: "Quinta • 08:41",
+    },
+    {
+      id: "#2027",
+      produto: "Selador Acrílico",
+      cliente: "Ana Júlia",
+      valor: "R$ 240",
+      data: "Sexta • 18:12",
+    },
+    {
+      id: "#2026",
+      produto: "Massa Corrida Premium",
+      cliente: "Lucas Almeida",
+      valor: "R$ 320",
+      data: "Sábado • 13:07",
+    },
+  ];
 
   return (
 
@@ -43,8 +92,6 @@ export default function Dashboard() {
       {/* ÁREA DIREITA */}
 
       <div className={styles.rightArea}>
-
-        {/* CONTENT */}
 
         <main className={styles.content}>
 
@@ -187,122 +234,45 @@ export default function Dashboard() {
             <div className={styles.chart}>
 
               <div className={styles.barGroup}>
-
-                <span className={styles.day}>
-                  Seg
-                </span>
-
-                <div
-                  className={styles.bar}
-                  style={{ height: "90px" }}
-                />
-
-                <strong>
-                  12k
-                </strong>
-
+                <span className={styles.day}>Seg</span>
+                <div className={styles.bar} style={{ height: "90px" }} />
+                <strong>12k</strong>
               </div>
 
               <div className={styles.barGroup}>
-
-                <span className={styles.day}>
-                  Ter
-                </span>
-
-                <div
-                  className={styles.bar}
-                  style={{ height: "140px" }}
-                />
-
-                <strong>
-                  18k
-                </strong>
-
+                <span className={styles.day}>Ter</span>
+                <div className={styles.bar} style={{ height: "140px" }} />
+                <strong>18k</strong>
               </div>
 
               <div className={styles.barGroup}>
-
-                <span className={styles.day}>
-                  Qua
-                </span>
-
-                <div
-                  className={styles.bar}
-                  style={{ height: "110px" }}
-                />
-
-                <strong>
-                  14k
-                </strong>
-
+                <span className={styles.day}>Qua</span>
+                <div className={styles.bar} style={{ height: "110px" }} />
+                <strong>14k</strong>
               </div>
 
               <div className={styles.barGroup}>
-
-                <span className={styles.day}>
-                  Qui
-                </span>
-
-                <div
-                  className={styles.bar}
-                  style={{ height: "170px" }}
-                />
-
-                <strong>
-                  22k
-                </strong>
-
+                <span className={styles.day}>Qui</span>
+                <div className={styles.bar} style={{ height: "170px" }} />
+                <strong>22k</strong>
               </div>
 
               <div className={styles.barGroup}>
-
-                <span className={styles.day}>
-                  Sex
-                </span>
-
-                <div
-                  className={styles.bar}
-                  style={{ height: "200px" }}
-                />
-
-                <strong>
-                  26k
-                </strong>
-
+                <span className={styles.day}>Sex</span>
+                <div className={styles.bar} style={{ height: "200px" }} />
+                <strong>26k</strong>
               </div>
 
               <div className={styles.barGroup}>
-
-                <span className={styles.day}>
-                  Sáb
-                </span>
-
-                <div
-                  className={styles.bar}
-                  style={{ height: "160px" }}
-                />
-
-                <strong>
-                  20k
-                </strong>
-
+                <span className={styles.day}>Sáb</span>
+                <div className={styles.bar} style={{ height: "160px" }} />
+                <strong>20k</strong>
               </div>
 
               <div className={styles.barGroup}>
-
-                <span className={styles.day}>
-                  Dom
-                </span>
-
-                <div
-                  className={styles.bar}
-                  style={{ height: "130px" }}
-                />
-
-                <strong>
-                  16k
-                </strong>
-
+                <span className={styles.day}>Dom</span>
+                <div className={styles.bar} style={{ height: "130px" }} />
+                <strong>16k</strong>
               </div>
 
             </div>
@@ -323,7 +293,9 @@ export default function Dashboard() {
                   Vendas Recentes
                 </h3>
 
-                <button>
+                <button
+                  onClick={() => setModalOpen(true)}
+                >
                   Ver tudo
                 </button>
 
@@ -473,7 +445,12 @@ export default function Dashboard() {
 
           <section className={styles.quick}>
 
-            <div className={styles.quickCard}>
+            {/* ADICIONAR PRODUTO */}
+
+            <div
+              className={styles.quickCard}
+              onClick={() => navigate("/itens/cadastrar")}
+            >
 
               <div>
 
@@ -491,7 +468,12 @@ export default function Dashboard() {
 
             </div>
 
-            <div className={styles.quickCard}>
+            {/* VER PEDIDOS */}
+
+            <div
+              className={styles.quickCard}
+              onClick={() => navigate("/pedidos")}
+            >
 
               <div>
 
@@ -508,6 +490,8 @@ export default function Dashboard() {
               <FiArrowUpRight />
 
             </div>
+
+            {/* HISTÓRICO */}
 
             <div className={styles.quickCard}>
 
@@ -529,11 +513,87 @@ export default function Dashboard() {
 
           </section>
 
-      
-
         </main>
 
       </div>
+
+      {/* MODAL */}
+
+      {modalOpen && (
+
+        <div className={styles.modalOverlay}>
+
+          <div className={styles.modal}>
+
+            <div className={styles.modalHeader}>
+
+              <div>
+
+                <h2>
+                  Compras da Semana
+                </h2>
+
+                <p>
+                  Todas as vendas realizadas nos últimos 7 dias
+                </p>
+
+              </div>
+
+              <button
+                className={styles.closeBtn}
+                onClick={() => setModalOpen(false)}
+              >
+
+                <FiX />
+
+              </button>
+
+            </div>
+
+            <div className={styles.modalContent}>
+
+              {comprasSemana.map((compra) => (
+
+                <div
+                  key={compra.id}
+                  className={styles.purchaseItem}
+                >
+
+                  <div>
+
+                    <strong>
+                      {compra.produto}
+                    </strong>
+
+                    <span>
+                      {compra.id} • {compra.cliente}
+                    </span>
+
+                  </div>
+
+                  <div className={styles.purchaseRight}>
+
+                    <b>
+                      {compra.valor}
+                    </b>
+
+                    <small>
+                      {compra.data}
+                    </small>
+
+                  </div>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
 
     </div>
   );

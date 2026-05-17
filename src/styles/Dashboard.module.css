@@ -760,3 +760,206 @@
   }
 
 }
+
+/* =========================
+   MODAL
+========================= */
+
+.modalOverlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(15, 23, 42, 0.55);
+
+  backdrop-filter: blur(6px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 999;
+}
+
+.modal {
+  width: 100%;
+  max-width: 760px;
+
+  background: white;
+
+  border-radius: 28px;
+
+  padding: 28px;
+
+  animation: modalAnimation 0.25s ease;
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.2);
+}
+
+@keyframes modalAnimation {
+
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  gap: 20px;
+
+  margin-bottom: 24px;
+}
+
+.modalHeader h2 {
+  font-size: 30px;
+  font-weight: 800;
+
+  color: #0f172a;
+
+  margin-bottom: 6px;
+}
+
+.modalHeader p {
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+.closeBtn {
+  width: 52px;
+  height: 52px;
+
+  border: none;
+
+  border-radius: 16px;
+
+  background: #f1f5f9;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.closeBtn svg {
+  font-size: 22px;
+
+  color: #0f172a;
+}
+
+.closeBtn:hover {
+  background: #e2e8f0;
+
+  transform: rotate(90deg);
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+
+  max-height: 500px;
+
+  overflow-y: auto;
+
+  padding-right: 4px;
+}
+
+.purchaseItem {
+  background: #f8fbff;
+
+  border: 1px solid #e5edf8;
+
+  border-radius: 20px;
+
+  padding: 20px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 20px;
+
+  transition: 0.25s;
+}
+
+.purchaseItem:hover {
+  transform: translateX(4px);
+
+  background: #f1f7ff;
+}
+
+.purchaseItem strong {
+  display: block;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  color: #0f172a;
+
+  margin-bottom: 6px;
+}
+
+.purchaseItem span {
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+.purchaseRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  gap: 4px;
+}
+
+.purchaseRight b {
+  font-size: 18px;
+
+  color: #2563eb;
+}
+
+.purchaseRight small {
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+/* =========================
+   RESPONSIVO MODAL
+========================= */
+
+@media (max-width: 768px) {
+
+  .modal {
+    width: calc(100% - 24px);
+
+    padding: 22px;
+  }
+
+  .purchaseItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .purchaseRight {
+    align-items: flex-start;
+  }
+
+}

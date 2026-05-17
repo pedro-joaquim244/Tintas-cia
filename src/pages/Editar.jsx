@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
 import { api } from "../services/api.js";
 
 import {
   FiSave,
   FiArrowLeft,
   FiTrash2,
-  FiBox,
-  FiGrid,
-  FiUsers,
-  FiSettings,
-  FiLogOut,
-  FiUpload
+  FiUpload,
 } from "react-icons/fi";
 
 import styles from "../styles/Editar.module.css";
+
+import Cabecalho from "../components/Cabecalho.jsx";
 
 export default function Editar() {
 
@@ -27,6 +25,7 @@ export default function Editar() {
   const [erro, setErro] = useState("");
 
   const navigate = useNavigate();
+
   const { id } = useParams();
 
   /* ===== CARREGAR ITEM ===== */
@@ -115,70 +114,33 @@ export default function Editar() {
 
   return (
 
-    <div className={styles.content}>
+    <div className={styles.container}>
 
-      {/* ===== SIDEBAR ===== */}
+      {/* SIDEBAR */}
 
-      <aside className={styles.sidebar}>
+      <Cabecalho />
 
-        <div>
-
-          <h1 className={styles.logo}>
-            Tintas<span>Fácil</span>
-          </h1>
-
-          <div className={styles.menu}>
-
-            <div className={styles.menuItem}>
-              <FiGrid />
-              Painel
-            </div>
-
-            <div className={`${styles.menuItem} ${styles.active}`}>
-              <FiBox />
-              Produtos
-            </div>
-
-            <div className={styles.menuItem}>
-              <FiUsers />
-              Clientes
-            </div>
-
-            <div className={styles.menuItem}>
-              <FiSettings />
-              Configurações
-            </div>
-
-          </div>
-
-        </div>
-
-        <div className={`${styles.menuItem} ${styles.logout}`}>
-          <FiLogOut />
-          Sair
-        </div>
-
-      </aside>
-
-      {/* ===== MAIN ===== */}
+      {/* MAIN */}
 
       <main className={styles.main}>
 
-        {/* ===== HEADER ===== */}
+        {/* HEADER */}
 
         <div className={styles.top}>
 
           <div className={styles.titleArea}>
 
-            <h1>Editar Produto</h1>
+            <span className={styles.badge}>
+              Edição de Produto
+            </span>
 
-            <div className={styles.breadcrumb}>
-              <span>Início</span>
-              <span>›</span>
-              <span>Produtos</span>
-              <span>›</span>
-              <span>Editar Produto</span>
-            </div>
+            <h1>
+              Editar Produto
+            </h1>
+
+            <p>
+              Atualize informações, estoque e imagem do produto.
+            </p>
 
           </div>
 
@@ -189,8 +151,11 @@ export default function Editar() {
               className={`${styles.btn} ${styles.btnCancel}`}
               onClick={() => navigate("/")}
             >
+
               <FiArrowLeft />
-              Cancelar
+
+              Voltar
+
             </button>
 
             <button
@@ -198,23 +163,26 @@ export default function Editar() {
               form="formEditar"
               className={`${styles.btn} ${styles.btnSave}`}
             >
+
               <FiSave />
-              Salvar alterações
+
+              Salvar
+
             </button>
 
           </div>
 
         </div>
 
-        {/* ===== ERRO ===== */}
+        {/* ERROR */}
 
         {erro && (
-          <p className={styles.error}>
+          <div className={styles.error}>
             {erro}
-          </p>
+          </div>
         )}
 
-        {/* ===== CARD ===== */}
+        {/* CARD */}
 
         <div className={styles.card}>
 
@@ -225,11 +193,21 @@ export default function Editar() {
 
             <div className={styles.grid}>
 
-              {/* ===== IMAGE ===== */}
+              {/* IMAGE */}
 
               <div className={styles.imageArea}>
 
-                <h2>Imagem do Produto</h2>
+                <div className={styles.sectionHeader}>
+
+                  <h2>
+                    Imagem do Produto
+                  </h2>
+
+                  <span>
+                    Atualize a foto principal
+                  </span>
+
+                </div>
 
                 <div className={styles.preview}>
 
@@ -244,23 +222,38 @@ export default function Editar() {
                   type="button"
                   className={styles.uploadBtn}
                 >
+
                   <FiUpload />
+
                   Trocar imagem
+
                 </button>
 
               </div>
 
-              {/* ===== FORM ===== */}
+              {/* FORM */}
 
               <div className={styles.formArea}>
 
-                <h2>Informações do Produto</h2>
+                <div className={styles.sectionHeader}>
+
+                  <h2>
+                    Informações
+                  </h2>
+
+                  <span>
+                    Dados principais do produto
+                  </span>
+
+                </div>
 
                 <div className={styles.formGrid}>
 
                   <div className={styles.inputGroup}>
 
-                    <label>Nome do produto</label>
+                    <label>
+                      Nome do produto
+                    </label>
 
                     <input
                       type="text"
@@ -275,7 +268,9 @@ export default function Editar() {
 
                   <div className={styles.inputGroup}>
 
-                    <label>Preço</label>
+                    <label>
+                      Preço
+                    </label>
 
                     <input
                       type="number"
@@ -290,7 +285,9 @@ export default function Editar() {
 
                   <div className={styles.inputGroup}>
 
-                    <label>Quantidade</label>
+                    <label>
+                      Quantidade
+                    </label>
 
                     <input
                       type="number"
@@ -305,7 +302,9 @@ export default function Editar() {
 
                   <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
 
-                    <label>Descrição do produto</label>
+                    <label>
+                      Descrição
+                    </label>
 
                     <textarea
                       value={descricao}
@@ -325,16 +324,23 @@ export default function Editar() {
 
           </form>
 
-          {/* ===== BOTÃO EXCLUIR ===== */}
+          {/* DELETE */}
 
-          <button
-            type="button"
-            className={styles.btnDanger}
-            onClick={excluirItem}
-          >
-            <FiTrash2 />
-            Excluir item
-          </button>
+          <div className={styles.deleteArea}>
+
+            <button
+              type="button"
+              className={styles.btnDanger}
+              onClick={excluirItem}
+            >
+
+              <FiTrash2 />
+
+              Excluir produto
+
+            </button>
+
+          </div>
 
         </div>
 
