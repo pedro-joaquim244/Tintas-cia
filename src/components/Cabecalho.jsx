@@ -4,7 +4,6 @@ import {
   FiHome,
   FiBox,
   FiShoppingCart,
-  FiUsers,
   FiLogOut,
 } from "react-icons/fi";
 
@@ -81,8 +80,6 @@ export default function Cabecalho() {
             <span>Pedidos</span>
           </NavLink>
 
-          
-
         </nav>
 
       </div>
@@ -91,7 +88,10 @@ export default function Cabecalho() {
 
       <div className={styles.bottomArea}>
 
-        <div className={styles.userBox}>
+        <NavLink
+          to="/perfil"
+          className={styles.userBox}
+        >
 
           <div className={styles.avatar}>
             A
@@ -109,7 +109,7 @@ export default function Cabecalho() {
 
           </div>
 
-        </div>
+        </NavLink>
 
         <button
           className={styles.logoutBtn}

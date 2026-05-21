@@ -39,7 +39,7 @@ export default function Listar() {
 
           <div>
 
-            <h1>Produtos</h1>
+            <h1 id={styles.title}>Produtos</h1>
 
             <p>
               Gerencie todos os produtos da sua loja

@@ -4,12 +4,15 @@
 /* ========================= */
 /* GERAL */
 /* ========================= */
-
+*{
+    cursor: default;
+}
 .container {
   min-height: 100vh;
   display: flex;
-
+  
   background: #eef3fa;
+  
 
   font-family: "Poppins", sans-serif;
 }

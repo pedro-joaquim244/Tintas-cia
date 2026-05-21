@@ -19,9 +19,10 @@ body {
 }
 
 .main {
-  margin-left: 290px;
+    margin-left: 270px;
+    padding: 34px;
+    padding-left: 57px;
 
-  padding: 40px;
 }
 
 /* ===== TOPO ===== */

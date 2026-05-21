@@ -24,7 +24,7 @@
 
   padding: 34px;
 
-  min-height: 100vh;
+ padding-left: 57px;
 }
 
 /* =========================
@@ -39,6 +39,10 @@
   margin-bottom: 26px;
 }
 
+
+#title{
+  font-size: 52px;
+}
 .topbar h1 {
   font-size: 38px;
   font-weight: 800;
