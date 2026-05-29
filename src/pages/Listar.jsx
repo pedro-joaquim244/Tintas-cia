@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api.js";
 import styles from "../styles/Listar.module.css";
-import Cabeçalho from "../components/Cabecalho.jsx";
+import Cabeçalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
 
 export default function Listar() {
 

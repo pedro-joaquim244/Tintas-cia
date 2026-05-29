@@ -9,6 +9,8 @@ import Dashboard from "../pages/Dashboard.jsx";
 import Cadastro from "../pages/Cadastro.jsx";
 import Pedidos from "../pages/Pedidos.jsx";
 import Perfil from "../pages/Perfil.jsx";
+import SobreNos from "../pages/SobreNos.jsx";
+import SimuladorTinta from "../pages/SimuladorTintas.jsx";
 
 import RotasPublicas from "./rotasPublicas.jsx";
 import RotasPrivadas from "./rotasPrivadas.jsx";
@@ -29,6 +31,8 @@ export function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/inicial" element={<Inicial />} />
+        <Route path="/sobre-nos" element={<SobreNos />} />
+        <Route path="/simulador-tintas" element={<SimuladorTinta />} />
       </Route>
 
       <Route path="*" element={<h1>Página não encontrada</h1>} />

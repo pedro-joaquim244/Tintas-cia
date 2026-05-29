@@ -12,7 +12,7 @@ import {
 
 import styles from "../styles/Editar.module.css";
 
-import Cabecalho from "../components/Cabecalho.jsx";
+import Cabecalho from "../components//Cabeçalho-ADM/Cabecalho.jsx";
 
 export default function Editar() {
 

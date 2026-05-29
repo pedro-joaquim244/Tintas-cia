@@ -11,7 +11,7 @@ import {
   FiUpload
 } from "react-icons/fi";
 
-import Cabecalho from "../components/Cabecalho.jsx";
+import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
 
 export default function Cadastrar() {
 

@@ -19,7 +19,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/authContext.jsx";
 
-import Cabecalho from "../components/Cabecalho.jsx";
+import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
 
 export default function Dashboard() {
 

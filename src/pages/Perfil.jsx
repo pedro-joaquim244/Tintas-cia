@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import Cabecalho from "../components/Cabecalho";
+import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
 
 import styles from "../styles/Perfil.module.css";
 

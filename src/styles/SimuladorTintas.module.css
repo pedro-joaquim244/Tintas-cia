@@ -1,0 +1,376 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+.container{
+  width:100%;
+  min-height:100vh;
+  background:#f5f7fb;
+  font-family:"Poppins",sans-serif;
+  overflow:hidden;
+}
+
+/* HERO */
+
+.hero{
+  width:100%;
+  min-height:55vh;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:120px 8% 80px;
+
+  position:relative;
+
+  overflow:hidden;
+
+  background:
+  linear-gradient(
+    135deg,
+    #2563eb,
+    #3b82f6
+  );
+}
+
+.hero::before{
+  content:"";
+
+  position:absolute;
+
+  width:700px;
+  height:700px;
+
+  background:
+  radial-gradient(
+    rgba(255,255,255,.18),
+    transparent 70%
+  );
+
+  top:-250px;
+  right:-200px;
+}
+
+.heroContent{
+  max-width:900px;
+  text-align:center;
+  z-index:2;
+}
+
+.badge{
+  display:inline-block;
+
+  padding:12px 22px;
+
+  border-radius:999px;
+
+  background:rgba(255,255,255,.18);
+
+  color:white;
+
+  font-weight:600;
+
+  margin-bottom:30px;
+
+  backdrop-filter:blur(10px);
+}
+
+.heroContent h1{
+  font-size:4.8rem;
+  color:white;
+  line-height:1.05;
+  margin-bottom:25px;
+}
+
+.heroContent p{
+  color:rgba(255,255,255,.88);
+  font-size:1.2rem;
+  line-height:1.8;
+}
+
+/* UPLOAD */
+
+.uploadSection{
+  width:100%;
+  padding:70px 8%;
+}
+
+.uploadBox{
+  width:100%;
+  min-height:320px;
+
+  border:3px dashed #93c5fd;
+
+  border-radius:40px;
+
+  background:white;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  gap:20px;
+
+  cursor:pointer;
+
+  transition:.4s;
+
+  box-shadow:
+  0 20px 50px rgba(15,23,42,.05);
+}
+
+.uploadBox:hover{
+  transform:translateY(-8px);
+  border-color:#2563eb;
+}
+
+.uploadBox svg{
+  color:#2563eb;
+}
+
+.uploadBox h3{
+  font-size:2rem;
+  color:#0f172a;
+}
+
+.uploadBox p{
+  color:#64748b;
+}
+
+.uploadBox input{
+  display:none;
+}
+
+/* PREVIEW */
+
+.previewSection{
+  width:100%;
+  padding:20px 8% 100px;
+
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:40px;
+}
+
+.imagemContainer{
+  width:100%;
+  height:650px;
+
+  border-radius:40px;
+
+  overflow:hidden;
+
+  position:relative;
+
+  box-shadow:
+  0 25px 60px rgba(15,23,42,.08);
+}
+
+.imagemContainer img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.overlay{
+  position:absolute;
+  inset:0;
+
+  background:
+  linear-gradient(
+    to top,
+    rgba(15,23,42,.4),
+    transparent
+  );
+}
+
+/* RESULTADOS */
+
+.resultados{
+  display:flex;
+  flex-direction:column;
+}
+
+.resultadoTop{
+  display:flex;
+  align-items:center;
+  gap:15px;
+
+  margin-bottom:35px;
+}
+
+.resultadoTop svg{
+  color:#2563eb;
+}
+
+.resultadoTop h2{
+  font-size:2.6rem;
+  color:#0f172a;
+}
+
+.coresGrid{
+  display:grid;
+  gap:25px;
+}
+
+.corCard{
+  background:white;
+
+  border-radius:30px;
+
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+
+  box-shadow:
+  0 15px 40px rgba(15,23,42,.05);
+
+  transition:.4s;
+}
+
+.corCard:hover{
+  transform:
+  translateY(-8px)
+  scale(1.02);
+}
+
+.corPreview{
+  width:140px;
+  height:180px;
+}
+
+.corInfo{
+  padding:30px;
+}
+
+.corInfo h3{
+  font-size:1.8rem;
+  margin-bottom:10px;
+}
+
+.corInfo p{
+  color:#64748b;
+  line-height:1.7;
+  margin-bottom:20px;
+}
+
+.corInfo button{
+  border:none;
+
+  height:55px;
+
+  padding:0 25px;
+
+  border-radius:16px;
+
+  background:#2563eb;
+
+  color:white;
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  font-weight:600;
+
+  cursor:pointer;
+
+  transition:.3s;
+}
+
+.corInfo button:hover{
+  transform:translateY(-3px);
+}
+
+/* BENEFITS */
+
+.benefits{
+  width:100%;
+
+  padding:0 8% 100px;
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(auto-fit,minmax(280px,1fr));
+
+  gap:30px;
+}
+
+.benefitCard{
+  background:white;
+
+  padding:40px;
+
+  border-radius:30px;
+
+  text-align:center;
+
+  box-shadow:
+  0 20px 40px rgba(15,23,42,.05);
+
+  transition:.4s;
+}
+
+.benefitCard:hover{
+  transform:translateY(-10px);
+}
+
+.benefitCard svg{
+  color:#2563eb;
+  margin-bottom:20px;
+}
+
+.benefitCard h3{
+  font-size:1.6rem;
+  margin-bottom:15px;
+}
+
+.benefitCard p{
+  color:#64748b;
+  line-height:1.7;
+}
+
+/* RESPONSIVO */
+
+@media(max-width:1100px){
+
+  .previewSection{
+    grid-template-columns:1fr;
+  }
+
+}
+
+@media(max-width:768px){
+
+  .heroContent h1{
+    font-size:3rem;
+  }
+
+  .uploadBox{
+    min-height:240px;
+  }
+
+  .uploadBox h3{
+    font-size:1.5rem;
+  }
+
+  .resultadoTop h2{
+    font-size:2rem;
+  }
+
+  .corCard{
+    flex-direction:column;
+  }
+
+  .corPreview{
+    width:100%;
+    height:120px;
+  }
+
+}
