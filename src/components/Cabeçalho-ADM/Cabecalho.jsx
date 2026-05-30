@@ -8,7 +8,10 @@ import {
 } from "react-icons/fi";
 
 import { useNavigate, NavLink } from "react-router-dom";
+
 import { useAuth } from "../../contexts/authContext.jsx";
+
+import Logo from "../../assets/imagens/Logo.png";
 
 export default function Cabecalho() {
 
@@ -24,19 +27,21 @@ export default function Cabecalho() {
   }
 
   return (
+
     <aside className={styles.sidebar}>
 
       {/* TOPO */}
 
       <div>
 
+        {/* LOGO */}
+
         <div className={styles.logo}>
 
-          <h1>
-            Tintas<span>+</span>
-          </h1>
-
-          <p>Cores que transformam</p>
+          <img
+            src={Logo}
+            alt="Logo"
+          />
 
         </div>
 
@@ -52,8 +57,13 @@ export default function Cabecalho() {
                 : styles.menuItem
             }
           >
+
             <FiHome size={20} />
-            <span>Dashboard</span>
+
+            <span>
+              Dashboard
+            </span>
+
           </NavLink>
 
           <NavLink
@@ -64,8 +74,13 @@ export default function Cabecalho() {
                 : styles.menuItem
             }
           >
+
             <FiBox size={20} />
-            <span>Produtos</span>
+
+            <span>
+              Produtos
+            </span>
+
           </NavLink>
 
           <NavLink
@@ -76,8 +91,13 @@ export default function Cabecalho() {
                 : styles.menuItem
             }
           >
+
             <FiShoppingCart size={20} />
-            <span>Pedidos</span>
+
+            <span>
+              Pedidos
+            </span>
+
           </NavLink>
 
         </nav>
@@ -118,7 +138,9 @@ export default function Cabecalho() {
 
           <FiLogOut size={18} />
 
-          <span>Sair</span>
+          <span>
+            Sair
+          </span>
 
         </button>
 

@@ -3,60 +3,44 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/authContext.jsx";
 import styles from "../styles/Login.module.css";
 
+import logo from "../assets/imagens/logo.png";
+
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
 
-  const { login } = useAuth();
-
-  /* FRASES */
-
   const frases = [
-  "Cor que Fica",
-  "Sua Cor Ideal",
-  "Mais Cor Viva",
-  "Pinte Seu Lar",
-  "Cor e Luz"
-];
+    "Transforme seu lar",
+    "Cores Que Inspiram",
+    "Sua Casa, Seu Estilo",
+    "Pinte Novas Histórias",
+    "Pixel Color"
+  ];
 
   const [fraseAtual, setFraseAtual] = useState(0);
-
   const [fade, setFade] = useState(false);
 
-  /* TROCA A FRASE COM ANIMAÇÃO */
-
   useEffect(() => {
-
     const intervalo = setInterval(() => {
-
-      /* COMEÇA O FADE */
-
       setFade(true);
 
-      /* TROCA A FRASE */
-
       setTimeout(() => {
-
         setFraseAtual((prev) =>
-          prev === frases.length - 1
-            ? 0
-            : prev + 1
+          prev === frases.length - 1 ? 0 : prev + 1
         );
 
         setFade(false);
-
       }, 500);
-
     }, 3000);
 
     return () => clearInterval(intervalo);
-
   }, []);
 
-  async function Entrar(event) {
+  async function entrar(event) {
     event.preventDefault();
 
     setErro("");
@@ -72,20 +56,21 @@ export default function Login() {
 
   return (
     <div className={styles.container}>
-
       {/* LADO ESQUERDO */}
 
       <div className={styles.left}>
-
         <div className={styles.paint1}></div>
         <div className={styles.paint2}></div>
         <div className={styles.paint3}></div>
         <div className={styles.paint4}></div>
 
         <div className={styles.overlay}>
-
           <div className={styles.brand}>
-            tinta<span>+</span>
+            <img
+              src={logo}
+              alt="Pixel Color"
+              className={styles.logo}
+            />
           </div>
 
           <h2
@@ -98,28 +83,23 @@ export default function Login() {
 
           <p>
             Gerencie produtos, estoque e vendas
-            da sua loja de tintas com uma
-            plataforma moderna e intuitiva.
+            da sua loja com uma plataforma
+            moderna, rápida e intuitiva.
           </p>
-
         </div>
       </div>
 
       {/* LADO DIREITO */}
 
       <div className={styles.right}>
-
         <div className={styles.card}>
-
           <div className={styles.top}>
-
             <h1>Entrar</h1>
 
             <p>
               Faça login para acessar
               o painel administrativo.
             </p>
-
           </div>
 
           {erro && (
@@ -129,40 +109,35 @@ export default function Login() {
           )}
 
           <form
-            onSubmit={Entrar}
+            onSubmit={entrar}
             className={styles.form}
           >
-
             <div className={styles.inputGroup}>
-
               <label>Email</label>
 
               <input
                 type="email"
                 required
                 value={email}
-                onChange={(event) =>
-                  setEmail(event.target.value)
+                onChange={(e) =>
+                  setEmail(e.target.value)
                 }
                 placeholder="Digite seu email"
               />
-
             </div>
 
             <div className={styles.inputGroup}>
-
               <label>Senha</label>
 
               <input
                 type="password"
                 required
                 value={senha}
-                onChange={(event) =>
-                  setSenha(event.target.value)
+                onChange={(e) =>
+                  setSenha(e.target.value)
                 }
                 placeholder="Digite sua senha"
               />
-
             </div>
 
             <button
@@ -171,13 +146,11 @@ export default function Login() {
             >
               Entrar
             </button>
-
           </form>
 
           <div className={styles.footer}>
-            tinta+ © 2026
+            Pixel Color © 2026
           </div>
-
         </div>
       </div>
     </div>

@@ -116,25 +116,47 @@
 /* LOGO */
 /* ========================= */
 
+/* ========================= */
+/* LOGO */
+/* ========================= */
+
 .brand {
-  font-size: 5.5rem;
-  font-weight: 900;
-  line-height: 1;
-
-  margin-bottom: 15px;
-
-  letter-spacing: -4px;
-
-  text-transform: uppercase;
-
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: flex-start;
+
+  margin-bottom: 25px;
 }
 
-.brand span {
-  color: #4da3ff;
-  text-shadow: 0 0 25px rgba(77, 163, 255, 0.45);
+.logo {
+  width: 500px;
+  max-width: 100%;
+
+  height: auto;
+
+  object-fit: contain;
+
+  display: block;
+
+  filter: drop-shadow(
+    0 10px 25px rgba(0, 0, 0, 0.2)
+  );
+
+  animation: floatLogo 4s ease-in-out infinite;
+}
+
+@keyframes floatLogo {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
 }
 
 /* ========================= */
