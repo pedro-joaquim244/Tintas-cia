@@ -1,207 +1,205 @@
-import express from "express";
-import db from "../database.js";
+import express from 'express';
+import pool from '../database.js';
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  try {
-    const sql = `
-            SELECT 
-                id,
-                nome,
-                descricao,
-                preco,
-                quantidade,
-                criado_em,
-                atualizado_em
-            FROM itens
-            ORDER BY id DESC
-        `;
+    try {
+        const sql = `
+    SELECT
+    id,
+    nome,
+    descricao,
+    preco,
+    quantidade,
+    criado_em,
+    atualizado_em
+    FROM itens
+    ORDER BY id DESC
+    `;
 
-    const itens = await db.all(sql);
+        const [itens] = await pool.query(sql)
+        return res.json(itens)
 
-    return res.json(itens);
-  } catch (error) {
-    console.error(error);
 
-    return res.status(500).json({
-      erro: "Erro ao listar itens.",
-    });
-  }
-});
+    } catch (error) {
+        console.error(error);
 
-router.get("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
+        return res.status(500).json({
+            erro: "Erro ao listar itens.",
+        })
 
-    const sql = `
-            SELECT 
-                id,
-                nome,
-                descricao,
-                preco,
-                quantidade,
-                criado_em,
-                atualizado_em
-            FROM itens
-            WHERE id = ?
-        `;
-
-    const item = await db.get(sql, [id]);
-
-    if (!item) {
-      return res.status(404).json({
-        erro: "Item não encontrado.",
-      });
     }
 
-    return res.json(item);
-  } catch (error) {
-    console.error(error);
 
-    return res.status(500).json({
-      erro: "Erro ao buscar item.",
-    });
-  }
+});
+
+
+router.get("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const sql = `
+        SELECT
+        *
+        FROM itens
+        WHERE id = ?
+        `;
+        const [resultado] = await pool.query(sql, [id]);
+
+        if (resultado.length === 0) {
+            return res.json(404).json({
+                erro: "item nao encontrado"
+            })
+        }
+        return res.json(resultado[0]);
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            erro: "erro ao buscar item."
+        })
+
+
+    }
+
+
+
 });
 
 router.post("/", async (req, res) => {
-  try {
-    const { nome, descricao, preco, quantidade } = req.body;
+    try {
+        const { nome, descricao, preco, quantidade } = req.body;
 
-    if (!nome || preco === undefined) {
-      return res.status(400).json({
-        erro: "Nome e preço são obrigatórios.",
-      });
-    }
+        if (!nome || preco === undefined) {
+            return res.status(400).json({
+                erro: "Nome e preço são obrigatórios."
+            });
+        }
 
-    const sql = `
-            INSERT INTO itens 
-                (nome, descricao, preco, quantidade)
-            VALUES 
-                (?, ?, ?, ?)
+        const sql = `
+        INSERT INTO itens 
+        (nome, descricao, preco, quantidade)
+        VALUES
+        (?, ?, ?, ?)
         `;
 
-    const resultado = await db.run(sql, [
-      nome,
-      descricao || null,
-      preco,
-      quantidade || 0,
-    ]);
+        const [resultado] = await pool.query(sql, [
+            nome,
+            descricao || null,
+            preco,
+            quantidade || 0,
+        ]);
 
-    const itemCriado = await db.get(
-      `
-                SELECT 
-                    id,
-                    nome,
-                    descricao,
-                    preco,
-                    quantidade,
-                    criado_em,
-                    atualizado_em
-                FROM itens
-                WHERE id = ?
+        const [itemCriado] = await pool.query(
+            `
+            SELECT *
+            FROM itens
+            WHERE id = ?
             `,
-      [resultado.lastID],
-    );
+            [resultado.insertId]
+        );
 
-    return res.status(201).json(itemCriado);
-  } catch (error) {
-    console.error(error);
+        return res.status(201).json(itemCriado[0]);
 
-    return res.status(500).json({
-      erro: "Erro ao criar item.",
-    });
-  }
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            erro: "erro ao criar item :(",
+        });
+    }
 });
 
 router.put("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { nome, descricao, preco, quantidade } = req.body;
+    try {
+        const { id } = req.params
+        const { nome, descricao, preco, quantidade } = req.body;
 
-    if (!nome || preco === undefined || quantidade === undefined) {
-      return res.status(400).json({
-        erro: "Nome, preço e quantidade são obrigatórios.",
-      });
-    }
+        if (!nome || preco === undefined || quantidade === undefined) {
+            return res.status(400).json({
+                erro: "nome, preço e quantidade são obrigatórios"
+            });
+        }
 
-    const sql = `
-            UPDATE itens
-            SET 
-                nome = ?,
-                descricao = ?,
-                preco = ?,
-                quantidade = ?,
-                atualizado_em = CURRENT_TIMESTAMP
-            WHERE id = ?
+        const sql = `
+        UPDATE itens
+        SET 
+        nome = ?,
+        descricao = ?,
+        preco = ?,
+        quantidade = ?
+
+        WHERE id = ?
         `;
 
-    const resultado = await db.run(sql, [
-      nome,
-      descricao || null,
-      preco,
-      quantidade,
-      id,
-    ]);
+        const [resultado] = await pool.query(
+            sql, [
+            nome,
+            descricao || null,
+            preco,
+            quantidade,
+            id
+        ]);
 
-    if (resultado.changes === 0) {
-      return res.status(404).json({
-        erro: "Item não encontrado.",
-      });
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({
+                erro: "item nao encontardo"
+            })
+        }
+
+        const [itemAtualizado] = await pool.query(
+            `
+            
+            SELECT 
+            *
+            FROM itens
+            WHERE id = ?             
+            
+            `,
+            [id]
+        );
+
+        return res.status(201).json(itemAtualizado[0]);
     }
 
-    const itemAtualizado = await db.get(
-      `
-                SELECT 
-                    id,
-                    nome,
-                    descricao,
-                    preco,
-                    quantidade,
-                    criado_em,
-                    atualizado_em
-                FROM itens
-                WHERE id = ?
-            `,
-      [id],
-    );
+    catch (error) {
+        console.error(error);
 
-    return res.json(itemAtualizado);
-  } catch (error) {
-    console.error(error);
+        return res.status(500).json({
+            erro: "erro aoatualizar item :("
+        });
 
-    return res.status(500).json({
-      erro: "Erro ao atualizar item.",
-    });
-  }
+    }
 });
 
 router.delete("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    const sql = `
-            DELETE FROM itens
-            WHERE id = ?
-        `;
+        const sql = `
+        DELETE from itens
+        WHERE id = ?
+        `
+        const [resultado] = await pool.query(sql, [id]);
 
-    const resultado = await db.run(sql, [id]);
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({
+                erro: "item nao encontardo"
+            })
+        }
+        return res.status(200).json({
+            mensagem: "item excluido com sucesso!"
+        });
 
-    if (resultado.changes === 0) {
-      return res.status(404).json({
-        erro: "Item não encontrado.",
-      });
     }
+    catch (error) {
+        console.error(error);
 
-    return res.status(204).send();
-  } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      erro: "Erro ao deletar item.",
-    });
-  }
+        return res.status(500).json({
+            erro: "erro deletar item :("
+        });
+    }
 });
+
 
 export default router;

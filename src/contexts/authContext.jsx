@@ -19,21 +19,61 @@ export function AuthProvider({ children }) {
 
     async function login(email, senha) {
         try {
-            const resposta = await api.post("/auth/login", { email, senha });
+            const resposta = await api.post(
+                "/usuarios/login",
+                { email, senha }
+            );
 
-            const usuarioLogado = resposta.data.usuario;
+            const { usuario, token } = resposta.data;
 
-            localStorage.setItem("usuario", JSON.stringify(usuarioLogado));
+            localStorage.setItem(
+                "usuario",
+                JSON.stringify(usuario)
+            );
 
-            setUsuario(usuarioLogado);
+            localStorage.setItem("token", token);
+
+            setUsuario(usuario);
 
             return {
                 sucesso: true,
             };
+
         } catch (error) {
+
+            console.log(error.response?.data);
+
             return {
                 sucesso: false,
-                mensagem: "erro ao fazer login",
+                mensagem:
+                    error.response?.data?.erro ||
+                    "Erro ao fazer login",
+            };
+        }
+    }
+
+    async function cadastrar(nome, email, senha) {
+        try {
+
+            await api.post("/usuarios", {
+                nome,
+                email,
+                senha
+            });
+
+            return {
+                sucesso: true,
+            };
+
+        } catch (error) {
+
+            console.log(error.response?.data);
+
+            return {
+                sucesso: false,
+                mensagem:
+                    error.response?.data?.erro ||
+                    "Erro ao cadastrar",
             };
         }
     }
@@ -45,7 +85,7 @@ export function AuthProvider({ children }) {
 
     async function cadastrar(nome, email, senha) {
         try {
-            await api.post("/auth", { nome, email, senha });
+            await api.post("/cadastro", { nome, email, senha });
 
             return {
                 sucesso: true,
