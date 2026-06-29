@@ -4,12 +4,12 @@ const pool = mysql.createPool({
     host: "localhost",
     user: "root",
     password: "root",
-    database: "api_itens",
+    database: "tintas",
     port: 3306,
-    wiatforconnection: true,
-    connectionlimit: 10,
-    queuelimit: 0,
 
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
 });
 
 export default pool;

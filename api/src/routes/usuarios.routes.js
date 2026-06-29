@@ -12,7 +12,10 @@ const router = express.Router();
 router.get("/", autenticarToken, async (req, res) => {
     try {
         const sql = `
-      SELECT id, nome, email, criado_em, atualizado_em
+      SELECT id, 
+      nome, 
+      email, 
+      criado_em, atualizado_em
       FROM usuarios
       ORDER BY id DESC
     `;
