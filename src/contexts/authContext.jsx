@@ -1,121 +1,298 @@
-import { useState, useEffect, useContext, createContext } from "react";
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useState
+} from "react";
+
 import { api } from "../services/api";
 
-const authContext = createContext();
 
-export function AuthProvider({ children }) {
-    const [usuario, setUsuario] = useState(null);
-    const [carregando, setCarregando] = useState(true);
+const AuthContext = createContext();
 
-    useEffect(() => {
-        const usuarioSalvo = localStorage.getItem("usuario");
 
-        if (usuarioSalvo) {
-            setUsuario(JSON.parse(usuarioSalvo));
+
+export function AuthProvider({children}){
+
+
+    const [usuario,setUsuario] = useState(null);
+
+    const [carregando,setCarregando] = useState(true);
+
+
+
+
+    useEffect(()=>{
+
+
+        const usuarioSalvo =
+            localStorage.getItem("usuario");
+
+
+        const token =
+            localStorage.getItem("token");
+
+
+
+        if(usuarioSalvo && token){
+
+
+            try{
+
+
+                setUsuario(
+                    JSON.parse(usuarioSalvo)
+                );
+
+
+            }catch(error){
+
+
+                localStorage.removeItem("usuario");
+
+                localStorage.removeItem("token");
+
+
+            }
+
+
         }
 
-        setCarregando(false);
-    }, []);
 
-    async function login(email, senha) {
-        try {
+
+        setCarregando(false);
+
+
+
+    },[]);
+
+
+
+
+
+
+
+    async function login(email,senha){
+
+
+        try{
+
+
             const resposta = await api.post(
                 "/usuarios/login",
-                { email, senha }
+                {
+                    email,
+                    senha
+                }
             );
 
-            const { usuario, token } = resposta.data;
+
+
+            const usuario =
+                resposta.data.usuario;
+
+
+
+            const token =
+                resposta.data.token;
+
+
 
             localStorage.setItem(
                 "usuario",
                 JSON.stringify(usuario)
             );
 
-            localStorage.setItem("token", token);
+
+            localStorage.setItem(
+                "token",
+                token
+            );
+
+
 
             setUsuario(usuario);
 
+
+
+
             return {
-                sucesso: true,
+
+                sucesso:true,
+
+                usuario
+
             };
 
-        } catch (error) {
 
-            console.log(error.response?.data);
+
+        }catch(error){
+
+
 
             return {
-                sucesso: false,
+
+                sucesso:false,
+
                 mensagem:
-                    error.response?.data?.erro ||
-                    "Erro ao fazer login",
+                error.response?.data?.erro ||
+                "Erro ao fazer login"
+
             };
+
+
         }
+
+
+
     }
 
-    async function cadastrar(nome, email, senha) {
-        try {
 
-            await api.post("/usuarios", {
-                nome,
-                email,
-                senha
-            });
+
+
+
+
+
+
+    async function cadastrar(nome,email,senha){
+
+
+        try{
+
+
+            await api.post(
+                "/usuarios",
+                {
+                    nome,
+                    email,
+                    senha
+                }
+            );
+
+
 
             return {
-                sucesso: true,
+                sucesso:true
             };
 
-        } catch (error) {
 
-            console.log(error.response?.data);
+
+        }catch(error){
+
 
             return {
-                sucesso: false,
+
+                sucesso:false,
+
                 mensagem:
-                    error.response?.data?.erro ||
-                    "Erro ao cadastrar",
+                error.response?.data?.erro ||
+                "Erro ao cadastrar"
+
             };
+
+
         }
+
+
     }
 
-    async function logout() {
-        localStorage.removeItem("usuario");
+
+
+
+
+
+
+
+    function logout(){
+
+
+        localStorage.removeItem(
+            "usuario"
+        );
+
+
+        localStorage.removeItem(
+            "token"
+        );
+
+
         setUsuario(null);
+
+
     }
 
-    async function cadastrar(nome, email, senha) {
-        try {
-            await api.post("/cadastro", { nome, email, senha });
 
-            return {
-                sucesso: true,
-            };
-        } catch (error) {
-            return {
-                sucesso: false,
-                mensagem: "erro ao cadastrar",
-            };
-        }
-    }
 
-    const estaLogado = usuario !== null;
 
-    return (
-        <authContext.Provider
-            value={{
-                usuario,
-                login,
-                logout,
-                carregando,
-                cadastrar,
-                estaLogado,
-            }}
+
+
+
+    const estaLogado =
+        usuario !== null;
+
+
+
+
+    const ehAdmin =
+        usuario?.tipo === "admin";
+
+
+
+
+    const ehCliente =
+        usuario?.tipo === "cliente";
+
+
+
+
+
+
+    return(
+
+
+        <AuthContext.Provider
+
+        value={{
+
+            usuario,
+
+            login,
+
+            cadastrar,
+
+            logout,
+
+            carregando,
+
+            estaLogado,
+
+            ehAdmin,
+
+            ehCliente
+
+        }}
+
         >
+
+
             {children}
-        </authContext.Provider>
+
+
+        </AuthContext.Provider>
+
+
     );
+
+
 }
 
-export function useAuth() {
-    return useContext(authContext);
+
+
+
+
+
+export function useAuth(){
+
+    return useContext(AuthContext);
+
 }

@@ -8,19 +8,13 @@ import { useAuth } from "../contexts/authContext";
 
 
 
-export default function RotasPublicas(){
-
+export default function RotasAdmin(){
 
 
     const {
-
         usuario,
-
         carregando
-
     } = useAuth();
-
-
 
 
 
@@ -35,30 +29,28 @@ export default function RotasPublicas(){
 
 
 
+    if(!usuario){
 
 
-    if(usuario){
+        return (
+
+            <Navigate
+                to="/login"
+                replace
+            />
+
+        );
 
 
-
-        if(usuario.tipo === "admin"){
-
-
-            return (
-
-                <Navigate
-                    to="/dashboard"
-                    replace
-                />
-
-            );
-
-
-        }
+    }
 
 
 
 
+
+
+
+    if(usuario.tipo !== "admin"){
 
 
         return (
@@ -69,7 +61,6 @@ export default function RotasPublicas(){
             />
 
         );
-
 
 
     }

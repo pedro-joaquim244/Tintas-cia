@@ -6,14 +6,27 @@ import App from "./App.jsx";
 import ErrorBoundary from "./ErrorBoundary.jsx";
 import { AuthProvider } from "./contexts/authContext.jsx";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <ErrorBoundary>
-      <AuthProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </AuthProvider>
-    </ErrorBoundary>
-  </React.StrictMode>
+
+ReactDOM.createRoot(
+    document.getElementById("root")
+).render(
+
+    <React.StrictMode>
+
+        <ErrorBoundary>
+
+            <BrowserRouter>
+
+                <AuthProvider>
+
+                    <App />
+
+                </AuthProvider>
+
+            </BrowserRouter>
+
+        </ErrorBoundary>
+
+    </React.StrictMode>
+
 );
