@@ -160,8 +160,7 @@ export function AppRoutes(){
 
 
 
-            {/* PERFIL LOGADO */}
-
+        
             <Route element={<RotasCliente/>}>
 
 
