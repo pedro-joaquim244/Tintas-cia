@@ -9,7 +9,6 @@ import {
 
 const router = express.Router();
 
-
 // ==========================================
 // LISTAR TODOS OS USUÁRIOS
 // ==========================================
@@ -26,6 +25,7 @@ router.get(
                     id,
                     nome,
                     email,
+                    tipo,
                     criado_em,
                     atualizado_em
                 FROM usuarios
@@ -48,7 +48,6 @@ router.get(
     }
 );
 
-
 // ==========================================
 // BUSCAR USUÁRIO POR ID
 // ==========================================
@@ -67,6 +66,7 @@ router.get(
                     id,
                     nome,
                     email,
+                    tipo,
                     criado_em,
                     atualizado_em
                 FROM usuarios
@@ -95,7 +95,6 @@ router.get(
         }
     }
 );
-
 
 // ==========================================
 // CADASTRAR USUÁRIO
@@ -158,6 +157,7 @@ router.post("/", async (req, res) => {
                     id,
                     nome,
                     email,
+                    tipo,
                     criado_em,
                     atualizado_em
                 FROM usuarios
@@ -179,7 +179,6 @@ router.post("/", async (req, res) => {
         });
     }
 });
-
 
 // ==========================================
 // ATUALIZAR USUÁRIO
@@ -297,6 +296,7 @@ router.put(
                         id,
                         nome,
                         email,
+                        tipo,
                         criado_em,
                         atualizado_em
                     FROM usuarios
@@ -319,7 +319,6 @@ router.put(
         }
     }
 );
-
 
 // ==========================================
 // DELETAR USUÁRIO
@@ -376,7 +375,6 @@ router.delete(
         }
     }
 );
-
 
 // ==========================================
 // LOGIN
@@ -462,14 +460,16 @@ router.post(
 
             const {
                 id,
-                nome
+                nome,
+                tipo
             } = usuario;
 
             const token = jwt.sign(
                 {
                     id,
                     nome,
-                    email
+                    email,
+                    tipo
                 },
                 "pedro",
                 {
@@ -484,7 +484,8 @@ router.post(
                 usuario: {
                     id,
                     nome,
-                    email
+                    email,
+                    tipo
                 }
             });
 

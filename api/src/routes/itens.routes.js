@@ -21,7 +21,6 @@
             const [itens] = await pool.query(sql)
             return res.json(itens)
 
-
         } catch (error) {
             console.error(error);
 
@@ -31,9 +30,7 @@
 
         }
 
-
     });
-
 
     router.get("/:id", async (req, res) => {
         try {
@@ -47,7 +44,7 @@
             const [resultado] = await pool.query(sql, [id]);
 
             if (resultado.length === 0) {
-                return res.json(404).json({
+                return res.status(404).json({
                     erro: "item nao encontrado"
                 })
             }
@@ -59,9 +56,7 @@
                 erro: "erro ao buscar item."
             })
 
-
         }
-
 
 
     });
@@ -200,6 +195,5 @@
             });
         }
     });
-
 
     export default router;
