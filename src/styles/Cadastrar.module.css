@@ -334,6 +334,352 @@ body {
   font-size: 14px;
 }
 
+
+/* =========================
+   PREVIEW DA IMAGEM
+========================= */
+
+
+.previewImage {
+
+  width:100%;
+
+  height:220px;
+
+  object-fit:cover;
+
+  border-radius:18px;
+
+  box-shadow:
+  0 10px 25px rgba(0,0,0,.12);
+
+  animation:
+  aparecer .3s ease;
+
+}
+
+
+
+
+/* =========================
+   MODAL
+========================= */
+
+
+.modalOverlay {
+
+
+  position:fixed;
+
+
+  inset:0;
+
+
+  background:
+  rgba(15,23,42,.45);
+
+
+  backdrop-filter:blur(8px);
+
+
+  display:flex;
+
+
+  align-items:center;
+
+
+  justify-content:center;
+
+
+  z-index:999;
+
+
+
+  animation:
+  aparecer .25s ease;
+
+
+}
+
+
+
+
+.modal {
+
+
+  width:450px;
+
+
+  background:white;
+
+
+  border-radius:28px;
+
+
+  padding:40px;
+
+
+  text-align:center;
+
+
+  position:relative;
+
+
+  box-shadow:
+
+  0 25px 60px rgba(0,0,0,.25);
+
+
+
+  animation:
+
+  subir .35s ease;
+
+
+}
+
+
+
+
+.closeModal {
+
+
+  position:absolute;
+
+
+  top:18px;
+
+
+  right:18px;
+
+
+  width:35px;
+
+
+  height:35px;
+
+
+  border-radius:50%;
+
+
+  border:none;
+
+
+  background:#f1f5f9;
+
+
+  color:#64748b;
+
+
+  display:flex;
+
+
+  align-items:center;
+
+
+  justify-content:center;
+
+
+  cursor:pointer;
+
+
+  transition:.25s;
+
+
+}
+
+
+
+.closeModal:hover {
+
+
+  background:#e2e8f0;
+
+
+  color:#111827;
+
+
+}
+
+
+
+
+
+.successIcon {
+
+
+  font-size:70px;
+
+
+  color:#22c55e;
+
+
+  margin-bottom:20px;
+
+
+}
+
+
+
+
+
+.modal h2 {
+
+
+  font-size:28px;
+
+
+  color:#111827;
+
+
+  margin-bottom:12px;
+
+
+}
+
+
+
+
+
+.modal p {
+
+
+  color:#64748b;
+
+
+  font-size:16px;
+
+
+  line-height:1.5;
+
+
+  margin-bottom:30px;
+
+
+}
+
+
+
+
+
+.modalButtons {
+
+
+  display:flex;
+
+
+  gap:15px;
+
+
+  justify-content:center;
+
+
+  flex-direction:column;
+
+
+}
+
+
+
+
+.modalButtons .btn {
+
+
+  width:100%;
+
+
+}
+
+
+
+
+
+/* =========================
+   ANIMAÇÕES
+========================= */
+
+
+@keyframes aparecer {
+
+
+  from {
+
+
+    opacity:0;
+
+
+  }
+
+
+  to {
+
+
+    opacity:1;
+
+
+  }
+
+
+}
+
+
+
+
+
+@keyframes subir {
+
+
+  from {
+
+
+    opacity:0;
+
+
+    transform:
+    translateY(30px)
+    scale(.95);
+
+
+  }
+
+
+  to {
+
+
+    opacity:1;
+
+
+    transform:
+    translateY(0)
+    scale(1);
+
+
+  }
+
+
+}
+
+
+
+
+/* =========================
+   BOTÃO DESABILITADO
+========================= */
+
+
+.btn:disabled {
+
+
+  opacity:.6;
+
+
+  cursor:not-allowed;
+
+
+  transform:none;
+
+
+}
 /* ===== RESPONSIVO ===== */
 
 @media (max-width: 1200px) {

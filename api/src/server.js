@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
 
 import usuariosRoutes from "./routes/usuarios.routes.js";
 import itensRoutes from "./routes/itens.routes.js";
@@ -11,12 +12,11 @@ app.use(cors({ origin: config.corsOrigin }));
 
 app.use(express.json());
 
-app.use("/usuarios", usuariosRoutes);
+app.use("/uploads", express.static(path.resolve("uploads")));
 
+app.use("/usuarios", usuariosRoutes);
 app.use("/itens", itensRoutes);
 
 app.listen(config.port, () => {
-    console.log(
-        `Servidor rodando na porta ${config.port}`
-    );
+    console.log(`Servidor rodando na porta ${config.port}`);
 });

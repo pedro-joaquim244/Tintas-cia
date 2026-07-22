@@ -57,6 +57,12 @@
 
 }
 
+.usuario {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
 .header img{
 
     width:80px;
@@ -165,6 +171,8 @@
     box-shadow:0 8px 18px rgba(47,102,245,.18);
 
     transition:.3s;
+
+    text-decoration: none;
 }
 
 .avatar:hover{
@@ -199,6 +207,8 @@
 
     transition:.3s;
 
+    font-family: "poppins", sans-serif;
+    text-decoration: none;
 }
 
 .avatarInicial:hover{

@@ -8,256 +8,713 @@ import styles from "../styles/Cadastrar.module.css";
 import {
   FiSave,
   FiArrowLeft,
-  FiUpload
+  FiUpload,
+  FiCheckCircle,
+  FiX
 } from "react-icons/fi";
 
 import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
 
+
 export default function Cadastrar() {
 
-  const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [preco, setPreco] = useState("");
-  const [quantidade, setQuantidade] = useState("");
-  const [erro, setErro] = useState("");
 
   const navigate = useNavigate();
 
-  async function cadastrarItens(event) {
+
+  const [nome,setNome] = useState("");
+  const [descricao,setDescricao] = useState("");
+  const [preco,setPreco] = useState("");
+  const [quantidade,setQuantidade] = useState("");
+
+  const [foto,setFoto] = useState(null);
+  const [preview,setPreview] = useState(null);
+
+  const [erro,setErro] = useState("");
+
+  const [loading,setLoading] = useState(false);
+
+  const [modal,setModal] = useState(false);
+
+
+
+  function selecionarImagem(event){
+
+    const arquivo = event.target.files[0];
+
+
+    if(!arquivo) return;
+
+
+    const tiposPermitidos = [
+      "image/png",
+      "image/jpeg",
+      "image/webp"
+    ];
+
+
+    if(!tiposPermitidos.includes(arquivo.type)){
+
+      setErro(
+        "Formato inválido. Use PNG, JPG ou WEBP."
+      );
+
+      return;
+
+    }
+
+
+
+    if(arquivo.size > 5 * 1024 * 1024){
+
+      setErro(
+        "A imagem deve ter no máximo 5MB."
+      );
+
+      return;
+
+    }
+
+
+    setErro("");
+
+    setFoto(arquivo);
+
+
+    const imagemUrl =
+      URL.createObjectURL(arquivo);
+
+
+    setPreview(imagemUrl);
+
+  }
+
+
+
+
+
+  async function cadastrarItens(event){
 
     event.preventDefault();
 
-    try {
+
+    try{
+
 
       setErro("");
 
-      const dados = {
-        nome,
-        descricao,
-        preco: Number(preco),
-        quantidade: Number(quantidade),
-      };
+      setLoading(true);
 
-      await api.post("/itens", dados);
 
-      navigate("/admin/produtos");
 
-    } catch (erro) {
+      const dados = new FormData();
 
-      setErro("Erro ao cadastrar o item");
 
-      console.error(erro);
+      dados.append(
+        "nome",
+        nome
+      );
+
+
+      dados.append(
+        "descricao",
+        descricao
+      );
+
+
+      dados.append(
+        "preco",
+        Number(preco)
+      );
+
+
+      dados.append(
+        "quantidade",
+        Number(quantidade)
+      );
+
+
+      if(foto){
+
+        dados.append(
+          "foto",
+          foto
+        );
+
+      }
+
+
+
+
+      await api.post(
+        "/itens",
+        dados,
+        {
+          headers:{
+            "Content-Type":"multipart/form-data"
+          }
+        }
+      );
+
+
+
+      setModal(true);
+
+
+
+    }catch(error){
+
+
+      console.error(error);
+
+
+      setErro(
+        "Erro ao cadastrar o item."
+      );
+
+
+    }finally{
+
+      setLoading(false);
+
     }
+
   }
+
+
+
+
+
+  function limparFormulario(){
+
+
+    setNome("");
+    setDescricao("");
+    setPreco("");
+    setQuantidade("");
+
+    setFoto(null);
+    setPreview(null);
+
+    setModal(false);
+
+
+  }
+
+
+
+
 
   return (
 
     <div className={styles.content}>
 
-      {/* ===== SIDEBAR ===== */}
 
       <Cabecalho />
 
-      {/* ===== MAIN ===== */}
+
 
       <main className={styles.main}>
 
+
         <div className={styles.top}>
+
 
           <h1 className={styles.sectionTitle}>
             Cadastrar Produto
           </h1>
 
+
           <p className={styles.subtitle}>
             Preencha as informações abaixo para cadastrar um novo produto.
           </p>
 
+
         </div>
 
-        {erro && (
-          <p className={styles.error}>
-            {erro}
-          </p>
-        )}
+
+
+        {
+          erro && (
+
+            <p className={styles.error}>
+              {erro}
+            </p>
+
+          )
+        }
+
+
 
         <form
           className={styles.form}
           onSubmit={cadastrarItens}
         >
 
-          {/* ===== LEFT ===== */}
+
 
           <div className={styles.leftSide}>
-
-            <div className={styles.box}>
+                      <div className={styles.box}>
 
               <div className={styles.boxHeader}>
                 Informações básicas
               </div>
 
+
               <div className={styles.boxContent}>
+
 
                 <div className={styles.inputGroup}>
 
-                  <label>Nome do produto *</label>
+
+                  <label>
+                    Nome do produto *
+                  </label>
+
 
                   <input
+
                     value={nome}
-                    onChange={(event) =>
-                      setNome(event.target.value)
+
+                    onChange={(e)=>
+                      setNome(e.target.value)
                     }
+
                     type="text"
+
                     placeholder="Ex.: Tinta Acrílica Premium Fosca Branca 18L"
+
                   />
 
+
                 </div>
+
+
+
 
                 <div className={styles.grid2}>
 
+
                   <div className={styles.inputGroup}>
 
-                    <label>Preço *</label>
+
+                    <label>
+                      Preço *
+                    </label>
+
 
                     <input
+
                       value={preco}
-                      onChange={(event) =>
-                        setPreco(event.target.value)
+
+                      onChange={(e)=>
+                        setPreco(e.target.value)
                       }
+
                       type="number"
+
                       placeholder="Ex.: 259.90"
+
                     />
 
+
                   </div>
+
+
+
 
                   <div className={styles.inputGroup}>
 
-                    <label>Quantidade *</label>
+
+                    <label>
+                      Quantidade *
+                    </label>
+
 
                     <input
+
                       value={quantidade}
-                      onChange={(event) =>
-                        setQuantidade(event.target.value)
+
+                      onChange={(e)=>
+                        setQuantidade(e.target.value)
                       }
+
                       type="number"
+
                       placeholder="Ex.: 25"
+
                     />
+
 
                   </div>
 
-                </div>
-
-              </div>
-
-            </div>
-
-            <div className={styles.box}>
-
-              <div className={styles.boxHeader}>
-                Descrição
-              </div>
-
-              <div className={styles.boxContent}>
-
-                <div className={styles.inputGroup}>
-
-                  <label>Descrição completa</label>
-
-                  <textarea
-                    value={descricao}
-                    onChange={(event) =>
-                      setDescricao(event.target.value)
-                    }
-                    placeholder="Detalhes do produto, características, indicações de uso..."
-                  />
 
                 </div>
 
+
               </div>
 
-            </div>
 
           </div>
 
-          {/* ===== RIGHT ===== */}
 
-          <div className={styles.rightSide}>
 
-            <div className={styles.box}>
 
-              <div className={styles.boxHeader}>
-                Imagem do produto
-              </div>
 
-              <div className={styles.boxContent}>
+          <div className={styles.box}>
 
-                <label className={styles.uploadBox}>
 
-                  <input
-                    type="file"
-                    hidden
-                  />
+            <div className={styles.boxHeader}>
 
-                  <FiUpload className={styles.uploadIcon} />
+              Descrição
 
-                  <p>
-                    Clique para enviar ou arraste a imagem
-                  </p>
+            </div>
 
-                  <small>
-                    PNG, JPG ou WEBP até 5MB
-                  </small>
 
+
+            <div className={styles.boxContent}>
+
+
+              <div className={styles.inputGroup}>
+
+
+                <label>
+                  Descrição completa
                 </label>
 
+
+                <textarea
+
+                  value={descricao}
+
+                  onChange={(e)=>
+                    setDescricao(e.target.value)
+                  }
+
+                  placeholder="Detalhes do produto, características, indicações de uso..."
+
+                />
+
+
               </div>
+
 
             </div>
 
-            <div className={styles.box}>
-
-              <div className={styles.boxHeader}>
-                Ações
-              </div>
-
-              <div className={styles.boxContent}>
-
-                <div className={styles.buttons}>
-
-                  <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnSecondary}`}
-                    onClick={() => navigate("/admin/produtos")}
-                  >
-
-                    <FiArrowLeft />
-
-                    Cancelar
-
-                  </button>
-
-                  <button
-                    type="submit"
-                    className={`${styles.btn} ${styles.btnPrimary}`}
-                  >
-
-                    <FiSave />
-
-                    Salvar produto
-
-                  </button>
-
-                </div>
-
-              </div>
-
-            </div>
 
           </div>
 
-        </form>
 
-      </main>
 
-    </div>
+        </div>
+
+
+
+
+
+
+        <div className={styles.rightSide}>
+
+
+
+
+          <div className={styles.box}>
+
+
+            <div className={styles.boxHeader}>
+
+              Imagem do produto
+
+            </div>
+
+
+
+            <div className={styles.boxContent}>
+
+
+              <label className={styles.uploadBox}>
+
+
+                <input
+
+                  type="file"
+
+                  hidden
+
+                  accept="image/png,image/jpeg,image/webp"
+
+                  onChange={selecionarImagem}
+
+                />
+
+
+
+                {
+                  preview ? (
+
+
+                    <img
+
+                      src={preview}
+
+                      className={styles.previewImage}
+
+                      alt="Preview"
+
+                    />
+
+
+                  ) : (
+
+
+                    <>
+
+
+                      <FiUpload
+                        className={styles.uploadIcon}
+                      />
+
+
+                      <p>
+                        Clique para enviar uma imagem
+                      </p>
+
+
+                      <small>
+                        PNG, JPG ou WEBP até 5MB
+                      </small>
+
+
+                    </>
+
+
+                  )
+                }
+
+
+
+              </label>
+
+
+
+            </div>
+
+
+          </div>
+
+
+
+
+
+
+
+          <div className={styles.box}>
+
+
+            <div className={styles.boxHeader}>
+
+              Ações
+
+            </div>
+
+
+
+
+            <div className={styles.boxContent}>
+
+
+              <div className={styles.buttons}>
+
+
+                <button
+
+                  type="button"
+
+                  className={`${styles.btn} ${styles.btnSecondary}`}
+
+                  onClick={() =>
+                    navigate("/admin/produtos")
+                  }
+
+                >
+
+
+                  <FiArrowLeft/>
+
+                  Cancelar
+
+
+                </button>
+
+
+
+
+
+
+                <button
+
+                  type="submit"
+
+                  disabled={loading}
+
+                  className={`${styles.btn} ${styles.btnPrimary}`}
+
+                >
+
+
+                  <FiSave/>
+
+
+                  {
+                    loading
+
+                    ?
+
+                    "Salvando..."
+
+                    :
+
+                    "Salvar produto"
+
+                  }
+
+
+                </button>
+
+
+
+              </div>
+
+
+
+            </div>
+
+
+          </div>
+
+
+
+        </div>
+
+
+
+
+      </form>
+
+
+
+      {
+        modal && (
+
+
+          <div className={styles.modalOverlay}>
+
+
+            <div className={styles.modal}>
+
+
+              <button
+
+                className={styles.closeModal}
+
+                onClick={() =>
+                  setModal(false)
+                }
+
+              >
+
+                <FiX/>
+
+              </button>
+
+
+
+
+
+              <FiCheckCircle
+
+                className={styles.successIcon}
+
+              />
+
+
+
+
+              <h2>
+                Produto cadastrado!
+              </h2>
+
+
+
+
+              <p>
+
+                O produto foi salvo com sucesso
+                no sistema.
+
+              </p>
+
+
+
+
+
+              <div className={styles.modalButtons}>
+
+
+                <button
+
+                  className={`${styles.btn} ${styles.btnSecondary}`}
+
+                  onClick={limparFormulario}
+
+                >
+
+                  Continuar cadastrando
+
+                </button>
+
+
+
+
+
+                <button
+
+                  className={`${styles.btn} ${styles.btnPrimary}`}
+
+                  onClick={() =>
+                    navigate("/admin/dashboard")
+                  }
+
+                >
+
+                  Ir para Dashboard
+
+                </button>
+
+
+
+              </div>
+
+
+
+            </div>
+
+
+
+          </div>
+
+
+        )
+      }
+
+
+
+    </main>
+
+
+  </div>
+
+
   );
+
 }

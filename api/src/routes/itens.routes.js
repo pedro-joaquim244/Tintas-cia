@@ -1,6 +1,7 @@
     import express from 'express';
     import pool from '../database.js';
     import { autenticarToken, autorizarTipos } from '../middlewares/autenticacao.js';
+    import upload from "../middlewares/upload.js";
 
     const router = express.Router();
 
@@ -13,6 +14,7 @@
         descricao,
         preco,
         quantidade,
+        foto,
         criado_em,
         atualizado_em
         FROM itens
@@ -62,9 +64,24 @@
 
     });
 
-    router.post("/", autenticarToken, autorizarTipos("admin"), async (req, res) => {
+router.post(
+    "/",
+    autenticarToken,
+    autorizarTipos("admin"),
+    upload.single("foto"),
+    async (req, res) => {
         try {
-            const { nome, descricao, preco, quantidade } = req.body;
+
+            const {
+                nome,
+                descricao,
+                preco,
+                quantidade
+            } = req.body;
+
+            const foto = req.file
+                ? `uploads/${req.file.filename}`
+                : null;
 
             if (!nome || preco === undefined) {
                 return res.status(400).json({
@@ -73,10 +90,22 @@
             }
 
             const sql = `
-            INSERT INTO itens 
-            (nome, descricao, preco, quantidade)
-            VALUES
-            (?, ?, ?, ?)
+                INSERT INTO itens
+                (
+                    nome,
+                    descricao,
+                    preco,
+                    quantidade,
+                    foto
+                )
+                VALUES
+                (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?
+                )
             `;
 
             const [resultado] = await pool.query(sql, [
@@ -84,6 +113,7 @@
                 descricao || null,
                 preco,
                 quantidade || 0,
+                foto
             ]);
 
             const [itemCriado] = await pool.query(
@@ -98,77 +128,113 @@
             return res.status(201).json(itemCriado[0]);
 
         } catch (error) {
+
             console.error(error);
 
             return res.status(500).json({
-                erro: "erro ao criar item :(",
+                erro: "Erro ao criar item."
             });
-        }
-    });
 
-    router.put("/:id", autenticarToken, autorizarTipos("admin"), async (req, res) => {
+        }
+    }
+);
+
+router.put(
+    "/:id",
+    autenticarToken,
+    autorizarTipos("admin"),
+    upload.single("foto"),
+    async (req, res) => {
         try {
-            const { id } = req.params
-            const { nome, descricao, preco, quantidade } = req.body;
+
+            const { id } = req.params;
+
+            const {
+                nome,
+                descricao,
+                preco,
+                quantidade
+            } = req.body;
 
             if (!nome || preco === undefined || quantidade === undefined) {
                 return res.status(400).json({
-                    erro: "nome, preço e quantidade são obrigatórios"
+                    erro: "Nome, preço e quantidade são obrigatórios."
                 });
             }
 
-            const sql = `
-            UPDATE itens
-            SET 
-            nome = ?,
-            descricao = ?,
-            preco = ?,
-            quantidade = ?
+            // Busca o item atual
+            const [itemAtual] = await pool.query(
+                `
+                SELECT foto
+                FROM itens
+                WHERE id = ?
+                `,
+                [id]
+            );
 
-            WHERE id = ?
+            if (itemAtual.length === 0) {
+                return res.status(404).json({
+                    erro: "Item não encontrado."
+                });
+            }
+
+            // Mantém a foto antiga caso nenhuma nova seja enviada
+            const foto = req.file
+                ? `uploads/${req.file.filename}`
+                : itemAtual[0].foto;
+
+            const sql = `
+                UPDATE itens
+                SET
+                    nome = ?,
+                    descricao = ?,
+                    preco = ?,
+                    quantidade = ?,
+                    foto = ?
+                WHERE id = ?
             `;
 
-            const [resultado] = await pool.query(
-                sql, [
+            const [resultado] = await pool.query(sql, [
                 nome,
                 descricao || null,
                 preco,
                 quantidade,
+                foto,
                 id
             ]);
 
             if (resultado.affectedRows === 0) {
                 return res.status(404).json({
-                    erro: "item nao encontardo"
-                })
+                    erro: "Item não encontrado."
+                });
             }
 
             const [itemAtualizado] = await pool.query(
                 `
-                
-                SELECT 
-                *
+                SELECT *
                 FROM itens
-                WHERE id = ?             
-                
+                WHERE id = ?
                 `,
                 [id]
             );
 
-            return res.status(201).json(itemAtualizado[0]);
-        }
+            return res.status(200).json(itemAtualizado[0]);
 
-        catch (error) {
+        } catch (error) {
+
             console.error(error);
 
             return res.status(500).json({
-                erro: "erro aoatualizar item :("
+                erro: "Erro ao atualizar item."
             });
 
         }
-    });
+    }
+);
+    
 
-    router.delete("/:id", autenticarToken, autorizarTipos("admin"), async (req, res) => {
+
+router.delete("/:id", autenticarToken, autorizarTipos("admin"), async (req, res) => {
         try {
             const { id } = req.params;
 
