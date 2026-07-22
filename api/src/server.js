@@ -3,10 +3,11 @@ import cors from "cors";
 
 import usuariosRoutes from "./routes/usuarios.routes.js";
 import itensRoutes from "./routes/itens.routes.js";
+import { config } from "./config.js";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: config.corsOrigin }));
 
 app.use(express.json());
 
@@ -14,8 +15,8 @@ app.use("/usuarios", usuariosRoutes);
 
 app.use("/itens", itensRoutes);
 
-app.listen(3333, () => {
+app.listen(config.port, () => {
     console.log(
-        "Servidor rodando em http://localhost:3333"
+        `Servidor rodando na porta ${config.port}`
     );
 });

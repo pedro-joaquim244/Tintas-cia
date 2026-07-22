@@ -17,7 +17,7 @@ export default function Cabecalho() {
 
   const navigate = useNavigate();
 
-  const { logout } = useAuth();
+  const { logout, usuario } = useAuth();
 
   function Sair() {
 
@@ -50,7 +50,7 @@ export default function Cabecalho() {
         <nav className={styles.menu}>
 
           <NavLink
-            to="/dashboard"
+            to="/admin/dashboard"
             className={({ isActive }) =>
               isActive
                 ? `${styles.menuItem} ${styles.active}`
@@ -67,7 +67,7 @@ export default function Cabecalho() {
           </NavLink>
 
           <NavLink
-            to="/"
+            to="/admin/produtos"
             className={({ isActive }) =>
               isActive
                 ? `${styles.menuItem} ${styles.active}`
@@ -84,7 +84,7 @@ export default function Cabecalho() {
           </NavLink>
 
           <NavLink
-            to="/pedidos"
+            to="/admin/pedidos"
             className={({ isActive }) =>
               isActive
                 ? `${styles.menuItem} ${styles.active}`
@@ -109,22 +109,22 @@ export default function Cabecalho() {
       <div className={styles.bottomArea}>
 
         <NavLink
-          to="/perfil"
+          to="/admin/perfil"
           className={styles.userBox}
         >
 
           <div className={styles.avatar}>
-            A
+            {usuario?.nome?.charAt(0).toUpperCase() || "A"}
           </div>
 
           <div className={styles.userInfo}>
 
             <strong>
-              Administrador
+              {usuario?.nome || "Administrador"}
             </strong>
 
             <span>
-              admin@tintas.com
+              {usuario?.email || ""}
             </span>
 
           </div>

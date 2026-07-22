@@ -1,149 +1,89 @@
-import style from "./style.module.css";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext"; // ajuste o caminho conforme seu projeto
+import styles from "./style.module.css";
+import Logo from "../../assets/imagens/Logo.png";
 
-import {
-  FiSearch,
-  FiShoppingCart,
-  FiBell,
-  FiUser,
-  FiMenu,
-  FiChevronDown,
-} from "react-icons/fi";
+export default function Header() {
 
-export default function HeaderUser() {
-  return (
-    <header className={style.header}>
+    const [menuAberto, setMenuAberto] = useState(false);
 
-      {/* TOP BAR */}
-      <div className={style.topBar}>
+    const { usuario } = useAuth();
 
-        <div className={style.topLeft}>
-          <span>Entrega premium para todo o Brasil</span>
-        </div>
+    return (
+        <header className={styles.header}>
 
-        <div className={style.topRight}>
-          <a href="#">Ajuda</a>
-          <a href="#">Rastreamento</a>
-          <a href="#">Suporte</a>
-        </div>
+            <img src={Logo} alt="Logo" className={styles.logo} />
 
-      </div>
+            <nav className={styles.nav}>
+                <a href="#">Início</a>
+                <a href="#">Categorias</a>
+                <a href="#">Produtos</a>
+                <a href="#">Contato</a>
+            </nav>
 
-      {/* MAIN HEADER */}
-      <div className={style.mainHeader}>
+            <Link to="/perfil" className={styles.usuario}>
 
-        {/* LOGO */}
-        <div className={style.logoArea}>
+                {usuario?.foto ? (
 
-          <div className={style.logoGlow}></div>
+                    <img
+                        src={usuario.foto}
+                        alt={usuario.nome}
+                        className={styles.avatar}
+                    />
 
-          <div className={style.logoIcon}>
-            <div className={style.logoDot}></div>
-          </div>
+                ) : (
 
-          <div className={style.logoText}>
+                    <div className={styles.avatarInicial}>
+                        {usuario?.nome?.charAt(0).toUpperCase()}
+                    </div>
 
-            <strong>Pixel Colors</strong>
+                )}
 
-            <span>Premium Experience</span>
+            </Link>
 
-          </div>
-
-        </div>
-
-        {/* NAV */}
-        <nav className={style.nav}>
-
-          <a href="#">
-            Início
-          </a>
-
-          <div className={style.dropdown}>
-
-            <button>
-              Produtos
-              <FiChevronDown />
-            </button>
-
-            <div className={style.dropdownMenu}>
-
-              <a href="#">Tintas Premium</a>
-              <a href="#">Coleções</a>
-              <a href="#">Novidades</a>
-              <a href="#">Ambientes</a>
-
+            <div
+                className={`${styles.hamburguer} ${
+                    menuAberto ? styles.ativo : ""
+                }`}
+                onClick={() => setMenuAberto(!menuAberto)}
+            >
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
 
-          </div>
+            <div
+                className={`${styles.menuMobile} ${
+                    menuAberto ? styles.show : ""
+                }`}
+            >
+                <a href="#">Início</a>
+                <a href="#">Categorias</a>
+                <a href="#">Produtos</a>
+                <a href="#">Contato</a>
 
-          <a href="#">
-            Projetos
-          </a>
+                <Link
+                    to="/perfil"
+                    className={styles.usuarioMobile}
+                    onClick={() => setMenuAberto(false)}
+                >
+                    {usuario?.foto ? (
+                        <img
+                            src={usuario.foto}
+                            alt={usuario.nome}
+                            className={styles.avatar}
+                        />
+                    ) : (
+                        <div className={styles.avatarInicial}>
+                            {usuario?.nome?.charAt(0).toUpperCase()}
+                        </div>
+                    )}
 
-          <a href="#">
-            Inspirações
-          </a>
+                    <span>{usuario?.nome}</span>
+                </Link>
+            </div>
 
-          <a href="#">
-            Contato
-          </a>
-
-        </nav>
-
-        {/* RIGHT */}
-        <div className={style.rightArea}>
-
-          {/* SEARCH */}
-          <div className={style.searchBox}>
-
-            <FiSearch />
-
-            <input
-              type="text"
-              placeholder="Buscar cores, ambientes..."
-            />
-
-          </div>
-
-          {/* ICONS */}
-          <div className={style.actions}>
-
-            <button className={style.iconButton}>
-              <FiBell />
-              <span></span>
-            </button>
-
-            <button className={style.iconButton}>
-              <FiShoppingCart />
-              <span></span>
-            </button>
-
-            <button className={style.profileButton}>
-
-              <div className={style.avatar}>
-                <FiUser />
-              </div>
-
-              <div className={style.profileInfo}>
-
-                <strong>Minha Conta</strong>
-
-                <span>Entrar</span>
-
-              </div>
-
-            </button>
-
-          </div>
-
-          {/* MOBILE */}
-          <button className={style.mobileMenu}>
-            <FiMenu />
-          </button>
-
-        </div>
-
-      </div>
-
-    </header>
-  );
+        </header>
+    );
 }

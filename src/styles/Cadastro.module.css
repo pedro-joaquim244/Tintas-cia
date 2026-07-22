@@ -2,6 +2,7 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
+    font-family: 'poppins' sans-serif;
 }
 
 .container{
@@ -120,4 +121,23 @@
     padding:10px;
     border-radius:10px;
 
+}
+
+.link {
+
+  text-decoration: none;
+  color: #9ca3af;
+  text-align: center;
+  display: flex;
+  font-size: 14px;
+  margin-top: 6px;
+  justify-content: center;
+
+
+}
+
+.link:hover {
+  color: #02142f;
+  transition: 0.3s;
+  cursor: pointer;
 }

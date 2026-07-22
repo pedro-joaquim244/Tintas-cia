@@ -40,7 +40,7 @@ export default function Cadastrar() {
 
       await api.post("/itens", dados);
 
-      navigate("/");
+      navigate("/admin/produtos");
 
     } catch (erro) {
 
@@ -226,7 +226,7 @@ export default function Cadastrar() {
                   <button
                     type="button"
                     className={`${styles.btn} ${styles.btnSecondary}`}
-                    onClick={() => navigate("/")}
+                    onClick={() => navigate("/admin/produtos")}
                   >
 
                     <FiArrowLeft />

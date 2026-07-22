@@ -33,7 +33,7 @@ export default function Dashboard() {
 
     logout();
 
-    navigate("/");
+    navigate("/login");
   }
 
   const comprasSemana = [
@@ -449,7 +449,7 @@ export default function Dashboard() {
 
             <div
               className={styles.quickCard}
-              onClick={() => navigate("/itens/cadastrar")}
+              onClick={() => navigate("/admin/produtos/novo")}
             >
 
               <div>
@@ -472,7 +472,7 @@ export default function Dashboard() {
 
             <div
               className={styles.quickCard}
-              onClick={() => navigate("/pedidos")}
+              onClick={() => navigate("/admin/pedidos")}
             >
 
               <div>

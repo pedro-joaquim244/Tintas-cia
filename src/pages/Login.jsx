@@ -5,6 +5,13 @@ import styles from "../styles/Login.module.css";
 
 import logo from "../assets/imagens/logo.png";
 
+const FRASES = [
+  "Transforme seu lar",
+  "Cores Que Inspiram",
+  "Sua Casa, Seu Estilo",
+  "Pinte Novas Histórias",
+  "Pixel Color",
+];
 
 export default function Login() {
 
@@ -23,22 +30,6 @@ export default function Login() {
 
 
 
-  const frases = [
-
-    "Transforme seu lar",
-
-    "Cores Que Inspiram",
-
-    "Sua Casa, Seu Estilo",
-
-    "Pinte Novas Histórias",
-
-    "Pixel Color"
-
-  ];
-
-
-
   const [fraseAtual, setFraseAtual] = useState(0);
 
   const [fade, setFade] = useState(false);
@@ -52,6 +43,7 @@ export default function Login() {
   useEffect(() => {
 
 
+    let troca;
     const intervalo = setInterval(() => {
 
 
@@ -59,12 +51,12 @@ export default function Login() {
 
 
 
-      const troca = setTimeout(() => {
+      troca = setTimeout(() => {
 
 
         setFraseAtual((prev)=>
 
-          prev === frases.length - 1
+          prev === FRASES.length - 1
           ? 0
           : prev + 1
 
@@ -89,6 +81,7 @@ export default function Login() {
 
 
       clearInterval(intervalo);
+      clearTimeout(troca);
 
 
     };
@@ -149,16 +142,6 @@ export default function Login() {
 
 
 
-    console.log(
-      "Usuário autenticado:",
-      usuario
-    );
-
-
-
-
-
-
     if(!usuario){
 
 
@@ -186,7 +169,7 @@ export default function Login() {
 
       navigate(
 
-        "/dashboard",
+        "/admin/dashboard",
 
         {
           replace:true
@@ -211,7 +194,7 @@ export default function Login() {
 
       navigate(
 
-        "/inicial",
+        "/cliente/inicio",
 
         {
           replace:true
@@ -307,7 +290,7 @@ export default function Login() {
 
           >
 
-            {frases[fraseAtual]}
+            {FRASES[fraseAtual]}
 
 
           </h2>
@@ -512,7 +495,10 @@ export default function Login() {
 
 
 
+                <div className={styles.cadastro}>
 
+                <a className={styles.link} href="/cadastro">Não tem uma conta? Cadastre-se aqui.</a>
+                </div>
 
 
 

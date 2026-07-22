@@ -106,6 +106,7 @@ export default function LojaTintas() {
 
   return (
     <div className={style.container}>
+      <HeaderUser />
       
       {/* INTRODUÇÃO AUTOMÁTICA ULTRA RÁPIDA */}
       <div ref={introContainerRef} className={style.introContainer}>
@@ -149,20 +150,6 @@ export default function LojaTintas() {
       {/* GLOW BACKGROUND */}
       <div className={`${style.glow} ${style.glow1}`}></div>
       <div className={`${style.glow} ${style.glow2}`}></div>
-
-      {/* HEADER */}
-      <header className={style.header}>
-        <div className={style.logo}>
-          <span>Pixel Colors</span>
-        </div>
-        <nav className={style.nav}>
-          <a href="#">Início</a>
-          <a href="#">Tintas</a>
-          <a href="#">Tecnologia</a>
-          <a href="#">Depoimentos</a>
-        </nav>
-        <button className={style.btnHeader}>Comprar agora</button>
-      </header>
 
       {/* HERO SECTION */}
       <section className={style.hero}>

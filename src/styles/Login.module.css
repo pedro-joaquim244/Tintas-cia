@@ -4,15 +4,16 @@
 /* ========================= */
 /* GERAL */
 /* ========================= */
-*{
-    cursor: default;
+* {
+  cursor: default;
 }
+
 .container {
   min-height: 100vh;
   display: flex;
-  
+
   background: #eef3fa;
-  
+
 
   font-family: "Poppins", sans-serif;
 }
@@ -25,11 +26,9 @@
   flex: 1;
 
   background:
-    linear-gradient(
-      135deg,
+    linear-gradient(135deg,
       rgba(2, 20, 47, 0.95),
-      rgba(4, 45, 102, 0.88)
-    ),
+      rgba(4, 45, 102, 0.88)),
     url("https://images.unsplash.com/photo-1562259949-e8e7689d7828?q=80&w=1600&auto=format&fit=crop");
 
   background-size: cover;
@@ -138,9 +137,7 @@
 
   display: block;
 
-  filter: drop-shadow(
-    0 10px 25px rgba(0, 0, 0, 0.2)
-  );
+  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.2));
 
   animation: floatLogo 4s ease-in-out infinite;
 }
@@ -402,4 +399,23 @@
   .button {
     height: 56px;
   }
+}
+
+.link {
+
+  text-decoration: none;
+  color: #9ca3af;
+  text-align: center;
+  display: flex;
+  font-size: 14px;
+  margin-top: 6px;
+  justify-content: center;
+
+
+}
+
+.link:hover {
+  color: #02142f;
+  transition: 0.3s;
+  cursor: pointer;
 }

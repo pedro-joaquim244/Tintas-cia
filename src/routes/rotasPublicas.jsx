@@ -47,7 +47,7 @@ export default function RotasPublicas(){
             return (
 
                 <Navigate
-                    to="/dashboard"
+                    to="/admin/dashboard"
                     replace
                 />
 
@@ -64,7 +64,7 @@ export default function RotasPublicas(){
         return (
 
             <Navigate
-                to="/inicial"
+                to="/cliente/inicio"
                 replace
             />
 

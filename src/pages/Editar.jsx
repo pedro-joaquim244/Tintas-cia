@@ -78,7 +78,7 @@ export default function Editar() {
 
       await api.put(`/itens/${id}`, dados);
 
-      navigate("/");
+      navigate("/admin/produtos");
 
     } catch (erro) {
 
@@ -102,7 +102,7 @@ export default function Editar() {
 
       await api.delete(`/itens/${id}`);
 
-      navigate("/");
+      navigate("/admin/produtos");
 
     } catch (erro) {
 
@@ -149,7 +149,7 @@ export default function Editar() {
             <button
               type="button"
               className={`${styles.btn} ${styles.btnCancel}`}
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/admin/produtos")}
             >
 
               <FiArrowLeft />

@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import style from "../styles/SobreNos.module.css";
+import HeaderUser from "../components/Cabeçalho-Users/index.jsx";
 
 export default function SobreNos() {
 
@@ -27,6 +28,7 @@ export default function SobreNos() {
   return (
 
     <div className={style.container}>
+      <HeaderUser />
 
       <main className={style.main}>
 

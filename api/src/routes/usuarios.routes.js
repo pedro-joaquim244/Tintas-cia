@@ -1,504 +1,207 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import pool from "../database.js";
 import jwt from "jsonwebtoken";
 
-import {
-    autenticarToken
-} from "../middlewares/autenticacao.js";
+import pool from "../database.js";
+import { config } from "../config.js";
+import { autenticarToken, autorizarTipos } from "../middlewares/autenticacao.js";
 
 const router = express.Router();
 
-// ==========================================
-// LISTAR TODOS OS USUÁRIOS
-// ==========================================
+const camposPublicos = "id, nome, email, tipo, criado_em, atualizado_em";
 
-router.get(
-    "/",
-    autenticarToken,
-    async (req, res) => {
-
-        try {
-
-            const sql = `
-                SELECT
-                    id,
-                    nome,
-                    email,
-                    tipo,
-                    criado_em,
-                    atualizado_em
-                FROM usuarios
-                ORDER BY id DESC
-            `;
-
-            const [usuarios] =
-                await pool.query(sql);
-
-            return res.json(usuarios);
-
-        } catch (error) {
-
-            console.error(error);
-
-            return res.status(500).json({
-                erro: "Erro ao listar usuários."
-            });
-        }
-    }
-);
-
-// ==========================================
-// BUSCAR USUÁRIO POR ID
-// ==========================================
-
-router.get(
-    "/:id",
-    autenticarToken,
-    async (req, res) => {
-
-        try {
-
-            const { id } = req.params;
-
-            const sql = `
-                SELECT
-                    id,
-                    nome,
-                    email,
-                    tipo,
-                    criado_em,
-                    atualizado_em
-                FROM usuarios
-                WHERE id = ?
-            `;
-
-            const [resultado] =
-                await pool.query(sql, [id]);
-
-            if (resultado.length === 0) {
-
-                return res.status(404).json({
-                    erro: "Usuário não encontrado."
-                });
-            }
-
-            return res.json(resultado[0]);
-
-        } catch (error) {
-
-            console.error(error);
-
-            return res.status(500).json({
-                erro: "Erro ao buscar usuário."
-            });
-        }
-    }
-);
-
-// ==========================================
-// CADASTRAR USUÁRIO
-// ==========================================
-
-router.post("/", async (req, res) => {
-
+router.post("/login", async (req, res) => {
     try {
+        const { email, senha } = req.body;
 
-        const {
-            nome,
-            email,
-            senha
-        } = req.body;
-
-        if (!nome || !email || !senha) {
-
-            return res.status(400).json({
-                erro: "Nome, email e senha são obrigatórios."
-            });
+        if (!email || !senha) {
+            return res.status(400).json({ erro: "Email e senha sao obrigatorios." });
         }
 
-        const [usuarioExistente] =
-            await pool.query(
-                `
-                SELECT id
-                FROM usuarios
-                WHERE email = ?
-                `,
-                [email]
-            );
-
-        if (usuarioExistente.length > 0) {
-
-            return res.status(400).json({
-                erro: "Este email já está cadastrado."
-            });
-        }
-
-        const senhaCriptografada =
-            await bcrypt.hash(senha, 10);
-
-        const sql = `
-            INSERT INTO usuarios
-            (nome, email, senha)
-            VALUES (?, ?, ?)
-        `;
-
-        const [resultado] =
-            await pool.query(sql, [
-                nome,
-                email,
-                senhaCriptografada
-            ]);
-
-        const [usuarioCriado] =
-            await pool.query(
-                `
-                SELECT
-                    id,
-                    nome,
-                    email,
-                    tipo,
-                    criado_em,
-                    atualizado_em
-                FROM usuarios
-                WHERE id = ?
-                `,
-                [resultado.insertId]
-            );
-
-        return res.status(201).json(
-            usuarioCriado[0]
+        const [resultado] = await pool.query(
+            "SELECT * FROM usuarios WHERE email = ?",
+            [email.trim().toLowerCase()]
         );
+        const usuario = resultado[0];
 
-    } catch (error) {
+        if (!usuario || !(await bcrypt.compare(senha, usuario.senha))) {
+            return res.status(401).json({ erro: "Email ou senha invalidos." });
+        }
 
-        console.error(error);
+        if (!["admin", "cliente"].includes(usuario.tipo)) {
+            return res.status(403).json({ erro: "Tipo de usuario invalido." });
+        }
 
-        return res.status(500).json({
-            erro: "Erro ao cadastrar usuário."
+        const dadosUsuario = {
+            id: usuario.id,
+            nome: usuario.nome,
+            email: usuario.email,
+            tipo: usuario.tipo,
+        };
+        const token = jwt.sign(dadosUsuario, config.jwtSecret, { expiresIn: "1d" });
+
+        return res.json({
+            mensagem: "Login realizado com sucesso.",
+            token,
+            usuario: dadosUsuario,
         });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ erro: "Erro ao fazer login." });
     }
 });
 
-// ==========================================
-// ATUALIZAR USUÁRIO
-// ==========================================
+router.post("/", async (req, res) => {
+    try {
+        const { nome, email, senha } = req.body;
 
-router.put(
-    "/:id",
-    autenticarToken,
-    async (req, res) => {
-
-        try {
-
-            const { id } = req.params;
-
-            const {
-                nome,
-                email,
-                senha
-            } = req.body;
-
-            if (!nome || !email) {
-
-                return res.status(400).json({
-                    erro: "Nome e email são obrigatórios."
-                });
-            }
-
-            const [usuarioExistente] =
-                await pool.query(
-                    `
-                    SELECT *
-                    FROM usuarios
-                    WHERE id = ?
-                    `,
-                    [id]
-                );
-
-            if (
-                usuarioExistente.length === 0
-            ) {
-
-                return res.status(404).json({
-                    erro: "Usuário não encontrado."
-                });
-            }
-
-            const [emailExistente] =
-                await pool.query(
-                    `
-                    SELECT id
-                    FROM usuarios
-                    WHERE email = ?
-                    AND id != ?
-                    `,
-                    [email, id]
-                );
-
-            if (
-                emailExistente.length > 0
-            ) {
-
-                return res.status(400).json({
-                    erro:
-                        "Este email já está sendo usado por outro usuário."
-                });
-            }
-
-            if (senha) {
-
-                const senhaCriptografada =
-                    await bcrypt.hash(
-                        senha,
-                        10
-                    );
-
-                await pool.query(
-                    `
-                    UPDATE usuarios
-                    SET
-                        nome = ?,
-                        email = ?,
-                        senha = ?
-                    WHERE id = ?
-                    `,
-                    [
-                        nome,
-                        email,
-                        senhaCriptografada,
-                        id
-                    ]
-                );
-
-            } else {
-
-                await pool.query(
-                    `
-                    UPDATE usuarios
-                    SET
-                        nome = ?,
-                        email = ?
-                    WHERE id = ?
-                    `,
-                    [
-                        nome,
-                        email,
-                        id
-                    ]
-                );
-            }
-
-            const [usuarioAtualizado] =
-                await pool.query(
-                    `
-                    SELECT
-                        id,
-                        nome,
-                        email,
-                        tipo,
-                        criado_em,
-                        atualizado_em
-                    FROM usuarios
-                    WHERE id = ?
-                    `,
-                    [id]
-                );
-
-            return res.json(
-                usuarioAtualizado[0]
-            );
-
-        } catch (error) {
-
-            console.error(error);
-
-            return res.status(500).json({
-                erro: "Erro ao atualizar usuário."
-            });
+        if (!nome || !email || !senha) {
+            return res.status(400).json({ erro: "Nome, email e senha sao obrigatorios." });
         }
+
+        const emailNormalizado = email.trim().toLowerCase();
+        const [existentes] = await pool.query(
+            "SELECT id FROM usuarios WHERE email = ?",
+            [emailNormalizado]
+        );
+
+        if (existentes.length > 0) {
+            return res.status(409).json({ erro: "Este email ja esta cadastrado." });
+        }
+
+        const senhaCriptografada = await bcrypt.hash(senha, 10);
+        const [resultado] = await pool.query(
+            "INSERT INTO usuarios (nome, email, senha, tipo) VALUES (?, ?, ?, 'cliente')",
+            [nome.trim(), emailNormalizado, senhaCriptografada]
+        );
+        const [criados] = await pool.query(
+            `SELECT ${camposPublicos} FROM usuarios WHERE id = ?`,
+            [resultado.insertId]
+        );
+
+        return res.status(201).json(criados[0]);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ erro: "Erro ao cadastrar usuario." });
     }
-);
+});
 
-// ==========================================
-// DELETAR USUÁRIO
-// ==========================================
+router.get("/me", autenticarToken, async (req, res) => {
+    try {
+        const [resultado] = await pool.query(
+            `SELECT ${camposPublicos} FROM usuarios WHERE id = ?`,
+            [req.usuario.id]
+        );
 
-router.delete(
-    "/:id",
-    autenticarToken,
-    async (req, res) => {
+        if (resultado.length === 0) {
+            return res.status(404).json({ erro: "Usuario nao encontrado." });
+        }
 
-        try {
+        return res.json(resultado[0]);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ erro: "Erro ao buscar usuario." });
+    }
+});
 
-            const { id } = req.params;
+router.get("/", autenticarToken, autorizarTipos("admin"), async (_req, res) => {
+    try {
+        const [usuarios] = await pool.query(
+            `SELECT ${camposPublicos} FROM usuarios ORDER BY id DESC`
+        );
+        return res.json(usuarios);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ erro: "Erro ao listar usuarios." });
+    }
+});
 
-            const [usuarioExistente] =
-                await pool.query(
-                    `
-                    SELECT id
-                    FROM usuarios
-                    WHERE id = ?
-                    `,
-                    [id]
-                );
+router.get("/:id", autenticarToken, autorizarTipos("admin"), async (req, res) => {
+    try {
+        const [resultado] = await pool.query(
+            `SELECT ${camposPublicos} FROM usuarios WHERE id = ?`,
+            [req.params.id]
+        );
 
-            if (
-                usuarioExistente.length === 0
-            ) {
+        if (resultado.length === 0) {
+            return res.status(404).json({ erro: "Usuario nao encontrado." });
+        }
 
-                return res.status(404).json({
-                    erro: "Usuário não encontrado."
-                });
-            }
+        return res.json(resultado[0]);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ erro: "Erro ao buscar usuario." });
+    }
+});
 
+router.put("/:id", autenticarToken, async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+
+        if (req.usuario.tipo !== "admin" && id !== Number(req.usuario.id)) {
+            return res.status(403).json({ erro: "Voce so pode atualizar o proprio perfil." });
+        }
+
+        const { nome, email, senha } = req.body;
+        if (!nome || !email) {
+            return res.status(400).json({ erro: "Nome e email sao obrigatorios." });
+        }
+
+        const emailNormalizado = email.trim().toLowerCase();
+        const [usuarioExistente] = await pool.query("SELECT id FROM usuarios WHERE id = ?", [id]);
+        if (usuarioExistente.length === 0) {
+            return res.status(404).json({ erro: "Usuario nao encontrado." });
+        }
+
+        const [emailExistente] = await pool.query(
+            "SELECT id FROM usuarios WHERE email = ? AND id != ?",
+            [emailNormalizado, id]
+        );
+        if (emailExistente.length > 0) {
+            return res.status(409).json({ erro: "Este email ja esta sendo usado." });
+        }
+
+        if (senha) {
+            const senhaCriptografada = await bcrypt.hash(senha, 10);
             await pool.query(
-                `
-                DELETE FROM usuarios
-                WHERE id = ?
-                `,
-                [id]
+                "UPDATE usuarios SET nome = ?, email = ?, senha = ? WHERE id = ?",
+                [nome.trim(), emailNormalizado, senhaCriptografada, id]
             );
-
-            return res.json({
-                mensagem:
-                    "Usuário deletado com sucesso."
-            });
-
-        } catch (error) {
-
-            console.error(error);
-
-            return res.status(500).json({
-                erro: "Erro ao deletar usuário."
-            });
+        } else {
+            await pool.query(
+                "UPDATE usuarios SET nome = ?, email = ? WHERE id = ?",
+                [nome.trim(), emailNormalizado, id]
+            );
         }
+
+        const [atualizados] = await pool.query(
+            `SELECT ${camposPublicos} FROM usuarios WHERE id = ?`,
+            [id]
+        );
+        return res.json(atualizados[0]);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ erro: "Erro ao atualizar usuario." });
     }
-);
+});
 
-// ==========================================
-// LOGIN
-// ==========================================
-
-router.post(
-    "/login",
-    async (req, res) => {
-
-        try {
-
-            const {
-                email,
-                senha
-            } = req.body;
-
-            console.log(
-                "Email recebido:",
-                email
-            );
-
-            console.log(
-                "Senha recebida:",
-                senha
-            );
-
-            if (!email || !senha) {
-
-                return res.status(400).json({
-                    erro:
-                        "Email e senha são obrigatórios."
-                });
-            }
-
-            const [resultado] =
-                await pool.query(
-                    `
-                    SELECT *
-                    FROM usuarios
-                    WHERE email = ?
-                    `,
-                    [email]
-                );
-
-            console.log(
-                "Resultado banco:",
-                resultado
-            );
-
-            const usuario = resultado[0];
-
-            if (!usuario) {
-
-                return res.status(401).json({
-                    erro:
-                        "Email ou senha inválidos."
-                });
-            }
-
-            console.log(
-                "Senha banco:",
-                usuario.senha
-            );
-
-            const senhaValida =
-                await bcrypt.compare(
-                    senha,
-                    usuario.senha
-                );
-
-            console.log(
-                "Senha válida:",
-                senhaValida
-            );
-
-            if (!senhaValida) {
-
-                return res.status(401).json({
-                    erro:
-                        "Email ou senha inválidos."
-                });
-            }
-
-            const {
-                id,
-                nome,
-                tipo
-            } = usuario;
-
-            const token = jwt.sign(
-                {
-                    id,
-                    nome,
-                    email,
-                    tipo
-                },
-                "pedro",
-                {
-                    expiresIn: "1d"
-                }
-            );
-
-            return res.json({
-                mensagem:
-                    "Login realizado com sucesso.",
-                token,
-                usuario: {
-                    id,
-                    nome,
-                    email,
-                    tipo
-                }
-            });
-
-        } catch (error) {
-
-            console.error(error);
-
-            return res.status(500).json({
-                erro:
-                    "Erro ao fazer login."
-            });
+router.delete("/:id", autenticarToken, autorizarTipos("admin"), async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        if (id === Number(req.usuario.id)) {
+            return res.status(400).json({ erro: "O administrador nao pode excluir a propria conta." });
         }
+
+        const [resultado] = await pool.query("DELETE FROM usuarios WHERE id = ?", [id]);
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ erro: "Usuario nao encontrado." });
+        }
+
+        return res.json({ mensagem: "Usuario excluido com sucesso." });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ erro: "Erro ao excluir usuario." });
     }
-);
+});
 
 export default router;

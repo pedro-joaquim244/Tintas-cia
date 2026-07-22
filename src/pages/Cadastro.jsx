@@ -1,159 +1,60 @@
 import { useState } from "react";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/authContext";
 import styles from "../styles/Cadastro.module.css";
 
 export default function Cadastro() {
+  const { cadastrar } = useAuth();
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ nome: "", email: "", senha: "" });
+  const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState("");
+  const [carregando, setCarregando] = useState(false);
 
-    const [nome, setNome] = useState("");
-    const [email, setEmail] = useState("");
-    const [senha, setSenha] = useState("");
+  function alterarCampo(event) {
+    setForm((atual) => ({ ...atual, [event.target.name]: event.target.value }));
+  }
 
-    const [erro, setErro] = useState("");
-    const [sucesso, setSucesso] = useState("");
-    const [carregando, setCarregando] = useState(false);
+  async function enviar(event) {
+    event.preventDefault();
+    setErro("");
+    setSucesso("");
+    setCarregando(true);
 
-    async function cadastrar(e) {
+    const resultado = await cadastrar(form.nome, form.email, form.senha);
+    setCarregando(false);
 
-        e.preventDefault();
-
-        setErro("");
-        setSucesso("");
-        setCarregando(true);
-
-        try {
-
-            const resposta = await axios.post(
-                "http://localhost:3333/usuarios",
-                {
-                    nome,
-                    email,
-                    senha
-                }
-            );
-
-            console.log("Resposta da API:", resposta.data);
-
-            setSucesso(
-                `Usuário ${resposta.data.nome} cadastrado com sucesso!`
-            );
-
-            setNome("");
-            setEmail("");
-            setSenha("");
-
-        } catch (err) {
-
-            console.error(err);
-
-            if (err.response) {
-
-                setErro(
-                    err.response.data.erro ||
-                    "Erro ao cadastrar usuário."
-                );
-
-            } else {
-
-                setErro(
-                    "Não foi possível conectar ao servidor."
-                );
-
-            }
-
-        } finally {
-
-            setCarregando(false);
-
-        }
-
+    if (!resultado.sucesso) {
+      setErro(resultado.mensagem);
+      return;
     }
 
-    return (
+    setSucesso("Conta de cliente criada com sucesso.");
+    setTimeout(() => navigate("/login", { replace: true }), 1000);
+  }
 
-        <div className={styles.container}>
+  return (
+    <div className={styles.container}>
+      <div className={styles.left}>
+        <img src="/logo.png" alt="Pixel Colors" className={styles.logo} />
+        <h1>TRANSFORME SEU LAR</h1>
+        <p>Crie sua conta para acessar a experiência Pixel Colors.</p>
+      </div>
 
-            <div className={styles.left}>
-
-                <img
-                    src="/logo.png"
-                    alt="Logo"
-                    className={styles.logo}
-                />
-
-                <h1>TRANSFORME SEU LAR</h1>
-
-                <p>
-                    Gerencie produtos, estoque e vendas da sua loja.
-                </p>
-
-            </div>
-
-            <div className={styles.right}>
-
-                <form
-                    onSubmit={cadastrar}
-                    className={styles.form}
-                >
-
-                    <h1>Cadastrar</h1>
-
-                    {erro && (
-                        <div className={styles.erro}>
-                            {erro}
-                        </div>
-                    )}
-
-                    {sucesso && (
-                        <div className={styles.sucesso}>
-                            {sucesso}
-                        </div>
-                    )}
-
-                    <input
-                        type="text"
-                        placeholder="Nome"
-                        value={nome}
-                        onChange={(e) =>
-                            setNome(e.target.value)
-                        }
-                        required
-                    />
-
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) =>
-                            setEmail(e.target.value)
-                        }
-                        required
-                    />
-
-                    <input
-                        type="password"
-                        placeholder="Senha"
-                        value={senha}
-                        onChange={(e) =>
-                            setSenha(e.target.value)
-                        }
-                        required
-                    />
-
-                    <button
-                        type="submit"
-                        disabled={carregando}
-                    >
-                        {carregando
-                            ? "Cadastrando..."
-                            : "Criar Conta"}
-                    </button>
-
-                </form>
-
-            </div>
-
-        </div>
-
-    );
-
+      <div className={styles.right}>
+        <form onSubmit={enviar} className={styles.form}>
+          <h1>Criar conta</h1>
+          {erro && <div className={styles.erro}>{erro}</div>}
+          {sucesso && <div className={styles.sucesso}>{sucesso}</div>}
+          <input name="nome" type="text" placeholder="Nome" value={form.nome} onChange={alterarCampo} required />
+          <input name="email" type="email" placeholder="Email" value={form.email} onChange={alterarCampo} required />
+          <input name="senha" type="password" placeholder="Senha" value={form.senha} onChange={alterarCampo} required minLength={6} />
+          <button type="submit" disabled={carregando}>
+            {carregando ? "Cadastrando..." : "Criar conta"}
+          </button>
+          <a className={styles.link} href="/login">Já tem uma conta ?</a>
+        </form>
+      </div>
+    </div>
+  );
 }

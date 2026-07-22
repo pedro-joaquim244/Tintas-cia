@@ -1,11 +1,8 @@
 import mysql from "mysql2/promise";
+import { config } from "./config.js";
 
 const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "tintas",
-    port: 3306,
+    ...config.database,
 
     waitForConnections: true,
     connectionLimit: 10,

@@ -56,7 +56,7 @@ export default function RotasAdmin(){
         return (
 
             <Navigate
-                to="/inicial"
+                to="/cliente/inicio"
                 replace
             />
 

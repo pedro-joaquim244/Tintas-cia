@@ -1,346 +1,292 @@
 import { useState } from "react";
-
-import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
-
-import styles from "../styles/Perfil.module.css";
-
 import {
+  FiUser,
   FiMail,
-  FiPhone,
-  FiMapPin,
   FiEdit2,
   FiSave,
   FiCamera,
-  FiUser,
-  FiCreditCard,
-  FiLock,
+  FiShield,
   FiCalendar,
-  FiHome,
+  FiClock
 } from "react-icons/fi";
 
+import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
+import HeaderUser from "../components/Cabeçalho-Users/index.jsx";
+
+import { useAuth } from "../contexts/authContext";
+import styles from "../styles/Perfil.module.css";
+
+
 export default function Perfil() {
-  const [editando, setEditando] = useState(false);
 
-  const [usuario, setUsuario] = useState(() => {
-    const usuarioSalvo = localStorage.getItem("usuarioPerfil");
+  const { usuario, atualizarPerfil } = useAuth();
 
-    return usuarioSalvo
-      ? JSON.parse(usuarioSalvo)
-      : {
-          nome: "Administrador",
-          cargo: "Gerente do Sistema",
+  const [editando,setEditando] = useState(false);
 
-          email: "admin@corescia.com.br",
-
-          telefone: "(16) 99999-9999",
-          cidade: "Jaboticabal",
-          cpf: "123.456.789-00",
-          endereco: "Rua das Tintas, 150",
-          estado: "São Paulo",
-          usuarioSistema: "admin_master",
-          nascimento: "2000-01-01",
-          senha: "123456",
-          foto: "",
-        };
+  const [form,setForm] = useState({
+    nome: usuario?.nome || "",
+    email: usuario?.email || "",
+    senha:""
   });
 
-  function handleChange(e) {
-    setUsuario({
-      ...usuario,
-      [e.target.name]: e.target.value,
+
+  async function salvarPerfil(){
+
+    const resultado = await atualizarPerfil({
+      nome:form.nome,
+      email:form.email,
+      ...(form.senha && {senha:form.senha})
     });
-  }
 
-  function alterarFoto(e) {
-    const file = e.target.files[0];
 
-    if (file) {
-      const fotoURL = URL.createObjectURL(file);
-
-      setUsuario({
-        ...usuario,
-        foto: fotoURL,
-      });
+    if(resultado.sucesso){
+      setEditando(false);
+      setForm({...form,senha:""});
     }
+
   }
 
-  function salvarPerfil() {
-    localStorage.setItem(
-      "usuarioPerfil",
-      JSON.stringify(usuario)
-    );
 
-    setEditando(false);
+
+  function handleChange(e){
+
+    setForm({
+      ...form,
+      [e.target.name]:e.target.value
+    })
+
   }
+
+
+
+  const header =
+    usuario?.tipo === "admin"
+    ? <Cabecalho/>
+    : <HeaderUser/>;
+
+
 
   return (
+
     <div className={styles.layout}>
-      <Cabecalho />
+
+      {header}
+
 
       <main className={styles.content}>
-        <div className={styles.card}>
-          {/* TOPO */}
 
-          <div className={styles.topo}>
-            <div className={styles.avatarArea}>
-              <div className={styles.avatarWrapper}>
-                {usuario.foto ? (
-                  <img
-                    src={usuario.foto}
-                    alt="Perfil"
-                    className={styles.avatarImg}
-                  />
-                ) : (
-                  <div className={styles.avatar}>
-                    {usuario.nome.charAt(0)}
-                  </div>
-                )}
 
-                {editando && (
-                  <label className={styles.cameraBtn}>
-                    <FiCamera />
+        <h1>Meu Perfil</h1>
 
-                    <input
-                      type="file"
-                      hidden
-                      accept="image/*"
-                      onChange={alterarFoto}
-                    />
-                  </label>
-                )}
+        <p className={styles.subtitle}>
+          Gerencie suas informações pessoais e de acesso
+        </p>
+
+
+
+        <section className={styles.container}>
+
+
+          {/* ESQUERDA */}
+
+          <div className={styles.leftCard}>
+
+
+            <h3>Foto do perfil</h3>
+
+
+            <div className={styles.avatarBox}>
+
+              <div className={styles.avatar}>
+                {usuario?.nome?.charAt(0).toUpperCase()}
               </div>
 
-              <div className={styles.userInfo}>
-                {editando ? (
-                  <input
-                    type="text"
-                    name="nome"
-                    value={usuario.nome}
-                    onChange={handleChange}
-                    className={styles.nomeInput}
-                  />
-                ) : (
-                  <h1>{usuario.nome}</h1>
-                )}
 
-                {editando ? (
-                  <input
-                    type="text"
-                    name="cargo"
-                    value={usuario.cargo}
-                    onChange={handleChange}
-                    className={styles.cargoInput}
-                  />
-                ) : (
-                  <p>{usuario.cargo}</p>
-                )}
-              </div>
+              <button className={styles.camera}>
+                <FiCamera/>
+              </button>
+
+
             </div>
 
-            <button
-              className={styles.editBtn}
-              onClick={() =>
-                editando
-                  ? salvarPerfil()
-                  : setEditando(true)
-              }
-            >
-              {editando ? (
-                <>
-                  <FiSave />
-                  Salvar Alterações
-                </>
-              ) : (
-                <>
-                  <FiEdit2 />
-                  Editar Perfil
-                </>
-              )}
+
+            <button className={styles.photoBtn}>
+              Alterar foto
             </button>
-          </div>
 
-          <div className={styles.divider}></div>
 
-          {/* INFORMAÇÕES */}
+            <small>
+              PNG ou JPG. Tamanho máximo: 2MB.
+            </small>
 
-          <div className={styles.infoGrid}>
-            <div className={styles.infoItem}>
-              <FiMail className={styles.icon} />
 
-              <div className={styles.infoContent}>
-                <span>Email</span>
 
-                {editando ? (
-                  <input
-                    type="email"
-                    name="email"
-                    value={usuario.email}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <strong>{usuario.email}</strong>
-                )}
+            <div className={styles.account}>
+
+
+              <h3>
+                Informações da conta
+              </h3>
+
+
+
+              <div className={styles.row}>
+                <FiUser/>
+                <div>
+                  <span>Nome completo</span>
+                  <strong>{usuario?.nome}</strong>
+                </div>
               </div>
-            </div>
 
-            <div className={styles.infoItem}>
-              <FiPhone className={styles.icon} />
 
-              <div className={styles.infoContent}>
-                <span>Telefone</span>
 
-                {editando ? (
-                  <input
-                    type="text"
-                    name="telefone"
-                    value={usuario.telefone}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <strong>{usuario.telefone}</strong>
-                )}
+              <div className={styles.row}>
+                <FiMail/>
+                <div>
+                  <span>E-mail</span>
+                  <strong>{usuario?.email}</strong>
+                </div>
               </div>
-            </div>
 
-            <div className={styles.infoItem}>
-              <FiMapPin className={styles.icon} />
 
-              <div className={styles.infoContent}>
-                <span>Cidade</span>
 
-                {editando ? (
-                  <input
-                    type="text"
-                    name="cidade"
-                    value={usuario.cidade}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <strong>{usuario.cidade}</strong>
-                )}
-              </div>
-            </div>
-
-            <div className={styles.infoItem}>
-              <FiCreditCard className={styles.icon} />
-
-              <div className={styles.infoContent}>
-                <span>CPF</span>
-
-                {editando ? (
-                  <input
-                    type="text"
-                    name="cpf"
-                    value={usuario.cpf}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <strong>{usuario.cpf}</strong>
-                )}
-              </div>
-            </div>
-
-            <div className={styles.infoItem}>
-              <FiHome className={styles.icon} />
-
-              <div className={styles.infoContent}>
-                <span>Endereço</span>
-
-                {editando ? (
-                  <input
-                    type="text"
-                    name="endereco"
-                    value={usuario.endereco}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <strong>{usuario.endereco}</strong>
-                )}
-              </div>
-            </div>
-
-            <div className={styles.infoItem}>
-              <FiMapPin className={styles.icon} />
-
-              <div className={styles.infoContent}>
-                <span>Estado</span>
-
-                {editando ? (
-                  <input
-                    type="text"
-                    name="estado"
-                    value={usuario.estado}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <strong>{usuario.estado}</strong>
-                )}
-              </div>
-            </div>
-
-            <div className={styles.infoItem}>
-              <FiUser className={styles.icon} />
-
-              <div className={styles.infoContent}>
-                <span>Usuário</span>
-
-                {editando ? (
-                  <input
-                    type="text"
-                    name="usuarioSistema"
-                    value={usuario.usuarioSistema}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <strong>{usuario.usuarioSistema}</strong>
-                )}
-              </div>
-            </div>
-
-            <div className={styles.infoItem}>
-              <FiCalendar className={styles.icon} />
-
-              <div className={styles.infoContent}>
-                <span>Data de Nascimento</span>
-
-                {editando ? (
-                  <input
-                    type="date"
-                    name="nascimento"
-                    value={usuario.nascimento}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <strong>
-                    {new Date(
-                      usuario.nascimento
-                    ).toLocaleDateString("pt-BR")}
+              <div className={styles.row}>
+                <FiShield/>
+                <div>
+                  <span>Nível de acesso</span>
+                  <strong className={styles.badge}>
+                    {usuario?.tipo}
                   </strong>
-                )}
+                </div>
               </div>
+
+
+              <div className={styles.row}>
+                <FiCalendar/>
+                <div>
+                  <span>Membro desde</span>
+                  <strong>
+                    2026
+                  </strong>
+                </div>
+              </div>
+
+
+
             </div>
 
-            <div className={styles.infoItem}>
-              <FiLock className={styles.icon} />
 
-              <div className={styles.infoContent}>
-                <span>Senha</span>
-
-                {editando ? (
-                  <input
-                    type="password"
-                    name="senha"
-                    value={usuario.senha}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <strong>••••••••</strong>
-                )}
-              </div>
-            </div>
           </div>
-        </div>
+
+
+
+
+
+          {/* DIREITA */}
+
+
+          <div className={styles.rightCard}>
+
+
+            <div className={styles.titleEdit}>
+
+              <h3>
+                Editar informações
+              </h3>
+
+
+              <button
+                onClick={
+                  editando
+                  ? salvarPerfil
+                  : ()=>setEditando(true)
+                }
+              >
+
+              {
+                editando
+                ?
+                <>
+                <FiSave/>
+                Salvar alterações
+                </>
+                :
+                <>
+                <FiEdit2/>
+                Editar
+                </>
+              }
+
+              </button>
+
+            </div>
+
+
+
+
+
+            <label>
+              Nome completo
+            </label>
+
+            <input
+              disabled={!editando}
+              name="nome"
+              value={form.nome}
+              onChange={handleChange}
+            />
+
+
+
+
+            <label>
+              E-mail
+            </label>
+
+            <input
+              disabled={!editando}
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+            />
+
+
+
+
+
+            {
+              editando &&
+
+              <>
+              <label>
+                Nova senha
+              </label>
+
+
+              <input
+                type="password"
+                name="senha"
+                value={form.senha}
+                onChange={handleChange}
+              />
+
+              </>
+            }
+
+
+
+          </div>
+
+
+
+        </section>
+
+
+
       </main>
+
     </div>
-  );
+
+  )
+
 }

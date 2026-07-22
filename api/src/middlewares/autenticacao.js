@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { config } from "../config.js";
 
 export function autenticarToken(
     req,
@@ -31,7 +32,7 @@ export function autenticarToken(
 
         const usuario = jwt.verify(
             token,
-            "pedro"
+            config.jwtSecret
         );
 
         req.usuario = usuario;
@@ -46,4 +47,16 @@ export function autenticarToken(
             erro: "Token inválido ou expirado."
         });
     }
+}
+
+export function autorizarTipos(...tiposPermitidos) {
+    return (req, res, next) => {
+        if (!req.usuario || !tiposPermitidos.includes(req.usuario.tipo)) {
+            return res.status(403).json({
+                erro: "Voce nao tem permissao para realizar esta acao."
+            });
+        }
+
+        next();
+    };
 }

@@ -5,14 +5,13 @@ import { AppRoutes } from "./routes";
 import Loading from "./components/Loading/index.jsx";
 
 function App() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(
+    () => !localStorage.getItem("tintas_loading")
+  );
   const [closing, setClosing] = useState(false);
 
   useEffect(() => {
-    const alreadyVisited = localStorage.getItem("tintas_loading");
-
-    if (!alreadyVisited) {
-      setLoading(true);
+    if (loading) {
 
       const startClosing = setTimeout(() => {
         setClosing(true);
@@ -28,7 +27,7 @@ function App() {
         clearTimeout(finishLoading);
       };
     }
-  }, []);
+  }, [loading]);
 
   if (loading) {
     return <Loading closing={closing} />;

@@ -1,201 +1,73 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import Login from "../pages/Login";
 import Cadastro from "../pages/Cadastro";
-
 import Dashboard from "../pages/Dashboard";
 import ListarItens from "../pages/Listar";
 import CadastrarItem from "../pages/Cadastrar";
 import EditarItem from "../pages/Editar";
-
 import Inicial from "../pages/Inicial";
 import Pedidos from "../pages/Pedidos";
 import SobreNos from "../pages/SobreNos";
 import SimuladorTinta from "../pages/SimuladorTintas";
-
 import Perfil from "../pages/Perfil";
-
 
 import RotasAdmin from "./RotasAdmin";
 import RotasCliente from "./RotasCliente";
 import RotasPublicas from "./rotasPublicas";
-
-
-
-export function AppRoutes(){
-
-
-    return (
-
-        <Routes>
-
-
-
-            {/* ROTA INICIAL */}
-
-            <Route
-                path="/"
-                element={
-                    <Navigate 
-                        to="/login"
-                        replace
-                    />
-                }
-            />
-
-
-
-
-
-
-            {/* ROTAS PUBLICAS */}
-
-            <Route element={<RotasPublicas/>}>
-
-
-                <Route
-                    path="/login"
-                    element={<Login/>}
-                />
-
-
-                <Route
-                    path="/cadastro"
-                    element={<Cadastro/>}
-                />
-
-
-            </Route>
-
-
-
-
-
-
-
-
-
-            {/* ROTAS ADMIN */}
-
-            <Route element={<RotasAdmin/>}>
-
-
-                <Route
-                    path="/dashboard"
-                    element={<Dashboard/>}
-                />
-
-
-
-                <Route
-                    path="/admin"
-                    element={<ListarItens/>}
-                />
-
-
-
-                <Route
-                    path="/itens/cadastrar"
-                    element={<CadastrarItem/>}
-                />
-
-
-
-                <Route
-                    path="/itens/:id/editar"
-                    element={<EditarItem/>}
-                />
-
-
-            </Route>
-
-
-
-
-
-
-
-
-
-            {/* ROTAS CLIENTE */}
-
-            <Route element={<RotasCliente/>}>
-
-
-                <Route
-                    path="/inicial"
-                    element={<Inicial/>}
-                />
-
-
-
-                <Route
-                    path="/pedidos"
-                    element={<Pedidos/>}
-                />
-
-
-
-                <Route
-                    path="/sobre-nos"
-                    element={<SobreNos/>}
-                />
-
-
-
-                <Route
-                    path="/simulador-tintas"
-                    element={<SimuladorTinta/>}
-                />
-
-
-            </Route>
-
-
-
-
-
-
-
-
-
-
-        
-            <Route element={<RotasCliente/>}>
-
-
-                <Route
-                    path="/perfil"
-                    element={<Perfil/>}
-                />
-
-
-            </Route>
-
-
-
-
-
-
-
-
-
-
-            {/* ERRO */}
-
-            <Route
-                path="*"
-                element={
-                    <h1>
-                        Página não encontrada
-                    </h1>
-                }
-            />
-
-
-
-        </Routes>
-
-    );
-
+import { useAuth } from "../contexts/authContext";
+
+function InicioPorPerfil() {
+  const { usuario, carregando } = useAuth();
+
+  if (carregando) return <p>Carregando...</p>;
+  if (!usuario) return <Navigate to="/login" replace />;
+
+  return (
+    <Navigate
+      to={usuario.tipo === "admin" ? "/admin/dashboard" : "/cliente/inicio"}
+      replace
+    />
+  );
+}
+
+export function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<InicioPorPerfil />} />
+
+      <Route element={<RotasPublicas />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/cadastro" element={<Cadastro />} />
+      </Route>
+
+      <Route element={<RotasAdmin />}>
+        <Route path="/admin/dashboard" element={<Dashboard />} />
+        <Route path="/admin/produtos" element={<ListarItens />} />
+        <Route path="/admin/produtos/novo" element={<CadastrarItem />} />
+        <Route path="/admin/produtos/:id/editar" element={<EditarItem />} />
+        <Route path="/admin/pedidos" element={<Pedidos />} />
+        <Route path="/admin/perfil" element={<Perfil />} />
+
+        <Route path="/dashboard" element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="/admin" element={<Navigate to="/admin/produtos" replace />} />
+        <Route path="/itens/cadastrar" element={<Navigate to="/admin/produtos/novo" replace />} />
+        <Route path="/itens/:id/editar" element={<EditarItem />} />
+      </Route>
+
+      <Route element={<RotasCliente />}>
+        <Route path="/cliente/inicio" element={<Inicial />} />
+        <Route path="/cliente/sobre-nos" element={<SobreNos />} />
+        <Route path="/cliente/simulador" element={<SimuladorTinta />} />
+        <Route path="/cliente/perfil" element={<Perfil />} />
+
+        <Route path="/inicial" element={<Navigate to="/cliente/inicio" replace />} />
+        <Route path="/sobre-nos" element={<Navigate to="/cliente/sobre-nos" replace />} />
+        <Route path="/simulador-tintas" element={<Navigate to="/cliente/simulador" replace />} />
+        <Route path="/perfil" element={<Navigate to="/cliente/perfil" replace />} />
+      </Route>
+
+      <Route path="*" element={<InicioPorPerfil />} />
+    </Routes>
+  );
 }

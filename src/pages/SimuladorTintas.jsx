@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 
 import style from "../styles/SimuladorTintas.module.css";
+import HeaderUser from "../components/Cabeçalho-Users/index.jsx";
 
 export default function SimuladorTinta() {
 
@@ -58,6 +59,7 @@ export default function SimuladorTinta() {
   return (
 
     <div className={style.container}>
+      <HeaderUser />
 
       {/* HERO */}
 

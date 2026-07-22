@@ -85,7 +85,7 @@ export default function Listar() {
             />
 
             <a
-              href="/itens/cadastrar"
+              href="/admin/produtos/novo"
               className={styles.btnNovo}
             >
               + Novo Produto
@@ -222,7 +222,7 @@ export default function Listar() {
                       <div className={styles.actions}>
 
                         <a
-                          href={`/itens/${item.id}/editar`}
+                          href={`/admin/produtos/${item.id}/editar`}
                           className={styles.btnEditar}
                         >
                           Editar

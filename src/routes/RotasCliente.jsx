@@ -57,7 +57,7 @@ export default function RotasCliente(){
         return (
 
             <Navigate
-                to="/dashboard"
+                to="/admin/dashboard"
                 replace
             />
 

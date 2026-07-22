@@ -1,9 +1,10 @@
     import express from 'express';
     import pool from '../database.js';
+    import { autenticarToken, autorizarTipos } from '../middlewares/autenticacao.js';
 
     const router = express.Router();
 
-    router.get("/", async (req, res) => {
+    router.get("/", autenticarToken, async (req, res) => {
         try {
             const sql = `
         SELECT
@@ -32,7 +33,7 @@
 
     });
 
-    router.get("/:id", async (req, res) => {
+    router.get("/:id", autenticarToken, async (req, res) => {
         try {
             const { id } = req.params;
             const sql = `
@@ -61,7 +62,7 @@
 
     });
 
-    router.post("/", async (req, res) => {
+    router.post("/", autenticarToken, autorizarTipos("admin"), async (req, res) => {
         try {
             const { nome, descricao, preco, quantidade } = req.body;
 
@@ -105,7 +106,7 @@
         }
     });
 
-    router.put("/:id", async (req, res) => {
+    router.put("/:id", autenticarToken, autorizarTipos("admin"), async (req, res) => {
         try {
             const { id } = req.params
             const { nome, descricao, preco, quantidade } = req.body;
@@ -167,7 +168,7 @@
         }
     });
 
-    router.delete("/:id", async (req, res) => {
+    router.delete("/:id", autenticarToken, autorizarTipos("admin"), async (req, res) => {
         try {
             const { id } = req.params;
 
