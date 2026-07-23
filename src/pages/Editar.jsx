@@ -8,95 +8,116 @@ import {
   FiArrowLeft,
   FiTrash2,
   FiUpload,
+  FiCheckCircle,
+  FiX,
 } from "react-icons/fi";
 
 import styles from "../styles/Editar.module.css";
 
-import Cabecalho from "../components//Cabeçalho-ADM/Cabecalho.jsx";
+import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
 
 export default function Editar() {
 
-  /* ===== STATES ===== */
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [preco, setPreco] = useState("");
   const [quantidade, setQuantidade] = useState("");
+
+  const [fotoAtual, setFotoAtual] = useState("");
+  const [novaFoto, setNovaFoto] = useState(null);
+  const [preview, setPreview] = useState("");
+
   const [erro, setErro] = useState("");
 
-  const navigate = useNavigate();
-
-  const { id } = useParams();
-
-  /* ===== CARREGAR ITEM ===== */
+  const [modalSucesso, setModalSucesso] = useState(false);
+  const [modalExcluir, setModalExcluir] = useState(false);
 
   useEffect(() => {
-
-    async function carregarItem() {
-
-      try {
-
-        setErro("");
-
-        const resposta = await api.get(`/itens/${id}`);
-
-        const item = resposta.data;
-
-        setNome(item.nome || "");
-        setDescricao(item.descricao || "");
-        setPreco(item.preco || "");
-        setQuantidade(item.quantidade || "");
-
-      } catch (erro) {
-
-        setErro("Erro ao carregar item");
-
-        console.error(erro);
-      }
-    }
-
     carregarItem();
+  }, []);
 
-  }, [id]);
-
-  /* ===== EDITAR ITEM ===== */
-
-  async function editarItem(event) {
-
-    event.preventDefault();
-
+  async function carregarItem() {
     try {
 
-      setErro("");
+      const resposta = await api.get(`/itens/${id}`);
 
-      const dados = {
-        nome,
-        descricao,
-        preco: Number(preco),
-        quantidade: Number(quantidade),
-      };
+      const item = resposta.data;
 
-      await api.put(`/itens/${id}`, dados);
+      setNome(item.nome || "");
+      setDescricao(item.descricao || "");
+      setPreco(item.preco || "");
+      setQuantidade(item.quantidade || "");
 
-      navigate("/admin/produtos");
+      setFotoAtual(item.foto || "");
 
-    } catch (erro) {
+      if (item.foto) {
+        setPreview(`http://localhost:3333/${item.foto}`);
+      }
 
-      setErro("Erro ao editar o item");
+    } catch (err) {
 
-      console.error(erro);
+      console.error(err);
+
+      setErro("Erro ao carregar produto.");
+
     }
   }
 
-  /* ===== EXCLUIR ITEM ===== */
+  function selecionarImagem(e) {
 
-  async function excluirItem() {
+    const arquivo = e.target.files[0];
 
-    const confirmar = window.confirm(
-      "Tem certeza que deseja excluir este item?"
-    );
+    if (!arquivo) return;
 
-    if (!confirmar) return;
+    setNovaFoto(arquivo);
+
+    setPreview(URL.createObjectURL(arquivo));
+
+  }
+
+  async function editarItem(e) {
+
+    e.preventDefault();
+
+    try {
+
+      const formData = new FormData();
+
+      formData.append("nome", nome);
+      formData.append("descricao", descricao);
+      formData.append("preco", Number(preco));
+      formData.append("quantidade", Number(quantidade));
+
+      if (novaFoto) {
+        formData.append("foto", novaFoto);
+      }
+
+      await api.put(
+        `/itens/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setModalSucesso(true);
+
+    } catch (err) {
+
+      console.error(err);
+
+      setErro("Erro ao atualizar produto.");
+
+    }
+
+  }
+
+  async function excluirProduto() {
 
     try {
 
@@ -104,42 +125,36 @@ export default function Editar() {
 
       navigate("/admin/produtos");
 
-    } catch (erro) {
+    } catch (err) {
 
-      setErro("Erro ao excluir item");
+      console.error(err);
 
-      console.error(erro);
+      setErro("Erro ao excluir produto.");
+
     }
+
   }
 
   return (
 
     <div className={styles.container}>
 
-      {/* SIDEBAR */}
-
       <Cabecalho />
 
-      {/* MAIN */}
-
       <main className={styles.main}>
-
-        {/* HEADER */}
 
         <div className={styles.top}>
 
           <div className={styles.titleArea}>
 
             <span className={styles.badge}>
-              Edição de Produto
+              Editar Produto
             </span>
 
-            <h1>
-              Editar Produto
-            </h1>
+            <h1>Editar Produto</h1>
 
             <p>
-              Atualize informações, estoque e imagem do produto.
+              Atualize as informações e a imagem do produto.
             </p>
 
           </div>
@@ -147,42 +162,31 @@ export default function Editar() {
           <div className={styles.actions}>
 
             <button
-              type="button"
               className={`${styles.btn} ${styles.btnCancel}`}
               onClick={() => navigate("/admin/produtos")}
             >
-
               <FiArrowLeft />
-
               Voltar
-
             </button>
 
             <button
-              type="submit"
               form="formEditar"
+              type="submit"
               className={`${styles.btn} ${styles.btnSave}`}
             >
-
               <FiSave />
-
               Salvar
-
             </button>
 
           </div>
 
         </div>
 
-        {/* ERROR */}
-
         {erro && (
           <div className={styles.error}>
             {erro}
           </div>
         )}
-
-        {/* CARD */}
 
         <div className={styles.card}>
 
@@ -193,56 +197,80 @@ export default function Editar() {
 
             <div className={styles.grid}>
 
-              {/* IMAGE */}
-
               <div className={styles.imageArea}>
 
                 <div className={styles.sectionHeader}>
 
-                  <h2>
-                    Imagem do Produto
-                  </h2>
+                  <h2>Imagem</h2>
 
                   <span>
-                    Atualize a foto principal
+                    Clique na imagem para trocar.
                   </span>
 
                 </div>
 
-                <div className={styles.preview}>
-
-                  <img
-                    src="https://images.tcdn.com.br/img/img_prod/1203392/tinta_coral_renova_fosco_18l_1109_1_0d85e4eb7c6fbb3d7e57f09f73887dfd.jpg"
-                    alt="Produto"
+                <label className={styles.preview}>
+                                  <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={selecionarImagem}
                   />
 
-                </div>
+                  {preview ? (
+                    <img
+                      src={preview}
+                      alt={nome}
+                    />
+                  ) : (
+                    <div className={styles.semImagem}>
 
-                <button
-                  type="button"
-                  className={styles.uploadBtn}
-                >
+                      <FiUpload size={60} />
+
+                      <p>Clique para escolher uma imagem</p>
+
+                    </div>
+                  )}
+
+                </label>
+
+                {novaFoto && (
+
+                  <div className={styles.fileInfo}>
+
+                    {novaFoto.name}
+
+                  </div>
+
+                )}
+
+                <label className={styles.uploadBtn}>
 
                   <FiUpload />
 
-                  Trocar imagem
+                  Escolher outra imagem
 
-                </button>
+                  <input
+                    hidden
+                    type="file"
+                    accept="image/*"
+                    onChange={selecionarImagem}
+                  />
+
+                </label>
 
               </div>
 
-              {/* FORM */}
+              {/* ================= FORM ================= */}
 
               <div className={styles.formArea}>
 
                 <div className={styles.sectionHeader}>
 
-                  <h2>
-                    Informações
-                  </h2>
+                  <h2>Informações</h2>
 
                   <span>
-                    Dados principais do produto
+                    Atualize os dados do produto.
                   </span>
 
                 </div>
@@ -251,67 +279,50 @@ export default function Editar() {
 
                   <div className={styles.inputGroup}>
 
-                    <label>
-                      Nome do produto
-                    </label>
+                    <label>Nome</label>
 
                     <input
-                      type="text"
                       value={nome}
-                      onChange={(event) =>
-                        setNome(event.target.value)
-                      }
-                      placeholder="Digite o nome do produto"
+                      onChange={(e) => setNome(e.target.value)}
                     />
 
                   </div>
 
                   <div className={styles.inputGroup}>
 
-                    <label>
-                      Preço
-                    </label>
+                    <label>Preço</label>
 
                     <input
                       type="number"
                       value={preco}
-                      onChange={(event) =>
-                        setPreco(event.target.value)
-                      }
-                      placeholder="Digite o preço"
+                      onChange={(e) => setPreco(e.target.value)}
                     />
 
                   </div>
 
                   <div className={styles.inputGroup}>
 
-                    <label>
-                      Quantidade
-                    </label>
+                    <label>Quantidade</label>
 
                     <input
                       type="number"
                       value={quantidade}
-                      onChange={(event) =>
-                        setQuantidade(event.target.value)
+                      onChange={(e) =>
+                        setQuantidade(e.target.value)
                       }
-                      placeholder="Digite a quantidade"
                     />
 
                   </div>
 
                   <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
 
-                    <label>
-                      Descrição
-                    </label>
+                    <label>Descrição</label>
 
                     <textarea
                       value={descricao}
-                      onChange={(event) =>
-                        setDescricao(event.target.value)
+                      onChange={(e) =>
+                        setDescricao(e.target.value)
                       }
-                      placeholder="Digite a descrição do produto"
                     />
 
                   </div>
@@ -324,19 +335,16 @@ export default function Editar() {
 
           </form>
 
-          {/* DELETE */}
-
           <div className={styles.deleteArea}>
 
             <button
-              type="button"
               className={styles.btnDanger}
-              onClick={excluirItem}
+              onClick={() => setModalExcluir(true)}
             >
 
               <FiTrash2 />
 
-              Excluir produto
+              Excluir Produto
 
             </button>
 
@@ -344,8 +352,114 @@ export default function Editar() {
 
         </div>
 
+        {/* ================= MODAL SUCESSO ================= */}
+
+        {modalSucesso && (
+
+          <div className={styles.modalOverlay}>
+
+            <div className={styles.modal}>
+
+              <FiCheckCircle className={styles.modalIcon} />
+
+              <h2>
+
+                Produto atualizado!
+
+              </h2>
+
+              <p>
+
+                As alterações foram salvas com sucesso.
+
+              </p>
+
+              <div className={styles.modalButtons}>
+
+                <button
+                  className={styles.btnModal}
+                  onClick={() => setModalSucesso(false)}
+                >
+
+                  Continuar editando
+
+                </button>
+
+                <button
+                  className={styles.btnModalPrimary}
+                  onClick={() =>
+                    navigate("/admin/produtos")
+                  }
+                >
+
+                  Ir para Produtos
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        )}
+
+        {/* ================= MODAL EXCLUIR ================= */}
+
+        {modalExcluir && (
+
+          <div className={styles.modalOverlay}>
+
+            <div className={styles.modal}>
+
+              <FiTrash2 className={styles.modalDelete} />
+
+              <h2>
+
+                Excluir produto?
+
+              </h2>
+
+              <p>
+
+                Esta ação não poderá ser desfeita.
+
+              </p>
+
+              <div className={styles.modalButtons}>
+
+                <button
+                  className={styles.btnModal}
+                  onClick={() =>
+                    setModalExcluir(false)
+                  }
+                >
+
+                  Cancelar
+
+                </button>
+
+                <button
+                  className={styles.btnDanger}
+                  onClick={excluirProduto}
+                >
+
+                  Excluir
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        )}
+
       </main>
 
     </div>
+
   );
+
 }
