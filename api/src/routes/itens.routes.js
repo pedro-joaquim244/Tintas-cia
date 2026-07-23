@@ -1,13 +1,13 @@
-    import express from 'express';
-    import pool from '../database.js';
-    import { autenticarToken, autorizarTipos } from '../middlewares/autenticacao.js';
-    import upload from "../middlewares/upload.js";
+import express from 'express';
+import pool from '../database.js';
+import { autenticarToken, autorizarTipos } from '../middlewares/autenticacao.js';
+import upload from "../middlewares/upload.js";
 
-    const router = express.Router();
+const router = express.Router();
 
-    router.get("/", autenticarToken, async (req, res) => {
-        try {
-            const sql = `
+router.get("/", autenticarToken, async (req, res) => {
+    try {
+        const sql = `
         SELECT
         id,
         nome,
@@ -15,54 +15,55 @@
         preco,
         quantidade,
         foto,
+        status,
         criado_em,
         atualizado_em
         FROM itens
         ORDER BY id DESC
         `;
 
-            const [itens] = await pool.query(sql)
-            return res.json(itens)
+        const [itens] = await pool.query(sql)
+        return res.json(itens)
 
-        } catch (error) {
-            console.error(error);
+    } catch (error) {
+        console.error(error);
 
-            return res.status(500).json({
-                erro: "Erro ao listar itens.",
-            })
+        return res.status(500).json({
+            erro: "Erro ao listar itens.",
+        })
 
-        }
+    }
 
-    });
+});
 
-    router.get("/:id", autenticarToken, async (req, res) => {
-        try {
-            const { id } = req.params;
-            const sql = `
+router.get("/:id", autenticarToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const sql = `
             SELECT
             *
             FROM itens
             WHERE id = ?
             `;
-            const [resultado] = await pool.query(sql, [id]);
+        const [resultado] = await pool.query(sql, [id]);
 
-            if (resultado.length === 0) {
-                return res.status(404).json({
-                    erro: "item nao encontrado"
-                })
-            }
-            return res.json(resultado[0]);
-        }
-        catch (error) {
-            console.error(error);
-            return res.status(500).json({
-                erro: "erro ao buscar item."
+        if (resultado.length === 0) {
+            return res.status(404).json({
+                erro: "item nao encontrado"
             })
-
         }
+        return res.json(resultado[0]);
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            erro: "erro ao buscar item."
+        })
+
+    }
 
 
-    });
+});
 
 router.post(
     "/",
@@ -76,6 +77,7 @@ router.post(
                 nome,
                 descricao,
                 preco,
+                status,
                 quantidade
             } = req.body;
 
@@ -96,10 +98,12 @@ router.post(
                     descricao,
                     preco,
                     quantidade,
+                    status,
                     foto
                 )
                 VALUES
                 (
+                    ?,
                     ?,
                     ?,
                     ?,
@@ -113,6 +117,7 @@ router.post(
                 descricao || null,
                 preco,
                 quantidade || 0,
+                status || "Ativo",
                 foto
             ]);
 
@@ -153,6 +158,7 @@ router.put(
                 nome,
                 descricao,
                 preco,
+                status,
                 quantidade
             } = req.body;
 
@@ -190,6 +196,7 @@ router.put(
                     descricao = ?,
                     preco = ?,
                     quantidade = ?,
+                    status = ?,
                     foto = ?
                 WHERE id = ?
             `;
@@ -200,6 +207,7 @@ router.put(
                 preco,
                 quantidade,
                 foto,
+                status,
                 id
             ]);
 
@@ -231,36 +239,36 @@ router.put(
         }
     }
 );
-    
+
 
 
 router.delete("/:id", autenticarToken, autorizarTipos("admin"), async (req, res) => {
-        try {
-            const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-            const sql = `
+        const sql = `
             DELETE from itens
             WHERE id = ?
             `
-            const [resultado] = await pool.query(sql, [id]);
+        const [resultado] = await pool.query(sql, [id]);
 
-            if (resultado.affectedRows === 0) {
-                return res.status(404).json({
-                    erro: "item nao encontardo"
-                })
-            }
-            return res.status(200).json({
-                mensagem: "item excluido com sucesso!"
-            });
-
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({
+                erro: "item nao encontardo"
+            })
         }
-        catch (error) {
-            console.error(error);
+        return res.status(200).json({
+            mensagem: "item excluido com sucesso!"
+        });
 
-            return res.status(500).json({
-                erro: "erro deletar item :("
-            });
-        }
-    });
+    }
+    catch (error) {
+        console.error(error);
 
-    export default router;
+        return res.status(500).json({
+            erro: "erro deletar item :("
+        });
+    }
+});
+
+export default router;
