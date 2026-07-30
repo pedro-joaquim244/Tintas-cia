@@ -1,30 +1,106 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+
 import { api } from "../services/api.js";
+
 import styles from "../styles/Listar.module.css";
-import Cabeçalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
+
+import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
+
 
 export default function Listar() {
 
+
   const [itens, setItens] = useState([]);
+
   const [erro, setErro] = useState("");
 
+  const [busca, setBusca] = useState("");
+
+  const [statusFiltro, setStatusFiltro] = useState("");
 
 
-  useEffect(() => {
 
-    api.get("/itens")
-      .then((resposta) => {
 
-        setItens(resposta.data);
 
-      })
-      .catch(() => {
+  useEffect(()=>{
 
-        setErro("Erro ao carregar itens.");
+    carregarItens();
 
-      });
+  },[]);
 
-  }, []);
+
+
+
+
+
+  async function carregarItens(){
+
+    try{
+
+      const resposta = await api.get("/itens");
+
+      setItens(resposta.data);
+
+
+    }catch(error){
+
+      console.error(error);
+
+      setErro(
+        "Erro ao carregar itens."
+      );
+
+    }
+
+  }
+
+
+
+
+
+
+
+
+  const itensFiltrados = useMemo(()=>{
+
+
+    return itens.filter((item)=>{
+
+
+      const nomeValido =
+        item.nome
+        .toLowerCase()
+        .includes(
+          busca.toLowerCase()
+        );
+
+
+
+      const statusValido =
+        statusFiltro === ""
+        ? true
+        : item.status === statusFiltro;
+
+
+
+      return nomeValido && statusValido;
+
+
+    });
+
+
+
+  },[
+    itens,
+    busca,
+    statusFiltro
+  ]);
+
+
+
+
+
 
 
 
@@ -33,108 +109,145 @@ export default function Listar() {
     <div className={styles.container}>
 
 
-      {/* SIDEBAR */}
-
-      <Cabeçalho />
+      <Cabecalho />
 
 
-
-      {/* CONTENT */}
 
       <main className={styles.content}>
 
 
-        {/* TOPBAR */}
+
+
+        {/* ================= TOPBAR ================= */}
+
 
         <div className={styles.topbar}>
 
 
           <div>
 
+
             <h1 id={styles.title}>
+
               Produtos
+
             </h1>
 
 
+
             <p>
-              Gerencie todos os produtos da sua loja
+
+              Gerencie todos os produtos da sua loja.
+
             </p>
+
 
 
           </div>
 
 
+
         </div>
+                {/* ================= CARDS ================= */}
 
-
-
-
-
-        {/* CARDS */}
 
         <div className={styles.cards}>
 
 
           <div className={styles.card}>
 
+
             <span>
               Total de Produtos
             </span>
+
 
             <h2>
               {itens.length}
             </h2>
 
-          </div>
-
-
-
-
-          <div className={styles.card}>
-
-            <span>
-              Baixo Estoque
-            </span>
-
-            <h2>
-              {
-                itens.filter(
-                  item => item.quantidade < 5
-                ).length
-              }
-            </h2>
 
           </div>
 
 
 
 
+
           <div className={styles.card}>
+
 
             <span>
               Produtos Ativos
             </span>
 
+
             <h2>
-              {itens.length}
+
+              {
+                itens.filter(
+                  (item)=>
+                    item.status === "Ativo"
+                ).length
+              }
+
             </h2>
 
+
           </div>
+
 
 
 
 
           <div className={styles.card}>
 
+
             <span>
-              Categorias
+              Baixo Estoque
             </span>
 
+
             <h2>
-              12
+
+              {
+                itens.filter(
+                  (item)=>
+                    item.quantidade < 5 &&
+                    item.status === "Ativo"
+                ).length
+              }
+
             </h2>
 
+
           </div>
+
+
+
+
+
+          <div className={styles.card}>
+
+
+            <span>
+              Esgotados
+            </span>
+
+
+            <h2>
+
+              {
+                itens.filter(
+                  (item)=>
+                    item.status === "Esgotado"
+                ).length
+              }
+
+            </h2>
+
+
+          </div>
+
 
 
         </div>
@@ -144,7 +257,11 @@ export default function Listar() {
 
 
 
-        {/* SEARCH */}
+
+
+
+        {/* ================= BUSCA ================= */}
+
 
         <div className={styles.searchArea}>
 
@@ -156,17 +273,25 @@ export default function Listar() {
 
               type="text"
 
-              placeholder="Buscar por nome, marca, SKU ou código..."
+              placeholder="Buscar produto..."
 
               className={styles.searchInput}
+
+              value={busca}
+
+              onChange={(e)=>
+                setBusca(e.target.value)
+              }
 
             />
 
 
 
-            <a
 
-              href="/admin/produtos/novo"
+
+            <Link
+
+              to="/admin/produtos/novo"
 
               className={styles.btnNovo}
 
@@ -174,10 +299,15 @@ export default function Listar() {
 
               + Novo Produto
 
-            </a>
+            </Link>
+
 
 
           </div>
+
+
+
+
 
 
 
@@ -186,41 +316,50 @@ export default function Listar() {
           <div className={styles.filters}>
 
 
-            <select className={styles.select}>
+            <select
 
-              <option>
-                Todas as categorias
-              </option>
+              className={styles.select}
 
-            </select>
+              value={statusFiltro}
 
+              onChange={(e)=>
+                setStatusFiltro(e.target.value)
+              }
 
-
-            <select className={styles.select}>
-
-              <option>
-                Todas as marcas
-              </option>
-
-            </select>
+            >
 
 
+              <option value="">
 
-            <select className={styles.select}>
-
-              <option>
-                Todos os tipos
-              </option>
-
-            </select>
-
-
-
-            <select className={styles.select}>
-
-              <option>
                 Todos os status
+
               </option>
+
+
+
+              <option value="Ativo">
+
+                Ativo
+
+              </option>
+
+
+
+              <option value="Esgotado">
+
+                Esgotado
+
+              </option>
+
+
+
+              <option value="Inativo">
+
+                Inativo
+
+              </option>
+
+
 
             </select>
 
@@ -229,14 +368,10 @@ export default function Listar() {
           </div>
 
 
+
         </div>
-
-
-
-
-
-
-        {/* TABLE */}
+        id="tabela-final"
+        {/* ================= TABELA ================= */}
 
 
         <div className={styles.tableContainer}>
@@ -247,7 +382,7 @@ export default function Listar() {
 
             <span>
 
-              Total: {itens.length} produtos
+              Total: {itensFiltrados.length} produtos
 
             </span>
 
@@ -273,12 +408,11 @@ export default function Listar() {
 
 
 
-
-          {itens.length === 0 && !erro && (
+          {!erro && itensFiltrados.length === 0 && (
 
             <div className={styles.empty}>
 
-              Nenhum item cadastrado.
+              Nenhum produto encontrado.
 
             </div>
 
@@ -290,7 +424,7 @@ export default function Listar() {
 
 
 
-          {itens.length > 0 && (
+          {itensFiltrados.length > 0 && (
 
 
             <table className={styles.table}>
@@ -301,18 +435,9 @@ export default function Listar() {
 
                 <tr>
 
+
                   <th>
                     Produto
-                  </th>
-
-
-                  <th>
-                    Categoria
-                  </th>
-
-
-                  <th>
-                    Marca
                   </th>
 
 
@@ -346,236 +471,204 @@ export default function Listar() {
 
 
 
-
               <tbody>
 
 
+              {
 
-                {
-                  itens.map((item)=>(
-
-
-
-                    <tr key={item.id}>
+                itensFiltrados.map((item)=>(
 
 
-                      <td>
+                  <tr key={item.id}>
 
 
 
-                        <div className={styles.product}>
+                    <td>
 
 
-                          {
+                      <div className={styles.product}>
 
 
-                            item.foto ? (
+                        {
+
+                          item.foto ? (
 
 
-                              <img
+                            <img
 
-                                src={`http://localhost:3333/${item.foto}`}
+                              src={`http://localhost:3333/${item.foto}`}
 
-                                alt={item.nome}
+                              alt={item.nome}
 
-                                className={styles.productImage}
+                              className={styles.productImage}
 
-                              />
-
-
-                            ) : (
+                            />
 
 
-                              <div className={styles.productImage}>
-
-                                Sem foto
-
-                              </div>
+                          ) : (
 
 
-                            )
+                            <div className={styles.productImage}>
+
+                              Sem foto
+
+                            </div>
 
 
-                          }
+                          )
+
+                        }
 
 
 
 
 
-
-                          <div>
-
-
-                            <strong>
-
-                              {item.nome}
-
-                            </strong>
+                        <div>
 
 
+                          <strong>
 
-                            <span>
+                            {item.nome}
 
-                              SKU: #{item.id}
-
-                            </span>
+                          </strong>
 
 
-                          </div>
+
+                          <span>
+
+                            SKU: #{item.id}
+
+                          </span>
+
 
 
                         </div>
 
 
 
-                      </td>
+                      </div>
+
+
+                    </td>
 
 
 
 
 
 
+                    <td>
 
-                      <td>
+                      R$ {item.preco}
 
-                        Tintas Internas
-
-                      </td>
-
-
-
-
-
-                      <td>
-
-                        Coral
-
-                      </td>
-
-
-
-
-
-                      <td>
-
-                        R$ {item.preco}
-
-                      </td>
-
-
-
-
-
-                      <td>
-
-                        {item.quantidade} un.
-
-                      </td>
+                    </td>
 
 
 
 
 
 
+                    <td>
 
-                      <td>
+                      {item.quantidade} un.
+
+                    </td>
 
 
-                        <span
 
-                          className={
 
-                            `${styles.status} ${
-                              item.quantidade < 5
-                              ? styles.low
-                              : ""
-                            }`
 
+
+                    <td>
+
+
+                      <span
+
+                        className={`
+                          ${styles.status}
+
+                          ${
+                            item.status === "Ativo"
+                            ? styles.ativo
+                            :
+                            item.status === "Inativo"
+                            ? styles.inativo
+                            :
+                            styles.esgotado
                           }
+
+                        `}
+
+                      >
+
+                        {item.status}
+
+                      </span>
+
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                      <div className={styles.actions}>
+
+
+                        <Link
+
+                          to={`/admin/produtos/${item.id}/editar`}
+
+                          className={styles.btnEditar}
 
                         >
 
+                          Editar
 
-                          {
-
-                            item.quantidade < 5
-
-                            ? "Baixo estoque"
-
-                            : "Ativo"
-
-                          }
-
-
-                        </span>
-
-
-
-                      </td>
+                        </Link>
 
 
 
 
 
+                        <button
+
+                          className={styles.btnExcluir}
+
+                        >
+
+                          Excluir
+
+                        </button>
+
+
+                      </div>
 
 
 
-                      <td>
-
-
-
-                        <div className={styles.actions}>
-
-
-                          <a
-
-                            href={`/admin/produtos/${item.id}/editar`}
-
-                            className={styles.btnEditar}
-
-                          >
-
-                            Editar
-
-                          </a>
+                    </td>
 
 
 
 
-
-                          <button
-
-                            className={styles.btnExcluir}
-
-                          >
-
-                            Excluir
-
-                          </button>
+                  </tr>
 
 
 
-                        </div>
+                ))
 
-
-
-                      </td>
-
-
-
-
-
-                    </tr>
-
-
-
-                  ))
-
-                }
+              }
 
 
 
               </tbody>
+
+
 
 
 
@@ -587,7 +680,10 @@ export default function Listar() {
 
 
 
+
+
         </div>
+
 
 
 
@@ -599,5 +695,6 @@ export default function Listar() {
 
 
   );
+
 
 }

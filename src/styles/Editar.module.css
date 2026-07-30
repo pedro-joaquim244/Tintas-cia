@@ -690,9 +690,6 @@ img {
   }
 }
 
-/* ======================================================
-   FINAL
-====================================================== */
 
 input,
 textarea,
@@ -708,4 +705,48 @@ textarea:focus {
 
 textarea {
   line-height: 1.6;
+}
+
+
+/* STATUS */
+
+.selectStatus{
+
+    width:100%;
+    height:48px;
+
+    padding:0 15px;
+
+    border-radius:12px;
+
+    border:1px solid #d8dee9;
+
+    background:white;
+
+    color:#1e293b;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+
+.selectStatus:hover{
+
+    border-color:#2563eb;
+
+}
+
+
+.selectStatus:focus{
+
+    outline:none;
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 3px rgba(37,99,235,.15);
+
 }
