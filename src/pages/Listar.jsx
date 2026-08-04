@@ -7,6 +7,8 @@ import styles from "../styles/Listar.module.css";
 
 import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
 
+import { FiTrash2, FiX } from "react-icons/fi";
+
 
 export default function Listar() {
 
@@ -19,31 +21,60 @@ export default function Listar() {
 
   const [statusFiltro, setStatusFiltro] = useState("");
 
+  const [modalExcluir, setModalExcluir] = useState(false);
+  const [produtoSelecionado, setProdutoSelecionado] = useState(null);
 
 
 
 
-  useEffect(()=>{
+
+  useEffect(() => {
 
     carregarItens();
 
-  },[]);
+  }, []);
+
+
+  function abrirModalExcluir(item) {
+    setProdutoSelecionado(item);
+    setModalExcluir(true);
+  }
+
+  async function excluirProduto() {
+    if (!produtoSelecionado) return;
+
+    try {
+      await api.delete(`/itens/${produtoSelecionado.id}`);
+
+      setItens((lista) =>
+        lista.filter(
+          (item) => item.id !== produtoSelecionado.id
+        )
+      );
+
+      setModalExcluir(false);
+      setProdutoSelecionado(null);
+
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao excluir produto.");
+    }
+  }
 
 
 
 
 
+  async function carregarItens() {
 
-  async function carregarItens(){
-
-    try{
+    try {
 
       const resposta = await api.get("/itens");
 
       setItens(resposta.data);
 
 
-    }catch(error){
+    } catch (error) {
 
       console.error(error);
 
@@ -62,25 +93,25 @@ export default function Listar() {
 
 
 
-  const itensFiltrados = useMemo(()=>{
+  const itensFiltrados = useMemo(() => {
 
 
-    return itens.filter((item)=>{
+    return itens.filter((item) => {
 
 
       const nomeValido =
         item.nome
-        .toLowerCase()
-        .includes(
-          busca.toLowerCase()
-        );
+          .toLowerCase()
+          .includes(
+            busca.toLowerCase()
+          );
 
 
 
       const statusValido =
         statusFiltro === ""
-        ? true
-        : item.status === statusFiltro;
+          ? true
+          : item.status === statusFiltro;
 
 
 
@@ -91,7 +122,7 @@ export default function Listar() {
 
 
 
-  },[
+  }, [
     itens,
     busca,
     statusFiltro
@@ -148,7 +179,7 @@ export default function Listar() {
 
 
         </div>
-                {/* ================= CARDS ================= */}
+        {/* ================= CARDS ================= */}
 
 
         <div className={styles.cards}>
@@ -185,7 +216,7 @@ export default function Listar() {
 
               {
                 itens.filter(
-                  (item)=>
+                  (item) =>
                     item.status === "Ativo"
                 ).length
               }
@@ -211,7 +242,7 @@ export default function Listar() {
 
               {
                 itens.filter(
-                  (item)=>
+                  (item) =>
                     item.quantidade < 5 &&
                     item.status === "Ativo"
                 ).length
@@ -238,7 +269,7 @@ export default function Listar() {
 
               {
                 itens.filter(
-                  (item)=>
+                  (item) =>
                     item.status === "Esgotado"
                 ).length
               }
@@ -279,7 +310,7 @@ export default function Listar() {
 
               value={busca}
 
-              onChange={(e)=>
+              onChange={(e) =>
                 setBusca(e.target.value)
               }
 
@@ -322,7 +353,7 @@ export default function Listar() {
 
               value={statusFiltro}
 
-              onChange={(e)=>
+              onChange={(e) =>
                 setStatusFiltro(e.target.value)
               }
 
@@ -370,7 +401,7 @@ export default function Listar() {
 
 
         </div>
-        id="tabela-final"
+
         {/* ================= TABELA ================= */}
 
 
@@ -474,195 +505,245 @@ export default function Listar() {
               <tbody>
 
 
-              {
+                {
 
-                itensFiltrados.map((item)=>(
-
-
-                  <tr key={item.id}>
+                  itensFiltrados.map((item) => (
 
 
-
-                    <td>
-
-
-                      <div className={styles.product}>
-
-
-                        {
-
-                          item.foto ? (
-
-
-                            <img
-
-                              src={`http://localhost:3333/${item.foto}`}
-
-                              alt={item.nome}
-
-                              className={styles.productImage}
-
-                            />
-
-
-                          ) : (
-
-
-                            <div className={styles.productImage}>
-
-                              Sem foto
-
-                            </div>
-
-
-                          )
-
-                        }
+                    <tr key={item.id}>
 
 
 
+                      <td>
 
 
-                        <div>
+                        <div className={styles.product}>
 
 
-                          <strong>
+                          {
 
-                            {item.nome}
-
-                          </strong>
+                            item.foto ? (
 
 
+                              <img
 
-                          <span>
+                                src={`http://localhost:3333/${item.foto}`}
 
-                            SKU: #{item.id}
+                                alt={item.nome}
 
-                          </span>
+                                className={styles.productImage}
+
+                              />
+
+
+                            ) : (
+
+
+                              <div className={styles.productImage}>
+
+                                Sem foto
+
+                              </div>
+
+
+                            )
+
+                          }
+
+
+
+
+
+                          <div>
+
+
+                            <strong>
+
+                              {item.nome}
+
+                            </strong>
+
+
+
+                            <span>
+
+                              SKU: #{item.id}
+
+                            </span>
+
+
+
+                          </div>
 
 
 
                         </div>
 
 
-
-                      </div>
-
-
-                    </td>
+                      </td>
 
 
 
 
 
 
-                    <td>
+                      <td>
 
-                      R$ {item.preco}
+                        R$ {item.preco}
 
-                    </td>
-
-
-
-
-
-
-                    <td>
-
-                      {item.quantidade} un.
-
-                    </td>
+                      </td>
 
 
 
 
 
 
-                    <td>
+                      <td>
+
+                        {item.quantidade} un.
+
+                      </td>
 
 
-                      <span
 
-                        className={`
+
+
+
+                      <td>
+
+
+                        <span
+
+                          className={`
                           ${styles.status}
 
-                          ${
-                            item.status === "Ativo"
-                            ? styles.ativo
-                            :
-                            item.status === "Inativo"
-                            ? styles.inativo
-                            :
-                            styles.esgotado
-                          }
+                          ${item.status === "Ativo"
+                              ? styles.ativo
+                              :
+                              item.status === "Inativo"
+                                ? styles.inativo
+                                :
+                                styles.esgotado
+                            }
 
                         `}
 
-                      >
-
-                        {item.status}
-
-                      </span>
-
-
-
-                    </td>
-
-
-
-
-
-
-
-                    <td>
-
-
-                      <div className={styles.actions}>
-
-
-                        <Link
-
-                          to={`/admin/produtos/${item.id}/editar`}
-
-                          className={styles.btnEditar}
-
                         >
 
-                          Editar
+                          {item.status}
 
-                        </Link>
-
-
+                        </span>
 
 
 
-                        <button
-
-                          className={styles.btnExcluir}
-
-                        >
-
-                          Excluir
-
-                        </button>
-
-
-                      </div>
-
-
-
-                    </td>
+                      </td>
 
 
 
 
-                  </tr>
 
 
 
-                ))
+                      <td>
 
-              }
+
+                        <div className={styles.actions}>
+
+
+                          <Link
+
+                            to={`/admin/produtos/${item.id}/editar`}
+
+                            className={styles.btnEditar}
+
+                          >
+
+                            Editar
+
+                          </Link>
+
+
+
+
+                          <button
+                            className={styles.btnExcluir}
+                            onClick={() => abrirModalExcluir(item)}
+                          >
+                            Excluir
+                          </button>
+
+                          {modalExcluir && (
+                            <div className={styles.modalOverlay}>
+                              <div className={styles.modal}>
+
+                                <button
+                                  className={styles.closeModal}
+                                  onClick={() => {
+                                    setModalExcluir(false);
+                                    setProdutoSelecionado(null);
+                                  }}
+                                >
+                                  <FiX />
+                                </button>
+
+                                <div className={styles.modalDelete}>
+                                  <FiTrash2 className={styles.modalIcon}/>
+                                </div>
+
+                                <h2>Excluir produto?</h2>
+
+                                <p>
+                                  Tem certeza que deseja excluir{" "}
+                                  <strong>{produtoSelecionado?.nome}</strong>?
+                                  <br />
+                                  <br />
+                                  Esta ação não poderá ser desfeita.
+                                </p>
+
+                                <div className={styles.modalButtons}>
+
+                                  <button
+                                    type="button"
+                                    className={styles.btnModal}
+                                    onClick={() => {
+                                      setModalExcluir(false);
+                                      setProdutoSelecionado(null);
+                                    }}
+                                  >
+                                    Cancelar
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    className={styles.btnDanger}
+                                    onClick={excluirProduto}
+                                  >
+                                    Excluir
+                                  </button>
+
+                                </div>
+
+                              </div>
+                            </div>
+                          )}
+
+
+                        </div>
+
+
+
+                      </td>
+
+
+
+
+                    </tr>
+
+
+
+                  ))
+
+                }
 
 
 
@@ -673,6 +754,9 @@ export default function Listar() {
 
 
             </table>
+
+
+
 
 
 

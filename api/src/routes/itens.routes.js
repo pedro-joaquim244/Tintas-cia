@@ -151,15 +151,14 @@ router.put(
     upload.single("foto"),
     async (req, res) => {
         try {
-
             const { id } = req.params;
 
-            const {
+            let {
                 nome,
                 descricao,
                 preco,
+                quantidade,
                 status,
-                quantidade
             } = req.body;
 
             if (!nome || preco === undefined || quantidade === undefined) {
@@ -204,10 +203,10 @@ router.put(
             const [resultado] = await pool.query(sql, [
                 nome,
                 descricao || null,
-                preco,
-                quantidade,
+                Number(preco),
+                Number(quantidade),
+                status || "Ativo",
                 foto,
-                status,
                 id
             ]);
 
@@ -230,12 +229,15 @@ router.put(
 
         } catch (error) {
 
+            console.error("========== ERRO AO ATUALIZAR ITEM ==========");
             console.error(error);
+            console.error("Mensagem:", error.message);
+            console.error("Código:", error.code);
+            console.error("SQL:", error.sql);
 
             return res.status(500).json({
-                erro: "Erro ao atualizar item."
+                erro: error.message
             });
-
         }
     }
 );
