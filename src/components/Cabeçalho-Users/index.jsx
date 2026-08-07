@@ -15,11 +15,29 @@ export default function Header() {
 
             <img src={Logo} alt="Logo" className={styles.logo} />
 
+
             <nav className={styles.nav}>
-                <a href="#">Início</a>
-                <a href="#">Categorias</a>
-                <a href="#">Produtos</a>
-                <a href="#">Contato</a>
+
+                <Link to="/cliente/inicio">
+                    Início
+                </Link>
+
+                <Link to="/cliente/simulador">
+                    Simulador
+                </Link>
+
+                <Link to="/cliente/cores">
+                    Produtos
+                </Link>
+
+                <Link to="/cliente/sobre-nos">
+                    Sobre nós
+                </Link>
+
+                <Link to="/cliente/carrinho">
+                    Carrinho
+                </Link>
+
             </nav>
 
             <Link to="/perfil" className={styles.usuario}>
@@ -43,9 +61,8 @@ export default function Header() {
             </Link>
 
             <div
-                className={`${styles.hamburguer} ${
-                    menuAberto ? styles.ativo : ""
-                }`}
+                className={`${styles.hamburguer} ${menuAberto ? styles.ativo : ""
+                    }`}
                 onClick={() => setMenuAberto(!menuAberto)}
             >
                 <span></span>
@@ -54,9 +71,8 @@ export default function Header() {
             </div>
 
             <div
-                className={`${styles.menuMobile} ${
-                    menuAberto ? styles.show : ""
-                }`}
+                className={`${styles.menuMobile} ${menuAberto ? styles.show : ""
+                    }`}
             >
                 <a href="#">Início</a>
                 <a href="#">Categorias</a>

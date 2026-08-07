@@ -10,7 +10,10 @@ import Inicial from "../pages/Inicial";
 import Pedidos from "../pages/Pedidos";
 import SobreNos from "../pages/SobreNos";
 import SimuladorTinta from "../pages/SimuladorTintas";
+import Carrinho from "../pages/Carrinho.jsx"
 import Perfil from "../pages/Perfil";
+import Cores from "../pages/Cores.jsx";
+import Compra from "../pages/Compras.jsx";
 
 import RotasAdmin from "./RotasAdmin";
 import RotasCliente from "./RotasCliente";
@@ -56,16 +59,19 @@ export function AppRoutes() {
       </Route>
 
       <Route element={<RotasCliente />}>
-        <Route path="/cliente/inicio" element={<Inicial />} />
-        <Route path="/cliente/sobre-nos" element={<SobreNos />} />
-        <Route path="/cliente/simulador" element={<SimuladorTinta />} />
-        <Route path="/cliente/perfil" element={<Perfil />} />
+    <Route path="/cliente/inicio" element={<Inicial />} />
+    <Route path="/cliente/sobre-nos" element={<SobreNos />} />
+    <Route path="/cliente/simulador" element={<SimuladorTinta />} />
+    <Route path="/cliente/perfil" element={<Perfil />} />
+    <Route path="/cliente/carrinho" element={<Carrinho />} />
+    <Route path="/cliente/cores" element={<Cores />} />
+    <Route path="/cliente/compra" element={<Compra />} />
 
-        <Route path="/inicial" element={<Navigate to="/cliente/inicio" replace />} />
-        <Route path="/sobre-nos" element={<Navigate to="/cliente/sobre-nos" replace />} />
-        <Route path="/simulador-tintas" element={<Navigate to="/cliente/simulador" replace />} />
-        <Route path="/perfil" element={<Navigate to="/cliente/perfil" replace />} />
-      </Route>
+    <Route path="/inicial" element={<Navigate to="/cliente/inicio" replace />} />
+    <Route path="/sobre-nos" element={<Navigate to="/cliente/sobre-nos" replace />} />
+    <Route path="/simulador-tintas" element={<Navigate to="/cliente/simulador" replace />} />
+    <Route path="/perfil" element={<Navigate to="/cliente/perfil" replace />} />
+</Route>
 
       <Route path="*" element={<InicioPorPerfil />} />
     </Routes>

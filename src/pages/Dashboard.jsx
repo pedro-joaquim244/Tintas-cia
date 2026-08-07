@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import styles from "../styles/Dashboard.module.css";
 
@@ -16,14 +16,19 @@ import {
   FiX,
 } from "react-icons/fi";
 
+import { api } from "../services/api.js";
+
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/authContext.jsx";
 
 import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
 
+  
 export default function Dashboard() {
 
   const navigate = useNavigate();
+
+  const [itens, setItens] = useState([]);
 
   const { usuario, logout } = useAuth();
 
@@ -34,6 +39,22 @@ export default function Dashboard() {
     logout();
 
     navigate("/login");
+  }
+
+  useEffect(() => {
+    carregarItens();
+
+  }, []);
+
+  async function carregarItens() {
+    try{
+      const resposta = await api.get("/itens");
+      setItens(resposta.data);
+
+    }
+    catch(error){
+      console.error("Erro ao carregar itens", error)
+    }
   }
 
   const comprasSemana = [
@@ -139,11 +160,12 @@ export default function Dashboard() {
 
                 <span>Total de Produtos</span>
 
+
                 <FiBox />
 
               </div>
 
-              <h2>248</h2>
+              <h2>{itens.length}</h2>
 
               <p>
                 +12 novos essa semana

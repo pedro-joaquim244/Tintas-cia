@@ -274,7 +274,11 @@ body {
   transition: 0.25s;
 }
 
-.btn svg {
+.svg1{
+  font-size: 20px;
+}
+
+.svg2{
   font-size: 20px;
 }
 

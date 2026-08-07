@@ -539,7 +539,7 @@ export default function Cadastrar() {
                 >
 
 
-                  <FiArrowLeft/>
+                  <FiArrowLeft className={styles.svg1}/>
 
                   Cancelar
 
@@ -562,7 +562,7 @@ export default function Cadastrar() {
                 >
 
 
-                  <FiSave/>
+                  <FiSave className={styles.svg2}/>
 
 
                   {
@@ -574,7 +574,7 @@ export default function Cadastrar() {
 
                     :
 
-                    "Salvar produto"
+                    "Salvar"
 
                   }
 
@@ -682,12 +682,12 @@ export default function Cadastrar() {
                   className={`${styles.btn} ${styles.btnPrimary}`}
 
                   onClick={() =>
-                    navigate("/admin/dashboard")
+                    navigate("/admin/produtos")
                   }
 
                 >
 
-                  Ir para Dashboard
+                  Ir para Produtos
 
                 </button>
 
