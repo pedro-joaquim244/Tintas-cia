@@ -1,3 +1,4 @@
+
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -5,43 +6,104 @@ import path from "path";
 import pedidosRoutes from "./routes/pedidos.routes.js";
 import usuariosRoutes from "./routes/usuarios.routes.js";
 import itensRoutes from "./routes/itens.routes.js";
+import itens_pedidosRoutes from "./routes/itens_pedidos.routes.js";
 import carrinhoRoutes from "./routes/carrinho.routes.js";
 
 import { config } from "./config.js";
 
-
 const app = express();
 
+// =====================================================
+// CORS
+// =====================================================
 
-app.use(cors({
-    origin: config.corsOrigin
-}));
+app.use(
+    cors({
+        origin: config.corsOrigin
+    })
+);
 
+// =====================================================
+// JSON
+// =====================================================
 
 app.use(express.json());
 
+// =====================================================
+// UPLOADS
+// =====================================================
 
 app.use(
     "/uploads",
-    express.static(path.resolve("uploads"))
+    express.static(
+        path.resolve("uploads")
+    )
 );
 
+// =====================================================
+// ROTAS
+// =====================================================
 
+app.use(
+    "/usuarios",
+    usuariosRoutes
+);
 
-app.use("/usuarios", usuariosRoutes);
+app.use(
+    "/itens",
+    itensRoutes
+);
 
-app.use("/itens", itensRoutes);
+app.use(
+    "/carrinho",
+    carrinhoRoutes
+);
 
-app.use("/carrinho", carrinhoRoutes);
+app.use(
+    "/pedidos",
+    pedidosRoutes
+);
 
-app.use("/pedidos", pedidosRoutes);
+app.use(
+    "/itens_pedidos",
+    itens_pedidosRoutes
+);
 
+// =====================================================
+// TESTE
+// =====================================================
 
+app.get("/", (req, res) => {
 
-app.listen(config.port, () => {
-
-    console.log(
-        `Servidor rodando na porta ${config.port}`
-    );
+    res.json({
+        mensagem: "API funcionando!"
+    });
 
 });
+
+// =====================================================
+// SERVIDOR
+// =====================================================
+
+app.listen(
+    config.port,
+    () => {
+
+        console.log(
+            "======================================"
+        );
+
+        console.log(
+            `Servidor rodando na porta ${config.port}`
+        );
+
+        console.log(
+            `http://localhost:${config.port}`
+        );
+
+        console.log(
+            "======================================"
+        );
+
+    }
+);
