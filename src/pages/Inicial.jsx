@@ -59,7 +59,7 @@ export default function LojaTintas() {
       // O rolo de pintura sobe limpando a tela azul
       .fromTo(rollerRef.current, 
         { y: "105vh" }, 
-        { y: "-45vh", duration: 1.1, ease: "power2.inOut" },
+        { y: "-70vh", duration: 1.27, ease: "power2.inOut" },
         "-=0.1"
       )
       // O corte do SVG revela o site acompanhando o rolo perfeitamente

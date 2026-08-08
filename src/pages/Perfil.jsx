@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +14,12 @@ import {
     FiPackage,
     FiX,
     FiCreditCard,
-    FiClock
+    FiClock,
+    FiPhone,
+    FiMapPin,
+    FiHome,
+    FiHash,
+    FiMap
 } from "react-icons/fi";
 
 import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
@@ -34,33 +40,33 @@ export default function Perfil() {
         logout
     } = useAuth();
 
-    // =====================================================
-    // ESTADOS
-    // =====================================================
-
     const [editando, setEditando] = useState(false);
 
     const [form, setForm] = useState({
         nome: "",
         email: "",
+        telefone: "",
+        data_nascimento: "",
+        endereco: "",
+        numero: "",
+        complemento: "",
+        bairro: "",
+        cidade: "",
+        estado: "",
+        cep: "",
         senha: ""
     });
-
-    // =====================================================
-    // HISTÓRICO DE PEDIDOS
-    // =====================================================
 
     const [modalPedidos, setModalPedidos] = useState(false);
 
     const [pedidos, setPedidos] = useState([]);
 
-    const [carregandoPedidos, setCarregandoPedidos] =
-        useState(false);
+    const [carregandoPedidos, setCarregandoPedidos] = useState(false);
 
     const [erroPedidos, setErroPedidos] = useState("");
 
     // =====================================================
-    // ATUALIZAR FORMULÁRIO
+    // CARREGAR DADOS DO USUÁRIO
     // =====================================================
 
     useEffect(() => {
@@ -72,6 +78,17 @@ export default function Perfil() {
         setForm({
             nome: usuario.nome || "",
             email: usuario.email || "",
+            telefone: usuario.telefone || "",
+            data_nascimento: usuario.data_nascimento
+                ? String(usuario.data_nascimento).substring(0, 10)
+                : "",
+            endereco: usuario.endereco || "",
+            numero: usuario.numero || "",
+            complemento: usuario.complemento || "",
+            bairro: usuario.bairro || "",
+            cidade: usuario.cidade || "",
+            estado: usuario.estado || "",
+            cep: usuario.cep || "",
             senha: ""
         });
 
@@ -83,188 +100,39 @@ export default function Perfil() {
 
     async function buscarPedidos() {
 
-        /*
-         * Tenta encontrar o ID do usuário.
-         *
-         * Normalmente será:
-         * usuario.id
-         *
-         * Mas deixamos usuario_id como alternativa.
-         */
-
-        const usuarioId =
-            usuario?.id ??
-            usuario?.usuario_id;
-
-        console.log(
-            "======================================"
-        );
-
-        console.log(
-            "BUSCANDO HISTÓRICO"
-        );
-
-        console.log(
-            "Usuário:",
-            usuario
-        );
-
-        console.log(
-            "ID do usuário:",
-            usuarioId
-        );
-
-        console.log(
-            "======================================"
-        );
-
-        if (!usuarioId) {
-
-            console.error(
-                "Não foi possível encontrar o ID do usuário."
-            );
-
-            setPedidos([]);
-
-            setErroPedidos(
-                "Não foi possível identificar o usuário."
-            );
-
+        if (!usuario?.id) {
+            setErroPedidos("Usuário não encontrado.");
             return;
-
         }
 
         try {
 
             setCarregandoPedidos(true);
-
             setErroPedidos("");
 
-            /*
-             * Endpoint:
-             *
-             * GET /pedidos/usuario/:usuario_id
-             */
+            console.log("Buscando pedidos do usuário:", usuario.id);
 
-            const endpoint =
-                `/pedidos/usuario/${usuarioId}`;
-
-            console.log(
-                "Fazendo requisição:",
-                endpoint
+            const resposta = await api.get(
+                `/pedidos/usuario/${usuario.id}`
             );
 
-            const resposta =
-                await api.get(endpoint);
+            console.log("Pedidos recebidos:", resposta.data);
 
-            console.log(
-                "Status da API:",
-                resposta.status
-            );
-
-            console.log(
-                "Resposta da API:",
-                resposta.data
-            );
-
-            let dados = resposta.data;
-
-            // =================================================
-            // CASO A API RETORNE DIRETAMENTE UM ARRAY
-            // =================================================
-
-            if (Array.isArray(dados)) {
-
-                setPedidos(dados);
-
-                console.log(
-                    "Pedidos encontrados:",
-                    dados.length
-                );
-
-                return;
-
-            }
-
-            // =================================================
-            // CASO A API RETORNE:
-            //
-            // {
-            //     pedidos: [...]
-            // }
-            // =================================================
-
-            if (
-                dados &&
-                Array.isArray(dados.pedidos)
-            ) {
-
-                setPedidos(
-                    dados.pedidos
-                );
-
-                console.log(
-                    "Pedidos encontrados:",
-                    dados.pedidos.length
-                );
-
-                return;
-
-            }
-
-            // =================================================
-            // FORMATO INVÁLIDO
-            // =================================================
-
-            console.error(
-                "Formato de resposta inválido:",
-                dados
-            );
-
-            setPedidos([]);
-
-            setErroPedidos(
-                "A API retornou um formato inválido."
+            setPedidos(
+                Array.isArray(resposta.data)
+                    ? resposta.data
+                    : []
             );
 
         } catch (error) {
 
-            console.error(
-                "======================================"
-            );
-
-            console.error(
-                "ERRO AO BUSCAR PEDIDOS"
-            );
-
-            console.error(
-                error
-            );
-
-            console.error(
-                "Status:",
-                error.response?.status
-            );
-
-            console.error(
-                "Resposta:",
-                error.response?.data
-            );
-
-            console.error(
-                "======================================"
-            );
+            console.error("ERRO AO BUSCAR PEDIDOS:", error);
 
             setPedidos([]);
 
             setErroPedidos(
-
                 error.response?.data?.erro ||
-
-                error.response?.data?.message ||
-
                 "Não foi possível carregar seus pedidos."
-
             );
 
         } finally {
@@ -281,23 +149,7 @@ export default function Perfil() {
 
     async function abrirHistorico() {
 
-        console.log(
-            "Abrindo histórico de pedidos..."
-        );
-
         setModalPedidos(true);
-
-        /*
-         * Limpa o estado anterior.
-         */
-
-        setPedidos([]);
-
-        setErroPedidos("");
-
-        /*
-         * Busca novamente no banco.
-         */
 
         await buscarPedidos();
 
@@ -321,29 +173,33 @@ export default function Perfil() {
 
         try {
 
-            const resultado =
-                await atualizarPerfil({
+            const dados = {
+                nome: form.nome,
+                email: form.email,
+                telefone: form.telefone,
+                data_nascimento: form.data_nascimento || null,
+                endereco: form.endereco,
+                numero: form.numero,
+                complemento: form.complemento,
+                bairro: form.bairro,
+                cidade: form.cidade,
+                estado: form.estado,
+                cep: form.cep
+            };
 
-                    nome: form.nome,
+            if (form.senha) {
+                dados.senha = form.senha;
+            }
 
-                    email: form.email,
-
-                    ...(form.senha && {
-                        senha: form.senha
-                    })
-
-                });
+            const resultado = await atualizarPerfil(dados);
 
             if (resultado?.sucesso) {
 
                 setEditando(false);
 
                 setForm(prev => ({
-
                     ...prev,
-
                     senha: ""
-
                 }));
 
             }
@@ -360,22 +216,68 @@ export default function Perfil() {
     }
 
     // =====================================================
-    // ALTERAÇÃO DOS INPUTS
+    // ALTERAR INPUT
     // =====================================================
 
-    function handleChange(e) {
+    function handleChange(event) {
 
         const {
             name,
             value
-        } = e.target;
+        } = event.target;
 
         setForm(prev => ({
-
             ...prev,
-
             [name]: value
+        }));
 
+    }
+
+    // =====================================================
+    // MÁSCARA TELEFONE
+    // =====================================================
+
+    function formatarTelefone(value) {
+
+        return value
+            .replace(/\D/g, "")
+            .slice(0, 11)
+            .replace(/^(\d{2})(\d)/, "($1) $2")
+            .replace(/(\d{5})(\d)/, "$1-$2");
+
+    }
+
+    // =====================================================
+    // MÁSCARA CEP
+    // =====================================================
+
+    function formatarCep(value) {
+
+        return value
+            .replace(/\D/g, "")
+            .slice(0, 8)
+            .replace(/^(\d{5})(\d)/, "$1-$2");
+
+    }
+
+    // =====================================================
+    // INPUT ESPECIAL
+    // =====================================================
+
+    function handleTelefone(event) {
+
+        setForm(prev => ({
+            ...prev,
+            telefone: formatarTelefone(event.target.value)
+        }));
+
+    }
+
+    function handleCep(event) {
+
+        setForm(prev => ({
+            ...prev,
+            cep: formatarCep(event.target.value)
         }));
 
     }
@@ -393,7 +295,7 @@ export default function Perfil() {
     }
 
     // =====================================================
-    // FORMATAR DATA
+    // DATA
     // =====================================================
 
     function formatarData(data) {
@@ -402,20 +304,28 @@ export default function Perfil() {
             return "-";
         }
 
-        const dataConvertida =
-            new Date(data);
+        return new Date(data).toLocaleDateString(
+            "pt-BR",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }
+        );
 
-        if (
-            Number.isNaN(
-                dataConvertida.getTime()
-            )
-        ) {
+    }
 
+    // =====================================================
+    // DATA + HORA
+    // =====================================================
+
+    function formatarDataHora(data) {
+
+        if (!data) {
             return "-";
-
         }
 
-        return dataConvertida.toLocaleDateString(
+        return new Date(data).toLocaleDateString(
             "pt-BR",
             {
                 day: "2-digit",
@@ -429,14 +339,12 @@ export default function Perfil() {
     }
 
     // =====================================================
-    // FORMATAR DINHEIRO
+    // DINHEIRO
     // =====================================================
 
     function formatarPreco(valor) {
 
-        return Number(
-            valor || 0
-        ).toLocaleString(
+        return Number(valor || 0).toLocaleString(
             "pt-BR",
             {
                 style: "currency",
@@ -453,60 +361,38 @@ export default function Perfil() {
     function classeStatus(status) {
 
         if (!status) {
-
             return styles.status;
-
         }
 
-        const normalizado =
-            String(status)
-                .toLowerCase()
-                .normalize("NFD")
-                .replace(
-                    /[\u0300-\u036f]/g,
-                    ""
-                );
+        const normalizado = status
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
 
         if (
             normalizado.includes("process") ||
             normalizado.includes("pend")
         ) {
-
             return `${styles.status} ${styles.pendente}`;
-
         }
 
         if (
             normalizado.includes("pago") ||
             normalizado.includes("aprov")
         ) {
-
             return `${styles.status} ${styles.pago}`;
-
         }
 
-        if (
-            normalizado.includes("enviado")
-        ) {
-
+        if (normalizado.includes("enviado")) {
             return `${styles.status} ${styles.enviado}`;
-
         }
 
-        if (
-            normalizado.includes("entreg")
-        ) {
-
+        if (normalizado.includes("entreg")) {
             return `${styles.status} ${styles.entregue}`;
-
         }
 
-        if (
-            normalizado.includes("cancel")
-        ) {
-
+        if (normalizado.includes("cancel")) {
             return `${styles.status} ${styles.cancelado}`;
-
         }
 
         return styles.status;
@@ -534,9 +420,9 @@ export default function Perfil() {
 
             <main className={styles.content}>
 
-                {/* ==================================================
+                {/* =====================================================
                     TOPO
-                ================================================== */}
+                ===================================================== */}
 
                 <div className={styles.topo}>
 
@@ -551,19 +437,17 @@ export default function Perfil() {
                 </div>
 
 
-                {/* ==================================================
+                {/* =====================================================
                     CONTAINER
-                ================================================== */}
+                ===================================================== */}
 
                 <div className={styles.container}>
 
-                    {/* ==================================================
+                    {/* =================================================
                         ESQUERDA
-                    ================================================== */}
+                    ================================================= */}
 
                     <section className={styles.leftCard}>
-
-                        {/* AVATAR */}
 
                         <div className={styles.avatarBox}>
 
@@ -578,57 +462,29 @@ export default function Perfil() {
                             <button
                                 className={styles.camera}
                                 type="button"
-                                title="Alterar foto"
                             >
-
                                 <FiCamera />
-
                             </button>
 
                         </div>
 
 
-                        {/* NOME */}
-
-                        <h2
-                            className={
-                                styles.nomeUsuario
-                            }
-                        >
-
-                            {usuario?.nome ||
-                                "Usuário"}
-
+                        <h2 className={styles.nomeUsuario}>
+                            {usuario?.nome || "Usuário"}
                         </h2>
 
 
-                        {/* EMAIL */}
-
-                        <p
-                            className={
-                                styles.emailUsuario
-                            }
-                        >
-
-                            {usuario?.email ||
-                                "Sem e-mail"}
-
+                        <p className={styles.emailUsuario}>
+                            {usuario?.email || "Sem e-mail"}
                         </p>
 
 
-                        {/* FOTO */}
-
                         <button
-                            className={
-                                styles.photoBtn
-                            }
+                            className={styles.photoBtn}
                             type="button"
                         >
-
                             <FiCamera />
-
                             Alterar foto
-
                         </button>
 
 
@@ -637,28 +493,18 @@ export default function Perfil() {
                         </small>
 
 
-                        {/* ==================================================
+                        {/* =================================================
                             INFORMAÇÕES DA CONTA
-                        ================================================== */}
+                        ================================================= */}
 
-                        <div
-                            className={
-                                styles.account
-                            }
-                        >
+                        <div className={styles.account}>
 
                             <h3>
                                 Informações da conta
                             </h3>
 
 
-                            {/* TIPO */}
-
-                            <div
-                                className={
-                                    styles.row
-                                }
-                            >
+                            <div className={styles.row}>
 
                                 <FiShield />
 
@@ -668,15 +514,8 @@ export default function Perfil() {
                                         Tipo de conta
                                     </span>
 
-                                    <strong
-                                        className={
-                                            styles.badge
-                                        }
-                                    >
-
-                                        {usuario?.tipo ||
-                                            "cliente"}
-
+                                    <strong className={styles.badge}>
+                                        {usuario?.tipo || "cliente"}
                                     </strong>
 
                                 </div>
@@ -684,27 +523,18 @@ export default function Perfil() {
                             </div>
 
 
-                            {/* ANO */}
-
-                            <div
-                                className={
-                                    styles.row
-                                }
-                            >
+                            <div className={styles.row}>
 
                                 <FiCalendar />
 
                                 <div>
 
                                     <span>
-                                        Ano
+                                        Cadastro
                                     </span>
 
                                     <strong>
-                                        {
-                                            new Date()
-                                                .getFullYear()
-                                        }
+                                        {formatarData(usuario?.criado_em)}
                                     </strong>
 
                                 </div>
@@ -712,13 +542,7 @@ export default function Perfil() {
                             </div>
 
 
-                            {/* PEDIDOS */}
-
-                            <div
-                                className={
-                                    styles.row
-                                }
-                            >
+                            <div className={styles.row}>
 
                                 <FiPackage />
 
@@ -739,18 +563,14 @@ export default function Perfil() {
                         </div>
 
 
-                        {/* ==================================================
+                        {/* =================================================
                             HISTÓRICO
-                        ================================================== */}
+                        ================================================= */}
 
                         <button
-                            className={
-                                styles.historyBtn
-                            }
+                            className={styles.historyBtn}
                             type="button"
-                            onClick={
-                                abrirHistorico
-                            }
+                            onClick={abrirHistorico}
                         >
 
                             <FiPackage />
@@ -760,18 +580,14 @@ export default function Perfil() {
                         </button>
 
 
-                        {/* ==================================================
+                        {/* =================================================
                             LOGOUT
-                        ================================================== */}
+                        ================================================= */}
 
                         <button
-                            className={
-                                styles.logout
-                            }
+                            className={styles.logout}
                             type="button"
-                            onClick={
-                                sairConta
-                            }
+                            onClick={sairConta}
                         >
 
                             <FiLogOut />
@@ -783,21 +599,13 @@ export default function Perfil() {
                     </section>
 
 
-                    {/* ==================================================
+                    {/* =================================================
                         DIREITA
-                    ================================================== */}
+                    ================================================= */}
 
-                    <section
-                        className={
-                            styles.rightCard
-                        }
-                    >
+                    <section className={styles.rightCard}>
 
-                        <div
-                            className={
-                                styles.titleEdit
-                            }
-                        >
+                        <div className={styles.titleEdit}>
 
                             <div>
 
@@ -815,39 +623,22 @@ export default function Perfil() {
                             <button
                                 type="button"
                                 onClick={
-
                                     editando
-
                                         ? salvarPerfil
-
-                                        : () =>
-                                            setEditando(
-                                                true
-                                            )
-
+                                        : () => setEditando(true)
                                 }
                             >
 
                                 {editando ? (
-
                                     <>
-
                                         <FiSave />
-
                                         Salvar
-
                                     </>
-
                                 ) : (
-
                                     <>
-
                                         <FiEdit2 />
-
                                         Editar
-
                                     </>
-
                                 )}
 
                             </button>
@@ -855,102 +646,356 @@ export default function Perfil() {
                         </div>
 
 
-                        {/* NOME */}
+                        <div className={styles.formGrid}>
 
-                        <label>
-                            Nome completo
-                        </label>
+                            {/* NOME */}
 
-                        <div
-                            className={
-                                styles.inputBox
-                            }
-                        >
-
-                            <FiUser />
-
-                            <input
-                                disabled={
-                                    !editando
-                                }
-                                name="nome"
-                                value={
-                                    form.nome
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                            />
-
-                        </div>
-
-
-                        {/* EMAIL */}
-
-                        <label>
-                            E-mail
-                        </label>
-
-                        <div
-                            className={
-                                styles.inputBox
-                            }
-                        >
-
-                            <FiMail />
-
-                            <input
-                                disabled={
-                                    !editando
-                                }
-                                type="email"
-                                name="email"
-                                value={
-                                    form.email
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                            />
-
-                        </div>
-
-
-                        {/* SENHA */}
-
-                        {editando && (
-
-                            <>
+                            <div className={styles.field}>
 
                                 <label>
-                                    Nova senha
+                                    Nome completo
                                 </label>
 
-                                <div
-                                    className={
-                                        styles.inputBox
-                                    }
-                                >
+                                <div className={styles.inputBox}>
 
-                                    <FiShield />
+                                    <FiUser />
 
                                     <input
-                                        type="password"
-                                        name="senha"
-                                        value={
-                                            form.senha
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                        placeholder="Digite uma nova senha"
+                                        disabled={!editando}
+                                        name="nome"
+                                        value={form.nome}
+                                        onChange={handleChange}
                                     />
 
                                 </div>
 
-                            </>
+                            </div>
 
-                        )}
+
+                            {/* EMAIL */}
+
+                            <div className={styles.field}>
+
+                                <label>
+                                    E-mail
+                                </label>
+
+                                <div className={styles.inputBox}>
+
+                                    <FiMail />
+
+                                    <input
+                                        disabled={!editando}
+                                        type="email"
+                                        name="email"
+                                        value={form.email}
+                                        onChange={handleChange}
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            {/* TELEFONE */}
+
+                            <div className={styles.field}>
+
+                                <label>
+                                    Telefone
+                                </label>
+
+                                <div className={styles.inputBox}>
+
+                                    <FiPhone />
+
+                                    <input
+                                        disabled={!editando}
+                                        name="telefone"
+                                        value={form.telefone}
+                                        onChange={handleTelefone}
+                                        placeholder="(16) 99999-9999"
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            {/* NASCIMENTO */}
+
+                            <div className={styles.field}>
+
+                                <label>
+                                    Data de nascimento
+                                </label>
+
+                                <div className={styles.inputBox}>
+
+                                    <FiCalendar />
+
+                                    <input
+                                        disabled={!editando}
+                                        type="date"
+                                        name="data_nascimento"
+                                        value={form.data_nascimento}
+                                        onChange={handleChange}
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            {/* ENDEREÇO */}
+
+                            <div className={styles.field}>
+
+                                <label>
+                                    Endereço
+                                </label>
+
+                                <div className={styles.inputBox}>
+
+                                    <FiHome />
+
+                                    <input
+                                        disabled={!editando}
+                                        name="endereco"
+                                        value={form.endereco}
+                                        onChange={handleChange}
+                                        placeholder="Rua / Avenida"
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            {/* NÚMERO */}
+
+                            <div className={styles.field}>
+
+                                <label>
+                                    Número
+                                </label>
+
+                                <div className={styles.inputBox}>
+
+                                    <FiHash />
+
+                                    <input
+                                        disabled={!editando}
+                                        name="numero"
+                                        value={form.numero}
+                                        onChange={handleChange}
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            {/* COMPLEMENTO */}
+
+                            <div className={styles.field}>
+
+                                <label>
+                                    Complemento
+                                </label>
+
+                                <div className={styles.inputBox}>
+
+                                    <FiHome />
+
+                                    <input
+                                        disabled={!editando}
+                                        name="complemento"
+                                        value={form.complemento}
+                                        onChange={handleChange}
+                                        placeholder="Casa, apartamento..."
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            {/* BAIRRO */}
+
+                            <div className={styles.field}>
+
+                                <label>
+                                    Bairro
+                                </label>
+
+                                <div className={styles.inputBox}>
+
+                                    <FiMapPin />
+
+                                    <input
+                                        disabled={!editando}
+                                        name="bairro"
+                                        value={form.bairro}
+                                        onChange={handleChange}
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            {/* CIDADE */}
+
+                            <div className={styles.field}>
+
+                                <label>
+                                    Cidade
+                                </label>
+
+                                <div className={styles.inputBox}>
+
+                                    <FiMap />
+
+                                    <input
+                                        disabled={!editando}
+                                        name="cidade"
+                                        value={form.cidade}
+                                        onChange={handleChange}
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            {/* ESTADO */}
+
+                            <div className={styles.field}>
+
+                                <label>
+                                    Estado
+                                </label>
+
+                                <div className={styles.inputBox}>
+
+                                    <FiMap />
+
+                                    <input
+                                        disabled={!editando}
+                                        name="estado"
+                                        value={form.estado}
+                                        onChange={handleChange}
+                                        maxLength={2}
+                                        placeholder="SP"
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            {/* CEP */}
+
+                            <div className={styles.field}>
+
+                                <label>
+                                    CEP
+                                </label>
+
+                                <div className={styles.inputBox}>
+
+                                    <FiMapPin />
+
+                                    <input
+                                        disabled={!editando}
+                                        name="cep"
+                                        value={form.cep}
+                                        onChange={handleCep}
+                                        placeholder="00000-000"
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            {/* SENHA */}
+
+                            {editando && (
+
+                                <div className={styles.field}>
+
+                                    <label>
+                                        Nova senha
+                                    </label>
+
+                                    <div className={styles.inputBox}>
+
+                                        <FiShield />
+
+                                        <input
+                                            type="password"
+                                            name="senha"
+                                            value={form.senha}
+                                            onChange={handleChange}
+                                            placeholder="Digite uma nova senha"
+                                        />
+
+                                    </div>
+
+                                </div>
+
+                            )}
+
+                        </div>
+
+
+                        {/* =================================================
+                            DADOS DO SISTEMA
+                        ================================================= */}
+
+                        <div className={styles.systemInfo}>
+
+                            <h3>
+                                Informações da conta
+                            </h3>
+
+                            <div className={styles.systemGrid}>
+
+                                <div>
+                                    <span>ID do usuário</span>
+                                    <strong>#{usuario?.id || "-"}</strong>
+                                </div>
+
+                                <div>
+                                    <span>Tipo</span>
+                                    <strong>
+                                        {usuario?.tipo || "-"}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Criado em</span>
+                                    <strong>
+                                        {formatarDataHora(
+                                            usuario?.criado_em
+                                        )}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Última atualização</span>
+                                    <strong>
+                                        {formatarDataHora(
+                                            usuario?.atualizado_em
+                                        )}
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                        </div>
 
                     </section>
 
@@ -966,33 +1011,16 @@ export default function Perfil() {
             {modalPedidos && (
 
                 <div
-                    className={
-                        styles.modalOverlay
-                    }
-                    onClick={
-                        fecharHistorico
-                    }
+                    className={styles.modalOverlay}
+                    onClick={fecharHistorico}
                 >
 
                     <div
-                        className={
-                            styles.modal
-                        }
-                        onClick={
-                            e =>
-                                e.stopPropagation()
-                        }
+                        className={styles.modal}
+                        onClick={(event) => event.stopPropagation()}
                     >
 
-                        {/* ==================================================
-                            HEADER
-                        ================================================== */}
-
-                        <div
-                            className={
-                                styles.modalHeader
-                            }
-                        >
+                        <div className={styles.modalHeader}>
 
                             <div>
 
@@ -1008,14 +1036,9 @@ export default function Perfil() {
 
 
                             <button
-                                className={
-                                    styles.closeModal
-                                }
+                                className={styles.closeModal}
                                 type="button"
-                                onClick={
-                                    fecharHistorico
-                                }
-                                aria-label="Fechar histórico"
+                                onClick={fecharHistorico}
                             >
 
                                 <FiX />
@@ -1025,33 +1048,15 @@ export default function Perfil() {
                         </div>
 
 
-                        {/* ==================================================
-                            CONTEÚDO
-                        ================================================== */}
+                        <div className={styles.modalContent}>
 
-                        <div
-                            className={
-                                styles.modalContent
-                            }
-                        >
-
-                            {/* ==================================================
-                                CARREGANDO
-                            ================================================== */}
+                            {/* CARREGANDO */}
 
                             {carregandoPedidos && (
 
-                                <div
-                                    className={
-                                        styles.estadoPedidos
-                                    }
-                                >
+                                <div className={styles.estadoPedidos}>
 
-                                    <div
-                                        className={
-                                            styles.spinner
-                                        }
-                                    />
+                                    <div className={styles.spinner}></div>
 
                                     <p>
                                         Carregando seus pedidos...
@@ -1062,18 +1067,12 @@ export default function Perfil() {
                             )}
 
 
-                            {/* ==================================================
-                                ERRO
-                            ================================================== */}
+                            {/* ERRO */}
 
                             {!carregandoPedidos &&
                                 erroPedidos && (
 
-                                    <div
-                                        className={
-                                            styles.erroPedidos
-                                        }
-                                    >
+                                    <div className={styles.erroPedidos}>
 
                                         <FiPackage />
 
@@ -1087,13 +1086,9 @@ export default function Perfil() {
 
                                         <button
                                             type="button"
-                                            onClick={
-                                                buscarPedidos
-                                            }
+                                            onClick={buscarPedidos}
                                         >
-
                                             Tentar novamente
-
                                         </button>
 
                                     </div>
@@ -1101,19 +1096,13 @@ export default function Perfil() {
                                 )}
 
 
-                            {/* ==================================================
-                                NENHUM PEDIDO
-                            ================================================== */}
+                            {/* SEM PEDIDOS */}
 
                             {!carregandoPedidos &&
                                 !erroPedidos &&
                                 pedidos.length === 0 && (
 
-                                    <div
-                                        className={
-                                            styles.semPedidos
-                                        }
-                                    >
+                                    <div className={styles.semPedidos}>
 
                                         <FiPackage />
 
@@ -1128,18 +1117,11 @@ export default function Perfil() {
                                         <button
                                             type="button"
                                             onClick={() => {
-
                                                 fecharHistorico();
-
-                                                navigate(
-                                                    "/cliente/cores"
-                                                );
-
+                                                navigate("/cliente/cores");
                                             }}
                                         >
-
                                             Começar a comprar
-
                                         </button>
 
                                     </div>
@@ -1147,291 +1129,155 @@ export default function Perfil() {
                                 )}
 
 
-                            {/* ==================================================
-                                PEDIDOS
-                            ================================================== */}
+                            {/* PEDIDOS */}
 
                             {!carregandoPedidos &&
                                 !erroPedidos &&
                                 pedidos.length > 0 && (
 
-                                    <div
-                                        className={
-                                            styles.listaPedidos
-                                        }
-                                    >
+                                    <div className={styles.listaPedidos}>
 
-                                        {pedidos.map(
-                                            pedido => (
+                                        {pedidos.map((pedido) => (
 
-                                                <div
-                                                    className={
-                                                        styles.pedido
-                                                    }
-                                                    key={
-                                                        pedido.id
-                                                    }
-                                                >
+                                            <div
+                                                className={styles.pedido}
+                                                key={pedido.id}
+                                            >
 
-                                                    {/* ==================================================
-                                                        CABEÇALHO PEDIDO
-                                                    ================================================== */}
+                                                <div className={styles.pedidoHeader}>
 
-                                                    <div
-                                                        className={
-                                                            styles.pedidoHeader
-                                                        }
-                                                    >
+                                                    <div>
 
-                                                        <div>
+                                                        <div className={styles.pedidoNumero}>
 
-                                                            <div
-                                                                className={
-                                                                    styles.pedidoNumero
-                                                                }
-                                                            >
+                                                            <FiPackage />
 
-                                                                <FiPackage />
-
-                                                                <strong>
-                                                                    Pedido #
-                                                                    {pedido.id}
-                                                                </strong>
-
-                                                            </div>
-
-
-                                                            <span
-                                                                className={
-                                                                    styles.dataPedido
-                                                                }
-                                                            >
-
-                                                                <FiClock />
-
-                                                                {formatarData(
-                                                                    pedido.criado_em
-                                                                )}
-
-                                                            </span>
+                                                            <strong>
+                                                                Pedido #{pedido.id}
+                                                            </strong>
 
                                                         </div>
 
+                                                        <span className={styles.dataPedido}>
 
-                                                        <span
-                                                            className={
-                                                                classeStatus(
-                                                                    pedido.status
-                                                                )
-                                                            }
-                                                        >
+                                                            <FiClock />
 
-                                                            {pedido.status ||
-                                                                "Processando"}
+                                                            {formatarDataHora(
+                                                                pedido.criado_em
+                                                            )}
 
                                                         </span>
 
                                                     </div>
 
 
-                                                    {/* ==================================================
-                                                        ITENS
-                                                    ================================================== */}
-
-                                                    <div
-                                                        className={
-                                                            styles.itensPedido
-                                                        }
+                                                    <span
+                                                        className={classeStatus(
+                                                            pedido.status
+                                                        )}
                                                     >
+                                                        {pedido.status || "Pendente"}
+                                                    </span>
 
-                                                        {Array.isArray(
-                                                            pedido.itens
-                                                        ) &&
-                                                        pedido.itens.length > 0 ? (
-
-                                                            pedido.itens.map(
-                                                                item => (
-
-                                                                    <div
-                                                                        className={
-                                                                            styles.itemPedido
-                                                                        }
-                                                                        key={
-                                                                            item.id
-                                                                        }
-                                                                    >
-
-                                                                        {/* IMAGEM */}
-
-                                                                        <div
-                                                                            className={
-                                                                                styles.produtoImagem
-                                                                            }
-                                                                        >
-
-                                                                            {item.foto ? (
-
-                                                                                <img
-                                                                                    src={`http://localhost:3333/uploads/${item.foto}`}
-                                                                                    alt={
-                                                                                        item.nome ||
-                                                                                        "Produto"
-                                                                                    }
-                                                                                    onError={
-                                                                                        e => {
-
-                                                                                            e.currentTarget.style.display =
-                                                                                                "none";
-
-                                                                                        }
-                                                                                    }
-                                                                                />
-
-                                                                            ) : (
-
-                                                                                <FiPackage />
-
-                                                                            )}
-
-                                                                        </div>
+                                                </div>
 
 
-                                                                        {/* INFORMAÇÕES */}
+                                                <div className={styles.itensPedido}>
 
-                                                                        <div
-                                                                            className={
-                                                                                styles.produtoInfo
-                                                                            }
-                                                                        >
-
-                                                                            <strong>
-
-                                                                                {item.nome ||
-                                                                                    "Produto não encontrado"}
-
-                                                                            </strong>
-
-                                                                            <span>
-
-                                                                                {Number(
-                                                                                    item.quantidade ||
-                                                                                    0
-                                                                                )}
-
-                                                                                x{" "}
-
-                                                                                {formatarPreco(
-                                                                                    item.preco
-                                                                                )}
-
-                                                                            </span>
-
-                                                                        </div>
-
-
-                                                                        {/* SUBTOTAL */}
-
-                                                                        <strong
-                                                                            className={
-                                                                                styles.subtotal
-                                                                            }
-                                                                        >
-
-                                                                            {formatarPreco(
-                                                                                item.subtotal
-                                                                            )}
-
-                                                                        </strong>
-
-                                                                    </div>
-
-                                                                )
-
-                                                            )
-
-                                                        ) : (
+                                                    {pedido.itens?.map(
+                                                        (item) => (
 
                                                             <div
-                                                                className={
-                                                                    styles.semItens
-                                                                }
+                                                                className={styles.itemPedido}
+                                                                key={item.id}
                                                             >
 
-                                                                <FiPackage />
+                                                                <div className={styles.produtoImagem}>
 
-                                                                <span>
-                                                                    Nenhum item encontrado neste pedido.
-                                                                </span>
+                                                                    {item.foto ? (
+
+                                                                        <img
+                                                                            src={`http://localhost:3333/uploads/${item.foto}`}
+                                                                            alt={item.nome}
+                                                                        />
+
+                                                                    ) : (
+
+                                                                        <FiPackage />
+
+                                                                    )}
+
+                                                                </div>
+
+
+                                                                <div className={styles.produtoInfo}>
+
+                                                                    <strong>
+                                                                        {item.nome}
+                                                                    </strong>
+
+                                                                    <span>
+                                                                        {item.quantidade}x{" "}
+                                                                        {formatarPreco(
+                                                                            item.preco
+                                                                        )}
+                                                                    </span>
+
+                                                                </div>
+
+
+                                                                <strong className={styles.subtotal}>
+
+                                                                    {formatarPreco(
+                                                                        item.subtotal
+                                                                    )}
+
+                                                                </strong>
 
                                                             </div>
 
-                                                        )}
+                                                        )
+                                                    )}
+
+                                                </div>
+
+
+                                                <div className={styles.pedidoFooter}>
+
+                                                    <div className={styles.pagamento}>
+
+                                                        <FiCreditCard />
+
+                                                        <span>
+                                                            Pagamento:
+                                                        </span>
+
+                                                        <strong>
+                                                            {pedido.metodo_pagamento || "-"}
+                                                        </strong>
 
                                                     </div>
 
 
-                                                    {/* ==================================================
-                                                        RODAPÉ
-                                                    ================================================== */}
+                                                    <div className={styles.totalPedido}>
 
-                                                    <div
-                                                        className={
-                                                            styles.pedidoFooter
-                                                        }
-                                                    >
+                                                        <span>
+                                                            Total
+                                                        </span>
 
-                                                        {/* PAGAMENTO */}
-
-                                                        <div
-                                                            className={
-                                                                styles.pagamento
-                                                            }
-                                                        >
-
-                                                            <FiCreditCard />
-
-                                                            <span>
-                                                                Pagamento:
-                                                            </span>
-
-                                                            <strong>
-
-                                                                {pedido.metodo_pagamento ||
-                                                                    "Não informado"}
-
-                                                            </strong>
-
-                                                        </div>
-
-
-                                                        {/* TOTAL */}
-
-                                                        <div
-                                                            className={
-                                                                styles.totalPedido
-                                                            }
-                                                        >
-
-                                                            <span>
-                                                                Total
-                                                            </span>
-
-                                                            <strong>
-
-                                                                {formatarPreco(
-                                                                    pedido.total
-                                                                )}
-
-                                                            </strong>
-
-                                                        </div>
+                                                        <strong>
+                                                            {formatarPreco(
+                                                                pedido.total
+                                                            )}
+                                                        </strong>
 
                                                     </div>
 
                                                 </div>
 
-                                            )
-                                        )}
+                                            </div>
+
+                                        ))}
 
                                     </div>
 
@@ -1450,3 +1296,4 @@ export default function Perfil() {
     );
 
 }
+

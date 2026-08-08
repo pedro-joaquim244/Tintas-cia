@@ -1,143 +1,594 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family: 'poppins' sans-serif;
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.container{
-
-    display:flex;
-    height:100vh;
-
+body {
+    font-family: "Poppins", sans-serif;
 }
 
-.left{
 
-    width:70%;
-    background:#10356f;
-    color:white;
+/* =====================================================
+   CONTAINER
+===================================================== */
 
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
+.container {
+    min-height: 100vh;
+    width: 100%;
 
+    display: flex;
+
+    background: #f5f8fc;
 }
 
-.logo{
 
-    width:260px;
-    margin-bottom:30px;
+/* =====================================================
+   LADO ESQUERDO
+===================================================== */
 
+.left {
+    width: 55%;
+    min-height: 100vh;
+
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 60px;
+
+    color: white;
+
+    background:
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(255, 255, 255, 0.08),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 80% 80%,
+            rgba(0, 110, 255, 0.25),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #0b2858,
+            #10356f,
+            #0a2450
+        );
+
+    overflow: hidden;
 }
 
-.left h1{
 
-    font-size:60px;
-    margin-bottom:15px;
+/* =====================================================
+   EFEITOS DECORATIVOS
+===================================================== */
 
+.left::before {
+    content: "";
+
+    position: absolute;
+
+    width: 400px;
+    height: 400px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    top: -150px;
+    left: -150px;
 }
 
-.left p{
+.left::after {
+    content: "";
 
-    font-size:20px;
-    color:#d9d9d9;
+    position: absolute;
 
+    width: 500px;
+    height: 500px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(255, 255, 255, 0.06);
+
+    right: -250px;
+    bottom: -250px;
 }
 
-.right{
 
-    width:30%;
+/* =====================================================
+   CONTEÚDO ESQUERDO
+===================================================== */
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+.leftContent {
+    position: relative;
+    z-index: 2;
 
-    background:white;
+    max-width: 650px;
 
+    text-align: center;
 }
 
-.form{
 
-    width:340px;
+.left h1 {
+    font-size: clamp(45px, 5vw, 72px);
 
-    display:flex;
-    flex-direction:column;
-    gap:15px;
+    line-height: 1.05;
 
+    font-weight: 800;
+
+    letter-spacing: -2px;
+
+    margin-bottom: 22px;
 }
 
-.form h1{
 
-    color:#0b2454;
-    margin-bottom:20px;
+.left p {
+    font-size: 18px;
 
+    line-height: 1.7;
+
+    color: #dbe7f8;
 }
 
-.form input{
 
-    height:50px;
-    border:none;
-    background:#eef3fb;
+/* =====================================================
+   LOGO
+===================================================== */
 
-    padding:15px;
+.logo {
+    width: 220px;
 
-    border-radius:12px;
+    margin-bottom: 35px;
 
+    object-fit: contain;
 }
 
-.form button{
 
-    height:50px;
+/* =====================================================
+   LADO DIREITO
+===================================================== */
 
-    border:none;
+.right {
+    width: 45%;
+    min-height: 100vh;
 
-    border-radius:12px;
+    display: flex;
 
-    cursor:pointer;
+    justify-content: center;
 
-    background:#0d5eff;
+    align-items: flex-start;
 
-    color:white;
+    padding: 45px 35px;
 
-    font-size:18px;
+    background: #ffffff;
 
+    overflow-y: auto;
 }
 
-.erro{
 
-    background:#ffd8d8;
-    color:red;
-    padding:10px;
-    border-radius:10px;
+/* =====================================================
+   FORMULÁRIO
+===================================================== */
 
+.form {
+    width: 100%;
+    max-width: 520px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 13px;
 }
 
-.sucesso{
 
-    background:#dfffe3;
-    color:green;
-    padding:10px;
-    border-radius:10px;
+/* =====================================================
+   TÍTULO
+===================================================== */
 
+.form h1 {
+    color: #0b2454;
+
+    font-size: 32px;
+
+    font-weight: 700;
+
+    margin-bottom: 2px;
 }
+
+
+.subtitulo {
+    color: #7b8798;
+
+    font-size: 14px;
+
+    margin-bottom: 12px;
+}
+
+
+/* =====================================================
+   TÍTULO DAS SEÇÕES
+===================================================== */
+
+.tituloSecao {
+    color: #10356f;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.7px;
+
+    margin-top: 10px;
+
+    margin-bottom: 2px;
+
+    padding-left: 2px;
+}
+
+
+/* =====================================================
+   GRID DOS CAMPOS
+===================================================== */
+
+.grid {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+}
+
+
+/* =====================================================
+   INPUTS
+===================================================== */
+
+.form input {
+    width: 100%;
+
+    height: 48px;
+
+    border: 1px solid #e0e7f0;
+
+    outline: none;
+
+    background: #f5f8fc;
+
+    padding: 0 15px;
+
+    border-radius: 10px;
+
+    color: #172b4d;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 13px;
+
+    transition:
+        border 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.form input::placeholder {
+    color: #9aa7b8;
+}
+
+
+.form input:hover {
+    border-color: #c9d5e5;
+}
+
+
+.form input:focus {
+    background: #ffffff;
+
+    border-color: #0d5eff;
+
+    box-shadow:
+        0 0 0 3px rgba(13, 94, 255, 0.10);
+}
+
+
+/* =====================================================
+   DATA
+===================================================== */
+
+.form input[type="date"] {
+    color: #65748a;
+}
+
+
+/* =====================================================
+   BOTÃO
+===================================================== */
+
+.form button {
+    width: 100%;
+
+    height: 50px;
+
+    margin-top: 10px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0d5eff,
+            #0649d8
+        );
+
+    color: white;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 8px 20px rgba(13, 94, 255, 0.20);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+.form button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 25px rgba(13, 94, 255, 0.28);
+}
+
+
+.form button:active {
+    transform: translateY(0);
+}
+
+
+.form button:disabled {
+    opacity: 0.65;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
+}
+
+
+/* =====================================================
+   ERRO
+===================================================== */
+
+.erro {
+    width: 100%;
+
+    background: #fff0f0;
+
+    border: 1px solid #ffd0d0;
+
+    color: #d62828;
+
+    padding: 11px 13px;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+
+    line-height: 1.4;
+}
+
+
+/* =====================================================
+   SUCESSO
+===================================================== */
+
+.sucesso {
+    width: 100%;
+
+    background: #edfff1;
+
+    border: 1px solid #c9f1d1;
+
+    color: #16803c;
+
+    padding: 11px 13px;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+
+    line-height: 1.4;
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+.loginText {
+    text-align: center;
+
+    color: #8a96a8;
+
+    font-size: 13px;
+
+    margin-top: 5px;
+
+    margin-bottom: 5px;
+}
+
 
 .link {
+    display: inline-block;
 
-  text-decoration: none;
-  color: #9ca3af;
-  text-align: center;
-  display: flex;
-  font-size: 14px;
-  margin-top: 6px;
-  justify-content: center;
+    margin-left: 5px;
 
+    text-decoration: none;
 
+    color: #0d5eff;
+
+    font-weight: 600;
+
+    transition: color 0.2s ease;
 }
+
 
 .link:hover {
-  color: #02142f;
-  transition: 0.3s;
-  cursor: pointer;
+    color: #063da8;
+
+    text-decoration: underline;
 }
+
+
+/* =====================================================
+   SCROLLBAR
+===================================================== */
+
+.right::-webkit-scrollbar {
+    width: 6px;
+}
+
+
+.right::-webkit-scrollbar-track {
+    background: #f5f7fa;
+}
+
+
+.right::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+
+    border-radius: 10px;
+}
+
+
+.right::-webkit-scrollbar-thumb:hover {
+    background: #aebaca;
+}
+
+
+/* =====================================================
+   RESPONSIVIDADE
+===================================================== */
+
+@media (max-width: 1100px) {
+
+    .left {
+        width: 45%;
+    }
+
+    .right {
+        width: 55%;
+    }
+
+    .left h1 {
+        font-size: 50px;
+    }
+
+}
+
+
+@media (max-width: 850px) {
+
+    .container {
+        display: block;
+    }
+
+    .left {
+        width: 100%;
+
+        min-height: 260px;
+
+        padding: 40px 25px;
+    }
+
+    .left h1 {
+        font-size: 42px;
+
+        letter-spacing: -1px;
+    }
+
+    .left p {
+        font-size: 15px;
+    }
+
+    .right {
+        width: 100%;
+
+        min-height: auto;
+
+        padding: 35px 20px;
+    }
+
+}
+
+
+@media (max-width: 520px) {
+
+    .left {
+        min-height: 220px;
+
+        padding: 30px 20px;
+    }
+
+    .left h1 {
+        font-size: 34px;
+    }
+
+    .left p {
+        font-size: 13px;
+    }
+
+    .right {
+        padding: 30px 16px;
+    }
+
+    .form {
+        max-width: 100%;
+    }
+
+    .form h1 {
+        font-size: 27px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+
+        gap: 13px;
+    }
+
+    .form input {
+        height: 50px;
+    }
+
+    .form button {
+        height: 50px;
+    }
+
+}
+
