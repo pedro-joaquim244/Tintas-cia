@@ -1,4 +1,4 @@
-
+javascrip
 import express from "express";
 
 import itensRoutes from "./itens.routes.js";
@@ -6,6 +6,7 @@ import usuariosRoutes from "./usuarios.routes.js";
 import carrinhoRoutes from "./carrinho.routes.js";
 import pedidosRoutes from "./pedidos.routes.js";
 import itens_pedidosRoutes from "./itens_pedidos.routes.js";
+import cuponsRoutes from "./cupons.routes.js";
 
 const routes = express.Router();
 
@@ -14,11 +15,9 @@ const routes = express.Router();
 // =====================================================
 
 routes.get("/", (req, res) => {
-
     return res.json({
         mensagem: "API funcionando!"
     });
-
 });
 
 // =====================================================
@@ -48,6 +47,15 @@ routes.use(
 routes.use(
     "/itens_pedidos",
     itens_pedidosRoutes
+);
+
+// =====================================================
+// CUPONS
+// =====================================================
+
+routes.use(
+    "/cupons",
+    cuponsRoutes
 );
 
 export default routes;

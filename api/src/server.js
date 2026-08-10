@@ -8,6 +8,7 @@ import usuariosRoutes from "./routes/usuarios.routes.js";
 import itensRoutes from "./routes/itens.routes.js";
 import itens_pedidosRoutes from "./routes/itens_pedidos.routes.js";
 import carrinhoRoutes from "./routes/carrinho.routes.js";
+import cuponsRoutes from "./routes/cupons.routes.js";
 
 import { config } from "./config.js";
 
@@ -68,6 +69,11 @@ app.use(
     "/itens_pedidos",
     itens_pedidosRoutes
 );
+
+app.use(
+    "/cupons",
+    cuponsRoutes
+)
 
 // =====================================================
 // TESTE

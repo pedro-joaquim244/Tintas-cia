@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import style from "../styles/Compra.module.css";
 
@@ -5,461 +6,741 @@ import { api } from "../services/api";
 import { useAuth } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
 
-
-export default function Compra(){
-
+export default function Compra() {
     const { usuario } = useAuth();
-
     const navigate = useNavigate();
 
+    const [produtos, setProdutos] = useState([]);
+    const [pagamento, setPagamento] = useState("PIX");
 
-    const [produtos,setProdutos] = useState([]);
+    const [modal, setModal] = useState(false);
 
-    const [pagamento,setPagamento] = useState("PIX");
+    // ==========================
+    // CUPOM
+    // ==========================
 
-    const [modal,setModal] = useState(false);
+    const [codigoCupom, setCodigoCupom] = useState("");
+    const [cupom, setCupom] = useState(null);
 
+    const [carregandoCupom, setCarregandoCupom] = useState(false);
+    const [mensagemCupom, setMensagemCupom] = useState("");
+    const [erroCupom, setErroCupom] = useState("");
 
+    // ==========================
+    // BUSCAR CARRINHO
+    // ==========================
 
-    async function buscarCarrinho(){
+    async function buscarCarrinho() {
+        if (!usuario?.id) {
+            return;
+        }
 
-        try{
-
+        try {
             const resposta = await api.get(
                 `/carrinho/${usuario.id}`
             );
 
-
             setProdutos(resposta.data);
-
-
-        }catch(error){
-
-            console.log(
+        } catch (error) {
+            console.error(
                 "Erro ao buscar carrinho:",
                 error
             );
-
         }
-
     }
 
+    // ==========================
+    // CARREGAR CARRINHO
+    // ==========================
 
-
-
-
-    useEffect(()=>{
-
-        if(usuario){
-
+    useEffect(() => {
+        if (usuario?.id) {
             buscarCarrinho();
-
         }
+    }, [usuario]);
 
-    },[usuario]);
-
-
-
-
+    // ==========================
+    // SUBTOTAL
+    // ==========================
 
     const subtotal = produtos.reduce(
-
-        (total,item)=>{
-
-            return total +
-            Number(item.preco) *
-            item.quantidade;
-
+        (total, item) => {
+            return (
+                total +
+                Number(item.preco) *
+                    Number(item.quantidade)
+            );
         },
-
         0
-
     );
 
+    // ==========================
+    // FRETE
+    // ==========================
 
+    const frete = subtotal > 0 ? 29.9 : 0;
 
-    const frete = subtotal > 0 ? 29.90 : 0;
+    // ==========================
+    // DESCONTO
+    // ==========================
 
+    let desconto = 0;
 
-    const total = subtotal + frete;
+    if (cupom) {
+        if (
+            cupom.tipo === "percentual" ||
+            cupom.tipo === "porcentagem"
+        ) {
+            desconto =
+                subtotal *
+                (Number(cupom.valor) / 100);
+        } else {
+            desconto = Number(cupom.valor);
+        }
 
-
-
-
-
-
-
-    function confirmarCompra(){
-
-        setModal(true);
-
+        // O desconto nunca pode
+        // ser maior que o subtotal
+        if (desconto > subtotal) {
+            desconto = subtotal;
+        }
     }
 
+    // ==========================
+    // TOTAL
+    // ==========================
 
+    const total = Math.max(
+        subtotal + frete - desconto,
+        0
+    );
 
+    // ==========================
+    // APLICAR CUPOM
+    // ==========================
 
+    async function aplicarCupom() {
+        const codigo = codigoCupom
+            .trim()
+            .toUpperCase();
 
+        if (!codigo) {
+            setErroCupom(
+                "Digite o código do cupom."
+            );
 
+            setMensagemCupom("");
 
-    async function finalizar(){
+            return;
+        }
 
+        try {
+            setCarregandoCupom(true);
 
-        try{
+            setErroCupom("");
+            setMensagemCupom("");
+            setCupom(null);
 
+            const resposta = await api.get(
+                `/cupons/validar/${codigo}`
+            );
 
+            setCupom(resposta.data);
+
+            setCodigoCupom(
+                resposta.data.codigo
+            );
+
+            setMensagemCupom(
+                "Cupom aplicado com sucesso!"
+            );
+        } catch (error) {
+            console.error(
+                "Erro ao validar cupom:",
+                error
+            );
+
+            setCupom(null);
+
+            setErroCupom(
+                error.response?.data?.mensagem ||
+                    "Cupom inválido ou indisponível."
+            );
+        } finally {
+            setCarregandoCupom(false);
+        }
+    }
+
+    // ==========================
+    // REMOVER CUPOM
+    // ==========================
+
+    function removerCupom() {
+        setCupom(null);
+        setCodigoCupom("");
+        setMensagemCupom("");
+        setErroCupom("");
+    }
+
+    // ==========================
+    // CONFIRMAR COMPRA
+    // ==========================
+
+    function confirmarCompra() {
+        if (produtos.length === 0) {
+            return;
+        }
+
+        setModal(true);
+    }
+
+    // ==========================
+    // FINALIZAR COMPRA
+    // ==========================
+
+    async function finalizar() {
+        if (!usuario?.id) {
+            alert(
+                "Usuário não identificado."
+            );
+
+            return;
+        }
+
+        try {
             await api.post(
                 "/pedidos",
                 {
-
                     usuario_id: usuario.id,
+                    metodo_pagamento: pagamento,
 
-                    metodo_pagamento: pagamento
-
+                    cupom_id: cupom
+                        ? cupom.id
+                        : null
                 }
-
             );
 
-
-
-
             setModal(false);
-
-
 
             alert(
                 "Compra realizada com sucesso!"
             );
 
-
-
             navigate(
                 "/cliente/inicio"
             );
-
-
-
-        }catch(error){
-
-
-            console.log(
+        } catch (error) {
+            console.error(
                 "Erro ao finalizar compra:",
                 error
             );
 
-
             alert(
-                "Erro ao finalizar compra"
+                error.response?.data?.mensagem ||
+                    "Erro ao finalizar compra."
             );
-
-
         }
-
-
     }
 
+    // ==========================
+    // FORMATAR MOEDA
+    // ==========================
+
+    function formatarMoeda(valor) {
+        return Number(valor).toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        );
+    }
+
+    // ==========================
+    // JSX
+    // ==========================
+
+    return (
+        <main className={style.container}>
+
+            <div className={style.conteudo}>
+
+                {/* ==================================================
+                    PRODUTOS
+                ================================================== */}
+
+                <section className={style.produtos}>
+
+                    <h1>
+                        Finalizar compra
+                    </h1>
+
+                    {produtos.length === 0 ? (
+                        <p>
+                            Seu carrinho está vazio.
+                        </p>
+                    ) : (
+                        produtos.map((item) => (
+                            <div
+                                key={item.id}
+                                className={
+                                    style.produto
+                                }
+                            >
+                                <img
+                                    src={
+                                        `http://localhost:3333/${item.foto}`
+                                    }
+                                    alt={item.nome}
+                                />
+
+                                <div>
+
+                                    <h3>
+                                        {item.nome}
+                                    </h3>
+
+                                    <p>
+                                        Quantidade:{" "}
+                                        {item.quantidade}
+                                    </p>
+
+                                    <strong>
+                                        {formatarMoeda(
+                                            Number(
+                                                item.preco
+                                            ) *
+                                                Number(
+                                                    item.quantidade
+                                                )
+                                        )}
+                                    </strong>
+
+                                </div>
+                            </div>
+                        ))
+                    )}
+
+                </section>
 
 
+                {/* ==================================================
+                    CUPOM
+                ================================================== */}
+
+                <section className={style.cupom}>
+
+                    <h2>
+                        Cupom de desconto
+                    </h2>
+
+                    {!cupom ? (
+                        <>
+                            <div
+                                className={
+                                    style.cupomInput
+                                }
+                            >
+
+                                <input
+                                    type="text"
+                                    placeholder="Digite seu cupom"
+                                    value={codigoCupom}
+                                    onChange={(event) =>
+                                        setCodigoCupom(
+                                            event.target.value
+                                        )
+                                    }
+                                    onKeyDown={(event) => {
+                                        if (
+                                            event.key ===
+                                            "Enter"
+                                        ) {
+                                            aplicarCupom();
+                                        }
+                                    }}
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={
+                                        aplicarCupom
+                                    }
+                                    disabled={
+                                        carregandoCupom
+                                    }
+                                >
+                                    {carregandoCupom
+                                        ? "Verificando..."
+                                        : "Aplicar"}
+                                </button>
+
+                            </div>
 
 
+                            {mensagemCupom && (
+                                <p
+                                    className={
+                                        style.sucesso
+                                    }
+                                >
+                                    {mensagemCupom}
+                                </p>
+                            )}
 
 
-return(
+                            {erroCupom && (
+                                <p
+                                    className={
+                                        style.erro
+                                    }
+                                >
+                                    {erroCupom}
+                                </p>
+                            )}
+                        </>
+                    ) : (
+                        <div
+                            className={
+                                style.cupomAplicado
+                            }
+                        >
 
-<div className={style.container}>
+                            <div>
+
+                                <strong>
+                                    {cupom.codigo}
+                                </strong>
+
+                                <span>
+                                    Cupom aplicado
+                                </span>
+
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={
+                                    removerCupom
+                                }
+                            >
+                                Remover
+                            </button>
+
+                        </div>
+                    )}
+
+                </section>
 
 
-<h1>
-Finalizar compra
-</h1>
+                {/* ==================================================
+                    PAGAMENTO
+                ================================================== */}
+
+                <section className={style.pagamento}>
+
+                    <h2>
+                        Forma de pagamento
+                    </h2>
+
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="pagamento"
+                            value="PIX"
+                            checked={
+                                pagamento === "PIX"
+                            }
+                            onChange={() =>
+                                setPagamento(
+                                    "PIX"
+                                )
+                            }
+                        />
+
+                        <span>
+                            PIX
+                        </span>
+
+                    </label>
 
 
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="pagamento"
+                            value="Cartão"
+                            checked={
+                                pagamento ===
+                                "Cartão"
+                            }
+                            onChange={() =>
+                                setPagamento(
+                                    "Cartão"
+                                )
+                            }
+                        />
+
+                        <span>
+                            Cartão de crédito
+                        </span>
+
+                    </label>
 
 
-<div className={style.content}>
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="pagamento"
+                            value="Boleto"
+                            checked={
+                                pagamento ===
+                                "Boleto"
+                            }
+                            onChange={() =>
+                                setPagamento(
+                                    "Boleto"
+                                )
+                            }
+                        />
+
+                        <span>
+                            Boleto
+                        </span>
+
+                    </label>
+
+                </section>
 
 
-<div className={style.produtos}>
+                {/* ==================================================
+                    RESUMO
+                ================================================== */}
+
+                <section className={style.resumo}>
+
+                    <h2>
+                        Resumo da compra
+                    </h2>
 
 
-<h2>
-Produtos
-</h2>
+                    <div>
+
+                        <span>
+                            Subtotal
+                        </span>
+
+                        <strong>
+                            {formatarMoeda(
+                                subtotal
+                            )}
+                        </strong>
+
+                    </div>
 
 
+                    <div>
 
-{
-produtos.map(item=>(
+                        <span>
+                            Frete
+                        </span>
+
+                        <strong>
+                            {formatarMoeda(
+                                frete
+                            )}
+                        </strong>
+
+                    </div>
 
 
-<div
-className={style.produto}
-key={item.id}
->
+                    {cupom && (
+                        <div
+                            className={
+                                style.desconto
+                            }
+                        >
+
+                            <span>
+                                Desconto (
+                                {cupom.codigo}
+                                )
+                            </span>
+
+                            <strong>
+                                -
+                                {formatarMoeda(
+                                    desconto
+                                )}
+                            </strong>
+
+                        </div>
+                    )}
 
 
-<img
+                    <hr />
 
-src={
-`http://localhost:3333/${item.foto}`
+
+                    <div
+                        className={
+                            style.total
+                        }
+                    >
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong>
+                            {formatarMoeda(
+                                total
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        className={
+                            style.finalizar
+                        }
+                        onClick={
+                            confirmarCompra
+                        }
+                        disabled={
+                            produtos.length ===
+                            0
+                        }
+                    >
+                        Finalizar compra
+                    </button>
+
+                </section>
+
+            </div>
+
+
+            {/* ==================================================
+                MODAL
+            ================================================== */}
+
+            {modal && (
+                <div
+                    className={
+                        style.modalOverlay
+                    }
+                >
+
+                    <div
+                        className={
+                            style.modal
+                        }
+                    >
+
+                        <h2>
+                            Confirmar compra
+                        </h2>
+
+                        <p>
+                            Confira os dados antes
+                            de finalizar sua compra.
+                        </p>
+
+
+                        <div>
+
+                            <span>
+                                Forma de pagamento
+                            </span>
+
+                            <strong>
+                                {pagamento}
+                            </strong>
+
+                        </div>
+
+
+                        {cupom && (
+                            <div>
+
+                                <span>
+                                    Cupom
+                                </span>
+
+                                <strong>
+                                    {cupom.codigo}
+                                </strong>
+
+                            </div>
+                        )}
+
+
+                        <div>
+
+                            <span>
+                                Desconto
+                            </span>
+
+                            <strong>
+                                -
+                                {formatarMoeda(
+                                    desconto
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Total
+                            </span>
+
+                            <strong>
+                                {formatarMoeda(
+                                    total
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <div
+                            className={
+                                style.modalActions
+                            }
+                        >
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setModal(false)
+                                }
+                            >
+                                Cancelar
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={
+                                    finalizar
+                                }
+                            >
+                                Confirmar compra
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            )}
+
+        </main>
+    );
 }
 
-alt={item.nome}
-
-/>
-
-
-
-<div>
-
-<h3>
-{item.nome}
-</h3>
-
-
-<p>
-Quantidade: {item.quantidade}
-</p>
-
-
-<p>
-R$ {
-Number(item.preco).toFixed(2)
-}
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-))
-
-}
-
-
-
-</div>
-
-
-
-
-
-
-
-<div className={style.pagamento}>
-
-
-<h2>
-Pagamento
-</h2>
-
-
-
-<label>
-
-<input
-
-type="radio"
-
-checked={
-pagamento === "PIX"
-}
-
-onChange={()=>
-setPagamento("PIX")
-}
-
-/>
-
-PIX
-
-</label>
-
-
-
-
-
-<label>
-
-<input
-
-type="radio"
-
-checked={
-pagamento === "Cartão"
-}
-
-onChange={()=>
-setPagamento("Cartão")
-}
-
-/>
-
-Cartão de crédito
-
-</label>
-
-
-
-
-
-<label>
-
-<input
-
-type="radio"
-
-checked={
-pagamento === "Boleto"
-}
-
-onChange={()=>
-setPagamento("Boleto")
-}
-
-/>
-
-Boleto
-
-</label>
-
-
-
-
-
-<div className={style.resumo}>
-
-
-<p>
-Subtotal:
-R$ {subtotal.toFixed(2)}
-</p>
-
-
-<p>
-Frete:
-R$ {frete.toFixed(2)}
-</p>
-
-
-<h2>
-Total:
-R$ {total.toFixed(2)}
-</h2>
-
-
-</div>
-
-
-
-
-
-<button
-
-onClick={confirmarCompra}
-
-className={style.finalizar}
-
->
-
-Finalizar compra
-
-</button>
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-{
-modal &&
-
-
-<div className={style.overlay}>
-
-
-<div className={style.modal}>
-
-
-<h2>
-Confirmar compra?
-</h2>
-
-
-<p>
-Pagamento:
-{pagamento}
-</p>
-
-
-<p>
-Total:
-R$ {total.toFixed(2)}
-</p>
-
-
-
-
-<div>
-
-
-<button
-
-onClick={()=>
-setModal(false)
-}
-
->
-
-Cancelar
-
-</button>
-
-
-
-
-
-<button
-
-onClick={finalizar}
-
->
-
-Confirmar
-
-</button>
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-}
-
-
-
-</div>
-
-
-)
-
-
-}

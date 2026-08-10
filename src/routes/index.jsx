@@ -14,6 +14,7 @@ import Carrinho from "../pages/Carrinho.jsx"
 import Perfil from "../pages/Perfil";
 import Cores from "../pages/Cores.jsx";
 import Compra from "../pages/Compras.jsx";
+import Cupons from "../pages/CriaCupons.jsx";
 
 import RotasAdmin from "./RotasAdmin";
 import RotasCliente from "./RotasCliente";
@@ -51,6 +52,8 @@ export function AppRoutes() {
         <Route path="/admin/produtos/:id/editar" element={<EditarItem />} />
         <Route path="/admin/pedidos" element={<Pedidos />} />
         <Route path="/admin/perfil" element={<Perfil />} />
+        <Route path="/admin/Cupons" element={<Cupons />} />
+        
 
         <Route path="/dashboard" element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="/admin" element={<Navigate to="/admin/produtos" replace />} />
