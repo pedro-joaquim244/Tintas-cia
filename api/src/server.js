@@ -11,6 +11,7 @@ import carrinhoRoutes from "./routes/carrinho.routes.js";
 import cuponsRoutes from "./routes/cupons.routes.js";
 
 import { config } from "./config.js";
+import dashboardRoutes from "./routes/dashboard.routes.js"
 
 const app = express();
 
@@ -48,6 +49,10 @@ app.use(
 app.use(
     "/usuarios",
     usuariosRoutes
+);
+app.use(
+    "/dashboard",
+    dashboardRoutes
 );
 
 app.use(

@@ -15,6 +15,7 @@ import Perfil from "../pages/Perfil";
 import Cores from "../pages/Cores.jsx";
 import Compra from "../pages/Compras.jsx";
 import Cupons from "../pages/CriaCupons.jsx";
+import Usuarios from "../pages/Usuarios.jsx";
 
 import RotasAdmin from "./RotasAdmin";
 import RotasCliente from "./RotasCliente";
@@ -53,6 +54,7 @@ export function AppRoutes() {
         <Route path="/admin/pedidos" element={<Pedidos />} />
         <Route path="/admin/perfil" element={<Perfil />} />
         <Route path="/admin/Cupons" element={<Cupons />} />
+        <Route path="/admin/Usuarios" element={<Usuarios />} />
         
 
         <Route path="/dashboard" element={<Navigate to="/admin/dashboard" replace />} />

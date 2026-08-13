@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import style from "../styles/CriaCupons.module.css";
+import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho";
 
 import { api } from "../services/api";
 
@@ -150,7 +151,7 @@ export default function CriaCupons() {
 
             setCarregando(true);
 
-            // =================================================
+            // =s================================================
             // CONVERSÃO PARA O FORMATO DO BANCO
             // =================================================
 
@@ -427,9 +428,7 @@ export default function CriaCupons() {
 
         <main className={style.container}>
 
-            {/* =================================================
-                CABEÇALHO
-            ================================================= */}
+            <Cabecalho/>
 
             <div className={style.header}>
 

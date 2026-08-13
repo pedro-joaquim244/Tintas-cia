@@ -23,119 +23,330 @@ import { useAuth } from "../contexts/authContext.jsx";
 
 import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
 
-  
+
 export default function Dashboard() {
 
   const navigate = useNavigate();
 
-  const [itens, setItens] = useState([]);
-
   const { usuario, logout } = useAuth();
 
+  // =====================================================
+  // ESTADOS
+  // =====================================================
+
+  const [dashboard, setDashboard] = useState(null);
+
+  const [carregando, setCarregando] = useState(true);
+
   const [modalOpen, setModalOpen] = useState(false);
+
+
+  // =====================================================
+  // SAIR
+  // =====================================================
 
   function sair() {
 
     logout();
 
     navigate("/login");
+
   }
 
+
+  // =====================================================
+  // CARREGAR DASHBOARD
+  // =====================================================
+
   useEffect(() => {
-    carregarItens();
+
+    carregarDashboard();
 
   }, []);
 
-  async function carregarItens() {
-    try{
-      const resposta = await api.get("/itens");
-      setItens(resposta.data);
+
+  async function carregarDashboard() {
+
+    try {
+
+      setCarregando(true);
+
+      const resposta =
+        await api.get("/dashboard");
+
+      setDashboard(resposta.data);
+
+    } catch (error) {
+
+      console.error(
+        "Erro ao carregar dashboard:",
+        error
+      );
+
+    } finally {
+
+      setCarregando(false);
 
     }
-    catch(error){
-      console.error("Erro ao carregar itens", error)
-    }
+
   }
 
-  const comprasSemana = [
-    {
-      id: "#2031",
-      produto: "Tinta Azul Premium",
-      cliente: "Carlos Henrique",
-      valor: "R$ 420",
-      data: "Segunda • 09:32",
-    },
-    {
-      id: "#2030",
-      produto: "Kit Pintura Completo",
-      cliente: "Mariana Souza",
-      valor: "R$ 280",
-      data: "Terça • 11:10",
-    },
-    {
-      id: "#2029",
-      produto: "Verniz Madeira",
-      cliente: "Roberto Lima",
-      valor: "R$ 190",
-      data: "Quarta • 15:20",
-    },
-    {
-      id: "#2028",
-      produto: "Tinta Fosca Branco Neve",
-      cliente: "Felipe Costa",
-      valor: "R$ 510",
-      data: "Quinta • 08:41",
-    },
-    {
-      id: "#2027",
-      produto: "Selador Acrílico",
-      cliente: "Ana Júlia",
-      valor: "R$ 240",
-      data: "Sexta • 18:12",
-    },
-    {
-      id: "#2026",
-      produto: "Massa Corrida Premium",
-      cliente: "Lucas Almeida",
-      valor: "R$ 320",
-      data: "Sábado • 13:07",
-    },
-  ];
+
+  // =====================================================
+  // LOADING
+  // =====================================================
+
+  if (carregando || !dashboard) {
+
+    return (
+
+      <div className={styles.container}>
+
+        <Cabecalho />
+
+        <div className={styles.rightArea}>
+
+          <main className={styles.content}>
+
+            <div className={styles.loading}>
+
+              Carregando dashboard...
+
+            </div>
+
+          </main>
+
+        </div>
+
+      </div>
+
+    );
+
+  }
+
+
+  // =====================================================
+  // DADOS
+  // =====================================================
+
+  const resumo =
+    dashboard.resumo || {};
+
+  const vendasRecentes =
+    dashboard.vendasRecentes || [];
+
+  const vendasSemana =
+    dashboard.vendasSemana || [];
+
+  const estoqueBaixo =
+    dashboard.estoqueBaixo || [];
+
+
+  // =====================================================
+  // ÚLTIMOS 7 DIAS
+  // =====================================================
+
+  const hoje = new Date();
+
+  const ultimos7Dias = Array.from(
+    { length: 7 },
+    (_, index) => {
+
+      const data = new Date();
+
+      data.setHours(12, 0, 0, 0);
+
+      data.setDate(
+        hoje.getDate() - (6 - index)
+      );
+
+      const ano =
+        data.getFullYear();
+
+      const mes =
+        String(
+          data.getMonth() + 1
+        ).padStart(2, "0");
+
+      const dia =
+        String(
+          data.getDate()
+        ).padStart(2, "0");
+
+      const dataISO =
+        `${ano}-${mes}-${dia}`;
+
+
+      const venda =
+        vendasSemana.find(
+          item => {
+
+            const dataVenda =
+              String(item.data)
+                .substring(0, 10);
+
+            return (
+              dataVenda ===
+              dataISO
+            );
+
+          }
+        );
+
+
+      return {
+
+        data: dataISO,
+
+        dia:
+          data
+            .toLocaleDateString(
+              "pt-BR",
+              {
+                weekday: "short"
+              }
+            )
+            .replace(".", "")
+            .replace(
+              /^./,
+              letra =>
+                letra.toUpperCase()
+            ),
+
+        faturamento:
+          venda
+            ? Number(
+                venda.faturamento
+              )
+            : 0,
+
+        pedidos:
+          venda
+            ? Number(
+                venda.pedidos
+              )
+            : 0
+
+      };
+
+    }
+  );
+
+
+  // =====================================================
+  // MAIOR VENDA DO GRÁFICO
+  // =====================================================
+
+  const maiorVenda =
+    Math.max(
+      ...ultimos7Dias.map(
+        item =>
+          item.faturamento
+      ),
+      1
+    );
+
+
+  // =====================================================
+  // FORMATAÇÃO DE MOEDA
+  // =====================================================
+
+  function formatarMoeda(valor) {
+
+    return Number(valor || 0)
+      .toLocaleString(
+        "pt-BR",
+        {
+          style: "currency",
+          currency: "BRL"
+        }
+      );
+
+  }
+
+
+  // =====================================================
+  // FORMATAÇÃO DE DATA
+  // =====================================================
+
+  function formatarData(data) {
+
+    if (!data) {
+      return "";
+    }
+
+    return new Date(data)
+      .toLocaleString(
+        "pt-BR",
+        {
+          day: "2-digit",
+          month: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        }
+      );
+
+  }
+
+
+  // =====================================================
+  // RENDER
+  // =====================================================
 
   return (
 
     <div className={styles.container}>
 
-      {/* SIDEBAR */}
+      {/* =================================================
+          CABEÇALHO / SIDEBAR
+      ================================================= */}
 
       <Cabecalho />
 
-      {/* ÁREA DIREITA */}
+
+      {/* =================================================
+          ÁREA DIREITA
+      ================================================= */}
 
       <div className={styles.rightArea}>
 
         <main className={styles.content}>
 
-          {/* HERO */}
+
+          {/* =================================================
+              HERO
+          ================================================= */}
 
           <section className={styles.hero}>
 
             <div>
 
               <span className={styles.badge}>
+
                 Painel Administrativo
+
               </span>
 
+
               <h1>
-                Bem-vindo, {usuario.nome}
+
+                Bem-vindo,{" "}
+
+                {usuario?.nome || "Administrador"}
+
               </h1>
 
+
               <p>
-                Gerencie produtos, pedidos, estoque e clientes
-                da sua loja de tintas em um único painel.
+
+                Gerencie produtos, pedidos, estoque e
+                clientes da sua loja de tintas em um
+                único painel.
+
               </p>
 
             </div>
+
 
             <button
               className={styles.logoutBtn}
@@ -150,88 +361,155 @@ export default function Dashboard() {
 
           </section>
 
-          {/* CARDS */}
+
+
+          {/* =================================================
+              CARDS
+          ================================================= */}
 
           <section className={styles.cards}>
+
+
+            {/* PRODUTOS */}
 
             <div className={styles.card}>
 
               <div className={styles.cardTop}>
 
-                <span>Total de Produtos</span>
-
+                <span>
+                  Total de Produtos
+                </span>
 
                 <FiBox />
 
               </div>
 
-              <h2>{itens.length}</h2>
+
+              <h2>
+
+                {resumo.produtos || 0}
+
+              </h2>
+
 
               <p>
-                +12 novos essa semana
+
+                Produtos cadastrados
+
               </p>
 
             </div>
+
+
+
+            {/* PEDIDOS */}
 
             <div className={styles.card}>
 
               <div className={styles.cardTop}>
 
-                <span>Pedidos</span>
+                <span>
+                  Pedidos
+                </span>
 
                 <FiShoppingCart />
 
               </div>
 
-              <h2>64</h2>
+
+              <h2>
+
+                {resumo.pedidos || 0}
+
+              </h2>
+
 
               <p>
-                18 pendentes
+
+                {resumo.pedidos_pendentes || 0}
+                {" "}
+                pendentes
+
               </p>
 
             </div>
+
+
+
+            {/* CLIENTES */}
 
             <div className={styles.card}>
 
               <div className={styles.cardTop}>
 
-                <span>Clientes</span>
+                <span>
+                  Clientes
+                </span>
 
                 <FiUsers />
 
               </div>
 
-              <h2>1.284</h2>
+
+              <h2>
+
+                {resumo.clientes || 0}
+
+              </h2>
+
 
               <p>
-                +8.2% este mês
+
+                Clientes cadastrados
+
               </p>
 
             </div>
+
+
+
+            {/* FATURAMENTO */}
 
             <div className={styles.card}>
 
               <div className={styles.cardTop}>
 
-                <span>Faturamento</span>
+                <span>
+                  Faturamento
+                </span>
 
                 <FiDollarSign />
 
               </div>
 
-              <h2>R$ 18.420</h2>
+
+              <h2>
+
+                {formatarMoeda(
+                  resumo.faturamento
+                )}
+
+              </h2>
+
 
               <p>
-                Crescimento de 12%
+
+                Faturamento total
+
               </p>
 
             </div>
 
           </section>
 
-          {/* GRÁFICO */}
+
+
+          {/* =================================================
+              GRÁFICO
+          ================================================= */}
 
           <section className={styles.chartSection}>
+
 
             <div className={styles.chartHeader}>
 
@@ -241,221 +519,329 @@ export default function Dashboard() {
                   Vendas da Semana
                 </h3>
 
+
                 <p>
-                  Desempenho dos últimos 7 dias
+                  Faturamento dos últimos 7 dias
                 </p>
 
               </div>
 
-              <span className={styles.chartBadge}>
-                +12%
+
+              <span
+                className={styles.chartBadge}
+              >
+
+                {resumo.pedidos_semana || 0}
+                {" "}
+                pedidos
+
               </span>
 
             </div>
 
+
+
             <div className={styles.chart}>
 
-              <div className={styles.barGroup}>
-                <span className={styles.day}>Seg</span>
-                <div className={styles.bar} style={{ height: "90px" }} />
-                <strong>12k</strong>
-              </div>
+              {ultimos7Dias.map(
+                (item) => {
 
-              <div className={styles.barGroup}>
-                <span className={styles.day}>Ter</span>
-                <div className={styles.bar} style={{ height: "140px" }} />
-                <strong>18k</strong>
-              </div>
+                  const altura =
+                    item.faturamento === 0
 
-              <div className={styles.barGroup}>
-                <span className={styles.day}>Qua</span>
-                <div className={styles.bar} style={{ height: "110px" }} />
-                <strong>14k</strong>
-              </div>
+                      ? 5
 
-              <div className={styles.barGroup}>
-                <span className={styles.day}>Qui</span>
-                <div className={styles.bar} style={{ height: "170px" }} />
-                <strong>22k</strong>
-              </div>
+                      : Math.max(
+                          20,
+                          (
+                            item.faturamento /
+                            maiorVenda
+                          ) * 200
+                        );
 
-              <div className={styles.barGroup}>
-                <span className={styles.day}>Sex</span>
-                <div className={styles.bar} style={{ height: "200px" }} />
-                <strong>26k</strong>
-              </div>
 
-              <div className={styles.barGroup}>
-                <span className={styles.day}>Sáb</span>
-                <div className={styles.bar} style={{ height: "160px" }} />
-                <strong>20k</strong>
-              </div>
+                  return (
 
-              <div className={styles.barGroup}>
-                <span className={styles.day}>Dom</span>
-                <div className={styles.bar} style={{ height: "130px" }} />
-                <strong>16k</strong>
-              </div>
+                    <div
+                      className={
+                        styles.barGroup
+                      }
+                      key={item.data}
+                    >
+
+                      <span
+                        className={
+                          styles.day
+                        }
+                      >
+
+                        {item.dia}
+
+                      </span>
+
+
+                      <div
+                        className={
+                          styles.bar
+                        }
+                        style={{
+                          height:
+                            `${altura}px`
+                        }}
+                        title={
+                          `${formatarMoeda(
+                            item.faturamento
+                          )} — ${
+                            item.pedidos
+                          } pedido(s)`
+                        }
+                      />
+
+
+                      <strong>
+
+                        {item.faturamento > 0
+
+                          ? item.faturamento
+                              .toLocaleString(
+                                "pt-BR",
+                                {
+                                  style:
+                                    "currency",
+                                  currency:
+                                    "BRL",
+                                  maximumFractionDigits:
+                                    0
+                                }
+                              )
+
+                          : "R$ 0"
+
+                        }
+
+                      </strong>
+
+                    </div>
+
+                  );
+
+                }
+              )}
 
             </div>
 
           </section>
 
-          {/* GRID */}
+
+
+          {/* =================================================
+              GRID
+          ================================================= */}
 
           <section className={styles.grid}>
 
-            {/* VENDAS */}
+
+            {/* =================================================
+                VENDAS RECENTES
+            ================================================= */}
 
             <div className={styles.panel}>
 
-              <div className={styles.panelHeader}>
+
+              <div
+                className={
+                  styles.panelHeader
+                }
+              >
 
                 <h3>
                   Vendas Recentes
                 </h3>
 
+
                 <button
-                  onClick={() => setModalOpen(true)}
+                  onClick={() =>
+                    setModalOpen(true)
+                  }
                 >
+
                   Ver tudo
+
                 </button>
 
               </div>
 
+
+
               <div className={styles.sales}>
 
-                <div className={styles.saleItem}>
 
-                  <div>
+                {vendasRecentes.length === 0 ? (
 
-                    <strong>
-                      Tinta Azul Premium
-                    </strong>
+                  <div
+                    className={
+                      styles.empty
+                    }
+                  >
 
-                    <span>
-                      Pedido #2031
-                    </span>
-
-                  </div>
-
-                  <b>
-                    R$ 420
-                  </b>
-
-                </div>
-
-                <div className={styles.saleItem}>
-
-                  <div>
-
-                    <strong>
-                      Kit Pintura Completo
-                    </strong>
-
-                    <span>
-                      Pedido #2030
-                    </span>
+                    Nenhuma venda encontrada.
 
                   </div>
 
-                  <b>
-                    R$ 280
-                  </b>
+                ) : (
 
-                </div>
+                  vendasRecentes
+                    .slice(0, 5)
+                    .map(
+                      (venda) => (
 
-                <div className={styles.saleItem}>
+                        <div
+                          className={
+                            styles.saleItem
+                          }
+                          key={venda.id}
+                        >
 
-                  <div>
+                          <div>
 
-                    <strong>
-                      Verniz Madeira
-                    </strong>
+                            <strong>
 
-                    <span>
-                      Pedido #2029
-                    </span>
+                              {venda.produto}
 
-                  </div>
+                            </strong>
 
-                  <b>
-                    R$ 190
-                  </b>
 
-                </div>
+                            <span>
+
+                              Pedido #{venda.id}
+
+                              {" • "}
+
+                              {venda.cliente}
+
+                            </span>
+
+                          </div>
+
+
+                          <b>
+
+                            {formatarMoeda(
+                              venda.total
+                            )}
+
+                          </b>
+
+                        </div>
+
+                      )
+                    )
+
+                )}
 
               </div>
 
             </div>
 
-            {/* ATIVIDADE */}
+
+
+            {/* =================================================
+                ATIVIDADE / ESTOQUE
+            ================================================= */}
 
             <div className={styles.panel}>
 
-              <div className={styles.panelHeader}>
+
+              <div
+                className={
+                  styles.panelHeader
+                }
+              >
 
                 <h3>
-                  Atividade
+                  Estoque
                 </h3>
 
               </div>
 
-              <div className={styles.activity}>
 
-                <div className={styles.activityItem}>
 
-                  <FiPlus />
+              <div
+                className={
+                  styles.activity
+                }
+              >
 
-                  <div>
 
-                    <strong>
-                      Novo produto cadastrado
-                    </strong>
+                {estoqueBaixo.length === 0 ? (
 
-                    <span>
-                      há 5 minutos
-                    </span>
+                  <div
+                    className={
+                      styles.activityItem
+                    }
+                  >
 
-                  </div>
+                    <FiBox />
 
-                </div>
+                    <div>
 
-                <div className={styles.activityItem}>
+                      <strong>
+                        Estoque normal
+                      </strong>
 
-                  <FiTrendingUp />
+                      <span>
+                        Nenhum produto com estoque baixo
+                      </span>
 
-                  <div>
-
-                    <strong>
-                      Estoque atualizado
-                    </strong>
-
-                    <span>
-                      há 18 minutos
-                    </span>
+                    </div>
 
                   </div>
 
-                </div>
+                ) : (
 
-                <div className={styles.activityItem}>
+                  estoqueBaixo
+                    .slice(0, 4)
+                    .map(
+                      (item) => (
 
-                  <FiAlertCircle />
+                        <div
+                          className={
+                            styles.activityItem
+                          }
+                          key={item.id}
+                        >
 
-                  <div>
+                          <FiAlertCircle />
 
-                    <strong>
-                      Produto com baixo estoque
-                    </strong>
 
-                    <span>
-                      há 1 hora
-                    </span>
+                          <div>
 
-                  </div>
+                            <strong>
 
-                </div>
+                              {item.nome}
+
+                            </strong>
+
+
+                            <span>
+
+                              Apenas{" "}
+                              {item.quantidade}
+                              {" "}
+                              unidade(s)
+                              {" "}
+                              disponível(is)
+
+                            </span>
+
+                          </div>
+
+                        </div>
+
+                      )
+                    )
+
+                )}
 
               </div>
 
@@ -463,15 +849,26 @@ export default function Dashboard() {
 
           </section>
 
-          {/* QUICK ACTIONS */}
+
+
+          {/* =================================================
+              QUICK ACTIONS
+          ================================================= */}
 
           <section className={styles.quick}>
+
 
             {/* ADICIONAR PRODUTO */}
 
             <div
-              className={styles.quickCard}
-              onClick={() => navigate("/admin/produtos/novo")}
+              className={
+                styles.quickCard
+              }
+              onClick={() =>
+                navigate(
+                  "/admin/produtos/novo"
+                )
+              }
             >
 
               <div>
@@ -480,21 +877,31 @@ export default function Dashboard() {
                   Adicionar Produto
                 </h3>
 
+
                 <p>
                   Cadastre novos itens rapidamente.
                 </p>
 
               </div>
 
+
               <FiArrowUpRight />
 
             </div>
 
+
+
             {/* VER PEDIDOS */}
 
             <div
-              className={styles.quickCard}
-              onClick={() => navigate("/admin/pedidos")}
+              className={
+                styles.quickCard
+              }
+              onClick={() =>
+                navigate(
+                  "/admin/pedidos"
+                )
+              }
             >
 
               <div>
@@ -503,19 +910,32 @@ export default function Dashboard() {
                   Ver Pedidos
                 </h3>
 
+
                 <p>
                   Gerencie pedidos em andamento.
                 </p>
 
               </div>
 
+
               <FiArrowUpRight />
 
             </div>
 
+
+
             {/* HISTÓRICO */}
 
-            <div className={styles.quickCard}>
+            <div
+              className={
+                styles.quickCard
+              }
+              onClick={() =>
+                navigate(
+                  "/admin/pedidos"
+                )
+              }
+            >
 
               <div>
 
@@ -523,11 +943,13 @@ export default function Dashboard() {
                   Histórico
                 </h3>
 
+
                 <p>
-                  Veja relatórios e movimentações.
+                  Veja pedidos e movimentações.
                 </p>
 
               </div>
+
 
               <FiClock />
 
@@ -539,31 +961,65 @@ export default function Dashboard() {
 
       </div>
 
-      {/* MODAL */}
+
+
+      {/* =====================================================
+          MODAL - VENDAS DA SEMANA
+      ===================================================== */}
 
       {modalOpen && (
 
-        <div className={styles.modalOverlay}>
+        <div
+          className={
+            styles.modalOverlay
+          }
+          onClick={() =>
+            setModalOpen(false)
+          }
+        >
 
-          <div className={styles.modal}>
+          <div
+            className={
+              styles.modal
+            }
+            onClick={(event) =>
+              event.stopPropagation()
+            }
+          >
 
-            <div className={styles.modalHeader}>
+
+            {/* HEADER */}
+
+            <div
+              className={
+                styles.modalHeader
+              }
+            >
 
               <div>
 
                 <h2>
-                  Compras da Semana
+                  Vendas Recentes
                 </h2>
 
+
                 <p>
-                  Todas as vendas realizadas nos últimos 7 dias
+
+                  Pedidos realizados
+                  recentemente
+
                 </p>
 
               </div>
 
+
               <button
-                className={styles.closeBtn}
-                onClick={() => setModalOpen(false)}
+                className={
+                  styles.closeBtn
+                }
+                onClick={() =>
+                  setModalOpen(false)
+                }
               >
 
                 <FiX />
@@ -572,42 +1028,96 @@ export default function Dashboard() {
 
             </div>
 
-            <div className={styles.modalContent}>
 
-              {comprasSemana.map((compra) => (
+
+            {/* CONTEÚDO */}
+
+            <div
+              className={
+                styles.modalContent
+              }
+            >
+
+
+              {vendasRecentes.length === 0 ? (
 
                 <div
-                  key={compra.id}
-                  className={styles.purchaseItem}
+                  className={
+                    styles.empty
+                  }
                 >
 
-                  <div>
-
-                    <strong>
-                      {compra.produto}
-                    </strong>
-
-                    <span>
-                      {compra.id} • {compra.cliente}
-                    </span>
-
-                  </div>
-
-                  <div className={styles.purchaseRight}>
-
-                    <b>
-                      {compra.valor}
-                    </b>
-
-                    <small>
-                      {compra.data}
-                    </small>
-
-                  </div>
+                  Nenhuma venda encontrada.
 
                 </div>
 
-              ))}
+              ) : (
+
+                vendasRecentes.map(
+                  (compra) => (
+
+                    <div
+                      key={compra.id}
+                      className={
+                        styles.purchaseItem
+                      }
+                    >
+
+
+                      <div>
+
+                        <strong>
+
+                          {compra.produto}
+
+                        </strong>
+
+
+                        <span>
+
+                          Pedido #{compra.id}
+
+                          {" • "}
+
+                          {compra.cliente}
+
+                        </span>
+
+                      </div>
+
+
+
+                      <div
+                        className={
+                          styles.purchaseRight
+                        }
+                      >
+
+                        <b>
+
+                          {formatarMoeda(
+                            compra.total
+                          )}
+
+                        </b>
+
+
+                        <small>
+
+                          {formatarData(
+                            compra.criado_em
+                          )}
+
+                        </small>
+
+                      </div>
+
+                    </div>
+
+                  )
+                )
+
+              )}
 
             </div>
 
@@ -618,5 +1128,7 @@ export default function Dashboard() {
       )}
 
     </div>
+
   );
+
 }

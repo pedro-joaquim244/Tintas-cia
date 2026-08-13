@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import style from "../styles/Compra.module.css";
 
@@ -14,6 +13,7 @@ export default function Compra() {
     const [pagamento, setPagamento] = useState("PIX");
 
     const [modal, setModal] = useState(false);
+    const [modalSucesso, setModalSucesso] = useState(false);
 
     // ==========================
     // CUPOM
@@ -98,8 +98,6 @@ export default function Compra() {
             desconto = Number(cupom.valor);
         }
 
-        // O desconto nunca pode
-        // ser maior que o subtotal
         if (desconto > subtotal) {
             desconto = subtotal;
         }
@@ -199,6 +197,8 @@ export default function Compra() {
 
     async function finalizar() {
         if (!usuario?.id) {
+            setModal(false);
+
             alert(
                 "Usuário não identificado."
             );
@@ -219,15 +219,12 @@ export default function Compra() {
                 }
             );
 
+            // Fecha o modal de confirmação
             setModal(false);
 
-            alert(
-                "Compra realizada com sucesso!"
-            );
+            // Abre o modal de compra finalizada
+            setModalSucesso(true);
 
-            navigate(
-                "/cliente/inicio"
-            );
         } catch (error) {
             console.error(
                 "Erro ao finalizar compra:",
@@ -275,17 +272,22 @@ export default function Compra() {
                     </h1>
 
                     {produtos.length === 0 ? (
+
                         <p>
                             Seu carrinho está vazio.
                         </p>
+
                     ) : (
+
                         produtos.map((item) => (
+
                             <div
                                 key={item.id}
                                 className={
                                     style.produto
                                 }
                             >
+
                                 <img
                                     src={
                                         `http://localhost:3333/${item.foto}`
@@ -309,14 +311,16 @@ export default function Compra() {
                                             Number(
                                                 item.preco
                                             ) *
-                                                Number(
-                                                    item.quantidade
-                                                )
+                                            Number(
+                                                item.quantidade
+                                            )
                                         )}
                                     </strong>
 
                                 </div>
+
                             </div>
+
                         ))
                     )}
 
@@ -334,7 +338,9 @@ export default function Compra() {
                     </h2>
 
                     {!cupom ? (
+
                         <>
+
                             <div
                                 className={
                                     style.cupomInput
@@ -351,12 +357,14 @@ export default function Compra() {
                                         )
                                     }
                                     onKeyDown={(event) => {
+
                                         if (
                                             event.key ===
                                             "Enter"
                                         ) {
                                             aplicarCupom();
                                         }
+
                                     }}
                                 />
 
@@ -378,6 +386,7 @@ export default function Compra() {
 
 
                             {mensagemCupom && (
+
                                 <p
                                     className={
                                         style.sucesso
@@ -385,10 +394,12 @@ export default function Compra() {
                                 >
                                     {mensagemCupom}
                                 </p>
+
                             )}
 
 
                             {erroCupom && (
+
                                 <p
                                     className={
                                         style.erro
@@ -396,9 +407,13 @@ export default function Compra() {
                                 >
                                     {erroCupom}
                                 </p>
+
                             )}
+
                         </>
+
                     ) : (
+
                         <div
                             className={
                                 style.cupomAplicado
@@ -427,6 +442,7 @@ export default function Compra() {
                             </button>
 
                         </div>
+
                     )}
 
                 </section>
@@ -452,9 +468,7 @@ export default function Compra() {
                                 pagamento === "PIX"
                             }
                             onChange={() =>
-                                setPagamento(
-                                    "PIX"
-                                )
+                                setPagamento("PIX")
                             }
                         />
 
@@ -557,6 +571,7 @@ export default function Compra() {
 
 
                     {cupom && (
+
                         <div
                             className={
                                 style.desconto
@@ -577,6 +592,7 @@ export default function Compra() {
                             </strong>
 
                         </div>
+
                     )}
 
 
@@ -624,10 +640,11 @@ export default function Compra() {
 
 
             {/* ==================================================
-                MODAL
+                MODAL CONFIRMAR COMPRA
             ================================================== */}
 
             {modal && (
+
                 <div
                     className={
                         style.modalOverlay
@@ -664,6 +681,7 @@ export default function Compra() {
 
 
                         {cupom && (
+
                             <div>
 
                                 <span>
@@ -675,6 +693,7 @@ export default function Compra() {
                                 </strong>
 
                             </div>
+
                         )}
 
 
@@ -738,9 +757,115 @@ export default function Compra() {
                     </div>
 
                 </div>
+
+            )}
+
+
+            {/* ==================================================
+                MODAL COMPRA FINALIZADA
+            ================================================== */}
+
+            {modalSucesso && (
+
+                <div
+                    className={
+                        style.modalSucessoOverlay
+                    }
+                >
+
+                    <div
+                        className={
+                            style.modalSucesso
+                        }
+                    >
+
+                        {/* ÍCONE */}
+
+                        <div
+                            className={
+                                style.iconeSucesso
+                            }
+                        >
+                            ✓
+                        </div>
+
+
+                        {/* TÍTULO */}
+
+                        <h2>
+                            Compra realizada!
+                        </h2>
+
+
+                        {/* TEXTO */}
+
+                        <p>
+                            Seu pedido foi realizado
+                            com sucesso. Obrigado
+                            pela sua compra!
+                        </p>
+
+
+                        {/* RESUMO */}
+
+                        <div
+                            className={
+                                style.resumoSucesso
+                            }
+                        >
+
+                            <div>
+
+                                <span>
+                                    Forma de pagamento
+                                </span>
+
+                                <strong>
+                                    {pagamento}
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Total
+                                </span>
+
+                                <strong>
+                                    {formatarMoeda(
+                                        total
+                                    )}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        {/* BOTÃO */}
+
+                        <button
+                            type="button"
+                            className={
+                                style.botaoSucesso
+                            }
+                            onClick={() =>
+                                navigate(
+                                    "/cliente/inicio"
+                                )
+                            }
+                        >
+                            Continuar
+                        </button>
+
+                    </div>
+
+                </div>
+
             )}
 
         </main>
     );
 }
-

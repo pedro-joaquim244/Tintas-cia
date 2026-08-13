@@ -5,6 +5,8 @@ import {
   FiBox,
   FiShoppingCart,
   FiLogOut,
+  FiTag,
+  FiUsers,
 } from "react-icons/fi";
 
 import { useNavigate, NavLink } from "react-router-dom";
@@ -24,13 +26,16 @@ export default function Cabecalho() {
     logout();
 
     navigate("/login");
+
   }
 
   return (
 
     <aside className={styles.sidebar}>
 
-      {/* TOPO */}
+      {/* =========================
+          TOPO
+      ========================= */}
 
       <div>
 
@@ -45,9 +50,14 @@ export default function Cabecalho() {
 
         </div>
 
-        {/* MENU */}
+
+        {/* =========================
+            MENU
+        ========================= */}
 
         <nav className={styles.menu}>
+
+          {/* DASHBOARD */}
 
           <NavLink
             to="/admin/dashboard"
@@ -66,6 +76,9 @@ export default function Cabecalho() {
 
           </NavLink>
 
+
+          {/* PRODUTOS */}
+
           <NavLink
             to="/admin/produtos"
             className={({ isActive }) =>
@@ -82,6 +95,9 @@ export default function Cabecalho() {
             </span>
 
           </NavLink>
+
+
+          {/* PEDIDOS */}
 
           <NavLink
             to="/admin/pedidos"
@@ -100,13 +116,63 @@ export default function Cabecalho() {
 
           </NavLink>
 
+
+          {/* =========================
+              CUPONS
+          ========================= */}
+
+          <NavLink
+            to="/admin/Cupons"
+            className={({ isActive }) =>
+              isActive
+                ? `${styles.menuItem} ${styles.active}`
+                : styles.menuItem
+            }
+          >
+
+            <FiTag size={20} />
+
+            <span>
+              Cupons
+            </span>
+
+          </NavLink>
+
+
+          {/* =========================
+              USUÁRIOS
+          ========================= */}
+
+          <NavLink
+            to="/admin/usuarios"
+            className={({ isActive }) =>
+              isActive
+                ? `${styles.menuItem} ${styles.active}`
+                : styles.menuItem
+            }
+          >
+
+            <FiUsers size={20} />
+
+            <span>
+              Usuários
+            </span>
+
+          </NavLink>
+
         </nav>
 
       </div>
 
-      {/* PARTE DE BAIXO */}
+
+      {/* =========================
+          PARTE DE BAIXO
+      ========================= */}
 
       <div className={styles.bottomArea}>
+
+
+        {/* PERFIL */}
 
         <NavLink
           to="/admin/perfil"
@@ -114,8 +180,11 @@ export default function Cabecalho() {
         >
 
           <div className={styles.avatar}>
+
             {usuario?.nome?.charAt(0).toUpperCase() || "A"}
+
           </div>
+
 
           <div className={styles.userInfo}>
 
@@ -130,6 +199,9 @@ export default function Cabecalho() {
           </div>
 
         </NavLink>
+
+
+        {/* SAIR */}
 
         <button
           className={styles.logoutBtn}
@@ -147,5 +219,7 @@ export default function Cabecalho() {
       </div>
 
     </aside>
+
   );
+
 }

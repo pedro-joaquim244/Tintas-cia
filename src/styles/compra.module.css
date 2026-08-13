@@ -1391,3 +1391,714 @@ input {
     }
 }
 
+/* =========================================================
+   MODAL DE COMPRA FINALIZADA
+========================================================= */
+
+.modalSucessoOverlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 10000;
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(15, 23, 42, 0.65);
+
+    backdrop-filter: blur(9px);
+
+    animation: aparecer 0.25s ease;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modalSucesso {
+    width: 100%;
+
+    max-width: 450px;
+
+    padding: 38px 34px;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 30px 90px rgba(15, 23, 42, 0.25);
+
+    animation:
+        abrirSucesso 0.4s cubic-bezier(
+            0.16,
+            1,
+            0.3,
+            1
+        );
+}
+
+
+/* =========================================================
+   ÍCONE
+========================================================= */
+
+.iconeSucesso {
+    width: 72px;
+    height: 72px;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eff6ff,
+            #dbeafe
+        );
+
+    border: 1px solid #bfdbfe;
+
+    color: #2563eb;
+
+    font-size: 32px;
+
+    font-weight: 800;
+
+    box-shadow:
+        0 10px 28px rgba(37, 99, 235, 0.16);
+
+    animation:
+        aparecerIcone 0.5s ease 0.1s both;
+}
+
+
+/* =========================================================
+   TÍTULO
+========================================================= */
+
+.modalSucesso h2 {
+    margin-bottom: 10px;
+
+    color: #0f172a;
+
+    font-size: 24px;
+
+    font-weight: 750;
+
+    letter-spacing: -0.5px;
+}
+
+
+/* =========================================================
+   TEXTO
+========================================================= */
+
+.modalSucesso > p {
+    max-width: 340px;
+
+    margin: 0 auto;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   RESUMO
+========================================================= */
+
+.resumoSucesso {
+    width: 100%;
+
+    margin-top: 24px;
+
+    padding: 15px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 13px;
+
+    background: #f8fafc;
+
+    text-align: left;
+}
+
+
+.resumoSucesso div {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+.resumoSucesso span {
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+.resumoSucesso strong {
+    color: #172033;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    text-align: right;
+}
+
+
+.resumoSucesso div:last-child {
+    padding-top: 12px;
+
+    border-top: 1px solid #e2e8f0;
+}
+
+
+.resumoSucesso div:last-child strong {
+    color: #2563eb;
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   BOTÃO
+========================================================= */
+
+.botaoSucesso {
+    width: 100%;
+
+    min-height: 50px;
+
+    margin-top: 22px;
+
+    padding: 13px 18px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1d4ed8,
+            #2563eb,
+            #3b82f6
+        );
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 9px 22px rgba(37, 99, 235, 0.22);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.botaoSucesso:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 13px 28px rgba(37, 99, 235, 0.30);
+}
+
+
+.botaoSucesso:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   ANIMAÇÕES
+========================================================= */
+
+@keyframes abrirSucesso {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(20px)
+            scale(0.94);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+@keyframes aparecerIcone {
+
+    from {
+        opacity: 0;
+
+        transform: scale(0.5);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: scale(1);
+    }
+}
+
+
+/* =========================================================
+   CELULAR
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .modalSucesso {
+        padding: 30px 21px;
+
+        border-radius: 20px;
+    }
+
+    .iconeSucesso {
+        width: 64px;
+        height: 64px;
+
+        font-size: 28px;
+    }
+
+    .modalSucesso h2 {
+        font-size: 21px;
+    }
+
+    .modalSucesso > p {
+        font-size: 12px;
+    }
+
+    .resumoSucesso {
+        padding: 13px;
+    }
+
+    .botaoSucesso {
+        min-height: 48px;
+    }
+}
+
+
+/* =========================================================
+   CELULAR PEQUENO
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .modalSucesso {
+        padding: 27px 17px;
+    }
+
+    .modalSucesso h2 {
+        font-size: 20px;
+    }
+
+    .iconeSucesso {
+        width: 58px;
+        height: 58px;
+
+        margin-bottom: 16px;
+
+        font-size: 25px;
+    }
+}/* =========================================================
+   MODAL DE COMPRA FINALIZADA
+========================================================= */
+
+.modalSucessoOverlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 10000;
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(15, 23, 42, 0.65);
+
+    backdrop-filter: blur(9px);
+
+    animation: aparecer 0.25s ease;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modalSucesso {
+    width: 100%;
+
+    max-width: 450px;
+
+    padding: 38px 34px;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 30px 90px rgba(15, 23, 42, 0.25);
+
+    animation:
+        abrirSucesso 0.4s cubic-bezier(
+            0.16,
+            1,
+            0.3,
+            1
+        );
+}
+
+
+/* =========================================================
+   ÍCONE
+========================================================= */
+
+.iconeSucesso {
+    width: 72px;
+    height: 72px;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eff6ff,
+            #dbeafe
+        );
+
+    border: 1px solid #bfdbfe;
+
+    color: #2563eb;
+
+    font-size: 32px;
+
+    font-weight: 800;
+
+    box-shadow:
+        0 10px 28px rgba(37, 99, 235, 0.16);
+
+    animation:
+        aparecerIcone 0.5s ease 0.1s both;
+}
+
+
+/* =========================================================
+   TÍTULO
+========================================================= */
+
+.modalSucesso h2 {
+    margin-bottom: 10px;
+
+    color: #0f172a;
+
+    font-size: 24px;
+
+    font-weight: 750;
+
+    letter-spacing: -0.5px;
+}
+
+
+/* =========================================================
+   TEXTO
+========================================================= */
+
+.modalSucesso > p {
+    max-width: 340px;
+
+    margin: 0 auto;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   RESUMO
+========================================================= */
+
+.resumoSucesso {
+    width: 100%;
+
+    margin-top: 24px;
+
+    padding: 15px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 13px;
+
+    background: #f8fafc;
+
+    text-align: left;
+}
+
+
+.resumoSucesso div {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+.resumoSucesso span {
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+.resumoSucesso strong {
+    color: #172033;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    text-align: right;
+}
+
+
+.resumoSucesso div:last-child {
+    padding-top: 12px;
+
+    border-top: 1px solid #e2e8f0;
+}
+
+
+.resumoSucesso div:last-child strong {
+    color: #2563eb;
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   BOTÃO
+========================================================= */
+
+.botaoSucesso {
+    width: 100%;
+
+    min-height: 50px;
+
+    margin-top: 22px;
+
+    padding: 13px 18px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1d4ed8,
+            #2563eb,
+            #3b82f6
+        );
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 9px 22px rgba(37, 99, 235, 0.22);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.botaoSucesso:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 13px 28px rgba(37, 99, 235, 0.30);
+}
+
+
+.botaoSucesso:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   ANIMAÇÕES
+========================================================= */
+
+@keyframes abrirSucesso {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(20px)
+            scale(0.94);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+@keyframes aparecerIcone {
+
+    from {
+        opacity: 0;
+
+        transform: scale(0.5);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: scale(1);
+    }
+}
+
+
+/* =========================================================
+   CELULAR
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .modalSucesso {
+        padding: 30px 21px;
+
+        border-radius: 20px;
+    }
+
+    .iconeSucesso {
+        width: 64px;
+        height: 64px;
+
+        font-size: 28px;
+    }
+
+    .modalSucesso h2 {
+        font-size: 21px;
+    }
+
+    .modalSucesso > p {
+        font-size: 12px;
+    }
+
+    .resumoSucesso {
+        padding: 13px;
+    }
+
+    .botaoSucesso {
+        min-height: 48px;
+    }
+}
+
+
+/* =========================================================
+   CELULAR PEQUENO
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .modalSucesso {
+        padding: 27px 17px;
+    }
+
+    .modalSucesso h2 {
+        font-size: 20px;
+    }
+
+    .iconeSucesso {
+        width: 58px;
+        height: 58px;
+
+        margin-bottom: 16px;
+
+        font-size: 25px;
+    }
+}

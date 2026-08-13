@@ -7,6 +7,7 @@ import carrinhoRoutes from "./carrinho.routes.js";
 import pedidosRoutes from "./pedidos.routes.js";
 import itens_pedidosRoutes from "./itens_pedidos.routes.js";
 import cuponsRoutes from "./cupons.routes.js";
+import dashboardRoutes from "./dashboard.routes.js";
 
 const routes = express.Router();
 
@@ -47,6 +48,10 @@ routes.use(
 routes.use(
     "/itens_pedidos",
     itens_pedidosRoutes
+);
+routes.use(
+    "/Deshboard",
+    dashboardRoutes
 );
 
 // =====================================================
