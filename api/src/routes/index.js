@@ -8,6 +8,7 @@ import pedidosRoutes from "./pedidos.routes.js";
 import itens_pedidosRoutes from "./itens_pedidos.routes.js";
 import cuponsRoutes from "./cupons.routes.js";
 import dashboardRoutes from "./dashboard.routes.js";
+import feedbacksRoutes from "./feedbacks.routes.js";
 
 const routes = express.Router();
 
@@ -43,6 +44,11 @@ routes.use(
 routes.use(
     "/pedidos",
     pedidosRoutes
+);
+
+routes.use(
+    "/feedbacks",
+    feedbacksRoutes
 );
 
 routes.use(

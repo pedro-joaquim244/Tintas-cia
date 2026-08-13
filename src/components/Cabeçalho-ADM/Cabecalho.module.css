@@ -20,20 +20,18 @@
   overflow-y: auto;
 
   background:
-    linear-gradient(
-      180deg,
+    linear-gradient(180deg,
       #02142f 0%,
       #03265e 45%,
-      #02142f 100%
-    );
+      #02142f 100%);
 
   color: white;
 
   border-right:
-    1px solid rgba(255,255,255,0.06);
+    1px solid rgba(255, 255, 255, 0.06);
 
   box-shadow:
-    6px 0 30px rgba(0,0,0,0.25);
+    6px 0 30px rgba(0, 0, 0, 0.25);
 
   z-index: 1000;
 
@@ -54,7 +52,7 @@
 
   padding: 10px;
 
-  margin-bottom: 40px;
+  margin-bottom: 5px;
 }
 
 .logo img {
@@ -64,7 +62,7 @@
   object-fit: contain;
 
   filter:
-    drop-shadow(0 8px 20px rgba(0,0,0,0.35));
+    drop-shadow(0 8px 20px rgba(0, 0, 0, 0.35));
 
   transition: 0.3s;
 }
@@ -103,7 +101,7 @@
   text-decoration: none;
 
   color:
-    rgba(255,255,255,0.82);
+    rgba(255, 255, 255, 0.82);
 
   font-size: 15px;
   font-weight: 600;
@@ -116,7 +114,7 @@
 
 .menuItem:hover {
   background:
-    rgba(255,255,255,0.08);
+    rgba(255, 255, 255, 0.08);
 
   color: white;
 
@@ -155,19 +153,17 @@
 
 .active {
   background:
-    linear-gradient(
-      135deg,
+    linear-gradient(135deg,
       #2563eb,
-      #3b82f6
-    );
+      #3b82f6);
 
   color: white;
 
   transform: translateX(6px);
 
   box-shadow:
-    0 12px 24px rgba(37,99,235,0.35),
-    inset 0 0 0 1px rgba(255,255,255,0.12);
+    0 12px 24px rgba(37, 99, 235, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 
   position: relative;
 }
@@ -190,7 +186,7 @@
   background: white;
 
   box-shadow:
-    0 0 12px rgba(255,255,255,0.8);
+    0 0 12px rgba(255, 255, 255, 0.8);
 }
 
 .active::after {
@@ -211,7 +207,7 @@
   background: white;
 
   box-shadow:
-    0 0 12px rgba(255,255,255,0.9);
+    0 0 12px rgba(255, 255, 255, 0.9);
 }
 
 /* =========================
@@ -233,14 +229,12 @@
 
 .userBox {
   background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,0.08),
-      rgba(255,255,255,0.03)
-    );
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0.03));
 
   border:
-    1px solid rgba(255,255,255,0.08);
+    1px solid rgba(255, 255, 255, 0.08);
 
   border-radius: 22px;
 
@@ -265,11 +259,9 @@
     translateY(-2px);
 
   background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,0.10),
-      rgba(255,255,255,0.04)
-    );
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.10),
+      rgba(255, 255, 255, 0.04));
 
   text-decoration: none;
 }
@@ -293,11 +285,9 @@
   border-radius: 16px;
 
   background:
-    linear-gradient(
-      135deg,
+    linear-gradient(135deg,
       #3b82f6,
-      #2563eb
-    );
+      #2563eb);
 
   display: flex;
   align-items: center;
@@ -309,7 +299,7 @@
   font-weight: 800;
 
   box-shadow:
-    0 10px 22px rgba(37,99,235,0.35);
+    0 10px 22px rgba(37, 99, 235, 0.35);
 }
 
 /* =========================
@@ -336,7 +326,7 @@
   font-size: 13px;
 
   color:
-    rgba(255,255,255,0.68);
+    rgba(255, 255, 255, 0.68);
 
   white-space: nowrap;
   overflow: hidden;
@@ -355,11 +345,9 @@
   border-radius: 18px;
 
   background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,0.08),
-      rgba(255,255,255,0.04)
-    );
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0.04));
 
   color: white;
 
@@ -379,17 +367,15 @@
 
 .logoutBtn:hover {
   background:
-    linear-gradient(
-      135deg,
+    linear-gradient(135deg,
       #ef4444,
-      #dc2626
-    );
+      #dc2626);
 
   transform:
     translateY(-2px);
 
   box-shadow:
-    0 12px 24px rgba(239,68,68,0.3);
+    0 12px 24px rgba(239, 68, 68, 0.3);
 }
 
 /* =========================
@@ -402,7 +388,7 @@
 
 .sidebar::-webkit-scrollbar-thumb {
   background:
-    rgba(255,255,255,0.18);
+    rgba(255, 255, 255, 0.18);
 
   border-radius: 999px;
 }
