@@ -1,0 +1,343 @@
+.rodape {
+  width: 100%;
+  background: linear-gradient(135deg, #06469e 0%, #073d91 100%);
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+}
+
+.conteudo {
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 28px 30px 20px;
+
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.45fr;
+  gap: 55px;
+}
+
+/* =========================
+   LOGO
+========================= */
+
+.colunaLogo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 13px;
+}
+
+.logo svg {
+  color: #d7eaff;
+  transform: rotate(-8deg);
+}
+
+.logoNome {
+  display: block;
+  font-size: 21px;
+  line-height: 19px;
+  font-weight: 700;
+  letter-spacing: -0.7px;
+}
+
+.logoNome span {
+  font-weight: 400;
+}
+
+.logo small {
+  display: block;
+  font-size: 7px;
+  letter-spacing: 3.5px;
+  font-weight: 700;
+  margin-top: 3px;
+  opacity: 0.9;
+}
+
+.descricao {
+  margin: 0;
+  font-size: 12px;
+  line-height: 18px;
+  color: #e7f0ff;
+}
+
+/* =========================
+   REDES SOCIAIS
+========================= */
+
+.redes {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.redes a {
+  width: 19px;
+  height: 19px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #fff;
+  text-decoration: none;
+
+  transition: 0.2s ease;
+}
+
+.redes a:hover {
+  transform: translateY(-2px);
+  opacity: 0.75;
+}
+
+/* =========================
+   COLUNAS
+========================= */
+
+.coluna {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.coluna h3,
+.colunaNewsletter h3 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.coluna a {
+  color: #e6efff;
+  text-decoration: none;
+  font-size: 11px;
+  line-height: 20px;
+
+  transition: 0.2s ease;
+}
+
+.coluna a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* =========================
+   NEWSLETTER
+========================= */
+
+.colunaNewsletter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.colunaNewsletter p {
+  margin: 0 0 10px;
+  color: #e6efff;
+  font-size: 11px;
+  line-height: 17px;
+}
+
+.emailBox {
+  width: 100%;
+  max-width: 218px;
+  height: 31px;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 0 9px;
+  box-sizing: border-box;
+
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 5px;
+
+  background: rgba(0, 34, 90, 0.18);
+}
+
+.emailBox svg {
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.emailBox input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+
+  color: #fff;
+  font-size: 10px;
+}
+
+.emailBox input::placeholder {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.botaoNewsletter {
+  width: 100%;
+  max-width: 218px;
+  height: 31px;
+
+  margin-top: 7px;
+
+  border: none;
+  border-radius: 4px;
+
+  background: #0875f5;
+  color: #fff;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.botaoNewsletter:hover {
+  background: #1683ff;
+  transform: translateY(-1px);
+}
+
+/* =========================
+   PARTE INFERIOR
+========================= */
+
+.linhaInferior {
+  max-width: 1250px;
+  margin: 0 auto;
+
+  padding: 8px 30px 9px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  box-sizing: border-box;
+}
+
+.linhaInferior p {
+  margin: 0;
+  color: #e0ebff;
+  font-size: 10px;
+}
+
+/* =========================
+   PAGAMENTOS
+========================= */
+
+.pagamentos {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagamento {
+  width: 31px;
+  height: 20px;
+
+  background: #fff;
+  border-radius: 3px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #333;
+}
+
+.visa {
+  font-size: 9px;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.mastercard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mastercard i {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.mastercard i:first-child {
+  background: #e41f26;
+  margin-right: -3px;
+}
+
+.mastercard i:last-child {
+  background: #f5a800;
+}
+
+.elo {
+  font-size: 9px;
+  font-weight: 700;
+  color: #555;
+}
+
+.pix {
+  font-size: 8px;
+  font-weight: 600;
+  color: #3aa5a0;
+}
+
+.boleto {
+  font-size: 6px;
+  font-weight: 700;
+  color: #555;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media (max-width: 900px) {
+  .conteudo {
+    grid-template-columns: 1fr 1fr;
+    gap: 35px;
+  }
+
+  .colunaNewsletter {
+    grid-column: span 2;
+  }
+
+  .linhaInferior {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .conteudo {
+    grid-template-columns: 1fr;
+    padding: 30px 25px;
+    gap: 28px;
+  }
+
+  .colunaNewsletter {
+    grid-column: auto;
+  }
+
+  .linhaInferior {
+    padding: 15px 25px;
+  }
+
+  .pagamentos {
+    flex-wrap: wrap;
+  }
+}

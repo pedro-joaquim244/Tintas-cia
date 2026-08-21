@@ -1,5 +1,3 @@
-
-
 /* =========================================================
    SIMULADOR DE TINTAS
 ========================================================= */
@@ -22,29 +20,37 @@
   --white: #ffffff;
 
   --border: #e5e7eb;
-  --shadow: 0 12px 35px rgba(50, 50, 93, 0.08);
-  --shadow-hover: 0 18px 45px rgba(50, 50, 93, 0.14);
+  --shadow: 0 10px 30px rgba(50, 50, 93, 0.07);
+  --shadow-hover: 0 15px 35px rgba(50, 50, 93, 0.12);
 
-  --radius: 22px;
+  --radius: 18px;
 }
+
 
 /* =========================================================
    CONTAINER
 ========================================================= */
 
 .container {
+  margin-top: 162px;
   min-height: 100vh;
+
   background:
     radial-gradient(
       circle at top left,
-      rgba(108, 92, 231, 0.08),
+      rgba(108, 92, 231, 0.07),
       transparent 30%
     ),
-    linear-gradient(180deg, #fafaff 0%, #f6f8fc 100%);
+    linear-gradient(
+      180deg,
+      #fafaff 0%,
+      #f6f8fc 100%
+    );
 
   color: var(--text);
   font-family: "Poppins", Arial, sans-serif;
 }
+
 
 /* =========================================================
    HERO
@@ -52,11 +58,11 @@
 
 .hero {
   width: 100%;
-  padding: 65px 25px 45px;
+  padding: 28px 20px 12px;
 }
 
 .heroContent {
-  width: min(1200px, 100%);
+  width: min(1000px, 100%);
   margin: auto;
   text-align: center;
 }
@@ -64,28 +70,28 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 
-  padding: 9px 16px;
+  padding: 6px 12px;
 
   border-radius: 999px;
 
   background: var(--primary-light);
   color: var(--primary);
 
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
 }
 
 .hero h1 {
-  margin: 18px 0 10px;
+  margin: 10px 0 6px;
 
-  font-size: clamp(34px, 5vw, 58px);
+  font-size: clamp(30px, 4vw, 44px);
   line-height: 1.05;
 
   font-weight: 800;
-  letter-spacing: -2px;
+  letter-spacing: -1.5px;
 }
 
 .hero h1 span {
@@ -93,23 +99,25 @@
 }
 
 .hero p {
-  max-width: 650px;
+  max-width: 600px;
   margin: 0 auto;
 
   color: var(--text-soft);
 
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.5;
 }
+
 
 /* =========================================================
    MAIN
 ========================================================= */
 
 .main {
-  width: min(1400px, calc(100% - 40px));
-  margin: 0 auto 80px;
+  width: min(1200px, calc(100% - 30px));
+  margin: 0 auto 40px;
 }
+
 
 /* =========================================================
    UPLOAD
@@ -118,26 +126,27 @@
 .uploadSection {
   display: flex;
   justify-content: center;
-  padding: 25px 0 80px;
+
+  padding: 10px 0 28px;
 }
 
 .uploadBox {
   position: relative;
 
-  width: min(650px, 100%);
-  min-height: 390px;
+  width: min(580px, 100%);
+  min-height: 270px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  padding: 45px;
+  padding: 24px;
 
   border: 2px dashed #cfd3e6;
-  border-radius: 28px;
+  border-radius: 22px;
 
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
 
   cursor: pointer;
 
@@ -148,7 +157,7 @@
 }
 
 .uploadBox:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
 
   border-color: var(--primary);
 
@@ -165,55 +174,61 @@
 }
 
 .uploadIcon {
-  width: 75px;
-  height: 75px;
+  width: 55px;
+  height: 55px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 
-  border-radius: 22px;
+  border-radius: 16px;
 
   background: var(--primary-light);
   color: var(--primary);
 }
 
 .uploadBox h2 {
-  margin: 5px 0 8px;
+  margin: 3px 0 5px;
 
-  font-size: 25px;
+  font-size: 21px;
+  font-weight: 700;
 }
 
 .uploadBox p {
-  margin: 0 0 14px;
+  margin: 0 0 8px;
 
   color: var(--text-soft);
+
   text-align: center;
+
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .uploadFormats {
-  margin-bottom: 24px;
+  margin-bottom: 14px;
 
   color: #9ca3af;
 
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
 }
 
 .uploadButton {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 
-  padding: 13px 22px;
+  padding: 10px 18px;
 
-  border-radius: 12px;
+  border-radius: 10px;
 
   background: var(--primary);
   color: white;
 
+  font-size: 13px;
   font-weight: 600;
 
   transition: 0.2s ease;
@@ -223,6 +238,7 @@
   background: var(--primary-dark);
 }
 
+
 /* =========================================================
    SIMULADOR
 ========================================================= */
@@ -231,12 +247,13 @@
   background: var(--white);
 
   border: 1px solid var(--border);
-  border-radius: 28px;
+  border-radius: 24px;
 
   box-shadow: var(--shadow);
 
   overflow: hidden;
 }
+
 
 /* =========================================================
    CABEÇALHO DO SIMULADOR
@@ -247,9 +264,9 @@
   align-items: center;
   justify-content: space-between;
 
-  gap: 30px;
+  gap: 20px;
 
-  padding: 32px 35px;
+  padding: 22px 28px;
 
   border-bottom: 1px solid var(--border);
 
@@ -259,15 +276,16 @@
 .sectionTag {
   color: var(--primary);
 
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
 }
 
 .simuladorHeader h2 {
-  margin: 5px 0;
+  margin: 4px 0;
 
-  font-size: 27px;
+  font-size: 23px;
+  line-height: 1.2;
 }
 
 .simuladorHeader p {
@@ -275,24 +293,26 @@
 
   color: var(--text-soft);
 
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .novaFoto {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
 
-  padding: 12px 18px;
+  padding: 10px 16px;
 
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 10px;
 
   background: white;
   color: var(--text);
 
   cursor: pointer;
 
+  font-size: 13px;
   font-weight: 600;
 
   transition: 0.2s ease;
@@ -300,9 +320,12 @@
 
 .novaFoto:hover {
   border-color: var(--primary);
+
   color: var(--primary);
+
   background: var(--primary-light);
 }
+
 
 /* =========================================================
    GRID
@@ -311,10 +334,11 @@
 .simuladorGrid {
   display: grid;
 
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: minmax(0, 1fr) 340px;
 
   gap: 0;
 }
+
 
 /* =========================================================
    ÁREA DA IMAGEM
@@ -323,7 +347,7 @@
 .imagemArea {
   min-width: 0;
 
-  padding: 28px;
+  padding: 22px;
 
   border-right: 1px solid var(--border);
 }
@@ -335,9 +359,9 @@
 
   gap: 15px;
 
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -354,16 +378,17 @@
   align-items: center;
   gap: 5px;
 
-  padding: 7px 11px;
+  padding: 6px 10px;
 
   border-radius: 999px;
 
   background: var(--green-light);
   color: #15803d;
 
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
 }
+
 
 /* =========================================================
    CANVAS
@@ -380,13 +405,13 @@
 
   overflow: hidden;
 
-  border-radius: 18px;
+  border-radius: 16px;
 
   background: #eef0f5;
 
   box-shadow:
     inset 0 0 0 1px rgba(0, 0, 0, 0.06),
-    0 8px 25px rgba(0, 0, 0, 0.08);
+    0 6px 20px rgba(0, 0, 0, 0.07);
 }
 
 .canvas {
@@ -395,7 +420,7 @@
   width: 100%;
   height: auto;
 
-  max-height: 700px;
+  max-height: 650px;
 
   object-fit: contain;
 }
@@ -421,6 +446,7 @@
   pointer-events: none;
 }
 
+
 /* =========================================================
    LOADING
 ========================================================= */
@@ -435,7 +461,7 @@
   align-items: center;
   justify-content: center;
 
-  gap: 15px;
+  gap: 12px;
 
   background: rgba(255, 255, 255, 0.72);
 
@@ -444,11 +470,13 @@
   z-index: 20;
 
   color: var(--primary);
+
+  font-size: 13px;
 }
 
 .spinner {
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
 
   border: 4px solid #ddd9ff;
   border-top-color: var(--primary);
@@ -464,6 +492,7 @@
   }
 }
 
+
 /* =========================================================
    CANVAS ORIGINAL
 ========================================================= */
@@ -472,21 +501,22 @@
   display: none;
 }
 
+
 /* =========================================================
    INSTRUÇÕES
 ========================================================= */
 
 .instrucoesSelecao {
-  margin-top: 15px;
-  padding: 15px 18px;
+  margin-top: 12px;
+  padding: 12px 15px;
 
-  border-radius: 14px;
+  border-radius: 12px;
 
   background: var(--blue-light);
 
   color: #315a9c;
 
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .instrucoesSelecao > div {
@@ -502,8 +532,8 @@
   align-items: center;
   justify-content: center;
 
-  width: 25px;
-  height: 25px;
+  width: 22px;
+  height: 22px;
 
   border-radius: 50%;
 
@@ -512,10 +542,11 @@
 }
 
 .instrucoesSelecao p {
-  margin: 8px 0 0;
+  margin: 6px 0 0;
 
-  line-height: 1.5;
+  line-height: 1.45;
 }
+
 
 /* =========================================================
    MENSAGEM
@@ -526,17 +557,18 @@
   align-items: center;
   gap: 8px;
 
-  margin-top: 15px;
-  padding: 13px 15px;
+  margin-top: 12px;
+  padding: 11px 13px;
 
-  border-radius: 12px;
+  border-radius: 10px;
 
   background: #f7f7fb;
 
   color: var(--text-soft);
 
-  font-size: 13px;
+  font-size: 12px;
 }
+
 
 /* =========================================================
    CONTROLES DA SELEÇÃO
@@ -544,25 +576,26 @@
 
 .controlesSelecao {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 
-  margin-top: 15px;
+  margin-top: 12px;
 }
 
 .controlesSelecao button {
   flex: 1;
 
-  min-height: 44px;
+  min-height: 40px;
 
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 6px;
 
-  border-radius: 12px;
+  border-radius: 10px;
 
   cursor: pointer;
 
+  font-size: 12px;
   font-weight: 600;
 
   transition: 0.2s ease;
@@ -588,13 +621,16 @@
 
 .botaoConfirmarArea:hover:not(:disabled) {
   background: var(--primary-dark);
+
   transform: translateY(-1px);
 }
 
 .botaoConfirmarArea:disabled {
   opacity: 0.5;
+
   cursor: not-allowed;
 }
+
 
 /* =========================================================
    AÇÕES
@@ -602,23 +638,24 @@
 
 .acoesImagem {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .acoesImagem button {
-  min-height: 45px;
+  min-height: 40px;
 
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
 
-  border-radius: 12px;
+  border-radius: 10px;
 
   cursor: pointer;
 
+  font-size: 12px;
   font-weight: 600;
 
   transition: 0.2s ease;
@@ -635,6 +672,7 @@
 
 .botaoRestaurar:hover {
   border-color: var(--primary);
+
   color: var(--primary);
 }
 
@@ -649,15 +687,17 @@
 
 .botaoVisualizar:hover {
   background: #000;
+
   transform: translateY(-1px);
 }
+
 
 /* =========================================================
    PAINEL
 ========================================================= */
 
 .painel {
-  padding: 28px;
+  padding: 22px;
 
   background: #fcfcff;
 
@@ -667,20 +707,20 @@
 .painelTitulo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 .paletaIcon {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 12px;
+  border-radius: 10px;
 
   background: var(--primary-light);
   color: var(--primary);
@@ -691,16 +731,17 @@
 
   color: var(--primary);
 
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.7px;
 }
 
 .painelTitulo h3 {
   margin: 2px 0 0;
 
-  font-size: 19px;
+  font-size: 17px;
 }
+
 
 /* =========================================================
    COR SELECIONADA
@@ -709,25 +750,25 @@
 .corSelecionada {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 
-  padding: 13px;
+  padding: 11px;
 
-  margin-bottom: 18px;
+  margin-bottom: 15px;
 
   border: 1px solid var(--border);
-  border-radius: 15px;
+  border-radius: 13px;
 
   background: white;
 }
 
 .corGrande {
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
 
   flex-shrink: 0;
 
-  border-radius: 12px;
+  border-radius: 10px;
 
   box-shadow:
     inset 0 0 0 1px rgba(0, 0, 0, 0.08),
@@ -737,14 +778,15 @@
 .corSelecionada strong {
   display: block;
 
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .corSelecionada span {
   color: #9ca3af;
 
-  font-size: 12px;
+  font-size: 11px;
 }
+
 
 /* =========================================================
    GRID DE CORES
@@ -755,9 +797,9 @@
 
   grid-template-columns: repeat(2, 1fr);
 
-  gap: 8px;
+  gap: 7px;
 
-  max-height: 310px;
+  max-height: 280px;
 
   overflow-y: auto;
 
@@ -767,12 +809,12 @@
 .corCard {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 
-  padding: 8px;
+  padding: 7px;
 
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: 10px;
 
   background: white;
 
@@ -785,6 +827,7 @@
 
 .corCard:hover {
   border-color: #d9d5f9;
+
   background: var(--primary-light);
 }
 
@@ -795,8 +838,8 @@
 }
 
 .corBolinha {
-  width: 32px;
-  height: 32px;
+  width: 29px;
+  height: 29px;
 
   flex-shrink: 0;
 
@@ -823,17 +866,18 @@
 
   color: #4b5563;
 
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
 }
+
 
 /* =========================================================
    CONFIGURAÇÕES
 ========================================================= */
 
 .configuracoes {
-  margin-top: 22px;
-  padding-top: 20px;
+  margin-top: 18px;
+  padding-top: 17px;
 
   border-top: 1px solid var(--border);
 }
@@ -841,20 +885,20 @@
 .configTitulo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 
-  margin-bottom: 18px;
+  margin-bottom: 15px;
 
   color: var(--text);
 
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
 }
 
 .configuracoes label {
   display: block;
 
-  margin-bottom: 18px;
+  margin-bottom: 15px;
 }
 
 .configuracoes label > div {
@@ -862,9 +906,9 @@
   align-items: center;
   justify-content: space-between;
 
-  margin-bottom: 8px;
+  margin-bottom: 7px;
 
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .configuracoes label strong {
@@ -879,6 +923,7 @@
   cursor: pointer;
 }
 
+
 /* =========================================================
    BOTÃO APLICAR
 ========================================================= */
@@ -886,17 +931,17 @@
 .aplicarBotao {
   width: 100%;
 
-  min-height: 52px;
+  min-height: 46px;
 
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 8px;
 
-  margin-top: 10px;
+  margin-top: 8px;
 
   border: 0;
-  border-radius: 14px;
+  border-radius: 11px;
 
   background: linear-gradient(
     135deg,
@@ -908,11 +953,11 @@
 
   cursor: pointer;
 
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 
   box-shadow:
-    0 8px 18px rgba(108, 92, 231, 0.25);
+    0 7px 16px rgba(108, 92, 231, 0.22);
 
   transition: 0.2s ease;
 }
@@ -921,7 +966,7 @@
   transform: translateY(-2px);
 
   box-shadow:
-    0 12px 25px rgba(108, 92, 231, 0.3);
+    0 10px 22px rgba(108, 92, 231, 0.27);
 }
 
 .aplicarBotao:disabled {
@@ -931,6 +976,7 @@
 
   box-shadow: none;
 }
+
 
 /* =========================================================
    MODAL ANTES / DEPOIS
@@ -947,7 +993,7 @@
   align-items: center;
   justify-content: center;
 
-  padding: 25px;
+  padding: 18px;
 
   background: rgba(15, 18, 30, 0.72);
 
@@ -966,21 +1012,22 @@
   }
 }
 
+
 /* =========================================================
    MODAL
 ========================================================= */
 
 .modal {
-  width: min(1250px, 100%);
+  width: min(1150px, 100%);
 
-  max-height: calc(100vh - 50px);
+  max-height: calc(100vh - 36px);
 
   display: flex;
   flex-direction: column;
 
   overflow: hidden;
 
-  border-radius: 28px;
+  border-radius: 24px;
 
   background: white;
 
@@ -1002,6 +1049,7 @@
   }
 }
 
+
 /* =========================================================
    HEADER MODAL
 ========================================================= */
@@ -1013,7 +1061,7 @@
 
   gap: 20px;
 
-  padding: 25px 30px;
+  padding: 20px 25px;
 
   border-bottom: 1px solid var(--border);
 
@@ -1023,21 +1071,21 @@
 .modalHeader span {
   color: var(--primary);
 
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
 
-  letter-spacing: 1px;
+  letter-spacing: 0.9px;
 }
 
 .modalHeader h2 {
   margin: 3px 0 0;
 
-  font-size: 26px;
+  font-size: 23px;
 }
 
 .fecharModal {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
 
   display: flex;
   align-items: center;
@@ -1063,6 +1111,7 @@
   transform: rotate(90deg);
 }
 
+
 /* =========================================================
    COMPARAÇÃO
 ========================================================= */
@@ -1074,14 +1123,15 @@
 
   grid-template-columns: 1fr 1fr;
 
-  gap: 20px;
+  gap: 16px;
 
-  padding: 25px 30px;
+  padding: 20px 25px;
 
   overflow-y: auto;
 
   background: #f7f8fc;
 }
+
 
 /* =========================================================
    CARDS ANTES / DEPOIS
@@ -1096,21 +1146,22 @@
   overflow: hidden;
 
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 17px;
 
   background: white;
 
-  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 6px 17px rgba(0, 0, 0, 0.05);
 }
 
 .comparacaoTitulo {
-  min-height: 55px;
+  min-height: 48px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 0 18px;
+  padding: 0 15px;
 
   border-bottom: 1px solid var(--border);
 
@@ -1118,10 +1169,10 @@
 }
 
 .comparacaoTitulo span {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
 
-  letter-spacing: 0.8px;
+  letter-spacing: 0.7px;
 
   color: #6b7280;
 }
@@ -1137,7 +1188,7 @@
 }
 
 .tituloDepois strong {
-  padding: 5px 10px;
+  padding: 4px 8px;
 
   border-radius: 999px;
 
@@ -1145,8 +1196,9 @@
 
   color: var(--primary);
 
-  font-size: 11px;
+  font-size: 10px;
 }
+
 
 /* =========================================================
    IMAGENS DO MODAL
@@ -1158,7 +1210,7 @@
   width: 100%;
   height: auto;
 
-  max-height: 520px;
+  max-height: 470px;
 
   object-fit: contain;
 
@@ -1172,14 +1224,17 @@
 @keyframes imagemDepois {
   from {
     opacity: 0;
+
     filter: saturate(0.6);
   }
 
   to {
     opacity: 1;
+
     filter: saturate(1);
   }
 }
+
 
 /* =========================================================
    FOOTER MODAL
@@ -1190,9 +1245,9 @@
   align-items: center;
   justify-content: space-between;
 
-  gap: 20px;
+  gap: 15px;
 
-  padding: 20px 30px;
+  padding: 16px 25px;
 
   border-top: 1px solid var(--border);
 
@@ -1202,19 +1257,19 @@
 .resultadoCor {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
 
   color: var(--text);
 
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
 }
 
 .resultadoCor > div {
-  width: 32px;
-  height: 32px;
+  width: 29px;
+  height: 29px;
 
-  border-radius: 9px;
+  border-radius: 8px;
 
   box-shadow:
     inset 0 0 0 1px rgba(0, 0, 0, 0.08),
@@ -1223,25 +1278,26 @@
 
 .modalAcoes {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .botaoFechar,
 .botaoSalvar {
-  min-height: 44px;
+  min-height: 40px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  gap: 8px;
+  gap: 7px;
 
-  padding: 0 18px;
+  padding: 0 15px;
 
-  border-radius: 11px;
+  border-radius: 9px;
 
   cursor: pointer;
 
+  font-size: 12px;
   font-weight: 600;
 
   transition: 0.2s ease;
@@ -1265,7 +1321,7 @@
   color: white;
 
   box-shadow:
-    0 6px 15px rgba(108, 92, 231, 0.22);
+    0 5px 13px rgba(108, 92, 231, 0.2);
 }
 
 .botaoSalvar:hover {
@@ -1274,13 +1330,14 @@
   transform: translateY(-1px);
 }
 
+
 /* =========================================================
    SCROLLBAR
 ========================================================= */
 
 .coresGrid::-webkit-scrollbar,
 .comparacao::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 .coresGrid::-webkit-scrollbar-track,
@@ -1294,6 +1351,7 @@
 
   background: #d5d6df;
 }
+
 
 /* =========================================================
    RESPONSIVIDADE
@@ -1311,7 +1369,7 @@
   }
 
   .painel {
-    padding: 25px 30px;
+    padding: 22px 25px;
   }
 
   .coresGrid {
@@ -1321,22 +1379,33 @@
   }
 }
 
+
+/* =========================================================
+   TABLET
+========================================================= */
+
 @media (max-width: 800px) {
+  .container {
+    margin-top: 45px;
+  }
+
   .main {
-    width: min(100% - 24px, 1400px);
+    width: min(100% - 24px, 1200px);
   }
 
   .hero {
-    padding: 40px 18px 30px;
+    padding: 25px 15px 10px;
   }
 
   .simuladorHeader {
     align-items: flex-start;
+
     flex-direction: column;
   }
 
   .novaFoto {
     width: 100%;
+
     justify-content: center;
   }
 
@@ -1347,7 +1416,7 @@
   .comparacao {
     grid-template-columns: 1fr;
 
-    padding: 18px;
+    padding: 15px;
   }
 
   .comparacaoCard img {
@@ -1356,6 +1425,7 @@
 
   .modalFooter {
     align-items: stretch;
+
     flex-direction: column;
   }
 
@@ -1368,23 +1438,67 @@
   }
 }
 
+
+/* =========================================================
+   CELULAR
+========================================================= */
+
 @media (max-width: 600px) {
+  .container {
+    margin-top: 35px;
+  }
+
+  .hero {
+    padding: 20px 12px 8px;
+  }
+
   .hero h1 {
-    font-size: 38px;
+    font-size: 32px;
+
+    letter-spacing: -1px;
   }
 
   .hero p {
-    font-size: 14px;
+    font-size: 13px;
+  }
+
+  .uploadSection {
+    padding: 8px 0 20px;
   }
 
   .uploadBox {
-    min-height: 340px;
+    min-height: 250px;
 
-    padding: 30px 20px;
+    padding: 22px 16px;
+
+    border-radius: 18px;
+  }
+
+  .uploadIcon {
+    width: 50px;
+    height: 50px;
+
+    margin-bottom: 10px;
+  }
+
+  .uploadBox h2 {
+    font-size: 19px;
+  }
+
+  .uploadBox p {
+    font-size: 12px;
   }
 
   .simulador {
-    border-radius: 20px;
+    border-radius: 18px;
+  }
+
+  .simuladorHeader {
+    padding: 18px;
+  }
+
+  .simuladorHeader h2 {
+    font-size: 20px;
   }
 
   .coresGrid {
@@ -1402,30 +1516,31 @@
   }
 
   .modalOverlay {
-    padding: 10px;
+    padding: 8px;
   }
 
   .modal {
-    max-height: calc(100vh - 20px);
+    max-height: calc(100vh - 16px);
 
-    border-radius: 20px;
+    border-radius: 18px;
   }
 
   .modalHeader {
-    padding: 18px;
+    padding: 16px;
   }
 
   .modalHeader h2 {
-    font-size: 21px;
+    font-size: 19px;
   }
 
   .comparacao {
-    padding: 12px;
-    gap: 12px;
+    padding: 10px;
+
+    gap: 10px;
   }
 
   .modalFooter {
-    padding: 15px;
+    padding: 13px;
   }
 
   .modalAcoes {
@@ -1434,5 +1549,61 @@
 
   .modalAcoes button {
     width: 100%;
+  }
+}
+
+
+/* =========================================================
+   TELAS MUITO PEQUENAS
+========================================================= */
+
+@media (max-height: 700px) and (min-width: 601px) {
+  .container {
+    margin-top: 45px;
+  }
+
+  .hero {
+    padding-top: 18px;
+    padding-bottom: 5px;
+  }
+
+  .hero h1 {
+    margin-top: 7px;
+
+    font-size: 34px;
+  }
+
+  .hero p {
+    font-size: 12px;
+  }
+
+  .uploadSection {
+    padding-top: 5px;
+    padding-bottom: 15px;
+  }
+
+  .uploadBox {
+    min-height: 220px;
+
+    padding: 18px;
+  }
+
+  .uploadIcon {
+    width: 48px;
+    height: 48px;
+
+    margin-bottom: 8px;
+  }
+
+  .uploadBox h2 {
+    font-size: 19px;
+  }
+
+  .uploadBox p {
+    font-size: 12px;
+  }
+
+  .uploadFormats {
+    margin-bottom: 10px;
   }
 }

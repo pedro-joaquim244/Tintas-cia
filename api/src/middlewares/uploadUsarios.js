@@ -1,8 +1,12 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { fileURLToPath } from "url";
 
-const pastaUploads = path.resolve("uploads/usuarios");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const pastaUploads = path.resolve(__dirname, "..", "..", "uploads", "usuarios");
 
 if (!fs.existsSync(pastaUploads)) {
     fs.mkdirSync(pastaUploads, {

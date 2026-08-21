@@ -105,7 +105,7 @@ export default function Header() {
                     Livro de Cores
                 </Link>
 
-                <Link to="/cliente/cores">
+                <Link to="/cliente/produtos">
                     Produtos
                 </Link>
 

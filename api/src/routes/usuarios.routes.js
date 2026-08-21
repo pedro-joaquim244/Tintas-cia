@@ -133,7 +133,6 @@ const camposPublicos = `
     cidade,
     estado,
     cep,
-    foto,
     criado_em,
     atualizado_em
 `;
@@ -399,12 +398,15 @@ router.post(
                     : null;
 
             // =========================================
-            // INSERIR USUÁRIO
+            // INSERIR USUÁRIO (foto opcional)
             // =========================================
 
-            const [resultado] =
-                await pool.query(
-                    `
+            let insertQuery;
+            let insertValues;
+
+            if (foto) {
+
+                insertQuery = `
                     INSERT INTO usuarios (
                         nome,
                         email,
@@ -422,37 +424,66 @@ router.post(
                         foto
                     )
                     VALUES (?, ?, ?, 'cliente', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    `,
-                    [
+                `;
 
-                        nome.trim(),
+                insertValues = [
+                    nome.trim(),
+                    emailNormalizado,
+                    senhaCriptografada,
+                    telefone || null,
+                    data_nascimento || null,
+                    endereco || null,
+                    numero || null,
+                    complemento || null,
+                    bairro || null,
+                    cidade || null,
+                    estado || null,
+                    cep || null,
+                    foto
+                ];
 
-                        emailNormalizado,
+            } else {
 
-                        senhaCriptografada,
+                insertQuery = `
+                    INSERT INTO usuarios (
+                        nome,
+                        email,
+                        senha,
+                        tipo,
+                        telefone,
+                        data_nascimento,
+                        endereco,
+                        numero,
+                        complemento,
+                        bairro,
+                        cidade,
+                        estado,
+                        cep
+                    )
+                    VALUES (?, ?, ?, 'cliente', ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `;
 
-                        telefone || null,
+                insertValues = [
+                    nome.trim(),
+                    emailNormalizado,
+                    senhaCriptografada,
+                    telefone || null,
+                    data_nascimento || null,
+                    endereco || null,
+                    numero || null,
+                    complemento || null,
+                    bairro || null,
+                    cidade || null,
+                    estado || null,
+                    cep || null
+                ];
 
-                        data_nascimento || null,
+            }
 
-                        endereco || null,
-
-                        numero || null,
-
-                        complemento || null,
-
-                        bairro || null,
-
-                        cidade || null,
-
-                        estado || null,
-
-                        cep || null,
-
-                        foto
-
-                    ]
-                );
+            const [resultado] = await pool.query(
+                insertQuery,
+                insertValues
+            );
 
             // =========================================
             // BUSCAR USUÁRIO CRIADO

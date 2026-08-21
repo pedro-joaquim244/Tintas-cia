@@ -1,97 +1,90 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { gsap } from "gsap";
 
 import {
-    FiUser,
-    FiMail,
-    FiEdit2,
-    FiSave,
-    FiCamera,
+    FiShoppingCart,
+    FiDroplet,
     FiShield,
-    FiCalendar,
-    FiLogOut,
-    FiPackage,
-    FiX,
-    FiCreditCard,
-    FiClock,
-    FiPhone,
-    FiMapPin,
-    FiHome,
-    FiHash,
-    FiMap
+    FiAward,
+    FiStar,
+    FiTruck,
+    FiArrowRight,
+    FiMessageSquare,
+    FiActivity,
+    FiSend,
+    FiUser,
+    FiCheckCircle,
+    FiAlertCircle,
+    FiChevronLeft,
+    FiChevronRight,
 } from "react-icons/fi";
 
-import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
 import HeaderUser from "../components/Cabeçalho-Users/index.jsx";
+import style from "../styles/Inicial.module.css";
 
-import { useAuth } from "../contexts/authContext";
 import { api } from "../services/api.js";
-
-import styles from "../styles/Perfil.module.css";
-
-
-export default function Perfil() {
-
-    const navigate = useNavigate();
-
-    const {
-        usuario,
-        atualizarPerfil,
-        logout
-    } = useAuth();
-
-    const inputFotoRef = useRef(null);
+import { useAuth } from "../contexts/AuthContext.jsx";
 
 
-    // =====================================================
-    // ESTADOS
-    // =====================================================
+export default function LojaTintas() {
 
-    const [editando, setEditando] = useState(false);
+    // =========================================================
+    // AUTH
+    // =========================================================
 
-    const [form, setForm] = useState({
-        nome: "",
-        email: "",
-        telefone: "",
-        data_nascimento: "",
-        endereco: "",
-        numero: "",
-        complemento: "",
-        bairro: "",
-        cidade: "",
-        estado: "",
-        cep: "",
-        senha: ""
-    });
+    const { usuario } = useAuth();
 
-    const [modalPedidos, setModalPedidos] = useState(false);
 
-    const [pedidos, setPedidos] = useState([]);
+    // =========================================================
+    // REFS
+    // =========================================================
 
-    const [carregandoPedidos, setCarregandoPedidos] =
+    const tituloRef = useRef(null);
+    const introContainerRef = useRef(null);
+    const rollerRef = useRef(null);
+    const svgPathRef = useRef(null);
+    const brandNameRef = useRef(null);
+
+    const carouselRef = useRef(null);
+
+
+    // =========================================================
+    // FEEDBACKS
+    // =========================================================
+
+    const [feedbacks, setFeedbacks] = useState([]);
+
+    const [comentario, setComentario] = useState("");
+
+    const [nota, setNota] = useState(0);
+
+    const [notaHover, setNotaHover] = useState(0);
+
+    const [carregandoFeedbacks, setCarregandoFeedbacks] =
+        useState(true);
+
+    const [enviandoFeedback, setEnviandoFeedback] =
         useState(false);
 
-    const [erroPedidos, setErroPedidos] =
+    const [mensagemFeedback, setMensagemFeedback] =
         useState("");
 
-    const [enviandoFoto, setEnviandoFoto] =
-        useState(false);
-
-    const [erroFoto, setErroFoto] =
+    const [tipoMensagem, setTipoMensagem] =
         useState("");
 
-    const [fotoPreview, setFotoPreview] =
-        useState(null);
 
-    const [erroImagem, setErroImagem] =
-        useState(false);
+    // =========================================================
+    // URL DA API
+    // =========================================================
+
+    const API_URL = "http://localhost:3333";
 
 
-    // =====================================================
-    // URL DA FOTO
-    // =====================================================
+    // =========================================================
+    // TRATAR FOTO
+    // =========================================================
 
-    function obterUrlFoto(foto) {
+    const getFotoUrl = (foto) => {
 
         if (!foto) {
             return null;
@@ -105,2099 +98,843 @@ export default function Perfil() {
             return null;
         }
 
-        // URL completa
         if (
             caminho.startsWith("http://") ||
-            caminho.startsWith("https://")
+            caminho.startsWith("https://") ||
+            caminho.startsWith("data:")
         ) {
             return caminho;
         }
 
-        // Remove ./ do começo
-        caminho = caminho.replace(/^\.?\//, "");
+        caminho = caminho.replace(/^\.\//, "");
+        caminho = caminho.replace(/^\//, "");
 
-        // Caso o banco tenha salvo:
-        // uploads/usuarios/foto.jpg
         if (caminho.startsWith("uploads/")) {
-
-            return `http://localhost:3333/${caminho}`;
-
+            return `${API_URL}/${caminho}`;
         }
 
-        // Caso o banco tenha salvo:
-        // usuarios/foto.jpg
-        return `http://localhost:3333/uploads/${caminho}`;
-    }
+        return `${API_URL}/uploads/${caminho}`;
+    };
 
 
-    // =====================================================
-    // CARREGAR USUÁRIO
-    // =====================================================
+    // =========================================================
+    // BUSCAR FEEDBACKS
+    // =========================================================
 
-    useEffect(() => {
-
-        if (!usuario) {
-            return;
-        }
-
-        setForm({
-            nome: usuario.nome || "",
-            email: usuario.email || "",
-            telefone: usuario.telefone || "",
-
-            data_nascimento:
-                usuario.data_nascimento
-                    ? String(
-                        usuario.data_nascimento
-                    ).substring(0, 10)
-                    : "",
-
-            endereco: usuario.endereco || "",
-            numero: usuario.numero || "",
-            complemento: usuario.complemento || "",
-            bairro: usuario.bairro || "",
-            cidade: usuario.cidade || "",
-            estado: usuario.estado || "",
-            cep: usuario.cep || "",
-            senha: ""
-        });
-
-        setErroImagem(false);
-
-        setFotoPreview(
-            obterUrlFoto(usuario.foto)
-        );
-
-    }, [usuario]);
-
-
-    // =====================================================
-    // BUSCAR PEDIDOS
-    // =====================================================
-
-    async function buscarPedidos() {
-
-        if (!usuario?.id) {
-
-            setPedidos([]);
-
-            setErroPedidos(
-                "Usuário não encontrado."
-            );
-
-            return;
-        }
+    const carregarFeedbacks = async () => {
 
         try {
 
-            setCarregandoPedidos(true);
+            setCarregandoFeedbacks(true);
 
-            setErroPedidos("");
+            const response = await api.get("/feedbacks");
 
-            const resposta = await api.get(
-                `/pedidos/usuario/${usuario.id}`
+            console.log(
+                "Feedbacks recebidos:",
+                response.data
             );
 
-            if (Array.isArray(resposta.data)) {
+            if (Array.isArray(response.data)) {
 
-                setPedidos(resposta.data);
+                setFeedbacks(response.data);
 
             } else {
 
-                setPedidos([]);
-
-                console.warn(
-                    "A API de pedidos não retornou um array."
-                );
+                setFeedbacks([]);
 
             }
 
         } catch (error) {
 
             console.error(
-                "ERRO AO BUSCAR PEDIDOS:",
+                "Erro ao carregar feedbacks:",
                 error
             );
 
-            setPedidos([]);
-
-            setErroPedidos(
-                error.response?.data?.erro ||
-                error.response?.data?.message ||
-                "Não foi possível carregar seus pedidos."
-            );
+            setFeedbacks([]);
 
         } finally {
 
-            setCarregandoPedidos(false);
+            setCarregandoFeedbacks(false);
 
         }
 
-    }
+    };
 
 
-    // =====================================================
-    // BUSCAR PEDIDOS AUTOMATICAMENTE
-    // =====================================================
+    // =========================================================
+    // CARREGAR FEEDBACKS
+    // =========================================================
 
     useEffect(() => {
 
+        carregarFeedbacks();
+
+    }, []);
+
+
+    // =========================================================
+    // ENVIAR FEEDBACK
+    // =========================================================
+
+    const enviarFeedback = async (e) => {
+
+        e.preventDefault();
+
+        setMensagemFeedback("");
+        setTipoMensagem("");
+
+
+        // =====================================================
+        // LOGIN
+        // =====================================================
+
         if (!usuario?.id) {
+
+            setTipoMensagem("erro");
+
+            setMensagemFeedback(
+                "Você precisa estar logado para enviar um feedback."
+            );
+
             return;
+
         }
 
-        buscarPedidos();
 
-    }, [usuario?.id]);
+        // =====================================================
+        // VALIDAR NOTA
+        // =====================================================
 
+        if (
+            !nota ||
+            nota < 1 ||
+            nota > 5
+        ) {
 
-    // =====================================================
-    // ABRIR HISTÓRICO
-    // =====================================================
+            setTipoMensagem("erro");
 
-    async function abrirHistorico() {
+            setMensagemFeedback(
+                "Selecione uma avaliação de 1 a 5 estrelas."
+            );
 
-        setModalPedidos(true);
+            return;
 
-        await buscarPedidos();
-
-    }
-
-
-    // =====================================================
-    // FECHAR HISTÓRICO
-    // =====================================================
-
-    function fecharHistorico() {
-
-        setModalPedidos(false);
-
-    }
+        }
 
 
-    // =====================================================
-    // SALVAR PERFIL
-    // =====================================================
+        // =====================================================
+        // VALIDAR COMENTÁRIO
+        // =====================================================
 
-    async function salvarPerfil() {
+        if (!comentario.trim()) {
+
+            setTipoMensagem("erro");
+
+            setMensagemFeedback(
+                "Digite um comentário antes de enviar."
+            );
+
+            return;
+
+        }
+
+
+        if (comentario.trim().length < 5) {
+
+            setTipoMensagem("erro");
+
+            setMensagemFeedback(
+                "Seu comentário precisa ter pelo menos 5 caracteres."
+            );
+
+            return;
+
+        }
+
+
+        if (comentario.trim().length > 500) {
+
+            setTipoMensagem("erro");
+
+            setMensagemFeedback(
+                "Seu comentário deve possuir no máximo 500 caracteres."
+            );
+
+            return;
+
+        }
+
+
+        // =====================================================
+        // ENVIAR
+        // =====================================================
 
         try {
 
-            const dados = {
-
-                nome: form.nome,
-                email: form.email,
-                telefone: form.telefone,
-
-                data_nascimento:
-                    form.data_nascimento || null,
-
-                endereco: form.endereco,
-                numero: form.numero,
-                complemento: form.complemento,
-                bairro: form.bairro,
-                cidade: form.cidade,
-                estado: form.estado,
-                cep: form.cep
-            };
-
-            if (form.senha) {
-
-                dados.senha = form.senha;
-
-            }
-
-            const resultado =
-                await atualizarPerfil(dados);
-
-            if (resultado?.sucesso) {
-
-                setEditando(false);
-
-                setForm(prev => ({
-                    ...prev,
-                    senha: ""
-                }));
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Erro ao atualizar perfil:",
-                error
-            );
-
-        }
-
-    }
-
-
-    // =====================================================
-    // ABRIR SELETOR
-    // =====================================================
-
-    function abrirSeletorFoto() {
-
-        if (enviandoFoto) {
-            return;
-        }
-
-        inputFotoRef.current?.click();
-
-    }
-
-
-    // =====================================================
-    // ALTERAR FOTO
-    // =====================================================
-
-    async function handleFoto(event) {
-
-        const arquivo =
-            event.target.files?.[0];
-
-        if (!arquivo) {
-            return;
-        }
-
-        setErroFoto("");
-        setErroImagem(false);
-
-
-        // =================================================
-        // VALIDAR TIPO
-        // =================================================
-
-        const tiposPermitidos = [
-            "image/jpeg",
-            "image/jpg",
-            "image/png",
-            "image/webp"
-        ];
-
-        if (
-            !tiposPermitidos.includes(
-                arquivo.type
-            )
-        ) {
-
-            setErroFoto(
-                "Formato inválido. Use JPG, JPEG, PNG ou WEBP."
-            );
-
-            event.target.value = "";
-
-            return;
-
-        }
-
-
-        // =================================================
-        // VALIDAR TAMANHO
-        // =================================================
-
-        const tamanhoMaximo =
-            2 * 1024 * 1024;
-
-        if (
-            arquivo.size >
-            tamanhoMaximo
-        ) {
-
-            setErroFoto(
-                "A imagem deve ter no máximo 2MB."
-            );
-
-            event.target.value = "";
-
-            return;
-
-        }
-
-
-        // =================================================
-        // PREVIEW TEMPORÁRIO
-        // =================================================
-
-        const preview =
-            URL.createObjectURL(
-                arquivo
-            );
-
-        setFotoPreview(preview);
-
-
-        // =================================================
-        // FORMDATA
-        // =================================================
-
-        const dados =
-            new FormData();
-
-        dados.append(
-            "foto",
-            arquivo
-        );
-
-
-        try {
-
-            setEnviandoFoto(true);
-
-
-            console.log(
-                "Enviando foto para:",
-                `/usuarios/${usuario.id}/foto`
-            );
-
-
-            // =================================================
-            // ENVIAR FOTO
-            // =================================================
-
-            const resposta =
-                await api.put(
-                    `/usuarios/${usuario.id}/foto`,
-                    dados,
-                    {
-                        headers: {
-                            "Content-Type":
-                                "multipart/form-data"
-                        }
-                    }
-                );
-
-
-            console.log(
-                "RESPOSTA FOTO:",
-                resposta.data
-            );
-
-
-            // =================================================
-            // USUÁRIO ATUALIZADO
-            // =================================================
-
-            const usuarioAtualizado =
-                resposta.data?.usuario;
-
-
-            if (!usuarioAtualizado) {
-
-                throw new Error(
-                    "A API não retornou o usuário atualizado."
-                );
-
-            }
-
-
-            // =================================================
-            // FOTO RETORNADA
-            // =================================================
-
-            const fotoSalva =
-                usuarioAtualizado.foto;
-
-
-            if (!fotoSalva) {
-
-                throw new Error(
-                    "A API não retornou o caminho da foto."
-                );
-
-            }
-
-
-            console.log(
-                "FOTO SALVA NO BANCO:",
-                fotoSalva
-            );
-
-
-            // =================================================
-            // MONTAR URL CORRETA
-            // =================================================
-
-            const urlFoto =
-                obterUrlFoto(
-                    fotoSalva
-                );
-
-
-            console.log(
-                "URL FINAL DA FOTO:",
-                urlFoto
-            );
-
-
-            // =================================================
-            // LIMPAR PREVIEW ANTIGO
-            // =================================================
-
-            setErroImagem(false);
-
-
-            // =================================================
-            // EVITAR CACHE DO NAVEGADOR
-            // =================================================
-
-            setFotoPreview(
-                `${urlFoto}?t=${Date.now()}`
-            );
-
-
-            // =================================================
-            // ATUALIZAR CONTEXTO
-            // =================================================
-
-            if (
-                typeof atualizarPerfil ===
-                "function"
-            ) {
-
-                try {
-
-                    await atualizarPerfil({
-
-                        nome:
-                            usuarioAtualizado.nome,
-
-                        email:
-                            usuarioAtualizado.email,
-
-                        telefone:
-                            usuarioAtualizado.telefone,
-
-                        data_nascimento:
-                            usuarioAtualizado.data_nascimento,
-
-                        endereco:
-                            usuarioAtualizado.endereco,
-
-                        numero:
-                            usuarioAtualizado.numero,
-
-                        complemento:
-                            usuarioAtualizado.complemento,
-
-                        bairro:
-                            usuarioAtualizado.bairro,
-
-                        cidade:
-                            usuarioAtualizado.cidade,
-
-                        estado:
-                            usuarioAtualizado.estado,
-
-                        cep:
-                            usuarioAtualizado.cep,
-
-                        foto:
-                            usuarioAtualizado.foto
-
-                    });
-
-                } catch (contextError) {
-
-                    console.warn(
-                        "Foto salva, mas houve erro ao atualizar o contexto:",
-                        contextError
-                    );
-
+            setEnviandoFeedback(true);
+
+
+            await api.post(
+                "/feedbacks",
+                {
+                    usuario_id: usuario.id,
+                    comentario: comentario.trim(),
+                    nota: nota
                 }
+            );
 
-            }
+
+            // =================================================
+            // LIMPAR FORMULÁRIO
+            // =================================================
+
+            setComentario("");
+
+            setNota(0);
+
+            setNotaHover(0);
 
 
-            setErroFoto("");
+            // =================================================
+            // MENSAGEM
+            // =================================================
+
+            setTipoMensagem("sucesso");
+
+            setMensagemFeedback(
+                "Sua avaliação foi enviada com sucesso!"
+            );
+
+
+            // =================================================
+            // ATUALIZAR FEEDBACKS
+            // =================================================
+
+            await carregarFeedbacks();
 
 
         } catch (error) {
 
             console.error(
-                "ERRO AO ENVIAR FOTO:",
+                "Erro ao enviar feedback:",
                 error
             );
 
-            console.error(
-                "RESPOSTA DO SERVIDOR:",
-                error.response?.data
-            );
+            setTipoMensagem("erro");
 
+            setMensagemFeedback(
 
-            // =================================================
-            // VOLTAR PARA FOTO ANTERIOR
-            // =================================================
+                error?.response?.data?.erro ||
 
-            setErroImagem(false);
+                error?.response?.data?.mensagem ||
 
-            setFotoPreview(
-                obterUrlFoto(
-                    usuario?.foto
-                )
-            );
+                error?.response?.data?.message ||
 
-
-            // =================================================
-            // ERRO
-            // =================================================
-
-            setErroFoto(
-
-                error.response?.data?.erro ||
-
-                error.response?.data?.detalhes ||
-
-                error.response?.data?.message ||
-
-                error.message ||
-
-                "Não foi possível alterar a foto."
+                "Não foi possível enviar seu feedback."
 
             );
 
         } finally {
 
-            setEnviandoFoto(false);
-
-            event.target.value = "";
+            setEnviandoFeedback(false);
 
         }
 
-    }
+    };
 
 
-    // =====================================================
-    // INPUT
-    // =====================================================
+    // =========================================================
+    // MOVER CARROSSEL
+    // =========================================================
 
-    function handleChange(event) {
+    const moverCarrossel = (direcao) => {
 
-        const {
-            name,
-            value
-        } = event.target;
-
-        setForm(prev => ({
-            ...prev,
-            [name]: value
-        }));
-
-    }
-
-
-    // =====================================================
-    // TELEFONE
-    // =====================================================
-
-    function formatarTelefone(value) {
-
-        return value
-            .replace(/\D/g, "")
-            .slice(0, 11)
-            .replace(
-                /^(\d{2})(\d)/,
-                "($1) $2"
-            )
-            .replace(
-                /(\d{5})(\d)/,
-                "$1-$2"
-            );
-
-    }
-
-
-    function handleTelefone(event) {
-
-        setForm(prev => ({
-            ...prev,
-            telefone:
-                formatarTelefone(
-                    event.target.value
-                )
-        }));
-
-    }
-
-
-    // =====================================================
-    // CEP
-    // =====================================================
-
-    function formatarCep(value) {
-
-        return value
-            .replace(/\D/g, "")
-            .slice(0, 8)
-            .replace(
-                /^(\d{5})(\d)/,
-                "$1-$2"
-            );
-
-    }
-
-
-    function handleCep(event) {
-
-        setForm(prev => ({
-            ...prev,
-            cep:
-                formatarCep(
-                    event.target.value
-                )
-        }));
-
-    }
-
-
-    // =====================================================
-    // SAIR
-    // =====================================================
-
-    function sairConta() {
-
-        logout();
-
-        navigate("/login");
-
-    }
-
-
-    // =====================================================
-    // DATA
-    // =====================================================
-
-    function formatarData(data) {
-
-        if (!data) {
-            return "-";
+        if (!carouselRef.current) {
+            return;
         }
 
-        return new Date(data).toLocaleDateString(
-            "pt-BR",
+        const carousel = carouselRef.current;
+
+        const card = carousel.querySelector(
+            `.${style.testimonialCard}`
+        );
+
+        if (!card) {
+            return;
+        }
+
+        const distancia =
+            card.offsetWidth + 28;
+
+        carousel.scrollBy({
+            left: direcao * distancia,
+            behavior: "smooth"
+        });
+
+    };
+
+
+    // =========================================================
+    // CALCULAR MÉDIA
+    // =========================================================
+
+    const calcularMedia = () => {
+
+        if (!feedbacks.length) {
+            return "0.0";
+        }
+
+        const total = feedbacks.reduce(
+            (soma, feedback) =>
+                soma + Number(feedback.nota || 0),
+            0
+        );
+
+        return (
+            total / feedbacks.length
+        ).toFixed(1);
+
+    };
+
+
+    // =========================================================
+    // ANIMAÇÕES GSAP
+    // =========================================================
+
+    useEffect(() => {
+
+        if (!introContainerRef.current) {
+            return;
+        }
+
+        gsap.set(
+            introContainerRef.current,
             {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
+                visibility: "visible"
             }
         );
 
-    }
 
-
-    // =====================================================
-    // DATA + HORA
-    // =====================================================
-
-    function formatarDataHora(data) {
-
-        if (!data) {
-            return "-";
-        }
-
-        return new Date(data).toLocaleDateString(
-            "pt-BR",
+        gsap.set(
+            brandNameRef.current,
             {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit"
+                opacity: 0,
+                y: 30,
+                scale: 0.85
             }
         );
 
-    }
 
-
-    // =====================================================
-    // PREÇO
-    // =====================================================
-
-    function formatarPreco(valor) {
-
-        return Number(
-            valor || 0
-        ).toLocaleString(
-            "pt-BR",
+        gsap.set(
+            [
+                `.${style.benefitCard}`,
+                `.${style.productCard}`
+            ],
             {
-                style: "currency",
-                currency: "BRL"
+                opacity: 0,
+                y: 30
             }
         );
 
-    }
 
+        const tlGlobal = gsap.timeline({
 
-    // =====================================================
-    // STATUS
-    // =====================================================
+            onComplete: () => {
 
-    function classeStatus(status) {
-
-        if (!status) {
-            return styles.status;
-        }
-
-        const normalizado =
-            status
-                .toLowerCase()
-                .normalize("NFD")
-                .replace(
-                    /[\u0300-\u036f]/g,
-                    ""
+                gsap.set(
+                    introContainerRef.current,
+                    {
+                        display: "none",
+                        pointerEvents: "none"
+                    }
                 );
 
-        if (
-            normalizado.includes("process") ||
-            normalizado.includes("pend")
-        ) {
+            }
 
-            return `${styles.status} ${styles.pendente}`;
-
-        }
-
-        if (
-            normalizado.includes("pago") ||
-            normalizado.includes("aprov")
-        ) {
-
-            return `${styles.status} ${styles.pago}`;
-
-        }
-
-        if (
-            normalizado.includes("enviado")
-        ) {
-
-            return `${styles.status} ${styles.enviado}`;
-
-        }
-
-        if (
-            normalizado.includes("entreg")
-        ) {
-
-            return `${styles.status} ${styles.entregue}`;
-
-        }
-
-        if (
-            normalizado.includes("cancel")
-        ) {
-
-            return `${styles.status} ${styles.cancelado}`;
-
-        }
-
-        return styles.status;
-
-    }
+        });
 
 
-    // =====================================================
-    // HEADER
-    // =====================================================
+        tlGlobal
 
-    const header =
-        usuario?.tipo === "admin"
-            ? <Cabecalho />
-            : <HeaderUser />;
+            .to(
+                brandNameRef.current,
+                {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.45,
+                    ease: "back.out(1.5)"
+                }
+            )
+
+            .to(
+                {},
+                {
+                    duration: 0.55
+                }
+            )
+
+            .to(
+                brandNameRef.current,
+                {
+                    opacity: 0,
+                    y: -40,
+                    duration: 0.25,
+                    ease: "power2.in"
+                }
+            )
+
+            .fromTo(
+                rollerRef.current,
+                {
+                    y: "105vh"
+                },
+                {
+                    y: "-100vh",
+                    duration: 1.27,
+                    ease: "power2.inOut"
+                },
+                "-=0.1"
+            )
+
+            .to(
+                svgPathRef.current,
+                {
+                    attr: {
+                        d:
+                            "M 0 0 V 0 Q 50 0 100 0 V 0 Z"
+                    },
+                    duration: 1.1,
+                    ease: "power2.inOut"
+                },
+                "-=1.1"
+            )
+
+            .fromTo(
+                tituloRef.current,
+                {
+                    opacity: 0,
+                    y: 20
+                },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5,
+                    ease: "power3.out"
+                },
+                "-=0.4"
+            )
+
+            .to(
+                `.${style.benefitCard}`,
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.4,
+                    stagger: 0.08,
+                    ease: "power2.out"
+                },
+                "-=0.2"
+            )
+
+            .to(
+                `.${style.productCard}`,
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5,
+                    stagger: 0.1,
+                    ease: "power3.out"
+                },
+                "-=0.2"
+            );
 
 
-    // =====================================================
-    // FOTO ATUAL
-    // =====================================================
-
-    const fotoAtual =
-        fotoPreview ||
-        obterUrlFoto(
-            usuario?.foto
+        gsap.to(
+            `.${style.paintCan}`,
+            {
+                y: -45,
+                duration: 2.5,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            }
         );
 
 
-    // =====================================================
+        return () => {
+
+            tlGlobal.kill();
+
+            gsap.killTweensOf(
+                `.${style.paintCan}`
+            );
+
+        };
+
+    }, []);
+
+
+    // =========================================================
+    // FORMATAR DATA
+    // =========================================================
+
+    const formatarData = (data) => {
+
+        if (!data) {
+            return "";
+        }
+
+        try {
+
+            return new Date(data).toLocaleDateString(
+                "pt-BR",
+                {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric"
+                }
+            );
+
+        } catch {
+
+            return "";
+
+        }
+
+    };
+
+
+    // =========================================================
+    // NOME DO USUÁRIO
+    // =========================================================
+
+    const getNomeUsuario = (feedback) => {
+
+        return (
+            feedback.usuario_nome ||
+            feedback.nome_usuario ||
+            feedback.usuario?.nome ||
+            "Usuário"
+        );
+
+    };
+
+
+    // =========================================================
+    // FOTO DO USUÁRIO
+    // =========================================================
+
+    const getFotoUsuario = (feedback) => {
+
+        return (
+            feedback.usuario_foto ||
+            feedback.foto_usuario ||
+            feedback.usuario?.foto ||
+            null
+        );
+
+    };
+
+
+    // =========================================================
     // RENDER
-    // =====================================================
+    // =========================================================
 
     return (
 
-        <div className={styles.page}>
+        <div className={style.container}>
 
-            {header}
+            {/* =================================================
+                HEADER
+            ================================================= */}
 
-            <main className={styles.content}>
+            <HeaderUser />
 
-                <div className={styles.topo}>
 
-                    <h1>
-                        Meu perfil
+            {/* =================================================
+                INTRO
+            ================================================= */}
+
+            <div
+                ref={introContainerRef}
+                className={style.introContainer}
+            >
+
+                <h1
+                    ref={brandNameRef}
+                    className={style.initialBrandName}
+                >
+                    Pixel Colors
+                </h1>
+
+
+                <svg
+                    className={style.paintSvg}
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                >
+
+                    <defs>
+
+                        <filter id="paint-edge">
+
+                            <feTurbulence
+                                type="fractalNoise"
+                                baseFrequency="0.04"
+                                numOctaves="3"
+                                result="noise"
+                            />
+
+                            <feDisplacementMap
+                                in="SourceGraphic"
+                                in2="noise"
+                                scale="5"
+                                xChannelSelector="R"
+                                yChannelSelector="G"
+                            />
+
+                        </filter>
+
+                    </defs>
+
+
+                    <path
+                        ref={svgPathRef}
+                        fill="#2563eb"
+                        filter="url(#paint-edge)"
+                        d="M 0 0 V 100 Q 50 100 100 100 V 0 Z"
+                    />
+
+                </svg>
+
+
+                <div
+                    ref={rollerRef}
+                    className={style.realRoller}
+                >
+
+                    <svg
+                        viewBox="0 0 300 400"
+                        className={style.rollerSvgGraphic}
+                    >
+
+                        <ellipse
+                            cx="150"
+                            cy="110"
+                            rx="110"
+                            ry="15"
+                            fill="rgba(0,0,0,0.2)"
+                            filter="blur(6px)"
+                        />
+
+                        <path
+                            d="M 250 100 L 270 100 L 270 170 L 175 220 L 175 260"
+                            fill="none"
+                            stroke="#94a3b8"
+                            strokeWidth="10"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+
+                        <path
+                            d="M 250 100 L 270 100 L 270 170 L 175 220 L 175 260"
+                            fill="none"
+                            stroke="#cbd5e1"
+                            strokeWidth="4"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+
+                        <rect
+                            x="160"
+                            y="260"
+                            width="30"
+                            height="110"
+                            rx="8"
+                            fill="#dc2626"
+                        />
+
+                        <rect
+                            x="163"
+                            y="260"
+                            width="8"
+                            height="110"
+                            rx="2"
+                            fill="#ef4444"
+                            opacity="0.4"
+                        />
+
+                        <circle
+                            cx="175"
+                            cy="350"
+                            r="4"
+                            fill="#0f172a"
+                        />
+
+                        <rect
+                            x="34"
+                            y="88"
+                            width="12"
+                            height="24"
+                            rx="3"
+                            fill="#b45309"
+                        />
+
+                        <rect
+                            x="254"
+                            y="88"
+                            width="12"
+                            height="24"
+                            rx="3"
+                            fill="#b45309"
+                        />
+
+                        <rect
+                            x="40"
+                            y="80"
+                            width="220"
+                            height="40"
+                            rx="12"
+                            fill="#3b82f6"
+                            stroke="#2563eb"
+                            strokeWidth="2"
+                        />
+
+                        <path
+                            d="M 50 85 Q 70 115 90 90 Q 120 120 150 95 Q 180 115 210 85 Q 230 115 250 95"
+                            fill="none"
+                            stroke="#1d4ed8"
+                            strokeWidth="4"
+                            strokeLinecap="round"
+                            opacity="0.8"
+                        />
+
+                        <path
+                            d="M 60 115 Q 90 85 120 110 Q 160 85 190 115 Q 220 90 245 110"
+                            fill="none"
+                            stroke="#1e40af"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            opacity="0.7"
+                        />
+
+                        <path
+                            d="M 45 100 L 255 100"
+                            fill="none"
+                            stroke="#60a5fa"
+                            strokeWidth="2"
+                            strokeDasharray="4 8"
+                            opacity="0.6"
+                        />
+
+                    </svg>
+
+                </div>
+
+            </div>
+
+
+            {/* =================================================
+                GLOW
+            ================================================= */}
+
+            <div
+                className={`${style.glow} ${style.glow1}`}
+            />
+
+            <div
+                className={`${style.glow} ${style.glow2}`}
+            />
+
+
+            {/* =================================================
+                HERO
+            ================================================= */}
+
+            <section className={style.hero}>
+
+                <div className={style.heroText}>
+
+                    <span className={style.badge}>
+                        Coleção Premium 2026
+                    </span>
+
+                    <h1 ref={tituloRef}>
+                        A nova geração{" "}
+                        <span>de tintas premium</span>
                     </h1>
 
                     <p>
-                        Gerencie suas informações pessoais e de acesso.
+                        Design sofisticado, acabamento profissional
+                        e uma experiência visual inspirada nas
+                        landing pages modernas do mercado global.
                     </p>
 
+                    <div className={style.heroButtons}>
+
+                        <button
+                            className={style.primaryButton}
+                        >
+                            Explorar catálogo
+                        </button>
+
+                        <button
+                            className={style.secondaryButton}
+                        >
+                            Ver coleções
+                        </button>
+
+                    </div>
+
+                    <div className={style.heroStats}>
+
+                        <div>
+                            <strong>+12mil</strong>
+                            <span>Clientes</span>
+                        </div>
+
+                        <div>
+                            <strong>98%</strong>
+                            <span>Aprovação</span>
+                        </div>
+
+                        <div>
+                            <strong>+340</strong>
+                            <span>Cores</span>
+                        </div>
+
+                    </div>
+
                 </div>
 
 
-                <div className={styles.container}>
+                <div className={style.heroImage}>
 
-                    {/* =================================================
-                        CARD ESQUERDO
-                    ================================================= */}
+                    <div className={style.paintCan}>
 
-                    <section className={styles.leftCard}>
+                        <img
+                            src="https://images.unsplash.com/photo-1562259949-e8e7689d7828?q=80&w=1200&auto=format&fit=crop"
+                            alt="Tinta"
+                        />
 
-                        {/* AVATAR */}
+                    </div>
 
-                        <div className={styles.avatarBox}>
 
-                            <div className={styles.avatar}>
+                    <div className={style.floatingCard}>
 
-                                {fotoAtual &&
-                                !erroImagem ? (
+                        <FiStar />
 
-                                    <img
-                                        src={fotoAtual}
-                                        alt={`Foto de ${
-                                            usuario?.nome ||
-                                            "usuário"
-                                        }`}
-                                        className={
-                                            styles.avatarImage
-                                        }
-                                        onError={() => {
+                        <div>
 
-                                            console.error(
-                                                "Não foi possível carregar:",
-                                                fotoAtual
-                                            );
+                            <strong>
+                                Premium Quality
+                            </strong>
 
-                                            setErroImagem(true);
-
-                                        }}
-                                    />
-
-                                ) : (
-
-                                    usuario?.nome
-                                        ?.charAt(0)
-                                        ?.toUpperCase() ||
-                                    "U"
-
-                                )}
-
-                            </div>
-
-
-                            <button
-                                className={
-                                    styles.camera
-                                }
-                                type="button"
-                                onClick={
-                                    abrirSeletorFoto
-                                }
-                                disabled={
-                                    enviandoFoto
-                                }
-                                title="Alterar foto"
-                            >
-
-                                {enviandoFoto
-                                    ? "..."
-                                    : <FiCamera />}
-
-                            </button>
-
-
-                            <input
-                                ref={inputFotoRef}
-                                type="file"
-                                accept="image/png,image/jpeg,image/jpg,image/webp"
-                                onChange={handleFoto}
-                                style={{
-                                    display: "none"
-                                }}
-                            />
-
-                        </div>
-
-
-                        <h2
-                            className={
-                                styles.nomeUsuario
-                            }
-                        >
-                            {usuario?.nome ||
-                                "Usuário"}
-                        </h2>
-
-
-                        <p
-                            className={
-                                styles.emailUsuario
-                            }
-                        >
-                            {usuario?.email ||
-                                "Sem e-mail"}
-                        </p>
-
-
-                        <button
-                            className={
-                                styles.photoBtn
-                            }
-                            type="button"
-                            onClick={
-                                abrirSeletorFoto
-                            }
-                            disabled={
-                                enviandoFoto
-                            }
-                        >
-
-                            <FiCamera />
-
-                            {enviandoFoto
-                                ? "Enviando..."
-                                : "Alterar foto"}
-
-                        </button>
-
-
-                        <small>
-                            PNG, JPG ou WEBP.
-                            Tamanho máximo: 2MB.
-                        </small>
-
-
-                        {erroFoto && (
-
-                            <p
-                                style={{
-                                    color: "#dc2626",
-                                    fontSize: "13px",
-                                    marginTop: "8px",
-                                    textAlign: "center"
-                                }}
-                            >
-                                {erroFoto}
-                            </p>
-
-                        )}
-
-
-                        {/* CONTA */}
-
-                        <div
-                            className={
-                                styles.account
-                            }
-                        >
-
-                            <h3>
-                                Informações da conta
-                            </h3>
-
-
-                            <div
-                                className={
-                                    styles.row
-                                }
-                            >
-
-                                <FiShield />
-
-                                <div>
-
-                                    <span>
-                                        Tipo de conta
-                                    </span>
-
-                                    <strong
-                                        className={
-                                            styles.badge
-                                        }
-                                    >
-                                        {usuario?.tipo ||
-                                            "cliente"}
-                                    </strong>
-
-                                </div>
-
-                            </div>
-
-
-                            <div
-                                className={
-                                    styles.row
-                                }
-                            >
-
-                                <FiCalendar />
-
-                                <div>
-
-                                    <span>
-                                        Cadastro
-                                    </span>
-
-                                    <strong>
-                                        {formatarData(
-                                            usuario?.criado_em
-                                        )}
-                                    </strong>
-
-                                </div>
-
-                            </div>
-
-
-                            <div
-                                className={
-                                    styles.row
-                                }
-                            >
-
-                                <FiPackage />
-
-                                <div>
-
-                                    <span>
-                                        Pedidos realizados
-                                    </span>
-
-                                    <strong>
-                                        {carregandoPedidos
-                                            ? "..."
-                                            : pedidos.length}
-                                    </strong>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        {/* HISTÓRICO */}
-
-                        <button
-                            className={
-                                styles.historyBtn
-                            }
-                            type="button"
-                            onClick={
-                                abrirHistorico
-                            }
-                        >
-
-                            <FiPackage />
-
-                            Histórico de pedidos
-
-                        </button>
-
-
-                        {/* SAIR */}
-
-                        <button
-                            className={
-                                styles.logout
-                            }
-                            type="button"
-                            onClick={
-                                sairConta
-                            }
-                        >
-
-                            <FiLogOut />
-
-                            Sair da conta
-
-                        </button>
-
-                    </section>
-
-
-                    {/* =================================================
-                        CARD DIREITO
-                    ================================================= */}
-
-                    <section
-                        className={
-                            styles.rightCard
-                        }
-                    >
-
-                        <div
-                            className={
-                                styles.titleEdit
-                            }
-                        >
-
-                            <div>
-
-                                <h3>
-                                    Informações pessoais
-                                </h3>
-
-                                <p>
-                                    Atualize seus dados pessoais.
-                                </p>
-
-                            </div>
-
-
-                            <button
-                                type="button"
-                                onClick={
-                                    editando
-                                        ? salvarPerfil
-                                        : () =>
-                                            setEditando(
-                                                true
-                                            )
-                                }
-                            >
-
-                                {editando ? (
-
-                                    <>
-                                        <FiSave />
-                                        Salvar
-                                    </>
-
-                                ) : (
-
-                                    <>
-                                        <FiEdit2 />
-                                        Editar
-                                    </>
-
-                                )}
-
-                            </button>
-
-                        </div>
-
-
-                        <div
-                            className={
-                                styles.formGrid
-                            }
-                        >
-
-                            {/* NOME */}
-
-                            <div className={styles.field}>
-
-                                <label>
-                                    Nome completo
-                                </label>
-
-                                <div
-                                    className={
-                                        styles.inputBox
-                                    }
-                                >
-
-                                    <FiUser />
-
-                                    <input
-                                        disabled={
-                                            !editando
-                                        }
-                                        name="nome"
-                                        value={
-                                            form.nome
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {/* EMAIL */}
-
-                            <div className={styles.field}>
-
-                                <label>
-                                    E-mail
-                                </label>
-
-                                <div
-                                    className={
-                                        styles.inputBox
-                                    }
-                                >
-
-                                    <FiMail />
-
-                                    <input
-                                        disabled={
-                                            !editando
-                                        }
-                                        type="email"
-                                        name="email"
-                                        value={
-                                            form.email
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {/* TELEFONE */}
-
-                            <div className={styles.field}>
-
-                                <label>
-                                    Telefone
-                                </label>
-
-                                <div
-                                    className={
-                                        styles.inputBox
-                                    }
-                                >
-
-                                    <FiPhone />
-
-                                    <input
-                                        disabled={
-                                            !editando
-                                        }
-                                        name="telefone"
-                                        value={
-                                            form.telefone
-                                        }
-                                        onChange={
-                                            handleTelefone
-                                        }
-                                        placeholder="(16) 99999-9999"
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {/* DATA */}
-
-                            <div className={styles.field}>
-
-                                <label>
-                                    Data de nascimento
-                                </label>
-
-                                <div
-                                    className={
-                                        styles.inputBox
-                                    }
-                                >
-
-                                    <FiCalendar />
-
-                                    <input
-                                        disabled={
-                                            !editando
-                                        }
-                                        type="date"
-                                        name="data_nascimento"
-                                        value={
-                                            form.data_nascimento
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {/* ENDEREÇO */}
-
-                            <div className={styles.field}>
-
-                                <label>
-                                    Endereço
-                                </label>
-
-                                <div
-                                    className={
-                                        styles.inputBox
-                                    }
-                                >
-
-                                    <FiHome />
-
-                                    <input
-                                        disabled={
-                                            !editando
-                                        }
-                                        name="endereco"
-                                        value={
-                                            form.endereco
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                        placeholder="Rua / Avenida"
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {/* NÚMERO */}
-
-                            <div className={styles.field}>
-
-                                <label>
-                                    Número
-                                </label>
-
-                                <div
-                                    className={
-                                        styles.inputBox
-                                    }
-                                >
-
-                                    <FiHash />
-
-                                    <input
-                                        disabled={
-                                            !editando
-                                        }
-                                        name="numero"
-                                        value={
-                                            form.numero
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {/* COMPLEMENTO */}
-
-                            <div className={styles.field}>
-
-                                <label>
-                                    Complemento
-                                </label>
-
-                                <div
-                                    className={
-                                        styles.inputBox
-                                    }
-                                >
-
-                                    <FiHome />
-
-                                    <input
-                                        disabled={
-                                            !editando
-                                        }
-                                        name="complemento"
-                                        value={
-                                            form.complemento
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                        placeholder="Casa, apartamento..."
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {/* BAIRRO */}
-
-                            <div className={styles.field}>
-
-                                <label>
-                                    Bairro
-                                </label>
-
-                                <div
-                                    className={
-                                        styles.inputBox
-                                    }
-                                >
-
-                                    <FiMapPin />
-
-                                    <input
-                                        disabled={
-                                            !editando
-                                        }
-                                        name="bairro"
-                                        value={
-                                            form.bairro
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {/* CIDADE */}
-
-                            <div className={styles.field}>
-
-                                <label>
-                                    Cidade
-                                </label>
-
-                                <div
-                                    className={
-                                        styles.inputBox
-                                    }
-                                >
-
-                                    <FiMap />
-
-                                    <input
-                                        disabled={
-                                            !editando
-                                        }
-                                        name="cidade"
-                                        value={
-                                            form.cidade
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {/* ESTADO */}
-
-                            <div className={styles.field}>
-
-                                <label>
-                                    Estado
-                                </label>
-
-                                <div
-                                    className={
-                                        styles.inputBox
-                                    }
-                                >
-
-                                    <FiMap />
-
-                                    <input
-                                        disabled={
-                                            !editando
-                                        }
-                                        name="estado"
-                                        value={
-                                            form.estado
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                        maxLength={2}
-                                        placeholder="SP"
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {/* CEP */}
-
-                            <div className={styles.field}>
-
-                                <label>
-                                    CEP
-                                </label>
-
-                                <div
-                                    className={
-                                        styles.inputBox
-                                    }
-                                >
-
-                                    <FiMapPin />
-
-                                    <input
-                                        disabled={
-                                            !editando
-                                        }
-                                        name="cep"
-                                        value={
-                                            form.cep
-                                        }
-                                        onChange={
-                                            handleCep
-                                        }
-                                        placeholder="00000-000"
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {/* SENHA */}
-
-                            {editando && (
-
-                                <div className={styles.field}>
-
-                                    <label>
-                                        Nova senha
-                                    </label>
-
-                                    <div
-                                        className={
-                                            styles.inputBox
-                                        }
-                                    >
-
-                                        <FiShield />
-
-                                        <input
-                                            type="password"
-                                            name="senha"
-                                            value={
-                                                form.senha
-                                            }
-                                            onChange={
-                                                handleChange
-                                            }
-                                            placeholder="Digite uma nova senha"
-                                        />
-
-                                    </div>
-
-                                </div>
-
-                            )}
-
-                        </div>
-
-
-                        {/* INFORMAÇÕES DO SISTEMA */}
-
-                        <div
-                            className={
-                                styles.systemInfo
-                            }
-                        >
-
-                            <h3>
-                                Informações da conta
-                            </h3>
-
-                            <div
-                                className={
-                                    styles.systemGrid
-                                }
-                            >
-
-                                <div>
-
-                                    <span>
-                                        ID do usuário
-                                    </span>
-
-                                    <strong>
-                                        #{usuario?.id || "-"}
-                                    </strong>
-
-                                </div>
-
-
-                                <div>
-
-                                    <span>
-                                        Tipo
-                                    </span>
-
-                                    <strong>
-                                        {usuario?.tipo || "-"}
-                                    </strong>
-
-                                </div>
-
-
-                                <div>
-
-                                    <span>
-                                        Criado em
-                                    </span>
-
-                                    <strong>
-                                        {formatarDataHora(
-                                            usuario?.criado_em
-                                        )}
-                                    </strong>
-
-                                </div>
-
-
-                                <div>
-
-                                    <span>
-                                        Última atualização
-                                    </span>
-
-                                    <strong>
-                                        {formatarDataHora(
-                                            usuario?.atualizado_em
-                                        )}
-                                    </strong>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </section>
-
-                </div>
-
-            </main>
-
-
-            {/* ==========================================================
-                MODAL
-            ========================================================== */}
-
-            {modalPedidos && (
-
-                <div
-                    className={
-                        styles.modalOverlay
-                    }
-                    onClick={
-                        fecharHistorico
-                    }
-                >
-
-                    <div
-                        className={
-                            styles.modal
-                        }
-                        onClick={
-                            event =>
-                                event.stopPropagation()
-                        }
-                    >
-
-                        <div
-                            className={
-                                styles.modalHeader
-                            }
-                        >
-
-                            <div>
-
-                                <h2>
-                                    Histórico de pedidos
-                                </h2>
-
-                                <p>
-
-                                    {carregandoPedidos
-                                        ? "Carregando..."
-                                        : `${pedidos.length} ${
-                                            pedidos.length === 1
-                                                ? "pedido realizado"
-                                                : "pedidos realizados"
-                                        }`
-                                    }
-
-                                </p>
-
-                            </div>
-
-
-                            <button
-                                className={
-                                    styles.closeModal
-                                }
-                                type="button"
-                                onClick={
-                                    fecharHistorico
-                                }
-                            >
-
-                                <FiX />
-
-                            </button>
-
-                        </div>
-
-
-                        <div
-                            className={
-                                styles.modalContent
-                            }
-                        >
-
-                            {carregandoPedidos && (
-
-                                <div
-                                    className={
-                                        styles.estadoPedidos
-                                    }
-                                >
-
-                                    <div
-                                        className={
-                                            styles.spinner
-                                        }
-                                    />
-
-                                    <p>
-                                        Carregando seus pedidos...
-                                    </p>
-
-                                </div>
-
-                            )}
-
-
-                            {!carregandoPedidos &&
-                                erroPedidos && (
-
-                                    <div
-                                        className={
-                                            styles.erroPedidos
-                                        }
-                                    >
-
-                                        <FiPackage />
-
-                                        <h3>
-                                            Não foi possível carregar
-                                        </h3>
-
-                                        <p>
-                                            {erroPedidos}
-                                        </p>
-
-                                        <button
-                                            type="button"
-                                            onClick={
-                                                buscarPedidos
-                                            }
-                                        >
-                                            Tentar novamente
-                                        </button>
-
-                                    </div>
-
-                                )}
-
-
-                            {!carregandoPedidos &&
-                                !erroPedidos &&
-                                pedidos.length === 0 && (
-
-                                    <div
-                                        className={
-                                            styles.semPedidos
-                                        }
-                                    >
-
-                                        <FiPackage />
-
-                                        <h3>
-                                            Nenhum pedido encontrado
-                                        </h3>
-
-                                        <p>
-                                            Você ainda não realizou
-                                            nenhuma compra.
-                                        </p>
-
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-
-                                                fecharHistorico();
-
-                                                navigate(
-                                                    "/cliente/cores"
-                                                );
-
-                                            }}
-                                        >
-                                            Começar a comprar
-                                        </button>
-
-                                    </div>
-
-                                )}
-
-
-                            {!carregandoPedidos &&
-                                !erroPedidos &&
-                                pedidos.length > 0 && (
-
-                                    <div
-                                        className={
-                                            styles.listaPedidos
-                                        }
-                                    >
-
-                                        {pedidos.map(
-                                            pedido => (
-
-                                                <div
-                                                    className={
-                                                        styles.pedido
-                                                    }
-                                                    key={
-                                                        pedido.id
-                                                    }
-                                                >
-
-                                                    <div
-                                                        className={
-                                                            styles.pedidoHeader
-                                                        }
-                                                    >
-
-                                                        <div>
-
-                                                            <div
-                                                                className={
-                                                                    styles.pedidoNumero
-                                                                }
-                                                            >
-
-                                                                <FiPackage />
-
-                                                                <strong>
-                                                                    Pedido #{pedido.id}
-                                                                </strong>
-
-                                                            </div>
-
-                                                            <span
-                                                                className={
-                                                                    styles.dataPedido
-                                                                }
-                                                            >
-
-                                                                <FiClock />
-
-                                                                {
-                                                                    formatarDataHora(
-                                                                        pedido.criado_em
-                                                                    )
-                                                                }
-
-                                                            </span>
-
-                                                        </div>
-
-
-                                                        <span
-                                                            className={
-                                                                classeStatus(
-                                                                    pedido.status
-                                                                )
-                                                            }
-                                                        >
-                                                            {
-                                                                pedido.status ||
-                                                                "Pendente"
-                                                            }
-                                                        </span>
-
-                                                    </div>
-
-
-                                                    <div
-                                                        className={
-                                                            styles.itensPedido
-                                                        }
-                                                    >
-
-                                                        {pedido.itens?.map(
-                                                            item => (
-
-                                                                <div
-                                                                    className={
-                                                                        styles.itemPedido
-                                                                    }
-                                                                    key={
-                                                                        item.id
-                                                                    }
-                                                                >
-
-                                                                    <div
-                                                                        className={
-                                                                            styles.produtoImagem
-                                                                        }
-                                                                    >
-
-                                                                        {item.foto ? (
-
-                                                                            <img
-                                                                                src={
-                                                                                    obterUrlFoto(
-                                                                                        item.foto
-                                                                                    )
-                                                                                }
-                                                                                alt={
-                                                                                    item.nome
-                                                                                }
-                                                                            />
-
-                                                                        ) : (
-
-                                                                            <FiPackage />
-
-                                                                        )}
-
-                                                                    </div>
-
-
-                                                                    <div
-                                                                        className={
-                                                                            styles.produtoInfo
-                                                                        }
-                                                                    >
-
-                                                                        <strong>
-                                                                            {
-                                                                                item.nome
-                                                                            }
-                                                                        </strong>
-
-                                                                        <span>
-                                                                            {
-                                                                                item.quantidade
-                                                                            }{" "}
-                                                                            x{" "}
-                                                                            {
-                                                                                formatarPreco(
-                                                                                    item.preco
-                                                                                )
-                                                                            }
-                                                                        </span>
-
-                                                                    </div>
-
-
-                                                                    <strong
-                                                                        className={
-                                                                            styles.subtotal
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            formatarPreco(
-                                                                                item.subtotal
-                                                                            )
-                                                                        }
-                                                                    </strong>
-
-                                                                </div>
-
-                                                            )
-                                                        )}
-
-                                                    </div>
-
-
-                                                    <div
-                                                        className={
-                                                            styles.pedidoFooter
-                                                        }
-                                                    >
-
-                                                        <div
-                                                            className={
-                                                                styles.pagamento
-                                                            }
-                                                        >
-
-                                                            <FiCreditCard />
-
-                                                            <span>
-                                                                Pagamento:
-                                                            </span>
-
-                                                            <strong>
-                                                                {
-                                                                    pedido.metodo_pagamento ||
-                                                                    "-"
-                                                                }
-                                                            </strong>
-
-                                                        </div>
-
-
-                                                        <div
-                                                            className={
-                                                                styles.totalPedido
-                                                            }
-                                                        >
-
-                                                            <span>
-                                                                Total
-                                                            </span>
-
-                                                            <strong>
-                                                                {
-                                                                    formatarPreco(
-                                                                        pedido.total
-                                                                    )
-                                                                }
-                                                            </strong>
-
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-
-                                            )
-                                        )}
-
-                                    </div>
-
-                                )}
+                            <span>
+                                Acabamento impecável
+                            </span>
 
                         </div>
 
@@ -2205,7 +942,1012 @@ export default function Perfil() {
 
                 </div>
 
-            )}
+            </section>
+
+
+            {/* =================================================
+                PERFORMANCE
+            ================================================= */}
+
+            <section className={style.interactiveShowcase}>
+
+                <div className={style.showcaseGrid}>
+
+                    <div className={style.showcaseText}>
+
+                        <span>
+                            Performance
+                        </span>
+
+                        <h2>
+                            Por que escolher nossa fórmula molecular?
+                        </h2>
+
+                        <p>
+                            Nossas tintas utilizam polímeros inteligentes
+                            que repelem sujeira, são 100% laváveis e
+                            cobrem imperfeições estruturais com apenas
+                            uma demão.
+                        </p>
+
+                    </div>
+
+
+                    <div className={style.techCards}>
+
+                        <div className={style.techCard}>
+
+                            <FiActivity />
+
+                            <h4>
+                                Filtro UV Ativo
+                            </h4>
+
+                            <p>
+                                Evita o desbotamento precoce causado
+                                pelos raios solares por anos.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            {/* =================================================
+                BENEFÍCIOS
+            ================================================= */}
+
+            <section className={style.benefits}>
+
+                <div className={style.benefitCard}>
+
+                    <FiDroplet />
+
+                    <h3>
+                        Cores vibrantes
+                    </h3>
+
+                    <p>
+                        Pigmentação intensa e acabamento premium
+                        durável.
+                    </p>
+
+                </div>
+
+
+                <div className={style.benefitCard}>
+
+                    <FiShield />
+
+                    <h3>
+                        Alta resistência
+                    </h3>
+
+                    <p>
+                        Durabilidade extrema desenvolvida para
+                        qualquer ambiente.
+                    </p>
+
+                </div>
+
+
+                <div className={style.benefitCard}>
+
+                    <FiAward />
+
+                    <h3>
+                        Qualidade premium
+                    </h3>
+
+                    <p>
+                        Tecnologia avançada que resulta em um
+                        reflexo impecável.
+                    </p>
+
+                </div>
+
+
+                <div className={style.benefitCard}>
+
+                    <FiTruck />
+
+                    <h3>
+                        Entrega rápida
+                    </h3>
+
+                    <p>
+                        Segurança logística garantida para todo
+                        o território.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            {/* =================================================
+                PRODUTOS
+            ================================================= */}
+
+            <section className={style.products}>
+
+                <div className={style.sectionTop}>
+
+                    <span>
+                        Produtos Premium
+                    </span>
+
+                    <h2>
+                        As tintas mais desejadas
+                    </h2>
+
+                </div>
+
+
+                <div className={style.productGrid}>
+
+                    <div className={style.productCard}>
+
+                        <div className={style.productImage}>
+
+                            <img
+                                src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1200&auto=format&fit=crop"
+                                alt="Azul"
+                            />
+
+                        </div>
+
+                        <div className={style.productInfo}>
+
+                            <h3>
+                                Azul Oceano
+                            </h3>
+
+                            <p>
+                                Elegância e sofisticação para interiores
+                                modernos.
+                            </p>
+
+                            <div className={style.priceRow}>
+
+                                <strong>
+                                    R$ 149
+                                </strong>
+
+                                <button>
+                                    <FiShoppingCart />
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div className={style.productCard}>
+
+                        <div className={style.productImage}>
+
+                            <img
+                                src="https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1200&auto=format&fit=crop"
+                                alt="Branco"
+                            />
+
+                        </div>
+
+                        <div className={style.productInfo}>
+
+                            <h3>
+                                Minimal White
+                            </h3>
+
+                            <p>
+                                Estética clean de altíssima refletividade.
+                            </p>
+
+                            <div className={style.priceRow}>
+
+                                <strong>
+                                    R$ 189
+                                </strong>
+
+                                <button>
+                                    <FiShoppingCart />
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div className={style.productCard}>
+
+                        <div className={style.productImage}>
+
+                            <img
+                                src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop"
+                                alt="Verde"
+                            />
+
+                        </div>
+
+                        <div className={style.productInfo}>
+
+                            <h3>
+                                Nature Green
+                            </h3>
+
+                            <p>
+                                Conecte sua casa ao aconchego e equilíbrio
+                                botânico.
+                            </p>
+
+                            <div className={style.priceRow}>
+
+                                <strong>
+                                    R$ 169
+                                </strong>
+
+                                <button>
+                                    <FiShoppingCart />
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            {/* =================================================
+                SHOWCASE
+            ================================================= */}
+
+            <section className={style.showcase}>
+
+                <div className={style.showcaseContent}>
+
+                    <span>
+                        Nova experiência visual
+                    </span>
+
+                    <h2>
+                        Inspire-se em ambientes modernos
+                    </h2>
+
+                    <p>
+                        Descubra combinações sofisticadas para
+                        transformar qualquer ambiente.
+                    </p>
+
+                    <button
+                        className={style.showcaseButton}
+                    >
+                        Explorar ambientes
+                        <FiArrowRight />
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            {/* =================================================
+                FEEDBACKS
+            ================================================= */}
+
+            <section className={style.testimonials}>
+
+
+                {/* =================================================
+                    CABEÇALHO
+                ================================================= */}
+
+                <div className={style.feedbackSectionHeader}>
+
+                    <div className={style.feedbackIntro}>
+
+                        <span>
+                            Avaliações dos clientes
+                        </span>
+
+                        <h2>
+                            Experiências que
+                            <strong> falam por nós.</strong>
+                        </h2>
+
+                        <p>
+                            Veja o que nossos clientes estão achando
+                            da experiência Pixel Colors e compartilhe
+                            também a sua opinião.
+                        </p>
+
+                    </div>
+
+
+                    {/* =================================================
+                        NOTA GERAL
+                    ================================================= */}
+
+                    <div className={style.feedbackScoreCard}>
+
+                        <div className={style.feedbackScoreNumber}>
+                            {calcularMedia()}
+                        </div>
+
+                        <div>
+
+                            <div
+                                className={
+                                    style.feedbackScoreStars
+                                }
+                            >
+
+                                {[1, 2, 3, 4, 5].map(
+                                    (estrela) => (
+
+                                        <FiStar
+                                            key={estrela}
+                                            className={
+                                                style.starActive
+                                            }
+                                        />
+
+                                    )
+                                )}
+
+                            </div>
+
+                            <span>
+                                {feedbacks.length}{" "}
+                                {feedbacks.length === 1
+                                    ? "avaliação"
+                                    : "avaliações"}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {/* =================================================
+                    FORMULÁRIO
+                ================================================= */}
+
+                {usuario?.id ? (
+
+                    <div className={style.feedbackForm}>
+
+                        <div
+                            className={
+                                style.feedbackFormHeader
+                            }
+                        >
+
+                            <div
+                                className={
+                                    style.feedbackUserIcon
+                                }
+                            >
+
+                                {usuario?.foto ? (
+
+                                    <img
+                                        src={getFotoUrl(
+                                            usuario.foto
+                                        )}
+                                        alt={
+                                            usuario?.nome ||
+                                            "Usuário"
+                                        }
+                                    />
+
+                                ) : (
+
+                                    <FiUser />
+
+                                )}
+
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+                                    {usuario?.nome ||
+                                        "Usuário"}
+                                </strong>
+
+                                <span>
+                                    Como foi sua experiência?
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <form
+                            onSubmit={enviarFeedback}
+                        >
+
+                            {/* =================================================
+                                ESTRELAS
+                            ================================================= */}
+
+                            <div
+                                className={
+                                    style.feedbackStarsArea
+                                }
+                            >
+
+                                <div
+                                    className={
+                                        style.feedbackStarsHeader
+                                    }
+                                >
+
+                                    <span>
+                                        Sua avaliação
+                                    </span>
+
+                                    <strong>
+
+                                        {nota > 0
+                                            ? `${nota} ${
+                                                nota === 1
+                                                    ? "estrela"
+                                                    : "estrelas"
+                                            }`
+                                            : "Escolha uma nota"}
+
+                                    </strong>
+
+                                </div>
+
+
+                                <div
+                                    className={
+                                        style.feedbackStars
+                                    }
+                                >
+
+                                    {[1, 2, 3, 4, 5].map(
+                                        (estrela) => (
+
+                                            <button
+                                                key={estrela}
+                                                type="button"
+                                                className={
+                                                    style.feedbackStarButton
+                                                }
+                                                onClick={() =>
+                                                    setNota(
+                                                        estrela
+                                                    )
+                                                }
+                                                onMouseEnter={() =>
+                                                    setNotaHover(
+                                                        estrela
+                                                    )
+                                                }
+                                                onMouseLeave={() =>
+                                                    setNotaHover(
+                                                        0
+                                                    )
+                                                }
+                                                aria-label={`Dar ${estrela} estrelas`}
+                                            >
+
+                                                <FiStar
+                                                    className={
+                                                        estrela <=
+                                                        (
+                                                            notaHover ||
+                                                            nota
+                                                        )
+                                                            ? style.feedbackStarActive
+                                                            : style.feedbackStarInactive
+                                                    }
+                                                />
+
+                                            </button>
+
+                                        )
+                                    )}
+
+                                </div>
+
+                            </div>
+
+
+                            {/* =================================================
+                                COMENTÁRIO
+                            ================================================= */}
+
+                            <textarea
+                                value={comentario}
+                                onChange={(e) =>
+                                    setComentario(
+                                        e.target.value
+                                    )
+                                }
+                                placeholder="Conte para nós o que você achou da Pixel Colors..."
+                                maxLength={500}
+                                disabled={
+                                    enviandoFeedback
+                                }
+                            />
+
+
+                            {/* =================================================
+                                RODAPÉ FORM
+                            ================================================= */}
+
+                            <div
+                                className={
+                                    style.feedbackFormBottom
+                                }
+                            >
+
+                                <span>
+                                    {comentario.length}/500
+                                </span>
+
+
+                                <button
+                                    type="submit"
+                                    disabled={
+                                        enviandoFeedback
+                                    }
+                                >
+
+                                    {enviandoFeedback ? (
+
+                                        "Enviando..."
+
+                                    ) : (
+
+                                        <>
+                                            Enviar avaliação
+                                            <FiSend />
+                                        </>
+
+                                    )}
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+
+                        {/* =================================================
+                            MENSAGEM
+                        ================================================= */}
+
+                        {mensagemFeedback && (
+
+                            <div
+                                className={
+                                    tipoMensagem ===
+                                    "sucesso"
+                                        ? style.feedbackSuccess
+                                        : style.feedbackError
+                                }
+                            >
+
+                                {tipoMensagem ===
+                                "sucesso" ? (
+
+                                    <FiCheckCircle />
+
+                                ) : (
+
+                                    <FiAlertCircle />
+
+                                )}
+
+                                <span>
+                                    {mensagemFeedback}
+                                </span>
+
+                            </div>
+
+                        )}
+
+                    </div>
+
+                ) : (
+
+                    <div
+                        className={
+                            style.feedbackLoginMessage
+                        }
+                    >
+
+                        <FiMessageSquare />
+
+                        <p>
+                            Faça login para deixar seu
+                            feedback.
+                        </p>
+
+                    </div>
+
+                )}
+
+
+                {/* =================================================
+                    CARROSSEL
+                ================================================= */}
+
+                {!carregandoFeedbacks &&
+                    feedbacks.length > 0 && (
+
+                        <div
+                            className={
+                                style.carouselWrapper
+                            }
+                        >
+
+                            <button
+                                type="button"
+                                className={`${style.carouselButton} ${style.carouselButtonLeft}`}
+                                onClick={() =>
+                                    moverCarrossel(-1)
+                                }
+                                aria-label="Feedback anterior"
+                            >
+
+                                <FiChevronLeft />
+
+                            </button>
+
+
+                            <div
+                                ref={carouselRef}
+                                className={
+                                    style.testimonialsGrid
+                                }
+                            >
+
+                                {feedbacks.map(
+                                    (feedback) => {
+
+                                        const nome =
+                                            getNomeUsuario(
+                                                feedback
+                                            );
+
+                                        const foto =
+                                            getFotoUsuario(
+                                                feedback
+                                            );
+
+                                        const fotoUrl =
+                                            getFotoUrl(
+                                                foto
+                                            );
+
+                                        const notaFeedback =
+                                            Number(
+                                                feedback.nota ||
+                                                0
+                                            );
+
+
+                                        return (
+
+                                            <article
+                                                className={
+                                                    style.testimonialCard
+                                                }
+                                                key={
+                                                    feedback.id
+                                                }
+                                            >
+
+                                                {/* TOPO */}
+
+                                                <div
+                                                    className={
+                                                        style.testimonialTop
+                                                    }
+                                                >
+
+                                                    <div
+                                                        className={
+                                                            style.testiIconWrapper
+                                                        }
+                                                    >
+
+                                                        <FiMessageSquare
+                                                            className={
+                                                                style.testiIcon
+                                                            }
+                                                        />
+
+                                                    </div>
+
+
+                                                    <div
+                                                        className={
+                                                            style.feedbackRating
+                                                        }
+                                                    >
+
+                                                        {[
+                                                            1,
+                                                            2,
+                                                            3,
+                                                            4,
+                                                            5
+                                                        ].map(
+                                                            (
+                                                                estrela
+                                                            ) => (
+
+                                                                <FiStar
+                                                                    key={
+                                                                        estrela
+                                                                    }
+                                                                    className={
+                                                                        estrela <=
+                                                                        notaFeedback
+                                                                            ? style.starActive
+                                                                            : style.starInactive
+                                                                    }
+                                                                />
+
+                                                            )
+                                                        )}
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                {/* NOTA */}
+
+                                                <div
+                                                    className={
+                                                        style.feedbackCardScore
+                                                    }
+                                                >
+
+                                                    <strong>
+                                                        {notaFeedback.toFixed(
+                                                            1
+                                                        )}
+                                                    </strong>
+
+                                                    <span>
+                                                        / 5
+                                                    </span>
+
+                                                </div>
+
+
+                                                {/* COMENTÁRIO */}
+
+                                                <p
+                                                    className={
+                                                        style.testimonialComment
+                                                    }
+                                                >
+
+                                                    “
+                                                    {
+                                                        feedback.comentario
+                                                    }
+                                                    ”
+
+                                                </p>
+
+
+                                                {/* USUÁRIO */}
+
+                                                <div
+                                                    className={
+                                                        style.userAuthor
+                                                    }
+                                                >
+
+                                                    {fotoUrl ? (
+
+                                                        <img
+                                                            src={
+                                                                fotoUrl
+                                                            }
+                                                            alt={
+                                                                nome
+                                                            }
+                                                            className={
+                                                                style.feedbackAvatar
+                                                            }
+                                                            onError={(
+                                                                e
+                                                            ) => {
+
+                                                                e.currentTarget.style.display =
+                                                                    "none";
+
+                                                                if (
+                                                                    e.currentTarget
+                                                                        .nextElementSibling
+                                                                ) {
+
+                                                                    e.currentTarget
+                                                                        .nextElementSibling.style.display =
+                                                                        "flex";
+
+                                                                }
+
+                                                            }}
+                                                        />
+
+                                                    ) : null}
+
+
+                                                    <div
+                                                        className={
+                                                            style.feedbackAvatarInitial
+                                                        }
+                                                        style={{
+                                                            display:
+                                                                fotoUrl
+                                                                    ? "none"
+                                                                    : "flex"
+                                                        }}
+                                                    >
+
+                                                        {nome
+                                                            ?.charAt(
+                                                                0
+                                                            )
+                                                            ?.toUpperCase()}
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <strong>
+                                                            {nome}
+                                                        </strong>
+
+                                                        <span>
+                                                            Cliente
+                                                            Pixel
+                                                            Colors
+                                                        </span>
+
+                                                        {feedback.criado_em && (
+
+                                                            <small>
+                                                                {formatarData(
+                                                                    feedback.criado_em
+                                                                )}
+                                                            </small>
+
+                                                        )}
+
+                                                    </div>
+
+                                                </div>
+
+                                            </article>
+
+                                        );
+
+                                    }
+                                )}
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                className={`${style.carouselButton} ${style.carouselButtonRight}`}
+                                onClick={() =>
+                                    moverCarrossel(1)
+                                }
+                                aria-label="Próximo feedback"
+                            >
+
+                                <FiChevronRight />
+
+                            </button>
+
+                        </div>
+
+                    )}
+
+
+                {/* =================================================
+                    LOADING
+                ================================================= */}
+
+                {carregandoFeedbacks && (
+
+                    <div
+                        className={
+                            style.feedbackLoading
+                        }
+                    >
+
+                        <div
+                            className={
+                                style.loadingSpinner
+                            }
+                        />
+
+                        <p>
+                            Carregando avaliações...
+                        </p>
+
+                    </div>
+
+                )}
+
+
+                {/* =================================================
+                    VAZIO
+                ================================================= */}
+
+                {!carregandoFeedbacks &&
+                    feedbacks.length === 0 && (
+
+                        <div
+                            className={
+                                style.feedbackEmpty
+                            }
+                        >
+
+                            <FiMessageSquare />
+
+                            <h3>
+                                Ainda não temos avaliações
+                            </h3>
+
+                            <p>
+                                Seja o primeiro cliente a
+                                deixar sua opinião!
+                            </p>
+
+                        </div>
+
+                    )}
+
+            </section>
+
+
+            {/* =================================================
+                FOOTER
+            ================================================= */}
+
+            <footer className={style.footer}>
+
+                <p>
+                    © 2026 Pixel Colors. Todos os direitos
+                    reservados. Experiência de Interface Premium.
+                </p>
+
+            </footer>
 
         </div>
 

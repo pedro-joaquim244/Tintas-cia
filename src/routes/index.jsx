@@ -13,7 +13,7 @@ import SimuladorTinta from "../pages/SimuladorTintas";
 import Carrinho from "../pages/Carrinho.jsx"
 import Livro from "../pages/Livro.jsx"
 import Perfil from "../pages/Perfil";
-import Cores from "../pages/Cores.jsx";
+import Produtos from "../pages/Produtos.jsx";
 import Compra from "../pages/Compras.jsx";
 import Cupons from "../pages/CriaCupons.jsx";
 import Usuarios from "../pages/Usuarios.jsx";
@@ -70,7 +70,7 @@ export function AppRoutes() {
     <Route path="/cliente/simulador" element={<SimuladorTinta />} />
     <Route path="/cliente/perfil" element={<Perfil />} />
     <Route path="/cliente/carrinho" element={<Carrinho />} />                            
-    <Route path="/cliente/cores" element={<Cores />} />
+    <Route path="/cliente/produtos" element={<Produtos />} />
     <Route path="/cliente/Livro" element={<Livro />} />
     <Route path="/cliente/compra" element={<Compra />} />
 

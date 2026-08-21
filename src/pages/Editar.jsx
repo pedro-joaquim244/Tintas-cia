@@ -20,11 +20,18 @@ export default function Editar() {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  // =====================================================
+  // ESTADOS
+  // =====================================================
+
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [preco, setPreco] = useState("");
   const [quantidade, setQuantidade] = useState("");
   const [status, setStatus] = useState("Ativo");
+
+  // NOVO: categoria
+  const [categoria, setCategoria] = useState("");
 
   const [novaFoto, setNovaFoto] = useState(null);
   const [preview, setPreview] = useState("");
@@ -34,30 +41,71 @@ export default function Editar() {
   const [modalSucesso, setModalSucesso] = useState(false);
   const [modalExcluir, setModalExcluir] = useState(false);
 
+  // =====================================================
+  // CATEGORIAS
+  // =====================================================
+
+  const categorias = [
+    "Tintas para Parede",
+    "Tintas para Área Externa",
+    "Tintas para Madeira",
+    "Tintas para Metal",
+    "Efeitos e Acabamentos",
+    "Proteção e Segurança",
+    "Pincéis e Acessórios",
+    "Ferramentas",
+    "Preparação de Superfície",
+    "Complementos",
+    "Outros",
+  ];
+
+  // =====================================================
+  // CARREGAR PRODUTO
+  // =====================================================
+
   useEffect(() => {
     carregarItem();
   }, [id]);
 
   async function carregarItem() {
     try {
+      setErro("");
+
       const resposta = await api.get(`/itens/${id}`);
 
       const item = resposta.data;
 
       setNome(item.nome || "");
       setDescricao(item.descricao || "");
-      setPreco(item.preco || "");
-      setQuantidade(item.quantidade || "");
+      setPreco(item.preco ?? "");
+      setQuantidade(item.quantidade ?? "");
       setStatus(item.status || "Ativo");
 
+      // CARREGA A CATEGORIA
+      setCategoria(item.categoria || "");
+
       if (item.foto) {
-        setPreview(`http://localhost:3333/${item.foto}`);
+        if (
+          item.foto.startsWith("http://") ||
+          item.foto.startsWith("https://")
+        ) {
+          setPreview(item.foto);
+        } else {
+          setPreview(`http://localhost:3333/${item.foto}`);
+        }
+      } else {
+        setPreview("");
       }
     } catch (error) {
       console.error(error);
+
       setErro("Erro ao carregar produto.");
     }
   }
+
+  // =====================================================
+  // SELECIONAR IMAGEM
+  // =====================================================
 
   function selecionarImagem(e) {
     const arquivo = e.target.files[0];
@@ -81,15 +129,42 @@ export default function Editar() {
     }
 
     setErro("");
+
     setNovaFoto(arquivo);
+
     setPreview(URL.createObjectURL(arquivo));
   }
+
+  // =====================================================
+  // EDITAR PRODUTO
+  // =====================================================
 
   async function editarItem(e) {
     e.preventDefault();
 
     try {
       setErro("");
+
+      // Validações
+      if (!nome.trim()) {
+        setErro("Informe o nome do produto.");
+        return;
+      }
+
+      if (preco === "" || Number(preco) < 0) {
+        setErro("Informe um preço válido.");
+        return;
+      }
+
+      if (quantidade === "" || Number(quantidade) < 0) {
+        setErro("Informe uma quantidade válida.");
+        return;
+      }
+
+      if (!categoria) {
+        setErro("Selecione uma categoria.");
+        return;
+      }
 
       const dados = new FormData();
 
@@ -98,6 +173,9 @@ export default function Editar() {
       dados.append("preco", Number(preco));
       dados.append("quantidade", Number(quantidade));
       dados.append("status", status);
+
+      // NOVO: envia categoria
+      dados.append("categoria", categoria);
 
       if (novaFoto) {
         dados.append("foto", novaFoto);
@@ -111,10 +189,21 @@ export default function Editar() {
 
       setModalSucesso(true);
     } catch (error) {
-      console.error(error);
-      setErro("Erro ao atualizar produto.");
+      console.error(
+        "ERRO AO ATUALIZAR:",
+        error.response?.data || error
+      );
+
+      setErro(
+        error.response?.data?.erro ||
+        "Erro ao atualizar produto."
+      );
     }
   }
+
+  // =====================================================
+  // EXCLUIR
+  // =====================================================
 
   async function excluirProduto() {
     try {
@@ -123,34 +212,57 @@ export default function Editar() {
       navigate("/admin/produtos");
     } catch (error) {
       console.error(error);
+
       setErro("Erro ao excluir produto.");
+      setModalExcluir(false);
     }
   }
 
+  // =====================================================
+  // RENDER
+  // =====================================================
+
   return (
     <div className={styles.container}>
+
       <Cabecalho />
 
       <main className={styles.main}>
+
+        {/* =================================================
+            TOPO
+        ================================================= */}
+
         <div className={styles.top}>
+
           <div className={styles.titleArea}>
+
             <span className={styles.badge}>
               Editar Produto
             </span>
 
-            <h1>Editar Produto</h1>
+            <h1>
+              Editar Produto
+            </h1>
 
             <p>
-              Atualize as informações e a imagem do produto.
+              Atualize as informações, categoria e imagem
+              do produto.
             </p>
+
           </div>
 
           <div className={styles.actions}>
+
             <button
+              type="button"
               className={`${styles.btn} ${styles.btnCancel}`}
-              onClick={() => navigate("/admin/produtos")}
+              onClick={() =>
+                navigate("/admin/produtos")
+              }
             >
               <FiArrowLeft />
+
               Voltar
             </button>
 
@@ -160,10 +272,17 @@ export default function Editar() {
               className={`${styles.btn} ${styles.btnSave}`}
             >
               <FiSave />
+
               Salvar
             </button>
+
           </div>
+
         </div>
+
+        {/* =================================================
+            ERRO
+        ================================================= */}
 
         {erro && (
           <div className={styles.error}>
@@ -171,19 +290,35 @@ export default function Editar() {
           </div>
         )}
 
+        {/* =================================================
+            CARD
+        ================================================= */}
+
         <div className={styles.card}>
+
           <form
             id="formEditar"
             onSubmit={editarItem}
           >
+
             <div className={styles.grid}>
-                            {/* ================= IMAGEM ================= */}
+
+              {/* =================================================
+                  IMAGEM
+              ================================================= */}
 
               <div className={styles.imageArea}>
 
                 <div className={styles.sectionHeader}>
-                  <h2>Imagem</h2>
-                  <span>Clique para trocar.</span>
+
+                  <h2>
+                    Imagem
+                  </h2>
+
+                  <span>
+                    Clique para trocar.
+                  </span>
+
                 </div>
 
                 <label className={styles.preview}>
@@ -199,14 +334,22 @@ export default function Editar() {
 
                     <img
                       src={preview}
-                      alt={nome}
+                      alt={nome || "Produto"}
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
                     />
 
                   ) : (
 
                     <div className={styles.semImagem}>
+
                       <FiUpload size={60} />
-                      <p>Clique para escolher uma imagem</p>
+
+                      <p>
+                        Clique para escolher uma imagem
+                      </p>
+
                     </div>
 
                   )}
@@ -214,11 +357,9 @@ export default function Editar() {
                 </label>
 
                 {novaFoto && (
-
                   <div className={styles.fileInfo}>
                     {novaFoto.name}
                   </div>
-
                 )}
 
                 <label className={styles.uploadBtn}>
@@ -238,61 +379,99 @@ export default function Editar() {
 
               </div>
 
-              {/* ================= FORM ================= */}
+              {/* =================================================
+                  FORMULÁRIO
+              ================================================= */}
 
               <div className={styles.formArea}>
 
                 <div className={styles.sectionHeader}>
-                  <h2>Informações</h2>
-                  <span>Atualize os dados do produto.</span>
+
+                  <h2>
+                    Informações
+                  </h2>
+
+                  <span>
+                    Atualize os dados do produto.
+                  </span>
+
                 </div>
 
                 <div className={styles.formGrid}>
 
+                  {/* NOME */}
+
                   <div className={styles.inputGroup}>
 
-                    <label>Nome</label>
+                    <label>
+                      Nome
+                    </label>
 
                     <input
                       type="text"
                       value={nome}
-                      onChange={(e) => setNome(e.target.value)}
+                      onChange={(e) =>
+                        setNome(e.target.value)
+                      }
+                      placeholder="Nome do produto"
                     />
 
                   </div>
 
+                  {/* PREÇO */}
+
                   <div className={styles.inputGroup}>
 
-                    <label>Preço</label>
+                    <label>
+                      Preço
+                    </label>
 
                     <input
                       type="number"
                       step="0.01"
+                      min="0"
                       value={preco}
-                      onChange={(e) => setPreco(e.target.value)}
+                      onChange={(e) =>
+                        setPreco(e.target.value)
+                      }
+                      placeholder="Ex.: 259.90"
                     />
 
                   </div>
 
+                  {/* QUANTIDADE */}
+
                   <div className={styles.inputGroup}>
 
-                    <label>Quantidade</label>
+                    <label>
+                      Quantidade
+                    </label>
 
                     <input
                       type="number"
+                      min="0"
                       value={quantidade}
-                      onChange={(e) => setQuantidade(e.target.value)}
+                      onChange={(e) =>
+                        setQuantidade(e.target.value)
+                      }
+                      placeholder="Quantidade em estoque"
                     />
 
                   </div>
 
+                  {/* STATUS */}
+
                   <div className={styles.inputGroup}>
 
-                    <label>Status</label>
+                    <label>
+                      Status
+                    </label>
 
                     <select
                       value={status}
-                      onChange={(e) => setStatus(e.target.value)}
+                      onChange={(e) =>
+                        setStatus(e.target.value)
+                      }
                       className={styles.selectStatus}
                     >
 
@@ -312,15 +491,66 @@ export default function Editar() {
 
                   </div>
 
+                  {/* =================================================
+                      CATEGORIA
+                  ================================================= */}
+
+                  <div
+                    className={`${styles.inputGroup} ${styles.categoriaGroup}`}
+                  >
+
+                    <label>
+                      Categoria
+                    </label>
+
+                    <select
+                      value={categoria}
+                      onChange={(e) =>
+                        setCategoria(e.target.value)
+                      }
+                      className={styles.selectCategoria}
+                    >
+
+                      <option value="">
+                        Selecione uma categoria
+                      </option>
+
+                      {categorias.map((nomeCategoria) => (
+
+                        <option
+                          key={nomeCategoria}
+                          value={nomeCategoria}
+                        >
+                          {nomeCategoria}
+                        </option>
+
+                      ))}
+
+                    </select>
+
+                    <small>
+                      A categoria define em qual seção o
+                      produto aparecerá na loja.
+                    </small>
+
+                  </div>
+
+                  {/* DESCRIÇÃO */}
+
                   <div
                     className={`${styles.inputGroup} ${styles.fullWidth}`}
                   >
 
-                    <label>Descrição</label>
+                    <label>
+                      Descrição
+                    </label>
 
                     <textarea
                       value={descricao}
-                      onChange={(e) => setDescricao(e.target.value)}
+                      onChange={(e) =>
+                        setDescricao(e.target.value)
+                      }
+                      placeholder="Descrição completa do produto..."
                     />
 
                   </div>
@@ -333,11 +563,18 @@ export default function Editar() {
 
           </form>
 
+          {/* =================================================
+              EXCLUIR
+          ================================================= */}
+
           <div className={styles.deleteArea}>
 
             <button
+              type="button"
               className={styles.btnDanger}
-              onClick={() => setModalExcluir(true)}
+              onClick={() =>
+                setModalExcluir(true)
+              }
             >
 
               <FiTrash2 />
@@ -349,7 +586,10 @@ export default function Editar() {
           </div>
 
         </div>
-                {/* ================= MODAL SUCESSO ================= */}
+
+        {/* =================================================
+            MODAL SUCESSO
+        ================================================= */}
 
         {modalSucesso && (
 
@@ -359,7 +599,9 @@ export default function Editar() {
 
               <button
                 className={styles.closeModal}
-                onClick={() => setModalSucesso(false)}
+                onClick={() =>
+                  setModalSucesso(false)
+                }
               >
                 <FiX />
               </button>
@@ -368,24 +610,31 @@ export default function Editar() {
                 className={styles.modalIcon}
               />
 
-              <h2>Produto atualizado!</h2>
+              <h2>
+                Produto atualizado!
+              </h2>
 
               <p>
-                As alterações foram salvas com sucesso.
+                As alterações, incluindo a categoria,
+                foram salvas com sucesso.
               </p>
 
               <div className={styles.modalButtons}>
 
                 <button
                   className={styles.btnModal}
-                  onClick={() => setModalSucesso(false)}
+                  onClick={() =>
+                    setModalSucesso(false)
+                  }
                 >
                   Continuar editando
                 </button>
 
                 <button
                   className={styles.btnModalPrimary}
-                  onClick={() => navigate("/admin/produtos")}
+                  onClick={() =>
+                    navigate("/admin/produtos")
+                  }
                 >
                   Ir para Produtos
                 </button>
@@ -398,7 +647,9 @@ export default function Editar() {
 
         )}
 
-        {/* ================= MODAL EXCLUIR ================= */}
+        {/* =================================================
+            MODAL EXCLUIR
+        ================================================= */}
 
         {modalExcluir && (
 
@@ -408,7 +659,9 @@ export default function Editar() {
 
               <button
                 className={styles.closeModal}
-                onClick={() => setModalExcluir(false)}
+                onClick={() =>
+                  setModalExcluir(false)
+                }
               >
                 <FiX />
               </button>
@@ -417,7 +670,9 @@ export default function Editar() {
                 className={styles.modalDelete}
               />
 
-              <h2>Excluir produto?</h2>
+              <h2>
+                Excluir produto?
+              </h2>
 
               <p>
                 Esta ação não poderá ser desfeita.
@@ -427,7 +682,9 @@ export default function Editar() {
 
                 <button
                   className={styles.btnModal}
-                  onClick={() => setModalExcluir(false)}
+                  onClick={() =>
+                    setModalExcluir(false)
+                  }
                 >
                   Cancelar
                 </button>
@@ -450,7 +707,5 @@ export default function Editar() {
       </main>
 
     </div>
-
   );
-
 }

@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 
 import pedidosRoutes from "./routes/pedidos.routes.js";
@@ -10,9 +11,8 @@ import itens_pedidosRoutes from "./routes/itens_pedidos.routes.js";
 import carrinhoRoutes from "./routes/carrinho.routes.js";
 import cuponsRoutes from "./routes/cupons.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
-import feedbacksRoutes from "./routes/feedbacks.routes.js";      
+import feedbacksRoutes from "./routes/feedbacks.routes.js";
 import { config } from "./config.js";
-
 
 // =====================================================
 // APP
@@ -20,14 +20,12 @@ import { config } from "./config.js";
 
 const app = express();
 
-
 // =====================================================
 // CAMINHO ABSOLUTO DO PROJETO
 // =====================================================
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 // =====================================================
 // CORS
@@ -39,7 +37,6 @@ app.use(
     })
 );
 
-
 // =====================================================
 // JSON
 // =====================================================
@@ -47,7 +44,6 @@ app.use(
 app.use(
     express.json()
 );
-
 
 // =====================================================
 // URLENCODED
@@ -59,54 +55,70 @@ app.use(
     })
 );
 
-
 // =====================================================
 // UPLOADS
 // =====================================================
-//
-// Estrutura esperada:
-//
-// backend/
-// ├── server.js
-// ├── routes/
-// └── uploads/
-//     └── usuarios/
-//         └── usuario-xxxx.webp
-//
-// A URL:
-//
-// http://localhost:3333/uploads/usuarios/foto.webp
-//
-// aponta para:
-//
-// backend/uploads/usuarios/foto.webp
-//
-// =====================================================
 
-const pastaUploads =
-    path.join(
-        __dirname,
-        "uploads"
+const pastaUploads = path.resolve(
+    __dirname,
+    "..",
+    "uploads"
+);
+
+if (!fs.existsSync(pastaUploads)) {
+    fs.mkdirSync(pastaUploads, {
+        recursive: true
+    });
+}
+
+console.log("======================================");
+console.log("CAMINHO DOS UPLOADS:");
+console.log(pastaUploads);
+
+console.log(
+    "A pasta uploads existe?",
+    fs.existsSync(pastaUploads)
+);
+
+if (fs.existsSync(pastaUploads)) {
+
+    console.log(
+        "ARQUIVOS DENTRO DE UPLOADS:"
     );
 
+    console.log(
+        fs.readdirSync(pastaUploads)
+    );
+}
+
+const imagemTeste = path.join(
+    pastaUploads,
+    "1786727394602.jpg"
+);
+
+console.log(
+    "CAMINHO DA IMAGEM:"
+);
+
+console.log(
+    imagemTeste
+);
+
+console.log(
+    "A IMAGEM EXISTE?",
+    fs.existsSync(imagemTeste)
+);
+
+console.log("======================================");
+
+// =====================================================
+// SERVIR IMAGENS
+// =====================================================
 
 app.use(
     "/uploads",
-    express.static(
-        pastaUploads
-    )
+    express.static(pastaUploads)
 );
-
-
-// =====================================================
-// LOG PARA CONFERIR A PASTA DE UPLOADS
-// =====================================================
-
-console.log(
-    "Pasta de uploads:",
-    pastaUploads
-);
-
 
 // =====================================================
 // ROTAS - USUÁRIOS
@@ -117,7 +129,6 @@ app.use(
     usuariosRoutes
 );
 
-
 // =====================================================
 // ROTAS - DASHBOARD
 // =====================================================
@@ -126,7 +137,6 @@ app.use(
     "/dashboard",
     dashboardRoutes
 );
-
 
 // =====================================================
 // ROTAS - ITENS
@@ -137,7 +147,6 @@ app.use(
     itensRoutes
 );
 
-
 // =====================================================
 // ROTAS - CARRINHO
 // =====================================================
@@ -146,7 +155,6 @@ app.use(
     "/carrinho",
     carrinhoRoutes
 );
-
 
 // =====================================================
 // ROTAS - PEDIDOS
@@ -157,7 +165,6 @@ app.use(
     pedidosRoutes
 );
 
-
 // =====================================================
 // ROTAS - ITENS DOS PEDIDOS
 // =====================================================
@@ -166,11 +173,15 @@ app.use(
     "/itens_pedidos",
     itens_pedidosRoutes
 );
+
+// =====================================================
+// ROTAS - FEEDBACKS
+// =====================================================
+
 app.use(
     "/feedbacks",
     feedbacksRoutes
 );
-
 
 // =====================================================
 // ROTAS - CUPONS
@@ -180,7 +191,6 @@ app.use(
     "/cupons",
     cuponsRoutes
 );
-
 
 // =====================================================
 // ROTA PRINCIPAL
@@ -196,7 +206,6 @@ app.get(
 
     }
 );
-
 
 // =====================================================
 // TRATAMENTO DE 404
@@ -215,7 +224,6 @@ app.use(
 
     }
 );
-
 
 // =====================================================
 // SERVIDOR
