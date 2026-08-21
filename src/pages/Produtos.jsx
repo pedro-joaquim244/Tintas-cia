@@ -15,62 +15,37 @@ import {
 } from "react-icons/fa";
 
 import { useNavigate } from "react-router-dom";
-
 import { api } from "../services/api";
 import { useAuth } from "../contexts/authContext";
 
-
 export default function Produtos() {
-
     const { usuario } = useAuth();
-
     const navigate = useNavigate();
-
 
     // =====================================================
     // ESTADOS
     // =====================================================
 
     const [produtos, setProdutos] = useState([]);
-
     const [busca, setBusca] = useState("");
-
     const [categoriaSelecionada, setCategoriaSelecionada] =
         useState("Todos");
+    const [modalCarrinho, setModalCarrinho] = useState(false);
+    const [slideAtual, setSlideAtual] = useState(0);
 
-    const [modalCarrinho, setModalCarrinho] =
-        useState(false);
-
-    const [slideAtual, setSlideAtual] =
-        useState(0);
-
-    const [categoriasAbertas, setCategoriasAbertas] =
-        useState({
-
-            "Tintas para Parede": true,
-
-            "Tintas para Área Externa": true,
-
-            "Tintas para Madeira": true,
-
-            "Tintas para Metal": true,
-
-            "Efeitos e Acabamentos": true,
-
-            "Proteção e Segurança": true,
-
-            "Pincéis e Acessórios": true,
-
-            "Ferramentas": true,
-
-            "Preparação de Superfície": true,
-
-            "Complementos": true,
-
-            "Outros": true
-
-        });
-
+    const [categoriasAbertas, setCategoriasAbertas] = useState({
+        "Tintas para Parede": true,
+        "Tintas para Área Externa": true,
+        "Tintas para Madeira": true,
+        "Tintas para Metal": true,
+        "Efeitos e Acabamentos": true,
+        "Proteção e Segurança": true,
+        "Pincéis e Acessórios": true,
+        "Ferramentas": true,
+        "Preparação de Superfície": true,
+        "Complementos": true,
+        "Outros": true
+    });
 
     // =====================================================
     // BANNERS
@@ -100,17 +75,13 @@ export default function Produtos() {
         }
     ];
 
-
     // =====================================================
     // BUSCAR PRODUTOS DO BANCO
     // =====================================================
 
     useEffect(() => {
-
         async function carregarProdutos() {
-
             try {
-
                 const resposta = await api.get("/itens");
 
                 console.log(
@@ -122,131 +93,105 @@ export default function Produtos() {
 
                 let listaProdutos = [];
 
-
                 if (Array.isArray(dados)) {
-
                     listaProdutos = dados;
-
-                } else if (
-                    Array.isArray(dados?.itens)
-                ) {
-
+                } else if (Array.isArray(dados?.itens)) {
                     listaProdutos = dados.itens;
-
-                } else if (
-                    Array.isArray(dados?.produtos)
-                ) {
-
+                } else if (Array.isArray(dados?.produtos)) {
                     listaProdutos = dados.produtos;
-
-                } else if (
-                    Array.isArray(dados?.data)
-                ) {
-
+                } else if (Array.isArray(dados?.data)) {
                     listaProdutos = dados.data;
-
                 }
-
 
                 console.log(
                     "PRODUTOS ENCONTRADOS:",
                     listaProdutos
                 );
 
+                // =================================================
+                // MOSTRAR SOMENTE PRODUTOS ATIVOS
+                // =================================================
 
-                setProdutos(listaProdutos);
+                const produtosAtivos = listaProdutos.filter((produto) => {
+                    const status = String(produto?.status || "")
+                        .trim()
+                        .toLowerCase();
 
+                    return status === "ativo";
+                });
+
+                console.log(
+                    "PRODUTOS ATIVOS:",
+                    produtosAtivos
+                );
+
+                setProdutos(produtosAtivos);
 
             } catch (error) {
-
                 console.error(
                     "ERRO AO BUSCAR PRODUTOS:",
                     error.response?.data || error
                 );
 
                 setProdutos([]);
-
             }
-
         }
 
-
         carregarProdutos();
-
     }, []);
-
 
     // =====================================================
     // CARROSSEL AUTOMÁTICO
     // =====================================================
 
     useEffect(() => {
-
         const intervalo = setInterval(() => {
-
             setSlideAtual((atual) =>
                 atual === banners.length - 1
                     ? 0
                     : atual + 1
             );
-
         }, 5000);
 
-
         return () => clearInterval(intervalo);
-
     }, [banners.length]);
-
 
     // =====================================================
     // CARROSSEL
     // =====================================================
 
     function proximoSlide() {
-
         setSlideAtual((atual) =>
             atual === banners.length - 1
                 ? 0
                 : atual + 1
         );
-
     }
 
-
     function slideAnterior() {
-
         setSlideAtual((atual) =>
             atual === 0
                 ? banners.length - 1
                 : atual - 1
         );
-
     }
-
 
     // =====================================================
     // ABRIR / FECHAR CATEGORIA
     // =====================================================
 
     function abrirCategoria(nome) {
-
         setCategoriasAbertas((anterior) => ({
-
             ...anterior,
-
             [nome]: !anterior[nome]
-
         }));
-
     }
-
 
     // =====================================================
     // TEXTO DO PRODUTO
     // =====================================================
 
     function textoProduto(produto) {
-
         return `
             ${produto?.nome || ""}
             ${produto?.descricao || ""}
@@ -259,18 +204,14 @@ export default function Produtos() {
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "")
             .toLowerCase();
-
     }
-
 
     // =====================================================
     // DESCOBRIR CATEGORIA
     // =====================================================
 
     function descobrirCategoria(produto) {
-
         const texto = textoProduto(produto);
-
 
         // =================================================
         // SE O BANCO JÁ POSSUI UMA CATEGORIA,
@@ -283,9 +224,7 @@ export default function Produtos() {
             produto?.categoriaNome ||
             produto?.tipo;
 
-
         if (categoriaBanco) {
-
             const categoriaNormalizada =
                 String(categoriaBanco)
                     .normalize("NFD")
@@ -293,9 +232,7 @@ export default function Produtos() {
                     .toLowerCase()
                     .trim();
 
-
             const categoriasBanco = {
-
                 "tintas para parede":
                     "Tintas para Parede",
 
@@ -358,18 +295,12 @@ export default function Produtos() {
 
                 "outros":
                     "Outros"
-
             };
 
-
             if (categoriasBanco[categoriaNormalizada]) {
-
                 return categoriasBanco[categoriaNormalizada];
-
             }
-
         }
-
 
         // =================================================
         // TINTAS PARA ÁREA EXTERNA
@@ -381,11 +312,8 @@ export default function Produtos() {
             texto.includes("exterior") ||
             texto.includes("fachada")
         ) {
-
             return "Tintas para Área Externa";
-
         }
-
 
         // =================================================
         // TINTAS PARA MADEIRA
@@ -396,11 +324,8 @@ export default function Produtos() {
             texto.includes("verniz") ||
             texto.includes("stain")
         ) {
-
             return "Tintas para Madeira";
-
         }
-
 
         // =================================================
         // TINTAS PARA METAL
@@ -411,11 +336,8 @@ export default function Produtos() {
             texto.includes("ferro") ||
             texto.includes("esmalte")
         ) {
-
             return "Tintas para Metal";
-
         }
-
 
         // =================================================
         // EFEITOS E ACABAMENTOS
@@ -428,11 +350,8 @@ export default function Produtos() {
             texto.includes("brilho") ||
             texto.includes("fosco")
         ) {
-
             return "Efeitos e Acabamentos";
-
         }
-
 
         // =================================================
         // PROTEÇÃO E SEGURANÇA
@@ -445,11 +364,8 @@ export default function Produtos() {
             texto.includes("anti mofo") ||
             texto.includes("seguranca")
         ) {
-
             return "Proteção e Segurança";
-
         }
-
 
         // =================================================
         // PINCÉIS E ACESSÓRIOS
@@ -464,11 +380,8 @@ export default function Produtos() {
             texto.includes("bandeja") ||
             texto.includes("trincha")
         ) {
-
             return "Pincéis e Acessórios";
-
         }
-
 
         // =================================================
         // FERRAMENTAS
@@ -485,11 +398,8 @@ export default function Produtos() {
             texto.includes("chave") ||
             texto.includes("serrote")
         ) {
-
             return "Ferramentas";
-
         }
-
 
         // =================================================
         // PREPARAÇÃO DE SUPERFÍCIE
@@ -503,11 +413,8 @@ export default function Produtos() {
             texto.includes("removedor") ||
             texto.includes("preparacao")
         ) {
-
             return "Preparação de Superfície";
-
         }
-
 
         // =================================================
         // COMPLEMENTOS
@@ -521,11 +428,8 @@ export default function Produtos() {
             texto.includes("aguarras") ||
             texto.includes("cola")
         ) {
-
             return "Complementos";
-
         }
-
 
         // =================================================
         // TINTAS PARA PAREDE
@@ -537,82 +441,54 @@ export default function Produtos() {
             texto.includes("pva") ||
             texto.includes("acrilica")
         ) {
-
             return "Tintas para Parede";
-
         }
-
 
         // =================================================
         // OUTROS
         // =================================================
 
         return "Outros";
-
     }
-
 
     // =====================================================
     // CATEGORIAS
     // =====================================================
 
     const categorias = useMemo(() => {
-
         const nomesCategorias = [
-
             "Tintas para Parede",
-
             "Tintas para Área Externa",
-
             "Tintas para Madeira",
-
             "Tintas para Metal",
-
             "Efeitos e Acabamentos",
-
             "Proteção e Segurança",
-
             "Pincéis e Acessórios",
-
             "Ferramentas",
-
             "Preparação de Superfície",
-
             "Complementos",
-
             "Outros"
-
         ];
 
-
         return nomesCategorias.map((nome) => {
-
             const produtosCategoria =
                 produtos.filter(
                     (produto) =>
                         descobrirCategoria(produto) === nome
                 );
 
-
             return {
-
                 nome,
-
                 produtos: produtosCategoria
-
             };
-
         });
-
     }, [produtos]);
-
 
     // =====================================================
     // FILTRO DOS PRODUTOS
     // =====================================================
 
     const produtosFiltrados = useMemo(() => {
-
         const pesquisa =
             busca
                 .normalize("NFD")
@@ -620,148 +496,134 @@ export default function Produtos() {
                 .toLowerCase()
                 .trim();
 
-
         return produtos.filter((produto) => {
 
-            const texto =
-                textoProduto(produto);
+            // =================================================
+            // SEGURANÇA:
+            // NUNCA MOSTRAR INATIVOS OU ESGOTADOS
+            // =================================================
 
+            const status = String(produto?.status || "")
+                .trim()
+                .toLowerCase();
+
+            if (status !== "ativo") {
+                return false;
+            }
+
+            const texto = textoProduto(produto);
 
             const correspondePesquisa =
                 texto.includes(pesquisa);
-
 
             const correspondeCategoria =
                 categoriaSelecionada === "Todos" ||
                 descobrirCategoria(produto) ===
                     categoriaSelecionada;
 
-
             return (
                 correspondePesquisa &&
                 correspondeCategoria
             );
-
         });
-
     }, [
         produtos,
         busca,
         categoriaSelecionada
     ]);
 
-
     // =====================================================
     // PRODUTOS DE UMA CATEGORIA
     // =====================================================
 
     function produtosDaCategoria(nomeCategoria) {
-
         return produtosFiltrados.filter(
             (produto) =>
                 descobrirCategoria(produto) ===
                 nomeCategoria
         );
-
     }
-
 
     // =====================================================
     // IMAGEM DO PRODUTO
     // =====================================================
 
     function imagemProduto(produto) {
-
         if (!produto?.foto) {
-
             return "/img/tinta.png";
-
         }
-
 
         if (
             produto.foto.startsWith("http://") ||
             produto.foto.startsWith("https://")
         ) {
-
             return produto.foto;
-
         }
 
-
         return `http://localhost:3333/${produto.foto}`;
-
     }
-
 
     // =====================================================
     // ADICIONAR AO CARRINHO
     // =====================================================
 
     async function adicionarCarrinho(produto) {
-
         try {
-
             if (!usuario) {
-
                 alert(
                     "Faça login para adicionar produtos"
                 );
 
                 navigate("/login");
-
                 return;
-
             }
 
+            // Segurança adicional:
+            // impede adicionar produto que não esteja ativo
+            const status = String(produto?.status || "")
+                .trim()
+                .toLowerCase();
+
+            if (status !== "ativo") {
+                alert(
+                    "Este produto não está disponível."
+                );
+
+                return;
+            }
 
             await api.post(
                 "/carrinho",
                 {
-
                     usuario_id: usuario.id,
-
                     produto_id: produto.id,
-
                     quantidade: 1
-
                 }
             );
 
-
             setModalCarrinho(true);
 
-
         } catch (error) {
-
             console.error(
                 "Erro ao adicionar:",
                 error.response?.data || error
             );
 
-
             alert(
                 "Erro ao adicionar produto"
             );
-
         }
-
     }
-
 
     // =====================================================
     // RENDER
     // =====================================================
 
     return (
-
         <>
-
             <Cabecalho />
 
-
             <main className={style.page}>
-
 
                 {/* =================================================
                     CARROSSEL
@@ -769,41 +631,30 @@ export default function Produtos() {
 
                 <section className={style.banner}>
 
-
                     <button
                         className={`${style.setaBanner} ${style.esquerda}`}
                         onClick={slideAnterior}
                         aria-label="Banner anterior"
                     >
-
                         <FaChevronLeft />
-
                     </button>
-
 
                     <div className={style.bannerConteudo}>
 
-
                         <div className={style.bannerTexto}>
 
-
                             <h1>
-
                                 {banners[slideAtual].titulo}
-
                                 <br />
 
                                 <strong>
                                     {banners[slideAtual].destaque}
                                 </strong>
-
                             </h1>
-
 
                             <p>
                                 {banners[slideAtual].descricao}
                             </p>
-
 
                             <button
                                 className={
@@ -820,14 +671,10 @@ export default function Produtos() {
                                         })
                                 }
                             >
-
                                 Ver produtos
-
                             </button>
 
-
                         </div>
-
 
                         <img
                             src={
@@ -841,26 +688,20 @@ export default function Produtos() {
                             }
                         />
 
-
                     </div>
-
 
                     <button
                         className={`${style.setaBanner} ${style.direita}`}
                         onClick={proximoSlide}
                         aria-label="Próximo banner"
                     >
-
                         <FaChevronRight />
-
                     </button>
-
 
                     <div className={style.indicadores}>
 
                         {banners.map(
                             (_, index) => (
-
                                 <button
                                     key={index}
                                     className={
@@ -880,15 +721,12 @@ export default function Produtos() {
                                         }`
                                     }
                                 />
-
                             )
                         )}
 
                     </div>
 
-
                 </section>
-
 
                 {/* =================================================
                     PESQUISA E CATEGORIAS
@@ -898,11 +736,9 @@ export default function Produtos() {
                     className={style.filtros}
                 >
 
-
                     <div
                         className={style.pesquisa}
                     >
-
                         <FaSearch />
 
                         <input
@@ -915,16 +751,13 @@ export default function Produtos() {
                                 )
                             }
                         />
-
                     </div>
-
 
                     <div
                         className={
                             style.categoriasMenu
                         }
                     >
-
 
                         <button
                             className={
@@ -939,15 +772,11 @@ export default function Produtos() {
                                 )
                             }
                         >
-
                             Todos
-
                         </button>
-
 
                         {categorias.map(
                             (categoria) => (
-
                                 <button
                                     key={
                                         categoria.nome
@@ -964,21 +793,16 @@ export default function Produtos() {
                                         )
                                     }
                                 >
-
                                     {
                                         categoria.nome
                                     }
-
                                 </button>
-
                             )
                         )}
 
                     </div>
 
-
                 </section>
-
 
                 {/* =================================================
                     LISTA DE PRODUTOS
@@ -989,10 +813,8 @@ export default function Produtos() {
                     id="produtos"
                 >
 
-
                     {categorias.map(
                         (categoria) => {
-
 
                             if (
                                 categoriaSelecionada !==
@@ -1000,20 +822,15 @@ export default function Produtos() {
                                 categoriaSelecionada !==
                                     categoria.nome
                             ) {
-
                                 return null;
-
                             }
-
 
                             const produtosCategoria =
                                 produtosDaCategoria(
                                     categoria.nome
                                 );
 
-
                             return (
-
                                 <section
                                     className={
                                         style.categoria
@@ -1022,7 +839,6 @@ export default function Produtos() {
                                         categoria.nome
                                     }
                                 >
-
 
                                     {/* TÍTULO DA CATEGORIA */}
 
@@ -1037,7 +853,6 @@ export default function Produtos() {
                                                 categoria.nome
                                             }
                                         </h2>
-
 
                                         <button
                                             className={
@@ -1073,7 +888,6 @@ export default function Produtos() {
 
                                     </div>
 
-
                                     {/* PRODUTOS */}
 
                                     {
@@ -1087,23 +901,20 @@ export default function Produtos() {
                                                 }
                                             >
 
-
                                                 {
                                                     produtosCategoria.length ===
-                                                        0 ? (
+                                                    0 ? (
 
                                                         <div
                                                             className={
                                                                 style.semProdutos
                                                             }
                                                         >
-
                                                             {
                                                                 busca
                                                                     ? "Nenhum produto encontrado."
                                                                     : "Nenhum produto cadastrado nesta categoria."
                                                             }
-
                                                         </div>
 
                                                     ) : (
@@ -1121,7 +932,6 @@ export default function Produtos() {
                                                                         produto.id
                                                                     }
                                                                 >
-
 
                                                                     {/* IMAGEM */}
 
@@ -1144,15 +954,12 @@ export default function Produtos() {
                                                                             onError={(
                                                                                 event
                                                                             ) => {
-
                                                                                 event.currentTarget.src =
                                                                                     "/img/tinta.png";
-
                                                                             }}
                                                                         />
 
                                                                     </div>
-
 
                                                                     {/* INFORMAÇÕES */}
 
@@ -1163,14 +970,11 @@ export default function Produtos() {
                                                                     >
 
                                                                         <h3>
-
                                                                             {
                                                                                 produto.nome ||
                                                                                 "Produto sem nome"
                                                                             }
-
                                                                         </h3>
-
 
                                                                         <div
                                                                             className={
@@ -1179,9 +983,7 @@ export default function Produtos() {
                                                                         >
 
                                                                             <strong>
-
                                                                                 R${" "}
-
                                                                                 {
                                                                                     Number(
                                                                                         produto.preco ||
@@ -1195,9 +997,7 @@ export default function Produtos() {
                                                                                             ","
                                                                                         )
                                                                                 }
-
                                                                             </strong>
-
 
                                                                             <button
                                                                                 className={
@@ -1210,16 +1010,12 @@ export default function Produtos() {
                                                                                 }
                                                                                 aria-label="Adicionar ao carrinho"
                                                                             >
-
                                                                                 <FaShoppingCart />
-
                                                                             </button>
 
                                                                         </div>
 
-
                                                                     </div>
-
 
                                                                 </article>
 
@@ -1229,23 +1025,18 @@ export default function Produtos() {
                                                     )
                                                 }
 
-
                                             </div>
 
                                         )
                                     }
 
-
                                 </section>
-
                             );
-
                         }
                     )}
 
-
                     {/* =================================================
-                        NENHUM PRODUTO DO BANCO
+                        NENHUM PRODUTO ATIVO
                     ================================================= */}
 
                     {produtos.length === 0 && (
@@ -1255,20 +1046,14 @@ export default function Produtos() {
                                 style.semProdutos
                             }
                         >
-
-                            Nenhum produto foi encontrado
-                            no banco de dados.
-
+                            Nenhum produto disponível no momento.
                         </div>
 
                     )}
 
-
                 </section>
 
-
             </main>
-
 
             {/* =================================================
                 BENEFÍCIOS
@@ -1278,15 +1063,12 @@ export default function Produtos() {
                 className={style.beneficios}
             >
 
-
                 <div
                     className={style.beneficio}
                 >
-
                     <FaShieldAlt />
 
                     <div>
-
                         <strong>
                             Pagamento seguro
                         </strong>
@@ -1294,20 +1076,15 @@ export default function Produtos() {
                         <span>
                             Ambiente 100% seguro
                         </span>
-
                     </div>
-
                 </div>
-
 
                 <div
                     className={style.beneficio}
                 >
-
                     <FaCreditCard />
 
                     <div>
-
                         <strong>
                             Parcela em até 12x
                         </strong>
@@ -1315,20 +1092,15 @@ export default function Produtos() {
                         <span>
                             No cartão de crédito
                         </span>
-
                     </div>
-
                 </div>
-
 
                 <div
                     className={style.beneficio}
                 >
-
                     <FaGem />
 
                     <div>
-
                         <strong>
                             5% de desconto no PIX
                         </strong>
@@ -1336,20 +1108,15 @@ export default function Produtos() {
                         <span>
                             Aproveite!
                         </span>
-
                     </div>
-
                 </div>
-
 
                 <div
                     className={style.beneficio}
                 >
-
                     <FaShieldAlt />
 
                     <div>
-
                         <strong>
                             Compra garantida
                         </strong>
@@ -1357,14 +1124,10 @@ export default function Produtos() {
                         <span>
                             Receba ou devolvemos seu dinheiro!
                         </span>
-
                     </div>
-
                 </div>
 
-
             </section>
-
 
             {/* =================================================
                 MODAL DO CARRINHO
@@ -1379,7 +1142,6 @@ export default function Produtos() {
                     }
                 >
 
-
                     <div
                         className={
                             style.modalCarrinho
@@ -1389,35 +1151,28 @@ export default function Produtos() {
                         }
                     >
 
-
                         <div
                             className={
                                 style.icone
                             }
                         >
-
                             <FaShoppingCart />
-
                         </div>
-
 
                         <h2>
                             Produto adicionado!
                         </h2>
-
 
                         <p>
                             O produto foi colocado
                             no seu carrinho.
                         </p>
 
-
                         <div
                             className={
                                 style.botoesModal
                             }
                         >
-
 
                             <button
                                 onClick={() =>
@@ -1426,11 +1181,8 @@ export default function Produtos() {
                                     )
                                 }
                             >
-
                                 Continuar comprando
-
                             </button>
-
 
                             <button
                                 onClick={() =>
@@ -1439,25 +1191,17 @@ export default function Produtos() {
                                     )
                                 }
                             >
-
                                 Ir para carrinho
-
                             </button>
-
 
                         </div>
 
-
                     </div>
-
 
                 </div>
 
             )}
 
-
         </>
-
     );
-
 }

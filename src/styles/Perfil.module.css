@@ -85,7 +85,7 @@
 .rightCard {
     background: rgba(255, 255, 255, 0.94);
 
-    height: 851px;
+    min-height: 851px;
 
     border: 1px solid rgba(226, 232, 240, 0.9);
     border-radius: 22px;
@@ -791,6 +791,184 @@
 
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* =========================================================
+   FEEDBACK
+========================================================= */
+
+.feedbackBox {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid #eef2f7;
+}
+
+.feedbackHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.feedbackHeader h3 {
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.feedbackHeader p {
+    margin-top: 5px;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.feedbackHeader > svg {
+    color: #f4b400;
+    fill: #f4b400;
+    font-size: 22px;
+}
+
+.rating {
+    display: flex;
+    gap: 4px;
+    margin-top: 17px;
+}
+
+.rating button {
+    padding: 2px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.rating button svg {
+    width: 22px;
+    height: 22px;
+}
+
+.starActive {
+    color: #f4b400;
+    fill: #f4b400;
+}
+
+.starActive svg {
+    fill: currentColor;
+    stroke: currentColor;
+}
+
+.starInactive {
+    color: #cbd5e1;
+}
+
+.feedbackBox textarea {
+    width: 100%;
+    min-height: 92px;
+    margin-top: 12px;
+    padding: 12px 14px;
+    resize: vertical;
+    border: 1px solid #dbe3ef;
+    border-radius: 11px;
+    outline: none;
+    background: #ffffff;
+    color: #0f172a;
+    font: inherit;
+    font-size: 13px;
+}
+
+.feedbackBox textarea:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.09);
+}
+
+.feedbackFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.feedbackFooter > span {
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.feedbackFooter button {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.feedbackFooter button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.feedbackMessage {
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+.feedbackMessage.erro {
+    color: #dc2626;
+}
+
+.feedbackMessage.sucesso {
+    color: #16803c;
+}
+
+.feedbackModalOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.58);
+    backdrop-filter: blur(8px);
+    animation: aparecer 0.2s ease;
+}
+
+.feedbackModal {
+    width: min(100%, 390px);
+    padding: 30px 25px 25px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.2);
+    animation: subir 0.25s ease;
+}
+
+.feedbackModal p {
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.feedbackModal button {
+    margin-top: 23px;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.feedbackModal button:hover {
+    background: #1d4ed8;
 }
 
 /* =========================================================

@@ -3,19 +3,24 @@
 ========================================================= */
 
 .header {
+
     position: fixed;
+
     top: 20px;
     left: 50%;
 
     transform: translateX(-50%);
 
     width: min(92%, 1450px);
+
     height: 82px;
 
     padding: 0 35px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
     border-radius: 22px;
@@ -78,6 +83,7 @@
 .logo {
 
     width: 80px;
+
     height: auto;
 
     object-fit: contain;
@@ -88,6 +94,7 @@
 
     z-index: 2;
 }
+
 
 .logo:hover {
 
@@ -107,21 +114,27 @@
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
-    width: 52px;
-    height: 52px;
+    width: 56px;
+
+    height: 56px;
 
     flex-shrink: 0;
 
     position: relative;
 
     z-index: 3;
+
+    border-radius: 50%;
+
+    transition: .3s;
 }
 
 
 /* =========================================================
-   AVATAR
+   AVATAR COM FOTO
 ========================================================= */
 
 .avatar {
@@ -147,35 +160,39 @@
 
     aspect-ratio: 1 / 1;
 
-    border: 3px solid rgba(255,255,255,.9);
+    border: 3px solid rgba(255,255,255,.95);
+
+    background: #2F66F5;
 
     box-shadow:
-        0 8px 18px rgba(47,102,245,.18);
+        0 7px 18px rgba(47,102,245,.22);
 
-    transition: .3s;
+    transition:
+        transform .3s,
+        box-shadow .3s;
 
     cursor: pointer;
 }
 
 
-/* =========================================================
-   HOVER AVATAR
-========================================================= */
-
 .avatar:hover {
 
     transform: scale(1.08);
+
+    box-shadow:
+        0 10px 25px rgba(47,102,245,.30);
 
 }
 
 
 /* =========================================================
-   INICIAL DO USUÁRIO
+   FUNDO DA INICIAL
 ========================================================= */
 
 .avatarInicial {
 
     width: 52px;
+
     height: 52px;
 
     min-width: 52px;
@@ -193,23 +210,30 @@
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
     font-size: 20px;
+
     font-weight: 700;
 
-    color: white;
+    color: #ffffff;
 
     background: linear-gradient(
         135deg,
-        #2F66F5,
-        #76A7FF
+        #2F66F5 0%,
+        #4F82F7 50%,
+        #76A7FF 100%
     );
 
-    box-shadow:
-        0 8px 18px rgba(47,102,245,.25);
+    border: 3px solid rgba(255,255,255,.95);
 
-    transition: .3s;
+    box-shadow:
+        0 7px 18px rgba(47,102,245,.25);
+
+    transition:
+        transform .3s,
+        box-shadow .3s;
 
     font-family: "Poppins", sans-serif;
 
@@ -218,9 +242,13 @@
     cursor: pointer;
 }
 
+
 .avatarInicial:hover {
 
     transform: scale(1.08);
+
+    box-shadow:
+        0 10px 25px rgba(47,102,245,.32);
 
 }
 
@@ -262,11 +290,13 @@
     position: absolute;
 
     left: 50%;
+
     bottom: -8px;
 
     transform: translateX(-50%);
 
     width: 0;
+
     height: 3px;
 
     border-radius: 50px;
@@ -300,6 +330,7 @@
     display: none;
 
     width: 44px;
+
     height: 44px;
 
     border: none;
@@ -307,6 +338,7 @@
     border-radius: 12px;
 
     justify-content: center;
+
     align-items: center;
 
     flex-direction: column;
@@ -333,6 +365,7 @@
 .hamburguer span {
 
     width: 25px;
+
     height: 3px;
 
     border-radius: 50px;
@@ -352,14 +385,12 @@
     transform:
         rotate(45deg)
         translate(5px, 6px);
-
 }
 
 
 .ativo span:nth-child(2) {
 
     opacity: 0;
-
 }
 
 
@@ -368,7 +399,6 @@
     transform:
         rotate(-45deg)
         translate(5px, -6px);
-
 }
 
 
@@ -381,6 +411,7 @@
     position: absolute;
 
     top: 95px;
+
     right: 0;
 
     width: 280px;
@@ -396,6 +427,8 @@
     );
 
     backdrop-filter: blur(18px);
+
+    -webkit-backdrop-filter: blur(18px);
 
     box-shadow:
         0 20px 40px rgba(0,0,0,.15);
@@ -467,15 +500,37 @@
 }
 
 
-/*
-   IMPORTANTE:
-   O avatar dentro do menu mobile
-   continua quadrado/circular.
-*/
+/* =========================================================
+   CONTAINER DO AVATAR MOBILE
+========================================================= */
+
+.avatarMobile {
+
+    width: 52px;
+
+    height: 52px;
+
+    min-width: 52px;
+    min-height: 52px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    position: relative;
+}
+
+
+/* =========================================================
+   AVATAR MOBILE
+========================================================= */
 
 .usuarioMobile .avatar {
 
     width: 52px !important;
+
     height: 52px !important;
 
     min-width: 52px;
@@ -489,6 +544,65 @@
     object-fit: cover;
 
     aspect-ratio: 1 / 1;
+}
+
+
+/* =========================================================
+   INICIAL MOBILE
+========================================================= */
+
+.usuarioMobile .avatarInicial {
+
+    width: 52px;
+
+    height: 52px;
+
+    min-width: 52px;
+
+    min-height: 52px;
+
+    max-width: 52px;
+
+    max-height: 52px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 19px;
+
+    font-weight: 700;
+
+    color: white;
+
+    background: linear-gradient(
+        135deg,
+        #2F66F5,
+        #76A7FF
+    );
+
+    border: 3px solid rgba(255,255,255,.95);
+
+    box-shadow:
+        0 7px 18px rgba(47,102,245,.25);
+
+    font-family: "Poppins", sans-serif;
+}
+
+
+/* =========================================================
+   NOME MOBILE
+========================================================= */
+
+.usuarioMobile span {
+
+    font-size: 15px;
+
+    color: #23416d;
 
 }
 
@@ -575,29 +689,20 @@
 
     }
 
-}
-
-
-/* =========================================================
-   MOBILE AVATAR
-========================================================= */
-
-@media (max-width: 600px) {
 
     .avatar {
 
         width: 48px !important;
+
         height: 48px !important;
 
         min-width: 48px;
+
         min-height: 48px;
 
         max-width: 48px;
+
         max-height: 48px;
-
-        border-radius: 50% !important;
-
-        aspect-ratio: 1 / 1;
 
     }
 
@@ -605,17 +710,42 @@
     .avatarInicial {
 
         width: 48px;
+
         height: 48px;
 
         min-width: 48px;
+
         min-height: 48px;
 
         max-width: 48px;
+
         max-height: 48px;
 
-        border-radius: 50%;
+    }
 
-        aspect-ratio: 1 / 1;
+
+    .avatarMobile {
+
+        width: 48px;
+
+        height: 48px;
+
+        min-width: 48px;
+
+        min-height: 48px;
+
+    }
+
+
+    .usuarioMobile .avatarInicial {
+
+        width: 48px;
+
+        height: 48px;
+
+        min-width: 48px;
+
+        min-height: 48px;
 
     }
 

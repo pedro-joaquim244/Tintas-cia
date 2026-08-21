@@ -24,7 +24,7 @@ import {
 } from "react-icons/fi";
 
 import HeaderUser from "../components/Cabeçalho-Users/index.jsx";
-import RodapeUser from "../components/Rodape-User/index.jsx";
+import Rodape from "../components/Rodape-User/Rodape.jsx";
 import style from "../styles/Inicial.module.css";
 
 import { api } from "../services/api.js";
@@ -1179,7 +1179,7 @@ export default function LojaTintas() {
 
             </footer>
 
-            <>RodapeUser</>
+            <Rodape/>
 
         </div>
     );

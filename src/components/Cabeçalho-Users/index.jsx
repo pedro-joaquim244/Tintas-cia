@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useAuth } from "../../contexts/AuthContext";
+
 import styles from "./style.module.css";
 
 import Logo from "../../assets/imagens/Logo.png";
@@ -23,30 +24,56 @@ export default function Header() {
             return null;
         }
 
-        // Se já for uma URL completa
-        if (
-            foto.startsWith("http://") ||
-            foto.startsWith("https://")
-        ) {
-            return foto;
+        let caminho = String(foto)
+            .trim()
+            .replace(/\\/g, "/");
+
+        if (!caminho) {
+            return null;
         }
 
+
+        // Se já for uma URL completa
+        if (
+            caminho.startsWith("http://") ||
+            caminho.startsWith("https://")
+        ) {
+            return caminho;
+        }
+
+
         /*
-         * Exemplo salvo no banco:
+         * O banco pode ter:
          *
-         * usuarios/usuario-1786621382335-571926189.webp
+         * usuarios/usuario-123.webp
          *
-         * URL final:
+         * ou:
          *
-         * http://localhost:3333/uploads/usuarios/...
+         * uploads/usuarios/usuario-123.webp
          */
 
-        return `http://localhost:3333/uploads/${foto}`;
+
+        // Remove "./" do início
+        caminho = caminho.replace(/^\.?\//, "");
+
+
+        // Caso já esteja salvo com uploads/
+        if (caminho.startsWith("uploads/")) {
+
+            return `http://localhost:3333/${caminho}`;
+
+        }
+
+
+        // Caso esteja salvo como:
+        // usuarios/foto.webp
+
+        return `http://localhost:3333/uploads/${caminho}`;
     }
 
 
     // =====================================================
-    // FOTO ATUAL
+    // FOTO DO USUÁRIO
     // =====================================================
 
     const fotoUsuario =
@@ -59,8 +86,20 @@ export default function Header() {
 
     const inicialUsuario =
         usuario?.nome
+            ?.trim()
             ?.charAt(0)
             ?.toUpperCase() || "U";
+
+
+    // =====================================================
+    // FECHAR MENU
+    // =====================================================
+
+    function fecharMenu() {
+
+        setMenuAberto(false);
+
+    }
 
 
     // =====================================================
@@ -76,7 +115,10 @@ export default function Header() {
                 LOGO
             ================================================= */}
 
-            <Link to="/cliente/inicio">
+            <Link
+                to="/cliente/inicio"
+                onClick={fecharMenu}
+            >
 
                 <img
                     src={Logo}
@@ -127,6 +169,7 @@ export default function Header() {
             <Link
                 to="/perfil"
                 className={styles.usuario}
+                title={usuario?.nome || "Meu perfil"}
             >
 
                 {fotoUsuario ? (
@@ -138,13 +181,13 @@ export default function Header() {
                             "Usuário"
                         }
                         className={styles.avatar}
-
                         onError={(event) => {
 
-                            console.error(
-                                "Não foi possível carregar:",
-                                event.currentTarget.src
-                            );
+                            /*
+                             * Se a imagem não carregar,
+                             * esconde a imagem e mostra
+                             * a inicial automaticamente.
+                             */
 
                             event.currentTarget.style.display =
                                 "none";
@@ -157,8 +200,10 @@ export default function Header() {
                                     );
 
                             if (inicial) {
+
                                 inicial.style.display =
                                     "flex";
+
                             }
 
                         }}
@@ -202,7 +247,11 @@ export default function Header() {
                         !menuAberto
                     )
                 }
-                aria-label="Abrir menu"
+                aria-label={
+                    menuAberto
+                        ? "Fechar menu"
+                        : "Abrir menu"
+                }
             >
 
                 <span></span>
@@ -223,11 +272,10 @@ export default function Header() {
                 `}
             >
 
+
                 <Link
                     to="/cliente/inicio"
-                    onClick={() =>
-                        setMenuAberto(false)
-                    }
+                    onClick={fecharMenu}
                 >
                     Início
                 </Link>
@@ -235,19 +283,23 @@ export default function Header() {
 
                 <Link
                     to="/cliente/simulador"
-                    onClick={() =>
-                        setMenuAberto(false)
-                    }
+                    onClick={fecharMenu}
                 >
                     Simulador
                 </Link>
 
 
                 <Link
-                    to="/cliente/cores"
-                    onClick={() =>
-                        setMenuAberto(false)
-                    }
+                    to="/cliente/Livro"
+                    onClick={fecharMenu}
+                >
+                    Livro de Cores
+                </Link>
+
+
+                <Link
+                    to="/cliente/produtos"
+                    onClick={fecharMenu}
                 >
                     Produtos
                 </Link>
@@ -255,9 +307,7 @@ export default function Header() {
 
                 <Link
                     to="/cliente/sobre-nos"
-                    onClick={() =>
-                        setMenuAberto(false)
-                    }
+                    onClick={fecharMenu}
                 >
                     Sobre nós
                 </Link>
@@ -265,9 +315,7 @@ export default function Header() {
 
                 <Link
                     to="/cliente/carrinho"
-                    onClick={() =>
-                        setMenuAberto(false)
-                    }
+                    onClick={fecharMenu}
                 >
                     Carrinho
                 </Link>
@@ -279,59 +327,61 @@ export default function Header() {
 
                 <Link
                     to="/perfil"
-                    className={
-                        styles.usuarioMobile
-                    }
-                    onClick={() =>
-                        setMenuAberto(false)
-                    }
+                    className={styles.usuarioMobile}
+                    onClick={fecharMenu}
                 >
 
-                    {fotoUsuario ? (
+                    <div className={styles.avatarMobile}>
 
-                        <img
-                            src={fotoUsuario}
-                            alt={
-                                usuario?.nome ||
-                                "Usuário"
-                            }
-                            className={styles.avatar}
 
-                            onError={(event) => {
+                        {fotoUsuario ? (
 
-                                event.currentTarget.style.display =
-                                    "none";
-
-                                const inicial =
-                                    event.currentTarget
-                                        .parentElement
-                                        ?.querySelector(
-                                            `.${styles.avatarInicial}`
-                                        );
-
-                                if (inicial) {
-                                    inicial.style.display =
-                                        "flex";
+                            <img
+                                src={fotoUsuario}
+                                alt={
+                                    usuario?.nome ||
+                                    "Usuário"
                                 }
+                                className={styles.avatar}
+                                onError={(event) => {
 
+                                    event.currentTarget.style.display =
+                                        "none";
+
+                                    const inicial =
+                                        event.currentTarget
+                                            .parentElement
+                                            ?.querySelector(
+                                                `.${styles.avatarInicial}`
+                                            );
+
+                                    if (inicial) {
+
+                                        inicial.style.display =
+                                            "flex";
+
+                                    }
+
+                                }}
+                            />
+
+                        ) : null}
+
+
+                        <div
+                            className={
+                                styles.avatarInicial
+                            }
+                            style={{
+                                display: fotoUsuario
+                                    ? "none"
+                                    : "flex"
                             }}
-                        />
+                        >
 
-                    ) : null}
+                            {inicialUsuario}
 
-
-                    <div
-                        className={
-                            styles.avatarInicial
-                        }
-                        style={{
-                            display: fotoUsuario
-                                ? "none"
-                                : "flex"
-                        }}
-                    >
-
-                        {inicialUsuario}
+                        </div>
 
                     </div>
 

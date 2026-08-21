@@ -12,6 +12,7 @@ import carrinhoRoutes from "./routes/carrinho.routes.js";
 import cuponsRoutes from "./routes/cupons.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import feedbacksRoutes from "./routes/feedbacks.routes.js";
+
 import { config } from "./config.js";
 
 // =====================================================
@@ -41,9 +42,7 @@ app.use(
 // JSON
 // =====================================================
 
-app.use(
-    express.json()
-);
+app.use(express.json());
 
 // =====================================================
 // URLENCODED
@@ -59,12 +58,12 @@ app.use(
 // UPLOADS
 // =====================================================
 
-const pastaUploads = path.resolve(
+const pastaUploads = path.join(
     __dirname,
-    "..",
     "uploads"
 );
 
+// Criar pasta caso não exista
 if (!fs.existsSync(pastaUploads)) {
     fs.mkdirSync(pastaUploads, {
         recursive: true
@@ -78,35 +77,6 @@ console.log(pastaUploads);
 console.log(
     "A pasta uploads existe?",
     fs.existsSync(pastaUploads)
-);
-
-if (fs.existsSync(pastaUploads)) {
-
-    console.log(
-        "ARQUIVOS DENTRO DE UPLOADS:"
-    );
-
-    console.log(
-        fs.readdirSync(pastaUploads)
-    );
-}
-
-const imagemTeste = path.join(
-    pastaUploads,
-    "1786727394602.jpg"
-);
-
-console.log(
-    "CAMINHO DA IMAGEM:"
-);
-
-console.log(
-    imagemTeste
-);
-
-console.log(
-    "A IMAGEM EXISTE?",
-    fs.existsSync(imagemTeste)
 );
 
 console.log("======================================");
@@ -199,11 +169,9 @@ app.use(
 app.get(
     "/",
     (req, res) => {
-
         res.json({
             mensagem: "API funcionando!"
         });
-
     }
 );
 
@@ -213,15 +181,10 @@ app.get(
 
 app.use(
     (req, res) => {
-
         res.status(404).json({
-
             erro: "Rota não encontrada.",
-
             rota: req.originalUrl
-
         });
-
     }
 );
 
@@ -250,8 +213,15 @@ app.listen(
         );
 
         console.log(
-            "======================================"
+            "Pasta real dos uploads:"
         );
 
+        console.log(
+            pastaUploads
+        );
+
+        console.log(
+            "======================================"
+        );
     }
 );

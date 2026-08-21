@@ -17,56 +17,79 @@ import {
 const router = express.Router();
 
 // =====================================================
-// CONFIGURAÇÃO DE CAMINHOS
+// CAMINHOS
 // =====================================================
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Pasta onde as fotos dos usuários serão armazenadas
-const pastaUsuarios = path.join(
+const pastaUploads = path.join(
     __dirname,
     "..",
-    "uploads",
+    "uploads"
+);
+
+const pastaUsuarios = path.join(
+    pastaUploads,
     "usuarios"
 );
 
-// Criar pasta caso não exista
+// Criar pastas
+if (!fs.existsSync(pastaUploads)) {
+    fs.mkdirSync(pastaUploads, {
+        recursive: true
+    });
+}
+
 if (!fs.existsSync(pastaUsuarios)) {
     fs.mkdirSync(pastaUsuarios, {
         recursive: true
     });
 }
 
+console.log(
+    "Pasta de fotos dos usuários:",
+    pastaUsuarios
+);
+
 // =====================================================
-// CONFIGURAÇÃO DO MULTER
+// MULTER
 // =====================================================
 
 const storage = multer.diskStorage({
 
     destination: (_req, _file, cb) => {
 
-        cb(null, pastaUsuarios);
+        cb(
+            null,
+            pastaUsuarios
+        );
 
     },
 
     filename: (_req, file, cb) => {
 
         const extensao =
-            path.extname(file.originalname)
-                .toLowerCase();
+            path.extname(
+                file.originalname
+            ).toLowerCase();
 
         const nomeArquivo =
-            `usuario-${Date.now()}-${Math.round(Math.random() * 1E9)}${extensao}`;
+            `usuario-${Date.now()}-${Math.round(
+                Math.random() * 1E9
+            )}${extensao}`;
 
-        cb(null, nomeArquivo);
+        cb(
+            null,
+            nomeArquivo
+        );
 
     }
 
 });
 
 // =====================================================
-// FILTRO DE IMAGEM
+// FILTRO
 // =====================================================
 
 const fileFilter = (_req, file, cb) => {
@@ -116,7 +139,7 @@ const upload = multer({
 });
 
 // =====================================================
-// CAMPOS PÚBLICOS DO USUÁRIO
+// CAMPOS PÚBLICOS
 // =====================================================
 
 const camposPublicos = `
@@ -133,6 +156,7 @@ const camposPublicos = `
     cidade,
     estado,
     cep,
+    foto,
     criado_em,
     atualizado_em
 `;
@@ -141,153 +165,160 @@ const camposPublicos = `
 // LOGIN
 // =====================================================
 
-router.post("/login", async (req, res) => {
+router.post(
+    "/login",
+    async (req, res) => {
 
-    try {
+        try {
 
-        const {
-            email,
-            senha
-        } = req.body;
+            const {
+                email,
+                senha
+            } = req.body;
 
-        if (!email || !senha) {
+            if (!email || !senha) {
 
-            return res.status(400).json({
-                erro: "Email e senha sao obrigatorios."
-            });
+                return res.status(400).json({
+                    erro: "Email e senha sao obrigatorios."
+                });
 
-        }
-
-        const emailNormalizado =
-            email.trim().toLowerCase();
-
-        const [resultado] = await pool.query(
-            "SELECT * FROM usuarios WHERE email = ?",
-            [emailNormalizado]
-        );
-
-        const usuario = resultado[0];
-
-        if (
-            !usuario ||
-            !(await bcrypt.compare(
-                senha,
-                usuario.senha
-            ))
-        ) {
-
-            return res.status(401).json({
-                erro: "Email ou senha invalidos."
-            });
-
-        }
-
-        if (
-            !["admin", "cliente"]
-                .includes(usuario.tipo)
-        ) {
-
-            return res.status(403).json({
-                erro: "Tipo de usuario invalido."
-            });
-
-        }
-
-        // =============================================
-        // DADOS DO USUÁRIO
-        // =============================================
-
-        const dadosUsuario = {
-
-            id: usuario.id,
-
-            nome: usuario.nome,
-
-            email: usuario.email,
-
-            tipo: usuario.tipo,
-
-            telefone:
-                usuario.telefone || "",
-
-            data_nascimento:
-                usuario.data_nascimento || null,
-
-            endereco:
-                usuario.endereco || "",
-
-            numero:
-                usuario.numero || "",
-
-            complemento:
-                usuario.complemento || "",
-
-            bairro:
-                usuario.bairro || "",
-
-            cidade:
-                usuario.cidade || "",
-
-            estado:
-                usuario.estado || "",
-
-            cep:
-                usuario.cep || "",
-
-            foto:
-                usuario.foto || null,
-
-            criado_em:
-                usuario.criado_em,
-
-            atualizado_em:
-                usuario.atualizado_em
-
-        };
-
-        // =============================================
-        // TOKEN
-        // =============================================
-
-        const token = jwt.sign(
-            {
-                id: usuario.id,
-                nome: usuario.nome,
-                email: usuario.email,
-                tipo: usuario.tipo
-            },
-            config.jwtSecret,
-            {
-                expiresIn: "1d"
             }
-        );
 
-        return res.json({
+            const emailNormalizado =
+                email
+                    .trim()
+                    .toLowerCase();
 
-            mensagem:
-                "Login realizado com sucesso.",
+            const [resultado] =
+                await pool.query(
+                    `
+                    SELECT *
+                    FROM usuarios
+                    WHERE email = ?
+                    `,
+                    [emailNormalizado]
+                );
 
-            token,
+            const usuario =
+                resultado[0];
 
-            usuario:
-                dadosUsuario
+            if (
+                !usuario ||
+                !(await bcrypt.compare(
+                    senha,
+                    usuario.senha
+                ))
+            ) {
 
-        });
+                return res.status(401).json({
+                    erro: "Email ou senha invalidos."
+                });
 
-    } catch (error) {
+            }
 
-        console.error(
-            "ERRO AO FAZER LOGIN:",
-            error
-        );
+            if (
+                !["admin", "cliente"]
+                    .includes(usuario.tipo)
+            ) {
 
-        return res.status(500).json({
-            erro: "Erro ao fazer login."
-        });
+                return res.status(403).json({
+                    erro: "Tipo de usuario invalido."
+                });
+
+            }
+
+            const dadosUsuario = {
+
+                id: usuario.id,
+
+                nome:
+                    usuario.nome,
+
+                email:
+                    usuario.email,
+
+                tipo:
+                    usuario.tipo,
+
+                telefone:
+                    usuario.telefone || "",
+
+                data_nascimento:
+                    usuario.data_nascimento || null,
+
+                endereco:
+                    usuario.endereco || "",
+
+                numero:
+                    usuario.numero || "",
+
+                complemento:
+                    usuario.complemento || "",
+
+                bairro:
+                    usuario.bairro || "",
+
+                cidade:
+                    usuario.cidade || "",
+
+                estado:
+                    usuario.estado || "",
+
+                cep:
+                    usuario.cep || "",
+
+                foto:
+                    usuario.foto || null,
+
+                criado_em:
+                    usuario.criado_em,
+
+                atualizado_em:
+                    usuario.atualizado_em
+
+            };
+
+            const token =
+                jwt.sign(
+                    {
+                        id: usuario.id,
+                        nome: usuario.nome,
+                        email: usuario.email,
+                        tipo: usuario.tipo
+                    },
+                    config.jwtSecret,
+                    {
+                        expiresIn: "1d"
+                    }
+                );
+
+            return res.json({
+
+                mensagem:
+                    "Login realizado com sucesso.",
+
+                token,
+
+                usuario:
+                    dadosUsuario
+
+            });
+
+        } catch (error) {
+
+            console.error(
+                "ERRO AO FAZER LOGIN:",
+                error
+            );
+
+            return res.status(500).json({
+                erro: "Erro ao fazer login."
+            });
+
+        }
 
     }
-
-});
+);
 
 // =====================================================
 // CADASTRAR USUÁRIO
@@ -304,10 +335,8 @@ router.post(
                 nome,
                 email,
                 senha,
-
                 telefone,
                 data_nascimento,
-
                 endereco,
                 numero,
                 complemento,
@@ -315,12 +344,7 @@ router.post(
                 cidade,
                 estado,
                 cep
-
             } = req.body;
-
-            // =========================================
-            // VALIDAÇÃO
-            // =========================================
 
             if (
                 !nome ||
@@ -328,13 +352,10 @@ router.post(
                 !senha
             ) {
 
-                // Apagar arquivo caso tenha sido enviado
                 if (req.file) {
-
                     fs.unlinkSync(
                         req.file.path
                     );
-
                 }
 
                 return res.status(400).json({
@@ -344,31 +365,27 @@ router.post(
 
             }
 
-            // =========================================
-            // NORMALIZAR EMAIL
-            // =========================================
-
             const emailNormalizado =
-                email.trim().toLowerCase();
-
-            // =========================================
-            // VERIFICAR EMAIL
-            // =========================================
+                email
+                    .trim()
+                    .toLowerCase();
 
             const [existentes] =
                 await pool.query(
-                    "SELECT id FROM usuarios WHERE email = ?",
+                    `
+                    SELECT id
+                    FROM usuarios
+                    WHERE email = ?
+                    `,
                     [emailNormalizado]
                 );
 
             if (existentes.length > 0) {
 
                 if (req.file) {
-
                     fs.unlinkSync(
                         req.file.path
                     );
-
                 }
 
                 return res.status(409).json({
@@ -378,35 +395,20 @@ router.post(
 
             }
 
-            // =========================================
-            // CRIPTOGRAFAR SENHA
-            // =========================================
-
             const senhaCriptografada =
                 await bcrypt.hash(
                     senha,
                     10
                 );
 
-            // =========================================
-            // FOTO
-            // =========================================
-
             const foto =
                 req.file
                     ? `usuarios/${req.file.filename}`
                     : null;
 
-            // =========================================
-            // INSERIR USUÁRIO (foto opcional)
-            // =========================================
-
-            let insertQuery;
-            let insertValues;
-
-            if (foto) {
-
-                insertQuery = `
+            const [resultado] =
+                await pool.query(
+                    `
                     INSERT INTO usuarios (
                         nome,
                         email,
@@ -423,71 +425,28 @@ router.post(
                         cep,
                         foto
                     )
-                    VALUES (?, ?, ?, 'cliente', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                `;
-
-                insertValues = [
-                    nome.trim(),
-                    emailNormalizado,
-                    senhaCriptografada,
-                    telefone || null,
-                    data_nascimento || null,
-                    endereco || null,
-                    numero || null,
-                    complemento || null,
-                    bairro || null,
-                    cidade || null,
-                    estado || null,
-                    cep || null,
-                    foto
-                ];
-
-            } else {
-
-                insertQuery = `
-                    INSERT INTO usuarios (
-                        nome,
-                        email,
-                        senha,
-                        tipo,
-                        telefone,
-                        data_nascimento,
-                        endereco,
-                        numero,
-                        complemento,
-                        bairro,
-                        cidade,
-                        estado,
-                        cep
+                    VALUES (
+                        ?, ?, ?, 'cliente',
+                        ?, ?, ?, ?, ?, ?, ?,
+                        ?, ?, ?
                     )
-                    VALUES (?, ?, ?, 'cliente', ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                `;
-
-                insertValues = [
-                    nome.trim(),
-                    emailNormalizado,
-                    senhaCriptografada,
-                    telefone || null,
-                    data_nascimento || null,
-                    endereco || null,
-                    numero || null,
-                    complemento || null,
-                    bairro || null,
-                    cidade || null,
-                    estado || null,
-                    cep || null
-                ];
-
-            }
-
-            const [resultado] = await pool.query(
-                insertQuery,
-                insertValues
-            );
-
-            // =========================================
-            // BUSCAR USUÁRIO CRIADO
-            // =========================================
+                    `,
+                    [
+                        nome.trim(),
+                        emailNormalizado,
+                        senhaCriptografada,
+                        telefone || null,
+                        data_nascimento || null,
+                        endereco || null,
+                        numero || null,
+                        complemento || null,
+                        bairro || null,
+                        cidade || null,
+                        estado || null,
+                        cep || null,
+                        foto
+                    ]
+                );
 
             const [criados] =
                 await pool.query(
@@ -505,8 +464,6 @@ router.post(
 
         } catch (error) {
 
-            // Se deu erro depois do upload,
-            // apagar arquivo
             if (req.file) {
 
                 try {
@@ -537,7 +494,7 @@ router.post(
 );
 
 // =====================================================
-// BUSCAR USUÁRIO LOGADO
+// USUÁRIO LOGADO
 // =====================================================
 
 router.get(
@@ -590,8 +547,7 @@ router.get(
 );
 
 // =====================================================
-// LISTAR TODOS OS USUÁRIOS
-// SOMENTE ADMIN
+// LISTAR USUÁRIOS
 // =====================================================
 
 router.get(
@@ -634,13 +590,11 @@ router.get(
 
 // =====================================================
 // BUSCAR USUÁRIO POR ID
-// SOMENTE ADMIN
 // =====================================================
 
 router.get(
     "/:id",
     autenticarToken,
-    autorizarTipos("admin"),
     async (req, res) => {
 
         try {
@@ -653,6 +607,21 @@ router.get(
                 return res.status(400).json({
                     erro:
                         "ID de usuario invalido."
+                });
+
+            }
+
+            // Admin pode buscar qualquer usuário.
+            // Usuário comum só pode buscar a si mesmo.
+
+            if (
+                req.usuario.tipo !== "admin" &&
+                Number(req.usuario.id) !== id
+            ) {
+
+                return res.status(403).json({
+                    erro:
+                        "Voce so pode acessar seu proprio perfil."
                 });
 
             }
@@ -700,8 +669,7 @@ router.get(
 );
 
 // =====================================================
-// ALTERAR FOTO DO USUÁRIO
-// ADMIN OU PRÓPRIO USUÁRIO
+// ALTERAR FOTO
 // =====================================================
 
 router.put(
@@ -709,6 +677,8 @@ router.put(
     autenticarToken,
     upload.single("foto"),
     async (req, res) => {
+
+        let arquivoNovo = null;
 
         try {
 
@@ -718,11 +688,9 @@ router.put(
             if (isNaN(id)) {
 
                 if (req.file) {
-
                     fs.unlinkSync(
                         req.file.path
                     );
-
                 }
 
                 return res.status(400).json({
@@ -732,21 +700,19 @@ router.put(
 
             }
 
-            // =========================================
+            // =================================================
             // PERMISSÃO
-            // =========================================
+            // =================================================
 
             if (
                 req.usuario.tipo !== "admin" &&
-                id !== Number(req.usuario.id)
+                Number(req.usuario.id) !== id
             ) {
 
                 if (req.file) {
-
                     fs.unlinkSync(
                         req.file.path
                     );
-
                 }
 
                 return res.status(403).json({
@@ -756,9 +722,9 @@ router.put(
 
             }
 
-            // =========================================
-            // VERIFICAR FOTO
-            // =========================================
+            // =================================================
+            // FOTO NOVA
+            // =================================================
 
             if (!req.file) {
 
@@ -769,14 +735,19 @@ router.put(
 
             }
 
-            // =========================================
-            // BUSCAR FOTO ANTIGA
-            // =========================================
+            arquivoNovo =
+                req.file.path;
+
+            // =================================================
+            // BUSCAR USUÁRIO
+            // =================================================
 
             const [usuarios] =
                 await pool.query(
                     `
-                    SELECT foto
+                    SELECT
+                        id,
+                        foto
                     FROM usuarios
                     WHERE id = ?
                     `,
@@ -801,16 +772,39 @@ router.put(
             const fotoAntiga =
                 usuarios[0].foto;
 
-            // =========================================
-            // NOVA FOTO
-            // =========================================
+            // =================================================
+            // CAMINHO QUE VAI PARA O BANCO
+            // =================================================
 
             const novaFoto =
                 `usuarios/${req.file.filename}`;
 
-            // =========================================
-            // ATUALIZAR BANCO
-            // =========================================
+            console.log(
+                "======================================"
+            );
+
+            console.log(
+                "NOVA FOTO:",
+                novaFoto
+            );
+
+            console.log(
+                "ARQUIVO FÍSICO:",
+                req.file.path
+            );
+
+            console.log(
+                "ARQUIVO EXISTE:",
+                fs.existsSync(req.file.path)
+            );
+
+            console.log(
+                "======================================"
+            );
+
+            // =================================================
+            // SALVAR NO BANCO
+            // =================================================
 
             await pool.query(
                 `
@@ -824,37 +818,9 @@ router.put(
                 ]
             );
 
-            // =========================================
-            // APAGAR FOTO ANTIGA
-            // =========================================
-
-            if (fotoAntiga) {
-
-                const caminhoAntigo =
-                    path.join(
-                        __dirname,
-                        "..",
-                        "uploads",
-                        fotoAntiga
-                    );
-
-                if (
-                    fs.existsSync(
-                        caminhoAntigo
-                    )
-                ) {
-
-                    fs.unlinkSync(
-                        caminhoAntigo
-                    );
-
-                }
-
-            }
-
-            // =========================================
-            // BUSCAR USUÁRIO ATUALIZADO
-            // =========================================
+            // =================================================
+            // CONFIRMAR BANCO
+            // =================================================
 
             const [atualizado] =
                 await pool.query(
@@ -865,6 +831,53 @@ router.put(
                     `,
                     [id]
                 );
+
+            // =================================================
+            // APAGAR FOTO ANTIGA
+            // =================================================
+
+            if (
+                fotoAntiga &&
+                fotoAntiga !== novaFoto
+            ) {
+
+                const caminhoAntigo =
+                    path.join(
+                        pastaUploads,
+                        fotoAntiga
+                    );
+
+                console.log(
+                    "FOTO ANTIGA:",
+                    caminhoAntigo
+                );
+
+                if (
+                    fs.existsSync(
+                        caminhoAntigo
+                    )
+                ) {
+
+                    try {
+
+                        fs.unlinkSync(
+                            caminhoAntigo
+                        );
+
+                    } catch (erro) {
+
+                        console.warn(
+                            "Não foi possível apagar a foto antiga:",
+                            erro.message
+                        );
+
+                    }
+
+                }
+
+            }
+
+            arquivoNovo = null;
 
             return res.json({
 
@@ -878,28 +891,39 @@ router.put(
 
         } catch (error) {
 
-            if (req.file) {
+            console.error(
+                "ERRO AO ALTERAR FOTO:",
+                error
+            );
+
+            // Apagar somente a foto NOVA
+            // caso o processo tenha falhado.
+
+            if (
+                arquivoNovo &&
+                fs.existsSync(
+                    arquivoNovo
+                )
+            ) {
 
                 try {
 
                     fs.unlinkSync(
-                        req.file.path
+                        arquivoNovo
                     );
 
                 } catch {}
 
             }
 
-            console.error(
-                "ERRO AO ALTERAR FOTO:",
-                error
-            );
-
             return res.status(500).json({
+
                 erro:
                     "Erro ao alterar foto.",
+
                 detalhes:
                     error.message
+
             });
 
         }
@@ -908,8 +932,7 @@ router.put(
 );
 
 // =====================================================
-// REMOVER FOTO DO USUÁRIO
-// ADMIN OU PRÓPRIO USUÁRIO
+// REMOVER FOTO
 // =====================================================
 
 router.delete(
@@ -931,13 +954,9 @@ router.delete(
 
             }
 
-            // =========================================
-            // PERMISSÃO
-            // =========================================
-
             if (
                 req.usuario.tipo !== "admin" &&
-                id !== Number(req.usuario.id)
+                Number(req.usuario.id) !== id
             ) {
 
                 return res.status(403).json({
@@ -946,10 +965,6 @@ router.delete(
                 });
 
             }
-
-            // =========================================
-            // BUSCAR FOTO
-            // =========================================
 
             const [usuarios] =
                 await pool.query(
@@ -975,10 +990,6 @@ router.delete(
             const foto =
                 usuarios[0].foto;
 
-            // =========================================
-            // REMOVER FOTO DO BANCO
-            // =========================================
-
             await pool.query(
                 `
                 UPDATE usuarios
@@ -988,25 +999,23 @@ router.delete(
                 [id]
             );
 
-            // =========================================
-            // REMOVER ARQUIVO
-            // =========================================
-
             if (foto) {
 
                 const caminho =
                     path.join(
-                        __dirname,
-                        "..",
-                        "uploads",
+                        pastaUploads,
                         foto
                     );
 
                 if (
-                    fs.existsSync(caminho)
+                    fs.existsSync(
+                        caminho
+                    )
                 ) {
 
-                    fs.unlinkSync(caminho);
+                    fs.unlinkSync(
+                        caminho
+                    );
 
                 }
 
@@ -1036,7 +1045,6 @@ router.delete(
 
 // =====================================================
 // ATUALIZAR PERFIL
-// ADMIN OU PRÓPRIO USUÁRIO
 // =====================================================
 
 router.put(
@@ -1058,13 +1066,9 @@ router.put(
 
             }
 
-            // =========================================
-            // PERMISSÃO
-            // =========================================
-
             if (
                 req.usuario.tipo !== "admin" &&
-                id !== Number(req.usuario.id)
+                Number(req.usuario.id) !== id
             ) {
 
                 return res.status(403).json({
@@ -1074,18 +1078,12 @@ router.put(
 
             }
 
-            // =========================================
-            // DADOS
-            // =========================================
-
             const {
                 nome,
                 email,
                 senha,
-
                 telefone,
                 data_nascimento,
-
                 endereco,
                 numero,
                 complemento,
@@ -1093,12 +1091,7 @@ router.put(
                 cidade,
                 estado,
                 cep
-
             } = req.body;
-
-            // =========================================
-            // CAMPOS OBRIGATÓRIOS
-            // =========================================
 
             if (
                 !nome ||
@@ -1112,16 +1105,10 @@ router.put(
 
             }
 
-            // =========================================
-            // NORMALIZAR
-            // =========================================
-
             const emailNormalizado =
-                email.trim().toLowerCase();
-
-            // =========================================
-            // VERIFICAR USUÁRIO
-            // =========================================
+                email
+                    .trim()
+                    .toLowerCase();
 
             const [usuarioExistente] =
                 await pool.query(
@@ -1143,10 +1130,6 @@ router.put(
                 });
 
             }
-
-            // =========================================
-            // VERIFICAR EMAIL
-            // =========================================
 
             const [emailExistente] =
                 await pool.query(
@@ -1172,10 +1155,6 @@ router.put(
                 });
 
             }
-
-            // =========================================
-            // ATUALIZAR COM SENHA
-            // =========================================
 
             if (senha) {
 
@@ -1204,41 +1183,23 @@ router.put(
                     WHERE id = ?
                     `,
                     [
-
                         nome.trim(),
-
                         emailNormalizado,
-
                         senhaCriptografada,
-
                         telefone || null,
-
                         data_nascimento || null,
-
                         endereco || null,
-
                         numero || null,
-
                         complemento || null,
-
                         bairro || null,
-
                         cidade || null,
-
                         estado || null,
-
                         cep || null,
-
                         id
-
                     ]
                 );
 
             } else {
-
-                // =====================================
-                // ATUALIZAR SEM ALTERAR SENHA
-                // =====================================
 
                 await pool.query(
                     `
@@ -1258,39 +1219,22 @@ router.put(
                     WHERE id = ?
                     `,
                     [
-
                         nome.trim(),
-
                         emailNormalizado,
-
                         telefone || null,
-
                         data_nascimento || null,
-
                         endereco || null,
-
                         numero || null,
-
                         complemento || null,
-
                         bairro || null,
-
                         cidade || null,
-
                         estado || null,
-
                         cep || null,
-
                         id
-
                     ]
                 );
 
             }
-
-            // =========================================
-            // RETORNAR USUÁRIO ATUALIZADO
-            // =========================================
 
             const [atualizados] =
                 await pool.query(
@@ -1327,7 +1271,6 @@ router.put(
 
 // =====================================================
 // EXCLUIR USUÁRIO
-// SOMENTE ADMIN
 // =====================================================
 
 router.delete(
@@ -1350,10 +1293,6 @@ router.delete(
 
             }
 
-            // =========================================
-            // NÃO DEIXAR ADMIN EXCLUIR A SI MESMO
-            // =========================================
-
             if (
                 id === Number(req.usuario.id)
             ) {
@@ -1364,10 +1303,6 @@ router.delete(
                 });
 
             }
-
-            // =========================================
-            // BUSCAR FOTO ANTES DE EXCLUIR
-            // =========================================
 
             const [usuarios] =
                 await pool.query(
@@ -1393,10 +1328,6 @@ router.delete(
             const foto =
                 usuarios[0].foto;
 
-            // =========================================
-            // EXCLUIR USUÁRIO
-            // =========================================
-
             const [resultado] =
                 await pool.query(
                     `
@@ -1417,25 +1348,23 @@ router.delete(
 
             }
 
-            // =========================================
-            // APAGAR FOTO DO DISCO
-            // =========================================
-
             if (foto) {
 
                 const caminho =
                     path.join(
-                        __dirname,
-                        "..",
-                        "uploads",
+                        pastaUploads,
                         foto
                     );
 
                 if (
-                    fs.existsSync(caminho)
+                    fs.existsSync(
+                        caminho
+                    )
                 ) {
 
-                    fs.unlinkSync(caminho);
+                    fs.unlinkSync(
+                        caminho
+                    );
 
                 }
 
@@ -1464,7 +1393,7 @@ router.delete(
 );
 
 // =====================================================
-// TRATAMENTO DE ERROS DO MULTER
+// ERROS DO MULTER
 // =====================================================
 
 router.use(
@@ -1508,9 +1437,5 @@ router.use(
 
     }
 );
-
-// =====================================================
-// EXPORTAR
-// =====================================================
 
 export default router;
