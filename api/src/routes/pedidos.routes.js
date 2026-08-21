@@ -142,7 +142,7 @@ router.post("/", async (req, res) => {
                         id,
                         codigo,
                         tipo,
-                        valor
+                        desconto AS valor
 
                     FROM cupons
 

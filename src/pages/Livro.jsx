@@ -151,6 +151,7 @@ export default function Livro() {
 
   const [animando, setAnimando] = useState(false);
   const [direcao, setDirecao] = useState("direita");
+  const [folhaAnimada, setFolhaAnimada] = useState(null);
 
   const folhas = [];
 
@@ -178,15 +179,16 @@ export default function Livro() {
     }
 
     setDirecao(lado);
+    setFolhaAnimada({
+      origem: folhaAtual,
+      destino: novaPagina
+    });
     setAnimando(true);
 
     setTimeout(() => {
       setFolhaAtual(novaPagina);
-    }, 250);
-
-    setTimeout(() => {
       setAnimando(false);
-    }, 850);
+    }, 800);
   }
 
   function proximaPagina() {
@@ -199,6 +201,36 @@ export default function Livro() {
     if (folhaAtual > 0) {
       virarPagina(folhaAtual - 1, "esquerda");
     }
+  }
+
+  function renderFolha(indice) {
+    if (indice === 0) {
+      return (
+        <>
+          <div className={style.paginaEsquerda}>
+            <PaginaInicial />
+          </div>
+
+          <div className={style.paginaDireita}>
+            <PaginaInicialDireita />
+          </div>
+        </>
+      );
+    }
+
+    const folha = folhas[indice - 1];
+
+    return (
+      <>
+        <div className={style.paginaEsquerda}>
+          <PaginaCategoria categoria={folha?.esquerda} />
+        </div>
+
+        <div className={style.paginaDireita}>
+          <PaginaCategoria categoria={folha?.direita} />
+        </div>
+      </>
+    );
   }
 
   return (
@@ -329,36 +361,7 @@ export default function Livro() {
               ===================================== */}
 
               <div className={style.paginasBase}>
-
-                {folhaAtual === 0 ? (
-
-                  <>
-                    <div className={style.paginaEsquerda}>
-                      <PaginaInicial />
-                    </div>
-
-                    <div className={style.paginaDireita}>
-                      <PaginaInicialDireita />
-                    </div>
-                  </>
-
-                ) : (
-
-                  <>
-                    <div className={style.paginaEsquerda}>
-                      <PaginaCategoria
-                        categoria={folhas[folhaAtual - 1]?.esquerda}
-                      />
-                    </div>
-
-                    <div className={style.paginaDireita}>
-                      <PaginaCategoria
-                        categoria={folhas[folhaAtual - 1]?.direita}
-                      />
-                    </div>
-                  </>
-
-                )}
+                {renderFolha(folhaAtual)}
 
               </div>
 
@@ -380,42 +383,16 @@ export default function Livro() {
                 >
 
                   <div className={style.frenteFolha}>
-
-                    {direcao === "direita" ? (
-                      <PaginaCategoria
-                        categoria={
-                          folhaAtual === 0
-                            ? folhas[0]?.esquerda
-                            : folhas[folhaAtual]?.esquerda
-                        }
-                      />
-                    ) : (
-                      <PaginaCategoria
-                        categoria={
-                          folhas[folhaAtual - 1]?.esquerda
-                        }
-                      />
-                    )}
+                    <div className={style.folhaDupla}>
+                      {renderFolha(folhaAnimada?.origem)}
+                    </div>
 
                   </div>
 
                   <div className={style.versoFolha}>
-
-                    {direcao === "direita" ? (
-                      <PaginaCategoria
-                        categoria={
-                          folhaAtual === 0
-                            ? folhas[0]?.direita
-                            : folhas[folhaAtual]?.direita
-                        }
-                      />
-                    ) : (
-                      <PaginaCategoria
-                        categoria={
-                          folhas[folhaAtual - 1]?.direita
-                        }
-                      />
-                    )}
+                    <div className={style.folhaDupla}>
+                      {renderFolha(folhaAnimada?.destino)}
+                    </div>
 
                   </div>
 
@@ -450,6 +427,7 @@ export default function Livro() {
                     ? style.indicadorAtivo
                     : ""
                 }
+                disabled={animando || folhaAtual === index}
                 onClick={() => {
                   if (index > folhaAtual) {
                     virarPagina(index, "direita");

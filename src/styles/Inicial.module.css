@@ -3,1136 +3,1681 @@
 ========================================================= */
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .container {
-  width: 100%;
-  min-height: 100vh;
-  background: #f7f9ff;
-  color: #172033;
-  font-family: "Poppins", sans-serif;
-  overflow-x: hidden;
+    width: 100%;
+    min-height: 100vh;
+    background: #f7f9ff;
+    color: #172033;
+    font-family: "Poppins", sans-serif;
+    overflow-x: hidden;
 }
+
 
 /* =========================================================
    INTRO
 ========================================================= */
 
 .introContainer {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: #fff;
-  visibility: hidden;
-  overflow: hidden;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #fff;
+    visibility: hidden;
+    overflow: hidden;
 }
 
 .initialBrandName {
-  position: absolute;
-  z-index: 3;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  margin: 0;
-  color: #fff;
-  font-size: clamp(2.5rem, 6vw, 5.5rem);
-  font-weight: 800;
-  letter-spacing: -3px;
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    color: #fff;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: -3px;
 }
 
 .paintSvg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .realRoller {
-  position: absolute;
-  z-index: 4;
-  left: 50%;
-  top: 0;
-  width: 300px;
-  height: 400px;
-  transform: translateX(-50%);
+    position: absolute;
+    z-index: 4;
+    left: 50%;
+    top: 0;
+    width: 300px;
+    height: 400px;
+    transform: translateX(-50%);
 }
 
 .rollerSvgGraphic {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
+
 
 /* =========================================================
    HERO
 ========================================================= */
 
 .hero {
-  position: relative;
-  min-height: 760px;
-  padding: 130px 8% 90px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  gap: 60px;
-  background:
-    radial-gradient(circle at 80% 30%, rgba(59,130,246,.12), transparent 35%),
-    linear-gradient(135deg, #ffffff 0%, #f3f7ff 100%);
+    position: relative;
+    min-height: 760px;
+    padding: 130px 8% 90px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 60px;
+    background:
+        radial-gradient(
+            circle at 80% 30%,
+            rgba(59, 130, 246, .12),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #f3f7ff 100%
+        );
 }
 
 .heroText {
-  max-width: 650px;
+    max-width: 650px;
 }
 
 .heroText h1 {
-  margin: 0 0 25px;
-  font-size: clamp(3rem, 5vw, 5.5rem);
-  line-height: .98;
-  font-weight: 800;
-  letter-spacing: -4px;
-  color: #172033;
+    margin: 0 0 25px;
+    font-size: clamp(3rem, 5vw, 5.5rem);
+    line-height: .98;
+    font-weight: 800;
+    letter-spacing: -4px;
+    color: #172033;
 }
 
 .heroText h1 span {
-  color: #1554c7;
+    color: #1554c7;
 }
 
 .heroText p {
-  margin: 0 0 35px;
-  color: #68738a;
-  font-size: 1.05rem;
-  line-height: 1.8;
+    margin: 0 0 35px;
+    color: #68738a;
+    font-size: 1.05rem;
+    line-height: 1.8;
 }
 
 .heroButtons {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
 .primaryButton,
 .secondaryButton {
-  min-height: 52px;
-  padding: 0 27px;
-  border: 2px solid #1554c7;
-  font-family: inherit;
-  font-weight: 700;
-  cursor: pointer;
-  transition: .25s ease;
+    min-height: 52px;
+    padding: 0 27px;
+    border: 2px solid #1554c7;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .25s ease;
 }
 
 .primaryButton {
-  color: #fff;
-  background: #1554c7;
+    color: #fff;
+    background: #1554c7;
 }
 
 .primaryButton:hover {
-  background: #0e3e96;
-  border-color: #0e3e96;
-  transform: translateY(-2px);
+    background: #0e3e96;
+    border-color: #0e3e96;
+    transform: translateY(-2px);
 }
 
 .secondaryButton {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: #1554c7;
-  background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #1554c7;
+    background: #fff;
 }
 
 .secondaryButton:hover {
-  background: #eef5ff;
-  transform: translateY(-2px);
+    background: #eef5ff;
+    transform: translateY(-2px);
 }
 
 .heroBenefits {
-  display: flex;
-  gap: 30px;
-  margin-top: 50px;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 30px;
+    margin-top: 50px;
+    flex-wrap: wrap;
 }
 
 .heroBenefits > div {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .heroBenefits svg {
-  color: #1554c7;
-  font-size: 25px;
+    color: #1554c7;
+    font-size: 25px;
 }
 
 .heroBenefits strong,
 .heroBenefits span {
-  display: block;
+    display: block;
 }
 
 .heroBenefits strong {
-  font-size: .85rem;
+    font-size: .85rem;
 }
 
 .heroBenefits span {
-  margin-top: 3px;
-  color: #8992a5;
-  font-size: .7rem;
+    margin-top: 3px;
+    color: #8992a5;
+    font-size: .7rem;
 }
+
 
 /* =========================================================
    HERO ART
 ========================================================= */
 
 .heroImage {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 520px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 520px;
 }
 
 .paintArtwork {
-  position: relative;
-  width: min(100%, 520px);
-  height: 500px;
+    position: relative;
+    width: min(100%, 520px);
+    height: 500px;
 }
 
 .paintCan {
-  position: absolute;
-  z-index: 3;
-  left: 50%;
-  top: 50%;
-  width: 250px;
-  height: 290px;
-  transform: translate(-50%, -45%);
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    top: 50%;
+    width: 250px;
+    height: 290px;
+    transform: translate(-50%, -45%);
 }
 
 .paintCanTop {
-  position: absolute;
-  top: -15px;
-  left: 7px;
-  width: 236px;
-  height: 42px;
-  border-radius: 50%;
-  background: linear-gradient(#dce6f8, #aebbd0);
-  border: 4px solid #8291aa;
+    position: absolute;
+    top: -15px;
+    left: 7px;
+    width: 236px;
+    height: 42px;
+    border-radius: 50%;
+    background:
+        linear-gradient(
+            #dce6f8,
+            #aebbd0
+        );
+    border: 4px solid #8291aa;
 }
 
 .paintCanBody {
-  position: absolute;
-  inset: 5px 0 0;
-  overflow: hidden;
-  border-radius: 15px 15px 35px 35px;
-  background: linear-gradient(90deg, #aebbd0, #f5f8ff 48%, #a9b7cd);
-  box-shadow: 15px 20px 35px rgba(26,47,85,.18);
+    position: absolute;
+    inset: 5px 0 0;
+    overflow: hidden;
+    border-radius: 15px 15px 35px 35px;
+    background:
+        linear-gradient(
+            90deg,
+            #aebbd0,
+            #f5f8ff 48%,
+            #a9b7cd
+        );
+    box-shadow:
+        15px 20px 35px rgba(26,47,85,.18);
 }
 
 .paintDrips {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 70px;
-  background: #1554c7;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: #1554c7;
 }
 
 .paintDrips i {
-  position: absolute;
-  bottom: -30px;
-  width: 35px;
-  height: 45px;
-  border-radius: 0 0 30px 30px;
-  background: #1554c7;
+    position: absolute;
+    bottom: -30px;
+    width: 35px;
+    height: 45px;
+    border-radius: 0 0 30px 30px;
+    background: #1554c7;
 }
 
 .paintDrips i:nth-child(1) {
-  left: 30px;
-  height: 35px;
+    left: 30px;
+    height: 35px;
 }
 
 .paintDrips i:nth-child(2) {
-  left: 90px;
-  height: 55px;
+    left: 90px;
+    height: 55px;
 }
 
 .paintDrips i:nth-child(3) {
-  right: 75px;
-  height: 38px;
+    right: 75px;
+    height: 38px;
 }
 
 .paintDrips i:nth-child(4) {
-  right: 25px;
-  height: 52px;
+    right: 25px;
+    height: 52px;
 }
 
 .paintCanLabel {
-  position: absolute;
-  top: 105px;
-  left: 20px;
-  right: 20px;
-  padding: 20px 10px;
-  text-align: center;
-  background: #fff;
-  border: 1px solid #dce5f5;
+    position: absolute;
+    top: 105px;
+    left: 20px;
+    right: 20px;
+    padding: 20px 10px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #dce5f5;
 }
 
 .paintCanLabel strong,
 .paintCanLabel span {
-  display: block;
+    display: block;
 }
 
 .paintCanLabel strong {
-  color: #1554c7;
-  font-size: 2rem;
-  font-weight: 900;
+    color: #1554c7;
+    font-size: 2rem;
+    font-weight: 900;
 }
 
 .paintCanLabel span {
-  color: #202b40;
-  font-size: 1.1rem;
-  letter-spacing: 5px;
+    color: #202b40;
+    font-size: 1.1rem;
+    letter-spacing: 5px;
 }
 
 .paintRoller {
-  position: absolute;
-  z-index: 4;
-  right: 25px;
-  top: 80px;
-  width: 170px;
-  height: 330px;
-  transform: rotate(13deg);
+    position: absolute;
+    z-index: 4;
+    right: 25px;
+    top: 80px;
+    width: 170px;
+    height: 330px;
+    transform: rotate(13deg);
 }
 
 .rollerHandle {
-  position: absolute;
-  right: 20px;
-  top: 40px;
-  width: 8px;
-  height: 230px;
-  border-radius: 10px;
-  background: #8a98ad;
+    position: absolute;
+    right: 20px;
+    top: 40px;
+    width: 8px;
+    height: 230px;
+    border-radius: 10px;
+    background: #8a98ad;
 }
 
 .rollerGrip {
-  position: absolute;
-  right: 5px;
-  bottom: 0;
-  width: 35px;
-  height: 100px;
-  border-radius: 8px;
-  background: #f4b400;
+    position: absolute;
+    right: 5px;
+    bottom: 0;
+    width: 35px;
+    height: 100px;
+    border-radius: 8px;
+    background: #f4b400;
 }
 
 .rollerGrip span {
-  display: block;
-  width: 8px;
-  height: 80%;
-  margin: 10px auto;
-  background: rgba(255,255,255,.3);
+    display: block;
+    width: 8px;
+    height: 80%;
+    margin: 10px auto;
+    background: rgba(255,255,255,.3);
 }
 
 .paintSheets {
-  position: absolute;
-  bottom: 25px;
-  left: 20px;
-  width: 300px;
-  height: 100px;
+    position: absolute;
+    bottom: 25px;
+    left: 20px;
+    width: 300px;
+    height: 100px;
 }
 
 .paintSheets i {
-  position: absolute;
-  width: 230px;
-  height: 65px;
-  border-radius: 50%;
-  transform: rotate(-10deg);
-  background: rgba(21,84,199,.15);
+    position: absolute;
+    width: 230px;
+    height: 65px;
+    border-radius: 50%;
+    transform: rotate(-10deg);
+    background: rgba(21,84,199,.15);
 }
 
 .paintSheets i:nth-child(1) {
-  left: 10px;
-  bottom: 0;
+    left: 10px;
+    bottom: 0;
 }
 
 .paintSheets i:nth-child(2) {
-  left: 30px;
-  bottom: 15px;
-  background: rgba(37,99,235,.18);
+    left: 30px;
+    bottom: 15px;
+    background: rgba(37,99,235,.18);
 }
 
 .paintSheets i:nth-child(3) {
-  left: 55px;
-  bottom: 30px;
-  background: rgba(96,165,250,.2);
+    left: 55px;
+    bottom: 30px;
+    background: rgba(96,165,250,.2);
 }
 
 .paintSheets i:nth-child(4) {
-  left: 80px;
-  bottom: 45px;
-  background: rgba(147,197,253,.25);
+    left: 80px;
+    bottom: 45px;
+    background: rgba(147,197,253,.25);
 }
+
 
 /* =========================================================
    ESTATÍSTICAS
 ========================================================= */
 
 .statsDiscount {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 30px;
-  padding: 80px 8%;
-  background: #fff;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 30px;
+    padding: 80px 8%;
+    background: #fff;
 }
 
 .statsCard {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  padding: 35px;
-  background: #f4f7ff;
-  border: 1px solid #e2e9f8;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 35px;
+    background: #f4f7ff;
+    border: 1px solid #e2e9f8;
 }
 
 .statItem {
-  padding: 20px;
-  text-align: center;
+    padding: 20px;
+    text-align: center;
 }
 
 .statIcon {
-  width: 52px;
-  height: 52px;
-  margin: 0 auto 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #e5efff;
-  color: #1554c7;
-  font-size: 22px;
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e5efff;
+    color: #1554c7;
+    font-size: 22px;
 }
 
 .statItem strong,
 .statItem span {
-  display: block;
+    display: block;
 }
 
 .statItem strong {
-  font-size: 1.55rem;
-  color: #172033;
+    font-size: 1.55rem;
+    color: #172033;
 }
 
 .statItem span {
-  margin-top: 5px;
-  color: #7b8498;
-  font-size: .75rem;
-  line-height: 1.4;
+    margin-top: 5px;
+    color: #7b8498;
+    font-size: .75rem;
+    line-height: 1.4;
 }
 
+
+/* =========================================================
+   CARD DA ROLETA
+========================================================= */
+
 .discountCard {
-  position: relative;
-  min-height: 330px;
-  padding: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  overflow: hidden;
-  background: #1554c7;
-  color: #fff;
+    position: relative;
+    min-height: 330px;
+    padding: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 35px;
+    overflow: hidden;
+    background: #1554c7;
+    color: #fff;
 }
 
 .discountText {
-  position: relative;
-  z-index: 2;
+    position: relative;
+    z-index: 5;
+    max-width: 400px;
+}
+
+.discountTitleIcon {
+    width: 45px;
+    height: 45px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,.14);
+    border-radius: 50%;
+    font-size: 22px;
 }
 
 .discountText h3 {
-  margin: 0 0 12px;
-  font-size: 1.8rem;
+    margin: 0 0 12px;
+    font-size: 1.8rem;
 }
 
 .discountText p {
-  color: #dbeafe;
-  line-height: 1.6;
+    color: #dbeafe;
+    line-height: 1.6;
 }
 
 .discountText button {
-  margin-top: 15px;
-  padding: 13px 22px;
-  border: 0;
-  background: #fff;
-  color: #1554c7;
-  font-weight: 800;
-  cursor: pointer;
+    margin-top: 15px;
+    padding: 13px 22px;
+    border: 0;
+    background: #fff;
+    color: #1554c7;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .25s ease;
+}
+
+.discountText button:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.2);
+}
+
+.discountText button:disabled {
+    cursor: not-allowed;
+    opacity: .75;
 }
 
 .discountText small {
-  display: block;
-  margin-top: 12px;
-  color: #bfdbfe;
-  font-size: .7rem;
+    display: block;
+    margin-top: 12px;
+    color: #bfdbfe;
+    font-size: .7rem;
 }
+
+
+/* =========================================================
+   ÁREA DA ROLETA
+========================================================= */
+
+.wheelArea {
+    position: relative;
+    z-index: 4;
+    width: 250px;
+    height: 270px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* =========================================================
+   ROLETA
+========================================================= */
 
 .discountWheel {
-  position: relative;
-  flex-shrink: 0;
-  width: 230px;
-  height: 230px;
-  border-radius: 50%;
-  border: 12px solid #fff;
-  background: conic-gradient(
-    #2563eb 0deg 90deg,
-    #60a5fa 90deg 180deg,
-    #1d4ed8 180deg 270deg,
-    #93c5fd 270deg 360deg
-  );
-  box-shadow: 0 15px 35px rgba(0,0,0,.2);
+    position: relative;
+    width: 230px;
+    height: 230px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 12px solid #fff;
+    background:
+        conic-gradient(
+            #2563eb 0deg 90deg,
+            #60a5fa 90deg 180deg,
+            #1d4ed8 180deg 270deg,
+            #93c5fd 270deg 360deg
+        );
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.25),
+        inset 0 0 0 4px rgba(255,255,255,.2);
+    transition:
+        transform 5.2s
+        cubic-bezier(.12,.72,.05,1);
+    will-change: transform;
 }
 
-.wheelCenter {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 58px;
-  height: 58px;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #fff;
-  color: #1554c7;
-  font-size: 25px;
-}
+
+/* =========================================================
+   PONTEIRO
+========================================================= */
 
 .wheelPointer {
-  position: absolute;
-  z-index: 3;
-  top: -35px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #fff;
-  font-weight: 800;
+    position: absolute;
+    z-index: 50;
+    top: 5px;
+    left: 50%;
+    width: 0;
+    height: 0;
+    transform: translateX(-50%);
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    border-top: 32px solid #f4b400;
+    filter:
+        drop-shadow(
+            0 3px 4px
+            rgba(0,0,0,.25)
+        );
+    transition: none;
+    animation: none;
+    pointer-events: none;
 }
 
-.wheelPointer span {
-  font-size: 1.2rem;
+
+/* =========================================================
+   CENTRO
+========================================================= */
+
+.wheelCenter {
+    position: absolute;
+    z-index: 5;
+    left: 50%;
+    top: 50%;
+    width: 58px;
+    height: 58px;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fff;
+    color: #1554c7;
+    font-size: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,.18);
+    pointer-events: none;
 }
 
-.wheelPointer small {
-  font-size: .55rem;
-}
+
+/* =========================================================
+   TEXTOS DA ROLETA
+========================================================= */
 
 .wheelText {
-  position: absolute;
-  color: #fff;
-  font-weight: 800;
-  font-size: .75rem;
-  text-align: center;
+    position: absolute;
+    z-index: 2;
+    color: #fff;
+    font-weight: 900;
+    font-size: .78rem;
+    text-align: center;
+    line-height: 1.15;
+    text-shadow: 0 2px 3px rgba(0,0,0,.2);
+    pointer-events: none;
 }
 
 .wheelTextOne {
-  top: 38px;
-  left: 45px;
+    top: 38px;
+    left: 45px;
 }
 
 .wheelTextTwo {
-  top: 40px;
-  right: 42px;
+    top: 40px;
+    right: 42px;
 }
 
 .wheelTextThree {
-  bottom: 40px;
-  left: 43px;
+    bottom: 40px;
+    left: 43px;
 }
 
 .wheelTextFour {
-  bottom: 40px;
-  right: 38px;
+    bottom: 40px;
+    right: 38px;
 }
+
 
 /* =========================================================
    SOBRE
 ========================================================= */
 
 .about {
-  padding: 100px 8%;
-  background: #f6f8fd;
+    padding: 100px 8%;
+    background: #f6f8fd;
 }
 
 .aboutHeader {
-  max-width: 750px;
-  margin: 0 auto 55px;
-  text-align: center;
+    max-width: 750px;
+    margin: 0 auto 55px;
+    text-align: center;
 }
 
 .aboutHeader > span,
 .feedbackIntro > span {
-  color: #1554c7;
-  font-size: .75rem;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+    color: #1554c7;
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
 .aboutHeader h2 {
-  margin: 12px 0;
-  font-size: clamp(2rem, 4vw, 3.2rem);
+    margin: 12px 0;
+    font-size: clamp(2rem, 4vw, 3.2rem);
 }
 
 .aboutHeader p {
-  color: #727d91;
-  line-height: 1.8;
+    color: #727d91;
+    line-height: 1.8;
 }
 
 .aboutGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 22px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
 }
 
 .aboutCard {
-  padding: 35px 25px;
-  text-align: center;
-  background: #fff;
-  border: 1px solid #e4e9f3;
-  transition: .25s ease;
+    padding: 35px 25px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #e4e9f3;
+    transition: .25s ease;
 }
 
 .aboutCard:hover {
-  transform: translateY(-7px);
-  border-color: #1554c7;
-  box-shadow: 0 15px 30px rgba(21,84,199,.1);
+    transform: translateY(-7px);
+    border-color: #1554c7;
+    box-shadow:
+        0 15px 30px
+        rgba(21,84,199,.1);
 }
 
 .aboutIcon {
-  width: 58px;
-  height: 58px;
-  margin: 0 auto 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #1554c7;
-  background: #eaf2ff;
-  font-size: 25px;
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1554c7;
+    background: #eaf2ff;
+    font-size: 25px;
 }
 
 .aboutCard h3 {
-  margin: 0 0 10px;
+    margin: 0 0 10px;
 }
 
 .aboutCard p {
-  margin: 0;
-  color: #7c8597;
-  font-size: .85rem;
-  line-height: 1.7;
+    margin: 0;
+    color: #7c8597;
+    font-size: .85rem;
+    line-height: 1.7;
 }
+
 
 /* =========================================================
    MARCAS
 ========================================================= */
 
 .brands {
-  padding: 90px 8%;
-  background: #fff;
-  text-align: center;
+    padding: 90px 8%;
+    background: #fff;
+    text-align: center;
 }
 
 .brands h2 {
-  margin: 0 0 45px;
-  font-size: clamp(2rem, 4vw, 3rem);
+    margin: 0 0 45px;
+    font-size: clamp(2rem, 4vw, 3rem);
 }
 
 .brands h2 span {
-  color: #1554c7;
+    color: #1554c7;
 }
 
 .brandsSlider {
-  display: flex;
-  align-items: center;
-  gap: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .brandArrow {
-  flex-shrink: 0;
-  width: 45px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #dce3f0;
-  background: #fff;
-  color: #1554c7;
-  cursor: pointer;
-  transition: .2s;
+    flex-shrink: 0;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dce3f0;
+    background: #fff;
+    color: #1554c7;
+    cursor: pointer;
+    transition: .2s;
 }
 
-.brandArrow:hover {
-  background: #1554c7;
-  color: #fff;
+.brandArrow:hover:not(:disabled) {
+    background: #1554c7;
+    color: #fff;
+}
+
+.brandArrow:disabled {
+    opacity: .4;
+    cursor: not-allowed;
 }
 
 .brandList {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 15px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    animation: trocarMarcas .45s ease both;
+}
+
+@keyframes trocarMarcas {
+    from {
+        opacity: 0;
+        transform: translateX(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .brandCard {
-  min-height: 130px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #f8faff;
-  border: 1px solid #e5eaf4;
-  font-size: 1.15rem;
-  font-weight: 800;
+    min-height: 130px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f8faff;
+    border: 1px solid #e5eaf4;
+    font-size: 1.15rem;
+    font-weight: 800;
 }
 
 .brandCard small {
-  margin-top: 5px;
-  font-size: .55rem;
-  font-weight: 500;
+    margin-top: 5px;
+    font-size: .55rem;
+    font-weight: 500;
 }
 
 .suvinil {
-  color: #1646a0;
+    color: #1646a0;
 }
 
 .coral {
-  color: #ed1c24;
+    color: #ed1c24;
 }
 
 .sherwin {
-  color: #173b8f;
+    color: #173b8f;
 }
 
 .eucatex {
-  color: #008b45;
+    color: #008b45;
 }
 
 .iquine {
-  color: #e44b24;
+    color: #e44b24;
 }
 
 .lukscolor {
-  color: #b52227;
+    color: #b52227;
 }
 
 .brandDots {
-  margin-top: 25px;
-  display: flex;
-  justify-content: center;
-  gap: 7px;
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 7px;
 }
 
 .brandDots i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #cbd5e1;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    transition: .2s ease;
 }
 
 .brandDots .active {
-  width: 22px;
-  border-radius: 10px;
-  background: #1554c7;
+    width: 22px;
+    border-radius: 10px;
+    background: #1554c7;
 }
+
 
 /* =========================================================
    AVALIAÇÕES
 ========================================================= */
 
 .testimonials {
-  padding: 100px 8%;
-  background: #f6f8fd;
+    padding: 100px 8%;
+    background: #f6f8fd;
 }
 
 .feedbackSectionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 40px;
-  margin-bottom: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 40px;
+    margin-bottom: 50px;
 }
 
 .feedbackIntro {
-  max-width: 650px;
+    max-width: 650px;
 }
 
 .feedbackIntro h2 {
-  margin: 12px 0;
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  line-height: 1.1;
+    margin: 12px 0;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.1;
 }
 
 .feedbackIntro h2 strong {
-  color: #1554c7;
+    color: #1554c7;
 }
 
 .feedbackIntro p {
-  margin: 0;
-  color: #7b8497;
+    margin: 0;
+    color: #7b8497;
 }
 
 .feedbackScoreCard {
-  min-width: 230px;
-  padding: 25px;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  background: #fff;
-  border: 1px solid #e2e8f3;
+    min-width: 230px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: #fff;
+    border: 1px solid #e2e8f3;
 }
 
 .feedbackScoreNumber {
-  color: #1554c7;
-  font-size: 3rem;
-  font-weight: 800;
+    color: #1554c7;
+    font-size: 3rem;
+    font-weight: 800;
 }
 
 .feedbackScoreStars,
 .feedbackRating {
-  display: flex;
-  gap: 3px;
+    display: flex;
+    gap: 3px;
 }
 
 .starActive {
-  color: #f4b400;
-  fill: #f4b400;
+    color: #f4b400;
+    fill: #f4b400;
 }
 
 .starInactive {
-  color: #ccd4e2;
+    color: #ccd4e2;
 }
 
 .feedbackScoreCard span {
-  display: block;
-  margin-top: 5px;
-  color: #8791a4;
-  font-size: .7rem;
+    display: block;
+    margin-top: 5px;
+    color: #8791a4;
+    font-size: .7rem;
 }
 
+
+/* =========================================================
+   CARROSSEL
+========================================================= */
+
 .carouselWrapper {
-  position: relative;
+    position: relative;
+    width: 100%;
 }
 
 .testimonialsGrid {
-  display: flex;
-  gap: 24px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  padding: 10px 3px 25px;
+    display: flex;
+    gap: 24px;
+    width: 100%;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    padding: 10px 3px 25px;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
 }
 
 .testimonialsGrid::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
+
+/* =========================================================
+   CARD DO FEEDBACK
+========================================================= */
+
 .testimonialCard {
-  flex: 0 0 calc(33.333% - 16px);
-  min-width: 320px;
-  padding: 28px;
-  background: #fff;
-  border: 1px solid #e3e8f2;
-  box-shadow: 0 8px 25px rgba(30,55,100,.05);
+    flex: 0 0 calc(33.333% - 16px);
+    min-width: 320px;
+    padding: 28px;
+    background: #fff;
+    border: 1px solid #e3e8f2;
+    box-shadow:
+        0 8px 25px
+        rgba(30,55,100,.05);
+    scroll-snap-align: start;
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+.testimonialCard:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 14px 35px
+        rgba(30,55,100,.09);
 }
 
 .testimonialTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .testiIconWrapper {
-  width: 43px;
-  height: 43px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #eaf2ff;
+    width: 43px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eaf2ff;
 }
 
 .testiIcon {
-  color: #1554c7;
+    color: #1554c7;
 }
 
 .feedbackCardScore {
-  margin-top: 22px;
+    margin-top: 22px;
 }
 
 .feedbackCardScore strong {
-  color: #1554c7;
-  font-size: 2rem;
+    color: #1554c7;
+    font-size: 2rem;
 }
 
 .feedbackCardScore span {
-  color: #929bad;
+    color: #929bad;
 }
 
 .testimonialComment {
-  min-height: 100px;
-  margin: 15px 0 25px;
-  color: #5f6a7f;
-  line-height: 1.7;
-  font-size: .9rem;
+    min-height: 100px;
+    margin: 15px 0 25px;
+    color: #5f6a7f;
+    line-height: 1.7;
+    font-size: .9rem;
 }
 
 .userAuthor {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-top: 18px;
-  border-top: 1px solid #edf0f5;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 18px;
+    border-top: 1px solid #edf0f5;
 }
 
 .feedbackAvatar,
 .feedbackAvatarInitial {
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-  border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 50%;
 }
 
 .feedbackAvatar {
-  object-fit: cover;
+    object-fit: cover;
 }
 
 .feedbackAvatarInitial {
-  align-items: center;
-  justify-content: center;
-  background: #1554c7;
-  color: #fff;
-  font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1554c7;
+    color: #fff;
+    font-weight: 800;
 }
 
 .userAuthor strong,
 .userAuthor span,
 .userAuthor small {
-  display: block;
+    display: block;
 }
 
 .userAuthor strong {
-  font-size: .85rem;
+    font-size: .85rem;
 }
 
 .userAuthor span,
 .userAuthor small {
-  color: #929bad;
-  font-size: .68rem;
+    color: #929bad;
+    font-size: .68rem;
 }
 
 .userAuthor small {
-  margin-top: 3px;
+    margin-top: 3px;
 }
 
+
+/* =========================================================
+   BOTÕES DO CARROSSEL
+========================================================= */
+
 .carouselButton {
-  position: absolute;
-  z-index: 2;
-  top: 50%;
-  width: 45px;
-  height: 45px;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  background: #1554c7;
-  color: #fff;
-  cursor: pointer;
-  box-shadow: 0 5px 15px rgba(21,84,199,.25);
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    width: 45px;
+    height: 45px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 50%;
+    background: #1554c7;
+    color: #fff;
+    cursor: pointer;
+    box-shadow:
+        0 5px 15px
+        rgba(21,84,199,.25);
+    transition:
+        .2s ease;
+}
+
+.carouselButton:hover {
+    background: #0e3e96;
+    transform:
+        translateY(-50%)
+        scale(1.05);
 }
 
 .carouselButtonLeft {
-  left: -22px;
+    left: -22px;
 }
 
 .carouselButtonRight {
-  right: -22px;
+    right: -22px;
 }
+
+
+/* =========================================================
+   LOADING / EMPTY
+========================================================= */
 
 .feedbackLoading,
 .feedbackEmpty {
-  padding: 70px 20px;
-  text-align: center;
-  color: #7d8799;
+    width: 100%;
+    padding: 70px 20px;
+    text-align: center;
+    color: #7d8799;
 }
 
 .feedbackEmpty svg {
-  font-size: 40px;
-  color: #1554c7;
+    font-size: 40px;
+    color: #1554c7;
 }
 
 .feedbackEmpty h3 {
-  color: #172033;
+    color: #172033;
 }
 
 .loadingSpinner {
-  width: 38px;
-  height: 38px;
-  margin: 0 auto 15px;
-  border: 4px solid #dce6f5;
-  border-top-color: #1554c7;
-  border-radius: 50%;
-  animation: spin .8s linear infinite;
+    width: 38px;
+    height: 38px;
+    margin: 0 auto 15px;
+    border: 4px solid #dce6f5;
+    border-top-color: #1554c7;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+    to {
+        transform: rotate(360deg);
+    }
 }
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(7, 18, 40, .72);
+    backdrop-filter: blur(7px);
+    animation: modalOverlayIn .25s ease;
+}
+
+.couponModal {
+    position: relative;
+    width: min(100%, 480px);
+    padding: 42px 35px 30px;
+    text-align: center;
+    background: #fff;
+    border-radius: 22px;
+    box-shadow:
+        0 30px 80px
+        rgba(0,0,0,.28);
+    animation:
+        modalIn .45s
+        cubic-bezier(.16,1,.3,1);
+}
+
+.modalClose {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 20px;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.modalClose:hover {
+    background: #e2e8f0;
+    color: #172033;
+    transform: rotate(90deg);
+}
+
+.modalIcon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #eaf2ff;
+    color: #1554c7;
+    font-size: 32px;
+}
+
+.modalSmallTitle {
+    display: block;
+    margin-bottom: 7px;
+    color: #1554c7;
+    font-size: .75rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+}
+
+.couponModal h2 {
+    margin: 0;
+    color: #172033;
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.modalDiscount {
+    width: 135px;
+    height: 135px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background:
+        linear-gradient(
+            135deg,
+            #1554c7,
+            #2563eb
+        );
+    color: #fff;
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+    box-shadow:
+        0 15px 35px
+        rgba(21,84,199,.28);
+}
+
+.modalDiscount span {
+    margin-top: 7px;
+    font-size: .8rem;
+    letter-spacing: 3px;
+}
+
+.modalDescription {
+    margin: 0 0 20px;
+    color: #69758a;
+    font-size: .9rem;
+    line-height: 1.6;
+}
+
+.couponBox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 15px 16px;
+    margin-bottom: 15px;
+    background: #f4f7ff;
+    border: 2px dashed #1554c7;
+    border-radius: 12px;
+    text-align: left;
+}
+
+.couponBox > div {
+    min-width: 0;
+}
+
+.couponBox span {
+    display: block;
+    margin-bottom: 5px;
+    color: #7b8498;
+    font-size: .65rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.couponBox strong {
+    display: block;
+    color: #1554c7;
+    font-size: 1.25rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    word-break: break-word;
+}
+
+.couponBox button {
+    flex-shrink: 0;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 8px;
+    background: #1554c7;
+    color: #fff;
+    font-family: inherit;
+    font-size: .8rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.couponBox button:hover {
+    background: #0e3e96;
+    transform: translateY(-2px);
+}
+
+.continueCartButton {
+    width: 100%;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border: 0;
+    border-radius: 9px;
+    background: #1554c7;
+    color: #fff;
+    font-family: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .25s ease;
+}
+
+.continueCartButton:hover {
+    background: #0e3e96;
+    transform: translateY(-2px);
+    box-shadow:
+        0 10px 25px
+        rgba(21,84,199,.25);
+}
+
+.modalContinueShopping {
+    width: 100%;
+    margin-top: 10px;
+    min-height: 45px;
+    border: 0;
+    background: transparent;
+    color: #64748b;
+    font-family: inherit;
+    font-size: .8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.modalContinueShopping:hover {
+    color: #1554c7;
+}
+
+
+/* =========================================================
+   ANIMAÇÕES MODAL
+========================================================= */
+
+@keyframes modalOverlayIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform:
+            translateY(25px)
+            scale(.9);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
 
 /* =========================================================
    FOOTER
 ========================================================= */
 
 .footer {
-  padding: 30px 8%;
-  text-align: center;
-  background: #111827;
-  color: #94a3b8;
-  font-size: .8rem;
+    padding: 30px 8%;
+    text-align: center;
+    background: #111827;
+    color: #94a3b8;
+    font-size: .8rem;
 }
 
 .footer p {
-  margin: 0;
+    margin: 0;
 }
 
+
 /* =========================================================
-   RESPONSIVO
+   RESPONSIVO — 1100PX
 ========================================================= */
 
 @media (max-width: 1100px) {
-  .hero {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
 
-  .heroText {
-    margin: auto;
-  }
+    .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
 
-  .heroButtons,
-  .heroBenefits {
-    justify-content: center;
-  }
+    .heroText {
+        margin: auto;
+    }
 
-  .statsDiscount {
-    grid-template-columns: 1fr;
-  }
+    .heroButtons,
+    .heroBenefits {
+        justify-content: center;
+    }
 
-  .aboutGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+    .statsDiscount {
+        grid-template-columns: 1fr;
+    }
 
-  .brandList {
-    grid-template-columns: repeat(3, 1fr);
-  }
+    .aboutGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 
-  .testimonialCard {
-    flex-basis: calc(50% - 12px);
-  }
+    .brandList {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .testimonialCard {
+        flex-basis: calc(50% - 12px);
+    }
+
+    .discountCard {
+        justify-content: center;
+    }
+
+    .discountText {
+        max-width: 500px;
+    }
 }
+
+
+/* =========================================================
+   RESPONSIVO — 800PX
+========================================================= */
+
+@media (max-width: 800px) {
+
+    .discountCard {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 25px;
+    }
+
+    .discountTitleIcon {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .discountText {
+        max-width: 100%;
+    }
+
+    .wheelArea {
+        margin-top: 10px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVO — 700PX
+========================================================= */
 
 @media (max-width: 700px) {
-  .hero {
-    padding: 110px 20px 60px;
-  }
 
-  .heroText h1 {
-    font-size: 3rem;
-    letter-spacing: -2px;
-  }
+    .hero {
+        padding:
+            110px 20px 60px;
+    }
 
-  .heroBenefits {
-    flex-direction: column;
-    align-items: center;
-  }
+    .heroText h1 {
+        font-size: 3rem;
+        letter-spacing: -2px;
+    }
 
-  .paintArtwork {
-    transform: scale(.75);
-  }
+    .heroBenefits {
+        flex-direction: column;
+        align-items: center;
+    }
 
-  .statsDiscount,
-  .about,
-  .brands,
-  .testimonials {
-    padding: 65px 20px;
-  }
+    .paintArtwork {
+        transform: scale(.75);
+    }
 
-  .statsCard {
-    grid-template-columns: 1fr 1fr;
-    padding: 15px;
-  }
+    .statsDiscount,
+    .about,
+    .brands,
+    .testimonials {
+        padding:
+            65px 20px;
+    }
 
-  .discountCard {
-    padding: 30px 20px;
-    flex-direction: column;
-    gap: 40px;
-    text-align: center;
-  }
+    .statsCard {
+        grid-template-columns: 1fr 1fr;
+        padding: 15px;
+    }
 
-  .discountWheel {
-    width: 190px;
-    height: 190px;
-  }
+    .discountCard {
+        padding:
+            35px 20px;
+    }
 
-  .aboutGrid {
-    grid-template-columns: 1fr;
-  }
+    .discountWheel {
+        width: 190px;
+        height: 190px;
+    }
 
-  .brandList {
-    grid-template-columns: repeat(2, 1fr);
-  }
+    .wheelArea {
+        width: 210px;
+        height: 230px;
+    }
 
-  .brandCard:nth-child(n+5) {
-    display: none;
-  }
+    .wheelPointer {
+        top: 15px;
+    }
 
-  .feedbackSectionHeader {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+    .aboutGrid {
+        grid-template-columns: 1fr;
+    }
 
-  .feedbackScoreCard {
-    width: 100%;
-  }
+    .brandList {
+        grid-template-columns: repeat(2, 1fr);
+    }
 
-  .testimonialCard {
-    flex-basis: 90%;
-    min-width: 280px;
-  }
+    .brandCard:nth-child(n+5) {
+        display: none;
+    }
 
-  .carouselButton {
-    display: none;
-  }
+    .feedbackSectionHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .feedbackScoreCard {
+        width: 100%;
+    }
+
+    .testimonialCard {
+        flex-basis: 90%;
+        min-width: 280px;
+    }
+
+    .carouselButton {
+        display: none;
+    }
 }
 
+
+/* =========================================================
+   RESPONSIVO — 500PX
+========================================================= */
+
+@media (max-width: 500px) {
+
+    .discountCard {
+        overflow: hidden;
+    }
+
+    .discountText h3 {
+        font-size: 1.45rem;
+    }
+
+    .discountText p br {
+        display: none;
+    }
+
+    .couponModal {
+        padding:
+            38px 20px 25px;
+    }
+
+    .couponModal h2 {
+        font-size: 1.7rem;
+    }
+
+    .couponBox {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .couponBox button {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVO — 450PX
+========================================================= */
+
 @media (max-width: 450px) {
-  .heroButtons {
-    flex-direction: column;
-    width: 100%;
-  }
 
-  .primaryButton,
-  .secondaryButton {
-    width: 100%;
-  }
+    .heroButtons {
+        flex-direction: column;
+        width: 100%;
+    }
 
-  .paintArtwork {
-    transform: scale(.6);
-    margin-left: -40px;
-  }
+    .primaryButton,
+    .secondaryButton {
+        width: 100%;
+    }
 
-  .statsCard {
-    grid-template-columns: 1fr;
-  }
+    .paintArtwork {
+        transform: scale(.6);
+        margin-left: -40px;
+    }
 
-  .brandList {
-    grid-template-columns: 1fr 1fr;
-  }
+    .statsCard {
+        grid-template-columns: 1fr;
+    }
+
+    .brandList {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .discountWheel {
+        width: 175px;
+        height: 175px;
+    }
+
+    .wheelArea {
+        width: 190px;
+    }
+
+    .wheelPointer {
+        top: 20px;
+    }
 }
