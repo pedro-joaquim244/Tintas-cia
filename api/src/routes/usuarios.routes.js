@@ -34,7 +34,7 @@ const pastaUsuarios = path.join(
     "usuarios"
 );
 
-// Criar pastas
+// Criar pastas caso não existam
 if (!fs.existsSync(pastaUploads)) {
     fs.mkdirSync(pastaUploads, {
         recursive: true
@@ -59,37 +59,27 @@ console.log(
 const storage = multer.diskStorage({
 
     destination: (_req, _file, cb) => {
-
-        cb(
-            null,
-            pastaUsuarios
-        );
-
+        cb(null, pastaUsuarios);
     },
 
     filename: (_req, file, cb) => {
 
-        const extensao =
-            path.extname(
-                file.originalname
-            ).toLowerCase();
+        const extensao = path
+            .extname(file.originalname)
+            .toLowerCase();
 
         const nomeArquivo =
             `usuario-${Date.now()}-${Math.round(
                 Math.random() * 1E9
             )}${extensao}`;
 
-        cb(
-            null,
-            nomeArquivo
-        );
-
+        cb(null, nomeArquivo);
     }
 
 });
 
 // =====================================================
-// FILTRO
+// FILTRO DE IMAGEM
 // =====================================================
 
 const fileFilter = (_req, file, cb) => {
@@ -101,30 +91,18 @@ const fileFilter = (_req, file, cb) => {
         "image/webp"
     ];
 
-    if (
-        tiposPermitidos.includes(
-            file.mimetype
-        )
-    ) {
-
+    if (tiposPermitidos.includes(file.mimetype)) {
         cb(null, true);
-
-    } else {
-
-        cb(
-            new Error(
-                "Formato de imagem inválido. Use JPG, JPEG, PNG ou WEBP."
-            ),
-            false
-        );
-
+        return;
     }
 
+    cb(
+        new Error(
+            "Formato de imagem inválido. Use JPG, JPEG, PNG ou WEBP."
+        ),
+        false
+    );
 };
-
-// =====================================================
-// UPLOAD
-// =====================================================
 
 const upload = multer({
 
@@ -162,6 +140,59 @@ const camposPublicos = `
 `;
 
 // =====================================================
+// FUNÇÃO AUXILIAR
+// =====================================================
+
+function montarUsuario(usuario) {
+
+    if (!usuario) {
+        return null;
+    }
+
+    return {
+        id: usuario.id,
+        nome: usuario.nome,
+        email: usuario.email,
+        tipo: usuario.tipo,
+
+        telefone: usuario.telefone || "",
+
+        data_nascimento:
+            usuario.data_nascimento || null,
+
+        endereco:
+            usuario.endereco || "",
+
+        numero:
+            usuario.numero || "",
+
+        complemento:
+            usuario.complemento || "",
+
+        bairro:
+            usuario.bairro || "",
+
+        cidade:
+            usuario.cidade || "",
+
+        estado:
+            usuario.estado || "",
+
+        cep:
+            usuario.cep || "",
+
+        foto:
+            usuario.foto || null,
+
+        criado_em:
+            usuario.criado_em || null,
+
+        atualizado_em:
+            usuario.atualizado_em || null
+    };
+}
+
+// =====================================================
 // LOGIN
 // =====================================================
 
@@ -179,118 +210,72 @@ router.post(
             if (!email || !senha) {
 
                 return res.status(400).json({
-                    erro: "Email e senha sao obrigatorios."
+                    erro: "Email e senha são obrigatórios."
                 });
-
             }
 
-            const emailNormalizado =
-                email
-                    .trim()
-                    .toLowerCase();
+            const emailNormalizado = String(email)
+                .trim()
+                .toLowerCase();
 
-            const [resultado] =
-                await pool.query(
-                    `
-                    SELECT *
-                    FROM usuarios
-                    WHERE email = ?
-                    `,
-                    [emailNormalizado]
-                );
+            const [resultado] = await pool.query(
+                `
+                SELECT *
+                FROM usuarios
+                WHERE email = ?
+                LIMIT 1
+                `,
+                [emailNormalizado]
+            );
 
-            const usuario =
-                resultado[0];
+            const usuario = resultado[0];
 
-            if (
-                !usuario ||
-                !(await bcrypt.compare(
-                    senha,
-                    usuario.senha
-                ))
-            ) {
+            if (!usuario) {
 
                 return res.status(401).json({
-                    erro: "Email ou senha invalidos."
+                    erro: "Email ou senha inválidos."
                 });
+            }
 
+            const senhaCorreta =
+                await bcrypt.compare(
+                    senha,
+                    usuario.senha
+                );
+
+            if (!senhaCorreta) {
+
+                return res.status(401).json({
+                    erro: "Email ou senha inválidos."
+                });
             }
 
             if (
-                !["admin", "cliente"]
-                    .includes(usuario.tipo)
+                !["admin", "cliente"].includes(
+                    usuario.tipo
+                )
             ) {
 
                 return res.status(403).json({
-                    erro: "Tipo de usuario invalido."
+                    erro: "Tipo de usuário inválido."
                 });
-
             }
 
-            const dadosUsuario = {
+            const dadosUsuario =
+                montarUsuario(usuario);
 
-                id: usuario.id,
-
-                nome:
-                    usuario.nome,
-
-                email:
-                    usuario.email,
-
-                tipo:
-                    usuario.tipo,
-
-                telefone:
-                    usuario.telefone || "",
-
-                data_nascimento:
-                    usuario.data_nascimento || null,
-
-                endereco:
-                    usuario.endereco || "",
-
-                numero:
-                    usuario.numero || "",
-
-                complemento:
-                    usuario.complemento || "",
-
-                bairro:
-                    usuario.bairro || "",
-
-                cidade:
-                    usuario.cidade || "",
-
-                estado:
-                    usuario.estado || "",
-
-                cep:
-                    usuario.cep || "",
-
-                foto:
-                    usuario.foto || null,
-
-                criado_em:
-                    usuario.criado_em,
-
-                atualizado_em:
-                    usuario.atualizado_em
-
-            };
-
-            const token =
-                jwt.sign(
-                    {
-                        id: usuario.id,
-                        nome: usuario.nome,
-                        email: usuario.email,
-                        tipo: usuario.tipo
-                    },
-                    config.jwtSecret,
-                    {
-                        expiresIn: "1d"
-                    }
-                );
+            const token = jwt.sign(
+                {
+                    id: usuario.id,
+                    nome: usuario.nome,
+                    email: usuario.email,
+                    tipo: usuario.tipo
+                },
+                config.jwtSecret,
+                {
+                    expiresIn: "1d"
+                }
+            );
 
             return res.json({
 
@@ -307,16 +292,29 @@ router.post(
         } catch (error) {
 
             console.error(
-                "ERRO AO FAZER LOGIN:",
-                error
+                "======================================"
+            );
+
+            console.error(
+                "ERRO AO FAZER LOGIN:"
+            );
+
+            console.error(error);
+
+            console.error(
+                "======================================"
             );
 
             return res.status(500).json({
-                erro: "Erro ao fazer login."
+
+                erro:
+                    "Erro ao fazer login.",
+
+                detalhes:
+                    error.message
+
             });
-
         }
-
     }
 );
 
@@ -346,27 +344,25 @@ router.post(
                 cep
             } = req.body;
 
-            if (
-                !nome ||
-                !email ||
-                !senha
-            ) {
+            if (!nome || !email || !senha) {
 
                 if (req.file) {
-                    fs.unlinkSync(
-                        req.file.path
-                    );
+
+                    try {
+                        fs.unlinkSync(
+                            req.file.path
+                        );
+                    } catch {}
                 }
 
                 return res.status(400).json({
                     erro:
-                        "Nome, email e senha sao obrigatorios."
+                        "Nome, email e senha são obrigatórios."
                 });
-
             }
 
             const emailNormalizado =
-                email
+                String(email)
                     .trim()
                     .toLowerCase();
 
@@ -376,6 +372,7 @@ router.post(
                     SELECT id
                     FROM usuarios
                     WHERE email = ?
+                    LIMIT 1
                     `,
                     [emailNormalizado]
                 );
@@ -383,16 +380,18 @@ router.post(
             if (existentes.length > 0) {
 
                 if (req.file) {
-                    fs.unlinkSync(
-                        req.file.path
-                    );
+
+                    try {
+                        fs.unlinkSync(
+                            req.file.path
+                        );
+                    } catch {}
                 }
 
                 return res.status(409).json({
                     erro:
-                        "Este email ja esta cadastrado."
+                        "Este email já está cadastrado."
                 });
-
             }
 
             const senhaCriptografada =
@@ -426,13 +425,24 @@ router.post(
                         foto
                     )
                     VALUES (
-                        ?, ?, ?, 'cliente',
-                        ?, ?, ?, ?, ?, ?, ?,
-                        ?, ?, ?
+                        ?,
+                        ?,
+                        ?,
+                        'cliente',
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        ?
                     )
                     `,
                     [
-                        nome.trim(),
+                        String(nome).trim(),
                         emailNormalizado,
                         senhaCriptografada,
                         telefone || null,
@@ -459,7 +469,7 @@ router.post(
                 );
 
             return res.status(201).json(
-                criados[0]
+                montarUsuario(criados[0])
             );
 
         } catch (error) {
@@ -467,29 +477,42 @@ router.post(
             if (req.file) {
 
                 try {
-
-                    fs.unlinkSync(
-                        req.file.path
-                    );
-
+                    if (
+                        fs.existsSync(
+                            req.file.path
+                        )
+                    ) {
+                        fs.unlinkSync(
+                            req.file.path
+                        );
+                    }
                 } catch {}
-
             }
 
             console.error(
-                "ERRO AO CADASTRAR USUARIO:",
-                error
+                "======================================"
+            );
+
+            console.error(
+                "ERRO AO CADASTRAR USUARIO:"
+            );
+
+            console.error(error);
+
+            console.error(
+                "======================================"
             );
 
             return res.status(500).json({
+
                 erro:
-                    "Erro ao cadastrar usuario.",
+                    "Erro ao cadastrar usuário.",
+
                 detalhes:
                     error.message
+
             });
-
         }
-
     }
 );
 
@@ -504,50 +527,79 @@ router.get(
 
         try {
 
+            if (!req.usuario?.id) {
+
+                return res.status(401).json({
+                    erro:
+                        "Usuário não autenticado."
+                });
+            }
+
+            const id =
+                Number(req.usuario.id);
+
+            if (!Number.isInteger(id)) {
+
+                return res.status(401).json({
+                    erro:
+                        "Token inválido."
+                });
+            }
+
             const [resultado] =
                 await pool.query(
                     `
                     SELECT ${camposPublicos}
                     FROM usuarios
                     WHERE id = ?
+                    LIMIT 1
                     `,
-                    [req.usuario.id]
+                    [id]
                 );
 
-            if (
-                resultado.length === 0
-            ) {
+            if (resultado.length === 0) {
 
                 return res.status(404).json({
                     erro:
-                        "Usuario nao encontrado."
+                        "Usuário não encontrado."
                 });
-
             }
 
             return res.json(
-                resultado[0]
+                montarUsuario(resultado[0])
             );
 
         } catch (error) {
 
             console.error(
-                "ERRO AO BUSCAR USUARIO:",
-                error
+                "======================================"
+            );
+
+            console.error(
+                "ERRO AO BUSCAR USUARIO LOGADO:"
+            );
+
+            console.error(error);
+
+            console.error(
+                "======================================"
             );
 
             return res.status(500).json({
+
                 erro:
-                    "Erro ao buscar usuario."
+                    "Erro ao restaurar sessão.",
+
+                detalhes:
+                    error.message
+
             });
-
         }
-
     }
 );
 
 // =====================================================
-// LISTAR USUÁRIOS
+// LISTAR TODOS OS USUÁRIOS
 // =====================================================
 
 router.get(
@@ -568,23 +620,38 @@ router.get(
                 );
 
             return res.json(
-                usuarios
+                usuarios.map(
+                    (usuario) =>
+                        montarUsuario(usuario)
+                )
             );
 
         } catch (error) {
 
             console.error(
-                "ERRO AO LISTAR USUARIOS:",
-                error
+                "======================================"
+            );
+
+            console.error(
+                "ERRO AO LISTAR USUARIOS:"
+            );
+
+            console.error(error);
+
+            console.error(
+                "======================================"
             );
 
             return res.status(500).json({
+
                 erro:
-                    "Erro ao listar usuarios."
+                    "Erro ao listar usuários.",
+
+                detalhes:
+                    error.message
+
             });
-
         }
-
     }
 );
 
@@ -602,17 +669,13 @@ router.get(
             const id =
                 Number(req.params.id);
 
-            if (isNaN(id)) {
+            if (!Number.isInteger(id)) {
 
                 return res.status(400).json({
                     erro:
-                        "ID de usuario invalido."
+                        "ID de usuário inválido."
                 });
-
             }
-
-            // Admin pode buscar qualquer usuário.
-            // Usuário comum só pode buscar a si mesmo.
 
             if (
                 req.usuario.tipo !== "admin" &&
@@ -621,9 +684,8 @@ router.get(
 
                 return res.status(403).json({
                     erro:
-                        "Voce so pode acessar seu proprio perfil."
+                        "Você só pode acessar seu próprio perfil."
                 });
-
             }
 
             const [resultado] =
@@ -632,23 +694,21 @@ router.get(
                     SELECT ${camposPublicos}
                     FROM usuarios
                     WHERE id = ?
+                    LIMIT 1
                     `,
                     [id]
                 );
 
-            if (
-                resultado.length === 0
-            ) {
+            if (resultado.length === 0) {
 
                 return res.status(404).json({
                     erro:
-                        "Usuario nao encontrado."
+                        "Usuário não encontrado."
                 });
-
             }
 
             return res.json(
-                resultado[0]
+                montarUsuario(resultado[0])
             );
 
         } catch (error) {
@@ -659,12 +719,15 @@ router.get(
             );
 
             return res.status(500).json({
+
                 erro:
-                    "Erro ao buscar usuario."
+                    "Erro ao buscar usuário.",
+
+                detalhes:
+                    error.message
+
             });
-
         }
-
     }
 );
 
@@ -685,24 +748,22 @@ router.put(
             const id =
                 Number(req.params.id);
 
-            if (isNaN(id)) {
+            if (!Number.isInteger(id)) {
 
                 if (req.file) {
-                    fs.unlinkSync(
-                        req.file.path
-                    );
+
+                    try {
+                        fs.unlinkSync(
+                            req.file.path
+                        );
+                    } catch {}
                 }
 
                 return res.status(400).json({
                     erro:
-                        "ID de usuario invalido."
+                        "ID de usuário inválido."
                 });
-
             }
-
-            // =================================================
-            // PERMISSÃO
-            // =================================================
 
             if (
                 req.usuario.tipo !== "admin" &&
@@ -710,21 +771,19 @@ router.put(
             ) {
 
                 if (req.file) {
-                    fs.unlinkSync(
-                        req.file.path
-                    );
+
+                    try {
+                        fs.unlinkSync(
+                            req.file.path
+                        );
+                    } catch {}
                 }
 
                 return res.status(403).json({
                     erro:
-                        "Voce so pode alterar sua propria foto."
+                        "Você só pode alterar sua própria foto."
                 });
-
             }
-
-            // =================================================
-            // FOTO NOVA
-            // =================================================
 
             if (!req.file) {
 
@@ -732,15 +791,10 @@ router.put(
                     erro:
                         "Nenhuma foto foi enviada."
                 });
-
             }
 
             arquivoNovo =
                 req.file.path;
-
-            // =================================================
-            // BUSCAR USUÁRIO
-            // =================================================
 
             const [usuarios] =
                 await pool.query(
@@ -750,61 +804,34 @@ router.put(
                         foto
                     FROM usuarios
                     WHERE id = ?
+                    LIMIT 1
                     `,
                     [id]
                 );
 
-            if (
-                usuarios.length === 0
-            ) {
+            if (usuarios.length === 0) {
 
-                fs.unlinkSync(
-                    req.file.path
-                );
+                if (
+                    fs.existsSync(
+                        req.file.path
+                    )
+                ) {
+                    fs.unlinkSync(
+                        req.file.path
+                    );
+                }
 
                 return res.status(404).json({
                     erro:
-                        "Usuario nao encontrado."
+                        "Usuário não encontrado."
                 });
-
             }
 
             const fotoAntiga =
                 usuarios[0].foto;
 
-            // =================================================
-            // CAMINHO QUE VAI PARA O BANCO
-            // =================================================
-
             const novaFoto =
                 `usuarios/${req.file.filename}`;
-
-            console.log(
-                "======================================"
-            );
-
-            console.log(
-                "NOVA FOTO:",
-                novaFoto
-            );
-
-            console.log(
-                "ARQUIVO FÍSICO:",
-                req.file.path
-            );
-
-            console.log(
-                "ARQUIVO EXISTE:",
-                fs.existsSync(req.file.path)
-            );
-
-            console.log(
-                "======================================"
-            );
-
-            // =================================================
-            // SALVAR NO BANCO
-            // =================================================
 
             await pool.query(
                 `
@@ -818,24 +845,18 @@ router.put(
                 ]
             );
 
-            // =================================================
-            // CONFIRMAR BANCO
-            // =================================================
-
             const [atualizado] =
                 await pool.query(
                     `
                     SELECT ${camposPublicos}
                     FROM usuarios
                     WHERE id = ?
+                    LIMIT 1
                     `,
                     [id]
                 );
 
-            // =================================================
-            // APAGAR FOTO ANTIGA
-            // =================================================
-
+            // Apagar foto antiga
             if (
                 fotoAntiga &&
                 fotoAntiga !== novaFoto
@@ -847,11 +868,6 @@ router.put(
                         fotoAntiga
                     );
 
-                console.log(
-                    "FOTO ANTIGA:",
-                    caminhoAntigo
-                );
-
                 if (
                     fs.existsSync(
                         caminhoAntigo
@@ -859,22 +875,17 @@ router.put(
                 ) {
 
                     try {
-
                         fs.unlinkSync(
                             caminhoAntigo
                         );
-
                     } catch (erro) {
 
                         console.warn(
-                            "Não foi possível apagar a foto antiga:",
+                            "Não foi possível apagar foto antiga:",
                             erro.message
                         );
-
                     }
-
                 }
-
             }
 
             arquivoNovo = null;
@@ -885,7 +896,9 @@ router.put(
                     "Foto atualizada com sucesso.",
 
                 usuario:
-                    atualizado[0]
+                    montarUsuario(
+                        atualizado[0]
+                    )
 
             });
 
@@ -896,24 +909,16 @@ router.put(
                 error
             );
 
-            // Apagar somente a foto NOVA
-            // caso o processo tenha falhado.
-
             if (
                 arquivoNovo &&
-                fs.existsSync(
-                    arquivoNovo
-                )
+                fs.existsSync(arquivoNovo)
             ) {
 
                 try {
-
                     fs.unlinkSync(
                         arquivoNovo
                     );
-
                 } catch {}
-
             }
 
             return res.status(500).json({
@@ -925,9 +930,7 @@ router.put(
                     error.message
 
             });
-
         }
-
     }
 );
 
@@ -945,13 +948,12 @@ router.delete(
             const id =
                 Number(req.params.id);
 
-            if (isNaN(id)) {
+            if (!Number.isInteger(id)) {
 
                 return res.status(400).json({
                     erro:
-                        "ID de usuario invalido."
+                        "ID de usuário inválido."
                 });
-
             }
 
             if (
@@ -961,9 +963,8 @@ router.delete(
 
                 return res.status(403).json({
                     erro:
-                        "Voce so pode remover sua propria foto."
+                        "Você só pode remover sua própria foto."
                 });
-
             }
 
             const [usuarios] =
@@ -972,19 +973,17 @@ router.delete(
                     SELECT foto
                     FROM usuarios
                     WHERE id = ?
+                    LIMIT 1
                     `,
                     [id]
                 );
 
-            if (
-                usuarios.length === 0
-            ) {
+            if (usuarios.length === 0) {
 
                 return res.status(404).json({
                     erro:
-                        "Usuario nao encontrado."
+                        "Usuário não encontrado."
                 });
-
             }
 
             const foto =
@@ -1013,12 +1012,12 @@ router.delete(
                     )
                 ) {
 
-                    fs.unlinkSync(
-                        caminho
-                    );
-
+                    try {
+                        fs.unlinkSync(
+                            caminho
+                        );
+                    } catch {}
                 }
-
             }
 
             return res.json({
@@ -1034,12 +1033,15 @@ router.delete(
             );
 
             return res.status(500).json({
+
                 erro:
-                    "Erro ao remover foto."
+                    "Erro ao remover foto.",
+
+                detalhes:
+                    error.message
+
             });
-
         }
-
     }
 );
 
@@ -1057,13 +1059,12 @@ router.put(
             const id =
                 Number(req.params.id);
 
-            if (isNaN(id)) {
+            if (!Number.isInteger(id)) {
 
                 return res.status(400).json({
                     erro:
-                        "ID de usuario invalido."
+                        "ID de usuário inválido."
                 });
-
             }
 
             if (
@@ -1073,9 +1074,8 @@ router.put(
 
                 return res.status(403).json({
                     erro:
-                        "Voce so pode atualizar o proprio perfil."
+                        "Você só pode atualizar o próprio perfil."
                 });
-
             }
 
             const {
@@ -1093,20 +1093,16 @@ router.put(
                 cep
             } = req.body;
 
-            if (
-                !nome ||
-                !email
-            ) {
+            if (!nome || !email) {
 
                 return res.status(400).json({
                     erro:
-                        "Nome e email sao obrigatorios."
+                        "Nome e email são obrigatórios."
                 });
-
             }
 
             const emailNormalizado =
-                email
+                String(email)
                     .trim()
                     .toLowerCase();
 
@@ -1116,6 +1112,7 @@ router.put(
                     SELECT id
                     FROM usuarios
                     WHERE id = ?
+                    LIMIT 1
                     `,
                     [id]
                 );
@@ -1126,9 +1123,8 @@ router.put(
 
                 return res.status(404).json({
                     erro:
-                        "Usuario nao encontrado."
+                        "Usuário não encontrado."
                 });
-
             }
 
             const [emailExistente] =
@@ -1138,6 +1134,7 @@ router.put(
                     FROM usuarios
                     WHERE email = ?
                     AND id != ?
+                    LIMIT 1
                     `,
                     [
                         emailNormalizado,
@@ -1151,12 +1148,11 @@ router.put(
 
                 return res.status(409).json({
                     erro:
-                        "Este email ja esta sendo usado."
+                        "Este email já está sendo usado."
                 });
-
             }
 
-            if (senha) {
+            if (senha && String(senha).trim()) {
 
                 const senhaCriptografada =
                     await bcrypt.hash(
@@ -1183,7 +1179,7 @@ router.put(
                     WHERE id = ?
                     `,
                     [
-                        nome.trim(),
+                        String(nome).trim(),
                         emailNormalizado,
                         senhaCriptografada,
                         telefone || null,
@@ -1219,7 +1215,7 @@ router.put(
                     WHERE id = ?
                     `,
                     [
-                        nome.trim(),
+                        String(nome).trim(),
                         emailNormalizado,
                         telefone || null,
                         data_nascimento || null,
@@ -1233,7 +1229,6 @@ router.put(
                         id
                     ]
                 );
-
             }
 
             const [atualizados] =
@@ -1242,12 +1237,15 @@ router.put(
                     SELECT ${camposPublicos}
                     FROM usuarios
                     WHERE id = ?
+                    LIMIT 1
                     `,
                     [id]
                 );
 
             return res.json(
-                atualizados[0]
+                montarUsuario(
+                    atualizados[0]
+                )
             );
 
         } catch (error) {
@@ -1258,14 +1256,15 @@ router.put(
             );
 
             return res.status(500).json({
+
                 erro:
-                    "Erro ao atualizar usuario.",
+                    "Erro ao atualizar usuário.",
+
                 detalhes:
                     error.message
+
             });
-
         }
-
     }
 );
 
@@ -1284,13 +1283,12 @@ router.delete(
             const id =
                 Number(req.params.id);
 
-            if (isNaN(id)) {
+            if (!Number.isInteger(id)) {
 
                 return res.status(400).json({
                     erro:
-                        "ID de usuario invalido."
+                        "ID de usuário inválido."
                 });
-
             }
 
             if (
@@ -1299,9 +1297,8 @@ router.delete(
 
                 return res.status(400).json({
                     erro:
-                        "O administrador nao pode excluir a propria conta."
+                        "O administrador não pode excluir a própria conta."
                 });
-
             }
 
             const [usuarios] =
@@ -1310,19 +1307,17 @@ router.delete(
                     SELECT foto
                     FROM usuarios
                     WHERE id = ?
+                    LIMIT 1
                     `,
                     [id]
                 );
 
-            if (
-                usuarios.length === 0
-            ) {
+            if (usuarios.length === 0) {
 
                 return res.status(404).json({
                     erro:
-                        "Usuario nao encontrado."
+                        "Usuário não encontrado."
                 });
-
             }
 
             const foto =
@@ -1343,9 +1338,8 @@ router.delete(
 
                 return res.status(404).json({
                     erro:
-                        "Usuario nao encontrado."
+                        "Usuário não encontrado."
                 });
-
             }
 
             if (foto) {
@@ -1362,17 +1356,17 @@ router.delete(
                     )
                 ) {
 
-                    fs.unlinkSync(
-                        caminho
-                    );
-
+                    try {
+                        fs.unlinkSync(
+                            caminho
+                        );
+                    } catch {}
                 }
-
             }
 
             return res.json({
                 mensagem:
-                    "Usuario excluido com sucesso."
+                    "Usuário excluído com sucesso."
             });
 
         } catch (error) {
@@ -1383,12 +1377,15 @@ router.delete(
             );
 
             return res.status(500).json({
+
                 erro:
-                    "Erro ao excluir usuario."
+                    "Erro ao excluir usuário.",
+
+                detalhes:
+                    error.message
+
             });
-
         }
-
     }
 );
 
@@ -1409,32 +1406,36 @@ router.use(
 
                 return res.status(400).json({
                     erro:
-                        "A imagem deve ter no maximo 2MB."
+                        "A imagem deve ter no máximo 2MB."
                 });
-
             }
 
             return res.status(400).json({
                 erro:
-                    "Erro ao enviar imagem."
+                    "Erro ao enviar imagem.",
+                detalhes:
+                    error.message
             });
-
         }
 
         if (error) {
 
+            console.error(
+                "ERRO NO UPLOAD:",
+                error
+            );
+
             return res.status(400).json({
                 erro:
-                    error.message
+                    error.message ||
+                    "Erro ao enviar imagem."
             });
-
         }
 
         return res.status(500).json({
             erro:
                 "Erro interno do servidor."
         });
-
     }
 );
 

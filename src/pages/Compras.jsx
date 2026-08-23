@@ -4,6 +4,7 @@ import style from "../styles/Compra.module.css";
 import { api } from "../services/api";
 import { useAuth } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
+import { FiArrowLeft } from "react-icons/fi";
 
 export default function Compra() {
     const { usuario } = useAuth();
@@ -267,9 +268,20 @@ export default function Compra() {
 
                 <section className={style.produtos}>
 
-                    <h1>
-                        Finalizar compra
-                    </h1>
+                    <div className={style.pageHeader}>
+                        <button
+                            type="button"
+                            className={style.backButton}
+                            onClick={() => navigate(-1)}
+                        >
+                            <FiArrowLeft />
+                            Voltar
+                        </button>
+
+                        <h1>
+                            Finalizar compra
+                        </h1>
+                    </div>
 
                     {produtos.length === 0 ? (
 
