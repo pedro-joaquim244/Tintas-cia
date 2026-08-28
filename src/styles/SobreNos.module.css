@@ -3,10 +3,9 @@
 ========================================================= */
 
 .container {
-  margin-top: 130px;
-
   width: 100%;
   min-height: 100vh;
+  padding-top: 112px;
 
   background: linear-gradient(to bottom, #f7f8ff, #f4f4f4);
 
@@ -17,8 +16,9 @@
 
 .main {
   width: 100%;
-
-  padding: 0 40px 35px;
+  max-width: var(--client-content-max);
+  margin: 0 auto;
+  padding: 0 var(--client-page-gutter) 48px;
 
   box-sizing: border-box;
 }

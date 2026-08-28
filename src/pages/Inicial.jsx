@@ -25,6 +25,15 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 import styles from "../styles/Inicial.module.css";
 
+import foto1 from "../assets/imagens/1.jpeg";
+import foto2 from "../assets/imagens/2.jpg";
+import foto3 from "../assets/imagens/3.jpg";
+import foto4 from "../assets/imagens/4.jpg";
+import foto5 from "../assets/imagens/5.jpg";
+import foto6 from "../assets/imagens/6.jpg";
+import foto7 from "../assets/imagens/7.jpg";
+import foto8 from "../assets/imagens/8.jpg";
+
 /* =========================================================
    CUPONS DA ROLETA
 ========================================================= */
@@ -35,6 +44,33 @@ const CUPONS_ROLETA = {
     20: "tintas20",
     30: "tintas30"
 };
+
+/* =========================================================
+   ÂNGULOS DA ROLETA
+   0° = topo
+========================================================= */
+
+const ANGULOS_INICIAIS_ROLETA = {
+    5: 315,
+    10: 45,
+    20: 225,
+    30: 135
+};
+
+const fotosMarcas = [
+    foto1,
+    foto2,
+    foto3,
+    foto4,
+    foto5,
+    foto6,
+    foto7,
+    foto8
+];
+
+/* =========================================================
+   URL DA API
+========================================================= */
 
 const API_URL =
     import.meta.env.VITE_API_URL ||
@@ -85,7 +121,6 @@ export default function Inicial() {
     const testimonialsRef = useRef(null);
 
     const [usuario, setUsuario] = useState(null);
-
     const [girando, setGirando] = useState(false);
     const [resultadoRoleta, setResultadoRoleta] = useState(null);
     const [modalRoleta, setModalRoleta] = useState(false);
@@ -99,45 +134,6 @@ export default function Inicial() {
         clientes: 0,
         produtos: 0
     });
-
-    const [paginaMarcas, setPaginaMarcas] = useState(0);
-
-    /* =====================================================
-       MARCAS
-    ===================================================== */
-
-    const marcas = [
-        {
-            nome: "Suvinil",
-            descricao: "Qualidade e inovação",
-            classe: "suvinil"
-        },
-        {
-            nome: "Coral",
-            descricao: "Cores que transformam",
-            classe: "coral"
-        },
-        {
-            nome: "Sherwin-Williams",
-            descricao: "Tecnologia em pintura",
-            classe: "sherwin"
-        },
-        {
-            nome: "Eucatex",
-            descricao: "Soluções para sua obra",
-            classe: "eucatex"
-        },
-        {
-            nome: "Iquine",
-            descricao: "Pintura de qualidade",
-            classe: "iquine"
-        },
-        {
-            nome: "Lukscolor",
-            descricao: "Cor e proteção",
-            classe: "lukscolor"
-        }
-    ];
 
     /* =====================================================
        USUÁRIO
@@ -192,6 +188,35 @@ export default function Inicial() {
     }, [usuario]);
 
     /* =====================================================
+       MANTÉM O PONTEIRO SOBRE O PRÊMIO
+    ===================================================== */
+
+    useEffect(() => {
+        if (
+            !resultadoRoleta ||
+            !wheelRef.current
+        ) {
+            return;
+        }
+
+        const anguloInicial =
+            ANGULOS_INICIAIS_ROLETA[
+                resultadoRoleta.desconto
+            ];
+
+        if (typeof anguloInicial !== "number") {
+            return;
+        }
+
+        const rotacaoPremio =
+            (360 - anguloInicial) % 360;
+
+        gsap.set(wheelRef.current, {
+            rotation: rotacaoPremio
+        });
+    }, [resultadoRoleta]);
+
+    /* =====================================================
        BUSCAR FEEDBACKS
     ===================================================== */
 
@@ -224,9 +249,9 @@ export default function Inicial() {
         buscarFeedbacks();
     }, []);
 
-    /* =========================================================
+    /* =====================================================
        BUSCAR ESTATÍSTICAS
-    ========================================================= */
+    ===================================================== */
 
     useEffect(() => {
         const buscarEstatisticas = async () => {
@@ -256,9 +281,9 @@ export default function Inicial() {
         buscarEstatisticas();
     }, []);
 
-    /* =========================================================
-       ROLAR FEEDBACKS MANUALMENTE
-    ========================================================= */
+    /* =====================================================
+       ROLAR FEEDBACKS
+    ===================================================== */
 
     const rolarFeedbacks = (direcao) => {
         if (!testimonialsRef.current) {
@@ -291,9 +316,9 @@ export default function Inicial() {
         });
     };
 
-    /* =========================================================
+    /* =====================================================
        SORTEAR DESCONTO
-    ========================================================= */
+    ===================================================== */
 
     const sortearDesconto = () => {
         const descontos = [5, 10, 20, 30];
@@ -305,9 +330,9 @@ export default function Inicial() {
         return descontos[indice];
     };
 
-    /* =========================================================
+    /* =====================================================
        GIRAR ROLETA
-    ========================================================= */
+    ===================================================== */
 
     const girarRoleta = () => {
         if (girando) {
@@ -320,7 +345,6 @@ export default function Inicial() {
             );
 
             navigate("/login");
-
             return;
         }
 
@@ -335,20 +359,22 @@ export default function Inicial() {
 
         setGirando(true);
 
-        const desconto = sortearDesconto();
+        const desconto =
+            sortearDesconto();
 
         const codigo =
             CUPONS_ROLETA[desconto];
 
-        const angulos = {
-            5: 315,
-            10: 225,
-            20: 135,
-            30: 45
-        };
+        const anguloInicial =
+            ANGULOS_INICIAIS_ROLETA[desconto];
+
+        /*
+         * O ponteiro fica no topo (0°).
+         * A roleta gira o complemento do ângulo.
+         */
 
         const anguloPremio =
-            angulos[desconto];
+            (360 - anguloInicial) % 360;
 
         const voltas = 5;
 
@@ -382,9 +408,9 @@ export default function Inicial() {
         });
     };
 
-    /* =========================================================
+    /* =====================================================
        COPIAR CUPOM
-    ========================================================= */
+    ===================================================== */
 
     const copiarCupom = async () => {
         if (!resultadoRoleta?.codigo) {
@@ -409,58 +435,27 @@ export default function Inicial() {
         }
     };
 
-    /* =========================================================
+    /* =====================================================
        IR PARA CARRINHO
-    ========================================================= */
+    ===================================================== */
 
     const irParaCarrinho = () => {
         setModalRoleta(false);
         navigate("/carrinho");
     };
 
-    /* =========================================================
+    /* =====================================================
        FECHAR MODAL
-    ========================================================= */
+    ===================================================== */
 
     const fecharModal = () => {
         setModalRoleta(false);
         setCodigoCopiado(false);
     };
 
-    /* =========================================================
-       MARCAS VISÍVEIS
-    ========================================================= */
-
-    const marcasPorPagina = 6;
-
-    const totalPaginasMarcas =
-        Math.ceil(
-            marcas.length / marcasPorPagina
-        );
-
-    const marcasVisiveis = marcas.slice(
-        paginaMarcas * marcasPorPagina,
-        paginaMarcas * marcasPorPagina +
-            marcasPorPagina
-    );
-
-    useEffect(() => {
-        if (totalPaginasMarcas <= 1) {
-            return;
-        }
-
-        const intervalo = setInterval(() => {
-            setPaginaMarcas(paginaAtual =>
-                (paginaAtual + 1) % totalPaginasMarcas
-            );
-        }, 4500);
-
-        return () => clearInterval(intervalo);
-    }, [totalPaginasMarcas]);
-
-    /* =========================================================
+    /* =====================================================
        ESTATÍSTICAS
-    ========================================================= */
+    ===================================================== */
 
     const quantidadeFeedbacks =
         feedbacks.length;
@@ -482,12 +477,13 @@ export default function Inicial() {
     const formatarEstatistica = (valor) =>
         Number(valor).toLocaleString("pt-BR");
 
-    /* =========================================================
+    /* =====================================================
        JSX
-    ========================================================= */
+    ===================================================== */
 
     return (
         <div className={styles.container}>
+
             <Header />
 
             {/* =================================================
@@ -495,7 +491,9 @@ export default function Inicial() {
             ================================================= */}
 
             <section className={styles.hero}>
+
                 <div className={styles.heroText}>
+
                     <h1>
                         Transforme
                         <br />
@@ -512,6 +510,7 @@ export default function Inicial() {
                     </p>
 
                     <div className={styles.heroButtons}>
+
                         <button
                             className={
                                 styles.primaryButton
@@ -544,6 +543,7 @@ export default function Inicial() {
                             <FiDroplet />
                             Conheça nossa loja
                         </button>
+
                     </div>
 
                     <div
@@ -551,6 +551,7 @@ export default function Inicial() {
                             styles.heroBenefits
                         }
                     >
+
                         <div>
                             <FiShield />
 
@@ -592,6 +593,7 @@ export default function Inicial() {
                                 </span>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -600,16 +602,19 @@ export default function Inicial() {
                 ================================================= */}
 
                 <div className={styles.heroImage}>
+
                     <div
                         className={
                             styles.paintArtwork
                         }
                     >
+
                         <div
                             className={
                                 styles.paintCan
                             }
                         >
+
                             <div
                                 className={
                                     styles.paintCanTop
@@ -621,6 +626,7 @@ export default function Inicial() {
                                     styles.paintCanBody
                                 }
                             >
+
                                 <div
                                     className={
                                         styles.paintDrips
@@ -645,7 +651,9 @@ export default function Inicial() {
                                         PREMIUM
                                     </span>
                                 </div>
+
                             </div>
+
                         </div>
 
                         <div
@@ -653,6 +661,7 @@ export default function Inicial() {
                                 styles.paintRoller
                             }
                         >
+
                             <div
                                 className={
                                     styles.rollerHandle
@@ -666,6 +675,7 @@ export default function Inicial() {
                             >
                                 <span />
                             </div>
+
                         </div>
 
                         <div
@@ -678,8 +688,11 @@ export default function Inicial() {
                             <i />
                             <i />
                         </div>
+
                     </div>
+
                 </div>
+
             </section>
 
             {/* =================================================
@@ -691,11 +704,13 @@ export default function Inicial() {
                     styles.statsDiscount
                 }
             >
+
                 <div
                     className={
                         styles.statsCard
                     }
                 >
+
                     <div
                         className={
                             styles.statItem
@@ -791,6 +806,7 @@ export default function Inicial() {
                             avaliações recebidas
                         </span>
                     </div>
+
                 </div>
 
                 {/* =================================================
@@ -802,11 +818,13 @@ export default function Inicial() {
                         styles.discountCard
                     }
                 >
+
                     <div
                         className={
                             styles.discountText
                         }
                     >
+
                         <div
                             className={
                                 styles.discountTitleIcon
@@ -841,6 +859,7 @@ export default function Inicial() {
                                 ? "Você já participou da roleta."
                                 : "Disponível uma vez por usuário."}
                         </small>
+
                     </div>
 
                     <div
@@ -848,6 +867,7 @@ export default function Inicial() {
                             styles.wheelArea
                         }
                     >
+
                         <div
                             className={
                                 styles.wheelPointer
@@ -860,6 +880,7 @@ export default function Inicial() {
                                 styles.discountWheel
                             }
                         >
+
                             <span
                                 className={`${styles.wheelText} ${styles.wheelTextOne}`}
                             >
@@ -891,9 +912,13 @@ export default function Inicial() {
                             >
                                 <FiGift />
                             </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </section>
 
             {/* =================================================
@@ -904,11 +929,13 @@ export default function Inicial() {
                 id="sobre"
                 className={styles.about}
             >
+
                 <div
                     className={
                         styles.aboutHeader
                     }
                 >
+
                     <span>
                         Por que escolher a Tintas+
                     </span>
@@ -923,6 +950,7 @@ export default function Inicial() {
                         e praticidade para todos os tipos
                         de projetos.
                     </p>
+
                 </div>
 
                 <div
@@ -930,6 +958,7 @@ export default function Inicial() {
                         styles.aboutGrid
                     }
                 >
+
                     <div
                         className={
                             styles.aboutCard
@@ -1023,124 +1052,42 @@ export default function Inicial() {
                             solução.
                         </p>
                     </div>
+
                 </div>
+
             </section>
 
             {/* =================================================
-                MARCAS
+                FOTOS
             ================================================= */}
 
-            <section
-                className={styles.brands}
-            >
-                <h2>
-                    Trabalhamos com as{" "}
-                    <span>
-                        melhores marcas
-                    </span>
-                </h2>
+            <div className={styles.marcasWrapper}>
 
-                <div
-                    className={
-                        styles.brandsSlider
-                    }
-                >
-                    <button
-                        className={
-                            styles.brandArrow
-                        }
-                        onClick={() =>
-                            setPaginaMarcas(
-                                Math.max(
-                                    0,
-                                    paginaMarcas - 1
-                                )
-                            )
-                        }
-                        disabled={
-                            paginaMarcas === 0
-                        }
-                    >
-                        <FiChevronLeft />
-                    </button>
+                <div className={styles.marcasTrack}>
 
-                    <div
-                        key={paginaMarcas}
-                        className={
-                            styles.brandList
-                        }
-                    >
-                        {marcasVisiveis.map(
-                            (marca) => (
-                                <div
-                                    key={
-                                        marca.nome
+                    {[0, 1, 2].map((grupo) => (
+                        <div
+                            className={styles.marcaGroup}
+                            key={`grupo-marcas-${grupo}`}
+                            aria-hidden={grupo !== 0}
+                        >
+                            {fotosMarcas.map((foto, index) => (
+                                <img
+                                    key={`${grupo}-${index}`}
+                                    src={foto}
+                                    alt={
+                                        grupo === 0
+                                            ? `Produto ${index + 1}`
+                                            : ""
                                     }
-                                    className={
-                                        styles.brandCard
-                                    }
-                                >
-                                    <strong
-                                        className={
-                                            styles[
-                                                marca.classe
-                                            ]
-                                        }
-                                    >
-                                        {marca.nome}
-                                    </strong>
-
-                                    <small>
-                                        {
-                                            marca.descricao
-                                        }
-                                    </small>
-                                </div>
-                            )
-                        )}
-                    </div>
-
-                    <button
-                        className={
-                            styles.brandArrow
-                        }
-                        onClick={() =>
-                            setPaginaMarcas(
-                                Math.min(
-                                    totalPaginasMarcas -
-                                        1,
-                                    paginaMarcas + 1
-                                )
-                            )
-                        }
-                        disabled={
-                            paginaMarcas >=
-                            totalPaginasMarcas - 1
-                        }
-                    >
-                        <FiChevronRight />
-                    </button>
-                </div>
-
-                <div
-                    className={
-                        styles.brandDots
-                    }
-                >
-                    {Array.from({
-                        length: totalPaginasMarcas
-                    }).map((_, index) => (
-                        <i
-                            key={index}
-                            className={
-                                paginaMarcas === index
-                                    ? styles.active
-                                    : ""
-                            }
-                        />
+                                    className={styles.marcaImagem}
+                                />
+                            ))}
+                        </div>
                     ))}
+
                 </div>
-            </section>
+            </div>
 
             {/* =================================================
                 AVALIAÇÕES
@@ -1151,16 +1098,19 @@ export default function Inicial() {
                     styles.testimonials
                 }
             >
+
                 <div
                     className={
                         styles.feedbackSectionHeader
                     }
                 >
+
                     <div
                         className={
                             styles.feedbackIntro
                         }
                     >
+
                         <span>
                             O que nossos clientes dizem
                         </span>
@@ -1177,6 +1127,7 @@ export default function Inicial() {
                             Confira as avaliações de quem
                             já comprou com a Tintas+.
                         </p>
+
                     </div>
 
                     <div
@@ -1184,6 +1135,7 @@ export default function Inicial() {
                             styles.feedbackScoreCard
                         }
                     >
+
                         <strong
                             className={
                                 styles.feedbackScoreNumber
@@ -1193,6 +1145,7 @@ export default function Inicial() {
                         </strong>
 
                         <div>
+
                             <div
                                 className={
                                     styles.feedbackScoreStars
@@ -1220,8 +1173,11 @@ export default function Inicial() {
                             <span>
                                 Avaliação dos clientes
                             </span>
+
                         </div>
+
                     </div>
+
                 </div>
 
                 <div
@@ -1229,6 +1185,7 @@ export default function Inicial() {
                         styles.carouselWrapper
                     }
                 >
+
                     <button
                         className={`${styles.carouselButton} ${styles.carouselButtonLeft}`}
                         onClick={() =>
@@ -1245,7 +1202,9 @@ export default function Inicial() {
                             styles.testimonialsGrid
                         }
                     >
+
                         {carregandoFeedbacks ? (
+
                             <div
                                 className={
                                     styles.feedbackLoading
@@ -1261,12 +1220,15 @@ export default function Inicial() {
                                     Carregando avaliações...
                                 </p>
                             </div>
+
                         ) : feedbacks.length === 0 ? (
+
                             <div
                                 className={
                                     styles.feedbackEmpty
                                 }
                             >
+
                                 <FiMessageSquare />
 
                                 <h3>
@@ -1277,16 +1239,14 @@ export default function Inicial() {
                                     Seja o primeiro a avaliar
                                     nossa loja.
                                 </p>
+
                             </div>
+
                         ) : (
-                            /*
-                             * DUPLICAÇÃO DOS FEEDBACKS
-                             *
-                             * Isso cria a segunda sequência
-                             * necessária para o carrossel infinito.
-                             */
+
                             [...feedbacks, ...feedbacks].map(
                                 (feedback, index) => {
+
                                     const nome =
                                         feedback.nome ||
                                         feedback.usuario_nome ||
@@ -1309,11 +1269,13 @@ export default function Inicial() {
                                                 styles.testimonialCard
                                             }
                                         >
+
                                             <div
                                                 className={
                                                     styles.testimonialTop
                                                 }
                                             >
+
                                                 <div
                                                     className={
                                                         styles.testiIconWrapper
@@ -1331,14 +1293,11 @@ export default function Inicial() {
                                                         styles.feedbackRating
                                                     }
                                                 >
+
                                                     {[1, 2, 3, 4, 5].map(
-                                                        (
-                                                            star
-                                                        ) => (
+                                                        (star) => (
                                                             <FiStar
-                                                                key={
-                                                                    star
-                                                                }
+                                                                key={star}
                                                                 className={
                                                                     star <=
                                                                     Number(
@@ -1351,7 +1310,9 @@ export default function Inicial() {
                                                             />
                                                         )
                                                     )}
+
                                                 </div>
+
                                             </div>
 
                                             <div
@@ -1363,9 +1324,7 @@ export default function Inicial() {
                                                     {Number(
                                                         feedback.nota ||
                                                             0
-                                                    ).toFixed(
-                                                        1
-                                                    )}
+                                                    ).toFixed(1)}
                                                 </strong>
 
                                                 <span>
@@ -1387,14 +1346,14 @@ export default function Inicial() {
                                                     styles.userAuthor
                                                 }
                                             >
+
                                                 {foto ? (
+
                                                     <img
                                                         src={obterUrlFoto(
                                                             foto
                                                         )}
-                                                        alt={
-                                                            nome
-                                                        }
+                                                        alt={nome}
                                                         className={
                                                             styles.feedbackAvatar
                                                         }
@@ -1405,7 +1364,9 @@ export default function Inicial() {
                                                                 "none";
                                                         }}
                                                     />
+
                                                 ) : (
+
                                                     <div
                                                         className={
                                                             styles.feedbackAvatarInitial
@@ -1413,29 +1374,33 @@ export default function Inicial() {
                                                     >
                                                         {inicial}
                                                     </div>
+
                                                 )}
 
                                                 <div>
+
                                                     <strong>
                                                         {nome}
                                                     </strong>
 
                                                     <span>
-                                                        Cliente
-                                                        Tintas+
+                                                        Cliente Tintas+
                                                     </span>
 
                                                     <small>
-                                                        Avaliação
-                                                        verificada
+                                                        Avaliação verificada
                                                     </small>
+
                                                 </div>
+
                                             </div>
+
                                         </article>
                                     );
                                 }
                             )
                         )}
+
                     </div>
 
                     <button
@@ -1447,7 +1412,9 @@ export default function Inicial() {
                     >
                         <FiChevronRight />
                     </button>
+
                 </div>
+
             </section>
 
             {/* =================================================
@@ -1456,12 +1423,14 @@ export default function Inicial() {
 
             {modalRoleta &&
                 resultadoRoleta && (
+
                     <div
                         className={
                             styles.modalOverlay
                         }
                         onClick={fecharModal}
                     >
+
                         <div
                             className={
                                 styles.couponModal
@@ -1470,13 +1439,12 @@ export default function Inicial() {
                                 event.stopPropagation()
                             }
                         >
+
                             <button
                                 className={
                                     styles.modalClose
                                 }
-                                onClick={
-                                    fecharModal
-                                }
+                                onClick={fecharModal}
                                 aria-label="Fechar"
                             >
                                 <FiX />
@@ -1529,7 +1497,9 @@ export default function Inicial() {
                                     styles.couponBox
                                 }
                             >
+
                                 <div>
+
                                     <span>
                                         SEU CUPOM
                                     </span>
@@ -1539,6 +1509,7 @@ export default function Inicial() {
                                             resultadoRoleta.codigo
                                         }
                                     </strong>
+
                                 </div>
 
                                 <button
@@ -1546,6 +1517,7 @@ export default function Inicial() {
                                         copiarCupom
                                     }
                                 >
+
                                     {codigoCopiado ? (
                                         <>
                                             <FiCheck />
@@ -1557,7 +1529,9 @@ export default function Inicial() {
                                             Copiar
                                         </>
                                     )}
+
                                 </button>
+
                             </div>
 
                             <button
@@ -1582,25 +1556,15 @@ export default function Inicial() {
                             >
                                 Continuar comprando
                             </button>
+
                         </div>
+
                     </div>
                 )}
 
             {/* =================================================
                 FOOTER
             ================================================= */}
-
-            <footer
-                className={
-                    styles.footer
-                }
-            >
-                <p>
-                    ©{" "}
-                    {new Date().getFullYear()}{" "}
-                    Tintas+ — Todos os direitos reservados.
-                </p>
-            </footer>
         </div>
     );
 }

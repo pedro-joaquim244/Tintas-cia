@@ -5,6 +5,8 @@ import {
 
 
 import { useAuth } from "../contexts/authContext";
+import Rodape from "../components/Rodape-User/Rodape.jsx";
+import "../styles/clientTheme.css";
 
 
 
@@ -71,7 +73,12 @@ export default function RotasCliente(){
 
 
 
-    return <Outlet/>;
+    return (
+        <div className="clientTheme">
+            <Outlet />
+            <Rodape />
+        </div>
+    );
 
 
 

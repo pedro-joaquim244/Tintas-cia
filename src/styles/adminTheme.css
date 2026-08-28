@@ -1,0 +1,43 @@
+:root {
+  --admin-primary: #2563eb;
+  --admin-primary-dark: #1d4ed8;
+  --admin-primary-soft: #eff6ff;
+  --admin-background: #f4f7fb;
+  --admin-surface: #ffffff;
+  --admin-text: #0f172a;
+  --admin-text-muted: #64748b;
+  --admin-border: #e2e8f0;
+  --admin-success: #16a34a;
+  --admin-warning: #d97706;
+  --admin-danger: #dc2626;
+}
+
+.adminTheme {
+  min-height: 100vh;
+  color: var(--admin-text);
+  font-family: "Lato", sans-serif;
+  background: var(--admin-background);
+}
+
+.adminTheme button,
+.adminTheme input,
+.adminTheme select,
+.adminTheme textarea {
+  font-family: inherit;
+}
+
+.adminTheme h1,
+.adminTheme h2,
+.adminTheme h3,
+.adminTheme h4,
+.adminTheme p,
+.adminTheme span,
+.adminTheme label,
+.adminTheme td,
+.adminTheme th,
+.adminTheme button,
+.adminTheme input,
+.adminTheme select,
+.adminTheme textarea {
+  letter-spacing: 0;
+}

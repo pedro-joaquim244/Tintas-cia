@@ -830,28 +830,33 @@ export default function Pedidos() {
             <Cabecalho />
 
 
+
+            
+
             <main className={styles.main}>
 
                 {/* =================================================
                     TOPO
                 ================================================= */}
+<div className={styles.topbar}>
 
-                <div className={styles.top}>
+          <div>
 
-                    <div>
+            <span className={styles.badge}>
+              Administração
+            </span>
 
-                        <h1 className={styles.title}>
-                            Pedidos
-                        </h1>
+            <h1 className={styles.title}>
+              Pedidos
+            </h1>
 
-                        <p className={styles.subtitle}>
-                            Gerencie todos os pedidos da loja.
-                        </p>
+            <p>
+              Gerencie todos os pedidos da sua loja.
+            </p>
 
-                    </div>
+          </div>
 
-
-                    <button
+          <button
                         className={styles.newBtn}
                         onClick={carregarDados}
                         disabled={carregando}
@@ -865,7 +870,11 @@ export default function Pedidos() {
 
                     </button>
 
-                </div>
+        </div>
+
+
+                    
+
 
 
                 {/* =================================================

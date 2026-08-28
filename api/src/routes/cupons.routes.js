@@ -419,18 +419,17 @@ router.get(
 // ALTERAR STATUS
 // =====================================================
 
-router.put(
-    "/:id",
+router.patch(
+    "/:id/status",
     async (req, res) => {
 
         try {
 
             const { id } = req.params;
 
-            const status =
-                req.body.ativo
-                    ? "Ativo"
-                    : "Inativo";
+            const status = req.body.status === "Ativo"
+                ? "Ativo"
+                : "Inativo";
 
 
             await pool.query(
@@ -465,6 +464,31 @@ router.put(
 
         }
 
+    }
+);
+
+router.put(
+    "/:id",
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const status = req.body.ativo ? "Ativo" : "Inativo";
+
+            await pool.query(
+                `UPDATE cupons SET status = ? WHERE id = ?`,
+                [status, id]
+            );
+
+            return res.json({
+                mensagem: "Status do cupom atualizado."
+            });
+        } catch (error) {
+            console.error("Erro ao alterar status:", error);
+
+            return res.status(500).json({
+                mensagem: "Erro ao alterar status."
+            });
+        }
     }
 );
 

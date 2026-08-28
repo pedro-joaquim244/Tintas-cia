@@ -13,6 +13,7 @@ import {
   FiPlus,
   FiArrowUpRight,
   FiClock,
+  FiTag,
   FiX,
 } from "react-icons/fi";
 
@@ -932,7 +933,7 @@ export default function Dashboard() {
               }
               onClick={() =>
                 navigate(
-                  "/admin/pedidos"
+                  "/admin/cupons"
                 )
               }
             >
@@ -940,18 +941,18 @@ export default function Dashboard() {
               <div>
 
                 <h3>
-                  Histórico
+                  Adicionar cupom de desconto
                 </h3>
 
 
                 <p>
-                  Veja pedidos e movimentações.
+                  adicione cupons de desconto para promoções.
                 </p>
 
               </div>
 
 
-              <FiClock />
+              <FiTag />
 
             </div>
 

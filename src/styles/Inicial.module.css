@@ -1681,3 +1681,68 @@
         top: 20px;
     }
 }
+
+.marcasWrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;    /* ESSENCIAL: esconde a barra de rolagem */
+  padding: 12px 0;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+/* Cada grupo tem a mesma largura para o loop não apresentar salto. */
+.marcasTrack {
+        display: flex;
+        width: max-content;
+        animation: deslizarMarcas 24s linear infinite;
+    animation-play-state: running;
+        will-change: transform;
+}
+
+.marcaGroup {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 22px;
+        padding: 6px 11px;
+        box-sizing: border-box;
+}
+
+.marcaImagem {
+        flex: 0 0 auto;
+        width: 165px;
+        height: 165px;
+    object-fit: contain;
+        border-radius: 14px;
+        display: block;
+    padding: 8px;
+    background: #fff;
+        box-shadow: 0 8px 22px rgba(30, 55, 100, .14);
+}
+
+@keyframes deslizarMarcas {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+        transform: translateX(-33.333333%);
+  }
+}
+
+@media (max-width: 750px) {
+    .marcaGroup {
+        gap: 14px;
+        padding: 6px 7px;
+  }
+
+    .marcaImagem {
+        width: 125px;
+        height: 125px;
+    }
+
+    .marcasTrack {
+        animation-duration: 18s;
+  }
+}
+

@@ -133,7 +133,7 @@ router.get("/", async (req, res) => {
                 preco,
                 foto
             FROM itens
-            WHERE quantidade <= 5
+            WHERE quantidade < 5
             ORDER BY quantidade ASC
             LIMIT 10
         `);

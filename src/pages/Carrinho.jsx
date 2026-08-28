@@ -111,10 +111,15 @@ export default function Carrinho() {
         }catch(error){
 
 
+            const mensagem = error.response?.data?.erro ||
+                "Não foi possível alterar a quantidade.";
+
             console.log(
                 "Erro quantidade:",
                 error
             );
+
+            alert(mensagem);
 
 
         }
@@ -405,6 +410,10 @@ export default function Carrinho() {
                                 {item.quantidade}
 
                             </span>
+
+                            <small>
+                                Estoque: {item.estoque_disponivel}
+                            </small>
 
 
 

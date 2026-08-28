@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import style from "../styles/Usuarios.module.css";
 
 import { api } from "../services/api";
@@ -14,9 +15,9 @@ import {
     FaEnvelope,
     FaMapMarkerAlt,
     FaCalendarAlt,
-    FaTimes,
-    FaUserTie
+    FaTimes
 } from "react-icons/fa";
+
 import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho";
 
 export default function Usuarios() {
@@ -24,15 +25,18 @@ export default function Usuarios() {
     const [usuarios, setUsuarios] = useState([]);
 
     const [busca, setBusca] = useState("");
-    const [filtroTipo, setFiltroTipo] = useState("todos");
 
-    const [carregando, setCarregando] = useState(true);
+    const [filtroTipo, setFiltroTipo] =
+        useState("todos");
 
-    const [erro, setErro] = useState("");
+    const [carregando, setCarregando] =
+        useState(true);
+
+    const [erro, setErro] =
+        useState("");
 
     const [usuarioSelecionado, setUsuarioSelecionado] =
         useState(null);
-
 
     // =====================================================
     // BUSCAR USUÁRIOS
@@ -45,9 +49,30 @@ export default function Usuarios() {
             setCarregando(true);
             setErro("");
 
-            const resposta = await api.get("/usuarios");
+            const resposta =
+                await api.get("/usuarios");
 
-            setUsuarios(resposta.data);
+            const dados = resposta.data;
+
+            // A rota atual retorna um array, mas mantemos compatibilidade
+            // com respostas encapsuladas para não ocultar os usuários.
+            const listaUsuarios = Array.isArray(dados)
+                ? dados
+                : Array.isArray(dados?.usuarios)
+                    ? dados.usuarios
+                    : Array.isArray(dados?.users)
+                        ? dados.users
+                        : Array.isArray(dados?.data)
+                            ? dados.data
+                            : [];
+
+            if (!Array.isArray(listaUsuarios)) {
+                throw new Error(
+                    "A API não retornou uma lista de usuários."
+                );
+            }
+
+            setUsuarios(listaUsuarios);
 
         } catch (error) {
 
@@ -56,19 +81,21 @@ export default function Usuarios() {
                 error
             );
 
-            setErro(
+            const mensagem =
                 error.response?.data?.erro ||
-                "Não foi possível carregar os usuários."
-            );
+                error.response?.data?.message ||
+                error.message ||
+                "Não foi possível carregar os usuários.";
+
+            setErro(mensagem);
+
+            setUsuarios([]);
 
         } finally {
 
             setCarregando(false);
-
         }
-
     }
-
 
     // =====================================================
     // CARREGAR AO ABRIR
@@ -80,42 +107,41 @@ export default function Usuarios() {
 
     }, []);
 
-
     // =====================================================
     // FILTRAR USUÁRIOS
     // =====================================================
 
-    const usuariosFiltrados = usuarios.filter((usuario) => {
+    const usuariosFiltrados =
+        usuarios.filter((usuario) => {
 
-        const texto = busca
-            .toLowerCase()
-            .trim();
+            const texto =
+                busca
+                    .toLowerCase()
+                    .trim();
 
-        const correspondeBusca =
-            !texto ||
-            usuario.nome
-                ?.toLowerCase()
-                .includes(texto) ||
-            usuario.email
-                ?.toLowerCase()
-                .includes(texto) ||
-            String(usuario.id)
-                .includes(texto) ||
-            usuario.telefone
-                ?.toLowerCase()
-                .includes(texto);
+            const correspondeBusca =
+                !texto ||
+                usuario.nome
+                    ?.toLowerCase()
+                    .includes(texto) ||
+                usuario.email
+                    ?.toLowerCase()
+                    .includes(texto) ||
+                String(usuario.id)
+                    .includes(texto) ||
+                String(usuario.telefone || "")
+                    .toLowerCase()
+                    .includes(texto);
 
-        const correspondeTipo =
-            filtroTipo === "todos" ||
-            usuario.tipo === filtroTipo;
+            const correspondeTipo =
+                filtroTipo === "todos" ||
+                usuario.tipo === filtroTipo;
 
-        return (
-            correspondeBusca &&
-            correspondeTipo
-        );
-
-    });
-
+            return (
+                correspondeBusca &&
+                correspondeTipo
+            );
+        });
 
     // =====================================================
     // ESTATÍSTICAS
@@ -136,16 +162,16 @@ export default function Usuarios() {
                 usuario.tipo === "admin"
         ).length;
 
-
     // =====================================================
     // EXCLUIR USUÁRIO
     // =====================================================
 
     async function excluirUsuario(usuario) {
 
-        const confirmar = window.confirm(
-            `Tem certeza que deseja excluir o usuário "${usuario.nome}"?`
-        );
+        const confirmar =
+            window.confirm(
+                `Tem certeza que deseja excluir o usuário "${usuario.nome}"?`
+            );
 
         if (!confirmar) {
             return;
@@ -157,18 +183,22 @@ export default function Usuarios() {
                 `/usuarios/${usuario.id}`
             );
 
-            setUsuarios((lista) =>
-                lista.filter(
-                    (item) =>
-                        item.id !== usuario.id
-                )
+            setUsuarios(
+                (lista) =>
+                    lista.filter(
+                        (item) =>
+                            item.id !== usuario.id
+                    )
             );
 
             if (
                 usuarioSelecionado?.id ===
                 usuario.id
             ) {
-                setUsuarioSelecionado(null);
+
+                setUsuarioSelecionado(
+                    null
+                );
             }
 
         } catch (error) {
@@ -180,13 +210,11 @@ export default function Usuarios() {
 
             alert(
                 error.response?.data?.erro ||
+                error.response?.data?.message ||
                 "Não foi possível excluir o usuário."
             );
-
         }
-
     }
-
 
     // =====================================================
     // FORMATAR DATA
@@ -206,15 +234,14 @@ export default function Usuarios() {
                 dataFormatada.getTime()
             )
         ) {
+
             return "Não informado";
         }
 
         return dataFormatada.toLocaleDateString(
             "pt-BR"
         );
-
     }
-
 
     // =====================================================
     // FORMATAR DATA E HORA
@@ -234,15 +261,43 @@ export default function Usuarios() {
                 dataFormatada.getTime()
             )
         ) {
+
             return "Não informado";
         }
 
         return dataFormatada.toLocaleString(
             "pt-BR"
         );
-
     }
 
+    // =====================================================
+    // FOTO DO USUÁRIO
+    // =====================================================
+
+    function obterFoto(foto) {
+
+        if (!foto) {
+            return null;
+        }
+
+        if (
+            foto.startsWith("http://") ||
+            foto.startsWith("https://")
+        ) {
+
+            return foto;
+        }
+
+        const baseURL =
+            api.defaults.baseURL
+                ?.replace(/\/$/, "");
+
+        if (!baseURL) {
+            return null;
+        }
+
+        return `${baseURL}/uploads/${foto}`;
+    }
 
     // =====================================================
     // JSX
@@ -252,51 +307,32 @@ export default function Usuarios() {
 
         <main className={style.container}>
 
-            <Cabecalho/>
+            <Cabecalho />
 
-            <div className={style.header}>
+            {/* =================================================
+                CABEÇALHO
+            ================================================= */}
+<div className={style.topbar}>
 
-                <div className={style.headerLeft}>
+          <div>
 
-                    <div className={style.headerIcon}>
-                        <FaUsers />
-                    </div>
+            <span className={style.badge}>
+              Administração
+            </span>
 
-                    <div>
+            <h1 className={style.title}>
+              Produtos
+            </h1>
 
-                        <h1>
-                            Usuários
-                        </h1>
+            <p>
+              Gerencie todos os produtos da sua loja.
+            </p>
 
-                        <p>
-                            Gerencie todos os usuários
-                            cadastrados no site.
-                        </p>
+          </div>
 
-                    </div>
+                 </div>
 
-                </div>
-
-                <div className={style.headerTotal}>
-
-                    <FaUsers />
-
-                    <div>
-
-                        <strong>
-                            {totalUsuarios}
-                        </strong>
-
-                        <span>
-                            usuários
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
+           
 
             {/* =================================================
                 ESTATÍSTICAS
@@ -326,7 +362,6 @@ export default function Usuarios() {
 
                 </div>
 
-
                 <div className={style.statCard}>
 
                     <div
@@ -348,7 +383,6 @@ export default function Usuarios() {
                     </div>
 
                 </div>
-
 
                 <div className={style.statCard}>
 
@@ -374,7 +408,6 @@ export default function Usuarios() {
 
             </div>
 
-
             {/* =================================================
                 CONTEÚDO
             ================================================= */}
@@ -382,7 +415,7 @@ export default function Usuarios() {
             <section className={style.card}>
 
                 {/* =================================================
-                    BARRA DE CONTROLES
+                    CONTROLES
                 ================================================= */}
 
                 <div className={style.controls}>
@@ -394,16 +427,20 @@ export default function Usuarios() {
                         </h2>
 
                         <p>
-                            {usuariosFiltrados.length}{" "}
+
+                            {usuariosFiltrados.length}
+
+                            {" "}
+
                             resultado
                             {usuariosFiltrados.length !== 1
                                 ? "s"
                                 : ""
                             }
+
                         </p>
 
                     </div>
-
 
                     <div className={style.filters}>
 
@@ -427,7 +464,6 @@ export default function Usuarios() {
                             />
 
                         </div>
-
 
                         <select
                             value={filtroTipo}
@@ -456,7 +492,6 @@ export default function Usuarios() {
 
                 </div>
 
-
                 {/* =================================================
                     ERRO
                 ================================================= */}
@@ -464,11 +499,12 @@ export default function Usuarios() {
                 {erro && (
 
                     <div className={style.error}>
+
                         {erro}
+
                     </div>
 
                 )}
-
 
                 {/* =================================================
                     CARREGANDO
@@ -492,10 +528,6 @@ export default function Usuarios() {
 
                 ) : usuariosFiltrados.length === 0 ? (
 
-                    /* =================================================
-                        VAZIO
-                    ================================================= */
-
                     <div className={style.empty}>
 
                         <div
@@ -507,23 +539,41 @@ export default function Usuarios() {
                         </div>
 
                         <h3>
-                            Nenhum usuário encontrado
+                            {erro
+                                ? "Não foi possível carregar os usuários"
+                                : "Nenhum usuário encontrado"
+                            }
                         </h3>
 
                         <p>
-                            Tente alterar os filtros
-                            ou realizar uma nova busca.
+
+                            {erro
+                                ? "Verifique sua sessão e o servidor."
+                                : "Tente alterar os filtros ou realizar uma nova busca."
+                            }
+
                         </p>
+
+                        {erro && (
+
+                            <button
+                                type="button"
+                                onClick={buscarUsuarios}
+                            >
+                                Tentar novamente
+                            </button>
+
+                        )}
 
                     </div>
 
                 ) : (
 
-                    /* =================================================
-                        TABELA
-                    ================================================= */
-
-                    <div className={style.tableWrapper}>
+                    <div
+                        className={
+                            style.tableWrapper
+                        }
+                    >
 
                         <table>
 
@@ -559,242 +609,267 @@ export default function Usuarios() {
 
                             </thead>
 
-
                             <tbody>
 
                                 {usuariosFiltrados.map(
-                                    (usuario) => (
+                                    (usuario) => {
 
-                                        <tr
-                                            key={
-                                                usuario.id
-                                            }
-                                        >
+                                        const foto =
+                                            obterFoto(
+                                                usuario.foto
+                                            );
 
-                                            {/* USUÁRIO */}
+                                        return (
 
-                                            <td>
+                                            <tr
+                                                key={
+                                                    usuario.id
+                                                }
+                                            >
 
-                                                <div
-                                                    className={
-                                                        style.userInfo
-                                                    }
-                                                >
+                                                {/* USUÁRIO */}
+
+                                                <td>
 
                                                     <div
                                                         className={
-                                                            style.avatar
+                                                            style.userInfo
+                                                        }
+                                                    >
+
+                                                        <div
+                                                            className={
+                                                                style.avatar
+                                                            }
+                                                        >
+
+                                                            {foto ? (
+
+                                                                <img
+                                                                    src={foto}
+                                                                    alt={
+                                                                        usuario.nome
+                                                                    }
+                                                                    onError={(
+                                                                        event
+                                                                    ) => {
+
+                                                                        event.currentTarget.style.display =
+                                                                            "none";
+                                                                    }}
+                                                                />
+
+                                                            ) : usuario.tipo ===
+                                                                "admin"
+                                                                ? (
+                                                                    <FaUserShield />
+                                                                )
+                                                                : (
+                                                                    <FaUser />
+                                                                )}
+
+                                                        </div>
+
+                                                        <div>
+
+                                                            <strong>
+                                                                {
+                                                                    usuario.nome
+                                                                }
+                                                            </strong>
+
+                                                            <span>
+                                                                ID #
+                                                                {
+                                                                    usuario.id
+                                                                }
+                                                            </span>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </td>
+
+                                                {/* CONTATO */}
+
+                                                <td>
+
+                                                    <div
+                                                        className={
+                                                            style.contact
+                                                        }
+                                                    >
+
+                                                        <span>
+
+                                                            <FaEnvelope />
+
+                                                            {
+                                                                usuario.email
+                                                            }
+
+                                                        </span>
+
+                                                        {usuario.telefone && (
+
+                                                            <span>
+
+                                                                <FaPhone />
+
+                                                                {
+                                                                    usuario.telefone
+                                                                }
+
+                                                            </span>
+
+                                                        )}
+
+                                                    </div>
+
+                                                </td>
+
+                                                {/* TIPO */}
+
+                                                <td>
+
+                                                    <span
+                                                        className={
+                                                            usuario.tipo ===
+                                                            "admin"
+                                                                ? style.adminBadge
+                                                                : style.clientBadge
                                                         }
                                                     >
 
                                                         {usuario.tipo ===
                                                         "admin"
-                                                            ? <FaUserShield />
-                                                            : <FaUser />
+                                                            ? (
+                                                                <>
+                                                                    <FaUserShield />
+                                                                    Administrador
+                                                                </>
+                                                            )
+                                                            : (
+                                                                <>
+                                                                    <FaUser />
+                                                                    Cliente
+                                                                </>
+                                                            )}
+
+                                                    </span>
+
+                                                </td>
+
+                                                {/* CIDADE */}
+
+                                                <td>
+
+                                                    <div
+                                                        className={
+                                                            style.location
                                                         }
+                                                    >
 
-                                                    </div>
-
-
-                                                    <div>
-
-                                                        <strong>
-                                                            {
-                                                                usuario.nome
-                                                            }
-                                                        </strong>
+                                                        <FaMapMarkerAlt />
 
                                                         <span>
-                                                            ID #
-                                                            {
-                                                                usuario.id
-                                                            }
+
+                                                            {usuario.cidade ||
+                                                            usuario.estado
+                                                                ? `${usuario.cidade || "Não informado"}${usuario.estado
+                                                                    ? ` - ${usuario.estado}`
+                                                                    : ""
+                                                                }`
+                                                                : "Não informado"}
+
                                                         </span>
 
                                                     </div>
 
-                                                </div>
+                                                </td>
 
-                                            </td>
+                                                {/* DATA */}
 
+                                                <td>
 
-                                            {/* CONTATO */}
-
-                                            <td>
-
-                                                <div
-                                                    className={
-                                                        style.contact
-                                                    }
-                                                >
-
-                                                    <span>
-
-                                                        <FaEnvelope />
-
-                                                        {
-                                                            usuario.email
+                                                    <div
+                                                        className={
+                                                            style.date
                                                         }
+                                                    >
 
-                                                    </span>
-
-
-                                                    {usuario.telefone && (
+                                                        <FaCalendarAlt />
 
                                                         <span>
 
-                                                            <FaPhone />
-
-                                                            {
-                                                                usuario.telefone
-                                                            }
-
-                                                        </span>
-
-                                                    )}
-
-                                                </div>
-
-                                            </td>
-
-
-                                            {/* TIPO */}
-
-                                            <td>
-
-                                                <span
-                                                    className={
-                                                        usuario.tipo ===
-                                                        "admin"
-                                                            ? style.adminBadge
-                                                            : style.clientBadge
-                                                    }
-                                                >
-
-                                                    {usuario.tipo ===
-                                                    "admin"
-                                                        ? (
-                                                            <>
-                                                                <FaUserShield />
-                                                                Administrador
-                                                            </>
-                                                        )
-                                                        : (
-                                                            <>
-                                                                <FaUser />
-                                                                Cliente
-                                                            </>
-                                                        )
-                                                    }
-
-                                                </span>
-
-                                            </td>
-
-
-                                            {/* CIDADE */}
-
-                                            <td>
-
-                                                <div
-                                                    className={
-                                                        style.location
-                                                    }
-                                                >
-
-                                                    <FaMapMarkerAlt />
-
-                                                    <span>
-
-                                                        {usuario.cidade ||
-                                                        usuario.estado
-                                                            ? `${usuario.cidade || "Não informado"}${usuario.estado ? ` - ${usuario.estado}` : ""}`
-                                                            : "Não informado"}
-
-                                                    </span>
-
-                                                </div>
-
-                                            </td>
-
-
-                                            {/* DATA */}
-
-                                            <td>
-
-                                                <div
-                                                    className={
-                                                        style.date
-                                                    }
-                                                >
-
-                                                    <FaCalendarAlt />
-
-                                                    <span>
-                                                        {
-                                                            formatarData(
+                                                            {formatarData(
                                                                 usuario.criado_em
-                                                            )
-                                                        }
-                                                    </span>
+                                                            )}
 
-                                                </div>
+                                                        </span>
 
-                                            </td>
+                                                    </div>
 
+                                                </td>
 
-                                            {/* AÇÕES */}
+                                                {/* AÇÕES */}
 
-                                            <td>
+                                                <td>
 
-                                                <div
-                                                    className={
-                                                        style.actions
-                                                    }
-                                                >
-
-                                                    <button
-                                                        type="button"
+                                                    <div
                                                         className={
-                                                            style.viewButton
-                                                        }
-                                                        title="Ver detalhes"
-                                                        onClick={() =>
-                                                            setUsuarioSelecionado(
-                                                                usuario
-                                                            )
+                                                            style.actions
                                                         }
                                                     >
-                                                        <FaEye />
-                                                    </button>
 
+                                                        <button
+                                                            type="button"
+                                                            className={
+                                                                style.viewButton
+                                                            }
+                                                            title="Ver detalhes"
+                                                            onClick={() =>
+                                                                setUsuarioSelecionado(
+                                                                    usuario
+                                                                )
+                                                            }
+                                                        >
+                                                            <FaEye />
+                                                        </button>
 
-                                                    <button
-                                                        type="button"
-                                                        className={
-                                                            style.deleteButton
-                                                        }
-                                                        title="Excluir usuário"
-                                                        onClick={() =>
-                                                            excluirUsuario(
-                                                                usuario
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            usuario.tipo ===
-                                                            "admin"
-                                                        }
-                                                    >
-                                                        <FaTrash />
-                                                    </button>
+                                                        <button
+                                                            type="button"
+                                                            className={
+                                                                style.deleteButton
+                                                            }
+                                                            title={
+                                                                usuario.tipo ===
+                                                                "admin"
+                                                                    ? "Administrador não pode ser excluído"
+                                                                    : "Excluir usuário"
+                                                            }
+                                                            onClick={() =>
+                                                                excluirUsuario(
+                                                                    usuario
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                usuario.tipo ===
+                                                                "admin"
+                                                            }
+                                                        >
+                                                            <FaTrash />
+                                                        </button>
 
-                                                </div>
+                                                    </div>
 
-                                            </td>
+                                                </td>
 
-                                        </tr>
+                                            </tr>
 
-                                    )
+                                        );
+                                    }
                                 )}
 
                             </tbody>
@@ -807,9 +882,8 @@ export default function Usuarios() {
 
             </section>
 
-
             {/* =================================================
-                MODAL DE DETALHES
+                MODAL
             ================================================= */}
 
             {usuarioSelecionado && (
@@ -848,8 +922,7 @@ export default function Usuarios() {
                             <FaTimes />
                         </button>
 
-
-                        {/* CABEÇALHO MODAL */}
+                        {/* CABEÇALHO */}
 
                         <div
                             className={
@@ -863,14 +936,31 @@ export default function Usuarios() {
                                 }
                             >
 
-                                {usuarioSelecionado.tipo ===
-                                "admin"
-                                    ? <FaUserShield />
-                                    : <FaUser />
-                                }
+                                {obterFoto(
+                                    usuarioSelecionado.foto
+                                ) ? (
+
+                                    <img
+                                        src={
+                                            obterFoto(
+                                                usuarioSelecionado.foto
+                                            )
+                                        }
+                                        alt={
+                                            usuarioSelecionado.nome
+                                        }
+                                    />
+
+                                ) : usuarioSelecionado.tipo ===
+                                    "admin"
+                                    ? (
+                                        <FaUserShield />
+                                    )
+                                    : (
+                                        <FaUser />
+                                    )}
 
                             </div>
-
 
                             <div>
 
@@ -890,7 +980,6 @@ export default function Usuarios() {
                             </div>
 
                         </div>
-
 
                         {/* TIPO */}
 
@@ -913,11 +1002,9 @@ export default function Usuarios() {
                                         <FaUser />
                                         Cliente
                                     </>
-                                )
-                            }
+                                )}
 
                         </div>
-
 
                         {/* INFORMAÇÕES */}
 
@@ -952,7 +1039,6 @@ export default function Usuarios() {
 
                             </div>
 
-
                             <div
                                 className={
                                     style.detailItem
@@ -978,7 +1064,6 @@ export default function Usuarios() {
 
                             </div>
 
-
                             <div
                                 className={
                                     style.detailItem
@@ -994,17 +1079,16 @@ export default function Usuarios() {
                                     </span>
 
                                     <strong>
-                                        {
-                                            formatarData(
-                                                usuarioSelecionado.data_nascimento
-                                            )
-                                        }
+
+                                        {formatarData(
+                                            usuarioSelecionado.data_nascimento
+                                        )}
+
                                     </strong>
 
                                 </div>
 
                             </div>
-
 
                             <div
                                 className={
@@ -1023,7 +1107,11 @@ export default function Usuarios() {
                                     <strong>
 
                                         {usuarioSelecionado.endereco
-                                            ? `${usuarioSelecionado.endereco}${usuarioSelecionado.numero ? `, ${usuarioSelecionado.numero}` : ""}`
+                                            ? `${usuarioSelecionado.endereco}${
+                                                usuarioSelecionado.numero
+                                                    ? `, ${usuarioSelecionado.numero}`
+                                                    : ""
+                                            }`
                                             : "Não informado"}
 
                                     </strong>
@@ -1041,7 +1129,6 @@ export default function Usuarios() {
                                 </div>
 
                             </div>
-
 
                             <div
                                 className={
@@ -1062,7 +1149,19 @@ export default function Usuarios() {
                                         {usuarioSelecionado.bairro ||
                                         usuarioSelecionado.cidade ||
                                         usuarioSelecionado.estado
-                                            ? `${usuarioSelecionado.bairro || ""}${usuarioSelecionado.bairro && usuarioSelecionado.cidade ? ", " : ""}${usuarioSelecionado.cidade || ""}${usuarioSelecionado.estado ? ` - ${usuarioSelecionado.estado}` : ""}`
+                                            ? `${usuarioSelecionado.bairro || ""}${
+                                                usuarioSelecionado.bairro &&
+                                                usuarioSelecionado.cidade
+                                                    ? ", "
+                                                    : ""
+                                            }${
+                                                usuarioSelecionado.cidade ||
+                                                ""
+                                            }${
+                                                usuarioSelecionado.estado
+                                                    ? ` - ${usuarioSelecionado.estado}`
+                                                    : ""
+                                            }`
                                             : "Não informado"}
 
                                     </strong>
@@ -1070,10 +1169,13 @@ export default function Usuarios() {
                                     {usuarioSelecionado.cep && (
 
                                         <small>
+
                                             CEP:{" "}
+
                                             {
                                                 usuarioSelecionado.cep
                                             }
+
                                         </small>
 
                                     )}
@@ -1083,7 +1185,6 @@ export default function Usuarios() {
                             </div>
 
                         </div>
-
 
                         {/* DATAS */}
 
@@ -1100,15 +1201,14 @@ export default function Usuarios() {
                                 </span>
 
                                 <strong>
-                                    {
-                                        formatarDataHora(
-                                            usuarioSelecionado.criado_em
-                                        )
-                                    }
+
+                                    {formatarDataHora(
+                                        usuarioSelecionado.criado_em
+                                    )}
+
                                 </strong>
 
                             </div>
-
 
                             <div>
 
@@ -1117,17 +1217,16 @@ export default function Usuarios() {
                                 </span>
 
                                 <strong>
-                                    {
-                                        formatarDataHora(
-                                            usuarioSelecionado.atualizado_em
-                                        )
-                                    }
+
+                                    {formatarDataHora(
+                                        usuarioSelecionado.atualizado_em
+                                    )}
+
                                 </strong>
 
                             </div>
 
                         </div>
-
 
                         {/* RODAPÉ */}
 
@@ -1147,7 +1246,6 @@ export default function Usuarios() {
                             >
                                 Fechar
                             </button>
-
 
                             {usuarioSelecionado.tipo !==
                             "admin" && (
@@ -1181,7 +1279,5 @@ export default function Usuarios() {
             )}
 
         </main>
-
     );
-
 }

@@ -117,7 +117,7 @@ export default function Produtos() {
                         .trim()
                         .toLowerCase();
 
-                    return status === "ativo";
+                    return status === "ativo" && Number(produto?.quantidade) > 0;
                 });
 
                 console.log(
@@ -507,7 +507,7 @@ export default function Produtos() {
                 .trim()
                 .toLowerCase();
 
-            if (status !== "ativo") {
+            if (status !== "ativo" || Number(produto?.quantidade) <= 0) {
                 return false;
             }
 
@@ -584,7 +584,7 @@ export default function Produtos() {
                 .trim()
                 .toLowerCase();
 
-            if (status !== "ativo") {
+            if (status !== "ativo" || Number(produto?.quantidade) <= 0) {
                 alert(
                     "Este produto não está disponível."
                 );
@@ -610,6 +610,7 @@ export default function Produtos() {
             );
 
             alert(
+                error.response?.data?.erro ||
                 "Erro ao adicionar produto"
             );
         }
@@ -975,6 +976,10 @@ export default function Produtos() {
                                                                                 "Produto sem nome"
                                                                             }
                                                                         </h3>
+
+                                                                        <span className={style.estoqueDisponivel}>
+                                                                            Estoque: {produto.quantidade} unidade(s)
+                                                                        </span>
 
                                                                         <div
                                                                             className={

@@ -24,7 +24,7 @@ input {
     width: 100%;
     min-height: 100vh;
 
-    padding: 45px 55px 70px;
+    padding: 112px var(--client-page-gutter) 48px;
 
     background:
         radial-gradient(
@@ -49,7 +49,7 @@ input {
 
 .conteudo {
     width: 100%;
-    max-width: 1280px;
+    max-width: var(--client-content-max);
 
     margin: 0 auto;
 
@@ -59,7 +59,7 @@ input {
         minmax(0, 1fr)
         370px;
 
-    gap: 28px;
+    gap: var(--client-section-gap);
 
     align-items: start;
 }
@@ -80,7 +80,7 @@ input {
 
     border: 1px solid #e6ebf2;
 
-    border-radius: 20px;
+    border-radius: var(--client-card-radius);
 
     box-shadow:
         0 8px 25px rgba(15, 23, 42, 0.045);

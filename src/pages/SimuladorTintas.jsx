@@ -2443,5 +2443,6 @@ export default function SimuladorTinta() {
       )}
 
     </div>
+    
   );
 }

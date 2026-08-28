@@ -5,9 +5,11 @@
 
 .page {
     min-height: 100vh;
-    padding-top: 90px;
+    padding: 112px var(--client-page-gutter) 48px;
+    max-width: var(--client-content-max);
+    margin: 0 auto;
     background: #ffffff;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: inherit;
     color: #14213d;
 }
 
@@ -409,6 +411,16 @@
 
 .produtoInfo p {
     display: none;
+}
+
+
+.estoqueDisponivel {
+    margin-bottom: 6px;
+
+    color: #2f7d32;
+
+    font-size: 10px;
+    font-weight: 600;
 }
 
 

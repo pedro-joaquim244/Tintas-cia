@@ -1,4 +1,3 @@
-javascrip
 import express from "express";
 
 import itensRoutes from "./itens.routes.js";
@@ -56,7 +55,7 @@ routes.use(
     itens_pedidosRoutes
 );
 routes.use(
-    "/Deshboard",
+    "/dashboard",
     dashboardRoutes
 );
 

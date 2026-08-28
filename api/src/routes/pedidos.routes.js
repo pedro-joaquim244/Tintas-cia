@@ -67,7 +67,8 @@ router.post("/", async (req, res) => {
                 c.produto_id,
                 c.quantidade,
                 i.nome,
-                i.preco
+                i.preco,
+                i.quantidade AS estoque_disponivel
 
             FROM carrinho c
 
@@ -77,6 +78,7 @@ router.post("/", async (req, res) => {
             WHERE c.usuario_id = ?
 
             ORDER BY c.id ASC
+            FOR UPDATE
             `,
             [usuario_id]
         );
@@ -94,6 +96,16 @@ router.post("/", async (req, res) => {
                 mensagem: "O carrinho está vazio."
             });
 
+        }
+
+        for (const produto of carrinho) {
+            if (Number(produto.quantidade) > Number(produto.estoque_disponivel)) {
+                await connection.rollback();
+
+                return res.status(409).json({
+                    mensagem: `Estoque insuficiente para ${produto.nome}. Disponível: ${produto.estoque_disponivel} unidade(s).`
+                });
+            }
         }
 
 
@@ -273,7 +285,6 @@ router.post("/", async (req, res) => {
         // =================================================
 
         for (const produto of carrinho) {
-
             await connection.query(
                 `
                 INSERT INTO itens_pedidos (
@@ -367,7 +378,9 @@ router.post("/", async (req, res) => {
 
     } catch (error) {
 
-        await connection.rollback();
+        if (connection) {
+            await connection.rollback();
+        }
 
         console.error(
             "ERRO AO FINALIZAR COMPRA:",
@@ -388,7 +401,9 @@ router.post("/", async (req, res) => {
 
     } finally {
 
-        connection.release();
+        if (connection) {
+            connection.release();
+        }
 
     }
 
@@ -514,7 +529,11 @@ router.get("/", async (req, res) => {
 
 router.put("/:id/status", async (req, res) => {
 
+    let connection;
+
     try {
+
+        connection = await pool.getConnection();
 
         const { id } =
             req.params;
@@ -586,11 +605,14 @@ router.put("/:id/status", async (req, res) => {
         // VERIFICAR PEDIDO
         // =================================================
 
+        await connection.beginTransaction();
+
         const [pedidoExistente] =
-            await pool.query(
+            await connection.query(
                 `
                 SELECT
-                    id
+                    id,
+                    status
 
                 FROM pedidos
 
@@ -606,6 +628,8 @@ router.put("/:id/status", async (req, res) => {
             pedidoExistente.length === 0
         ) {
 
+            await connection.rollback();
+
             return res.status(404).json({
 
                 erro:
@@ -615,12 +639,61 @@ router.put("/:id/status", async (req, res) => {
 
         }
 
+        const pedidoAtual = pedidoExistente[0];
+        const deveBaixarEstoque =
+            pedidoAtual.status === "pendente" &&
+            ["processando", "em transporte", "entregue"].includes(statusNormalizado);
+
+        if (deveBaixarEstoque) {
+            const [itensPedido] = await connection.query(
+                `
+                SELECT ip.produto_id, ip.quantidade, i.nome
+                FROM itens_pedidos ip
+                INNER JOIN itens i ON i.id = ip.produto_id
+                WHERE ip.pedido_id = ?
+                FOR UPDATE
+                `,
+                [id]
+            );
+
+            for (const item of itensPedido) {
+                const [estoque] = await connection.query(
+                    `SELECT quantidade FROM itens WHERE id = ? FOR UPDATE`,
+                    [item.produto_id]
+                );
+
+                if (!estoque.length || Number(estoque[0].quantidade) < Number(item.quantidade)) {
+                    await connection.rollback();
+                    return res.status(409).json({
+                        erro: `Estoque insuficiente para ${item.nome}.`
+                    });
+                }
+            }
+
+            for (const item of itensPedido) {
+                await connection.query(
+                    `
+                    UPDATE itens
+                    SET
+                        status = CASE
+                            WHEN quantidade = ? THEN 'Inativo'
+                            ELSE status
+                        END,
+                        quantidade = quantidade - ?
+                    WHERE id = ?
+                    `,
+                    [item.quantidade, item.quantidade, item.produto_id]
+                );
+            }
+
+        }
+
 
         // =================================================
         // ATUALIZAR STATUS
         // =================================================
 
-        await pool.query(
+        await connection.query(
             `
             UPDATE pedidos
 
@@ -640,7 +713,7 @@ router.put("/:id/status", async (req, res) => {
         // =================================================
 
         const [pedidoAtualizado] =
-            await pool.query(
+            await connection.query(
                 `
                 SELECT
                     p.id,
@@ -675,6 +748,8 @@ router.put("/:id/status", async (req, res) => {
         // RESPOSTA
         // =================================================
 
+        await connection.commit();
+
         return res.json({
 
             mensagem:
@@ -701,6 +776,10 @@ router.put("/:id/status", async (req, res) => {
 
     } catch (error) {
 
+        if (connection) {
+            await connection.rollback();
+        }
+
         console.error(
             "ERRO AO ALTERAR STATUS:",
             error
@@ -717,6 +796,10 @@ router.put("/:id/status", async (req, res) => {
 
         });
 
+    } finally {
+        if (connection) {
+            connection.release();
+        }
     }
 
 });

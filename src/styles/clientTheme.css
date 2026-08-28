@@ -1,0 +1,30 @@
+:root {
+  --client-content-max: 1280px;
+  --client-page-gutter: clamp(18px, 4vw, 48px);
+  --client-section-gap: 24px;
+  --client-card-radius: 16px;
+  --client-surface: #ffffff;
+  --client-background: #f6f8fc;
+  --client-text: #172033;
+  --client-muted: #64748b;
+  --client-border: #e2e8f0;
+  --client-primary: #1554c7;
+}
+
+.clientTheme {
+  min-height: 100vh;
+  color: var(--client-text);
+  background: var(--client-background);
+  font-family: "Lato", sans-serif;
+}
+
+.clientTheme button,
+.clientTheme input,
+.clientTheme select,
+.clientTheme textarea {
+  font-family: inherit;
+}
+
+.clientTheme img {
+  max-width: 100%;
+}

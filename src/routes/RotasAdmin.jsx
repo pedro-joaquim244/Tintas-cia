@@ -5,6 +5,7 @@ import {
 
 
 import { useAuth } from "../contexts/authContext";
+import "../styles/adminTheme.css";
 
 
 
@@ -70,7 +71,11 @@ export default function RotasAdmin(){
 
 
 
-    return <Outlet/>;
+    return (
+        <div className="adminTheme">
+            <Outlet />
+        </div>
+    );
 
 
 

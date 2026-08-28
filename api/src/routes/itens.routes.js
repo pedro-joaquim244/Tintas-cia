@@ -23,7 +23,12 @@ router.get("/", autenticarToken, async (req, res) => {
                 preco,
                 quantidade,
                 foto,
-                status,
+                CASE WHEN quantidade > 0 THEN 'Ativo' ELSE 'Inativo' END AS status,
+                COALESCE((
+                    SELECT COUNT(DISTINCT ip.pedido_id)
+                    FROM itens_pedidos ip
+                    WHERE ip.produto_id = itens.id
+                ), 0) AS quantidade_pedidos,
                 criado_em,
                 atualizado_em
             FROM itens
@@ -116,7 +121,6 @@ router.post(
                 descricao,
                 categoria,
                 preco,
-                status,
                 quantidade
             } = req.body;
 
@@ -228,7 +232,7 @@ router.post(
 
                 Number(quantidade) || 0,
 
-                status || "Ativo",
+                Number(quantidade) > 0 ? "Ativo" : "Inativo",
 
                 foto
 
@@ -249,7 +253,7 @@ router.post(
                         preco,
                         quantidade,
                         foto,
-                        status,
+                        CASE WHEN quantidade > 0 THEN 'Ativo' ELSE 'Inativo' END AS status,
                         criado_em,
                         atualizado_em
                     FROM itens
@@ -301,8 +305,7 @@ router.put(
                 descricao,
                 categoria,
                 preco,
-                quantidade,
-                status
+                quantidade
             } = req.body;
 
 
@@ -409,7 +412,7 @@ router.put(
                     categoria = ?,
                     preco = ?,
                     quantidade = ?,
-                    status = ?,
+                    status = CASE WHEN ? > 0 THEN 'Ativo' ELSE 'Inativo' END,
                     foto = ?
                 WHERE id = ?
             `;
@@ -427,7 +430,7 @@ router.put(
 
                 Number(quantidade),
 
-                status || "Ativo",
+                Number(quantidade),
 
                 foto,
 
@@ -459,7 +462,12 @@ router.put(
                         preco,
                         quantidade,
                         foto,
-                        status,
+                        CASE WHEN quantidade > 0 THEN 'Ativo' ELSE 'Inativo' END AS status,
+                        COALESCE((
+                            SELECT COUNT(DISTINCT ip.pedido_id)
+                            FROM itens_pedidos ip
+                            WHERE ip.produto_id = itens.id
+                        ), 0) AS quantidade_pedidos,
                         criado_em,
                         atualizado_em
                     FROM itens

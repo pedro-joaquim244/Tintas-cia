@@ -12,7 +12,8 @@
 
 .capaContainer,
 .livroContainer {
-  margin-top: 70px;
+  margin-top: 0;
+  padding-top: 112px;
   min-height: calc(100vh - 70px);
   width: 100%;
 

@@ -24,6 +24,7 @@ router.get("/:usuario_id", async (req, res) => {
                 i.descricao,
                 i.preco,
                 i.foto,
+                i.quantidade AS estoque_disponivel,
                 (c.quantidade * i.preco) AS subtotal
             FROM carrinho c
             INNER JOIN itens i
@@ -75,6 +76,14 @@ router.post("/", async (req, res) => {
             quantidade
         } = req.body;
 
+        const quantidadeSolicitada = Number(quantidade || 1);
+
+        if (!Number.isInteger(quantidadeSolicitada) || quantidadeSolicitada <= 0) {
+            return res.status(400).json({
+                erro: "Quantidade inválida"
+            });
+        }
+
 
 
         if (!usuario_id || !produto_id) {
@@ -92,7 +101,7 @@ router.post("/", async (req, res) => {
 
         const [produto] = await pool.query(
             `
-            SELECT id
+            SELECT id, quantidade
             FROM itens
             WHERE id = ?
             `,
@@ -109,6 +118,12 @@ router.post("/", async (req, res) => {
                 erro: "Produto não encontrado"
             });
 
+        }
+
+        if (produto[0].quantidade < quantidadeSolicitada) {
+            return res.status(409).json({
+                erro: `Estoque insuficiente. Disponível: ${produto[0].quantidade} unidade(s).`
+            });
         }
 
 
@@ -135,6 +150,16 @@ router.post("/", async (req, res) => {
 
 
 
+        const quantidadeAtual = existe.length > 0
+            ? Number(existe[0].quantidade)
+            : 0;
+
+        if (quantidadeAtual + quantidadeSolicitada > produto[0].quantidade) {
+            return res.status(409).json({
+                erro: `Estoque insuficiente. Disponível para adicionar: ${Math.max(produto[0].quantidade - quantidadeAtual, 0)} unidade(s).`
+            });
+        }
+
         if (existe.length > 0) {
 
 
@@ -145,7 +170,7 @@ router.post("/", async (req, res) => {
                 WHERE id = ?
                 `,
                 [
-                    quantidade || 1,
+                    quantidadeSolicitada,
                     existe[0].id
                 ]
             );
@@ -182,7 +207,7 @@ router.post("/", async (req, res) => {
             [
                 usuario_id,
                 produto_id,
-                quantidade || 1
+                quantidadeSolicitada
             ]
         );
 
@@ -236,9 +261,11 @@ router.put("/:id", async (req, res) => {
 
         const { quantidade } = req.body;
 
+        const quantidadeSolicitada = Number(quantidade);
 
 
-        if (quantidade <= 0) {
+
+        if (!Number.isInteger(quantidadeSolicitada) || quantidadeSolicitada <= 0) {
 
             return res.status(400).json({
 
@@ -246,6 +273,28 @@ router.put("/:id", async (req, res) => {
 
             });
 
+        }
+
+        const [item] = await pool.query(
+            `
+            SELECT c.id, i.quantidade AS estoque_disponivel
+            FROM carrinho c
+            INNER JOIN itens i ON i.id = c.produto_id
+            WHERE c.id = ?
+            `,
+            [id]
+        );
+
+        if (item.length === 0) {
+            return res.status(404).json({
+                erro: "Item do carrinho não encontrado"
+            });
+        }
+
+        if (quantidadeSolicitada > item[0].estoque_disponivel) {
+            return res.status(409).json({
+                erro: `Estoque insuficiente. Disponível: ${item[0].estoque_disponivel} unidade(s).`
+            });
         }
 
 
@@ -258,7 +307,7 @@ router.put("/:id", async (req, res) => {
             WHERE id = ?
             `,
             [
-                quantidade,
+                quantidadeSolicitada,
                 id
             ]
         );

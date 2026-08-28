@@ -59,13 +59,6 @@ export default function Listar() {
   // CARREGAR PRODUTOS
   // =====================================================
 
-  useEffect(() => {
-
-    carregarItens();
-
-  }, []);
-
-
   async function carregarItens() {
 
     try {
@@ -85,6 +78,26 @@ export default function Listar() {
     }
 
   }
+
+
+  useEffect(() => {
+    function atualizarAoEntrarNaTela() {
+      carregarItens();
+    }
+
+    atualizarAoEntrarNaTela();
+    window.addEventListener("focus", atualizarAoEntrarNaTela);
+
+    const intervalo = window.setInterval(
+      atualizarAoEntrarNaTela,
+      10000
+    );
+
+    return () => {
+      window.removeEventListener("focus", atualizarAoEntrarNaTela);
+      window.clearInterval(intervalo);
+    };
+  }, []);
 
 
   // =====================================================
@@ -561,6 +574,10 @@ export default function Listar() {
                       </th>
 
                       <th>
+                        Pedidos
+                      </th>
+
+                      <th>
                         Status
                       </th>
 
@@ -702,6 +719,17 @@ export default function Listar() {
 
                               {" "}un.
 
+                            </span>
+
+                          </td>
+
+
+                          {/* PEDIDOS */}
+
+                          <td>
+
+                            <span className={styles.quantidadePedidos}>
+                              {item.quantidade_pedidos || 0}
                             </span>
 
                           </td>

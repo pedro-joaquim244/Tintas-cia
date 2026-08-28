@@ -1,8 +1,8 @@
 .container{
-    width:90%;
-    margin:40px auto;
-    font-family:Arial, Helvetica, sans-serif;
-    margin-top:120px;
+    width: min(100%, var(--client-content-max));
+    margin: 0 auto;
+    padding: 112px var(--client-page-gutter) 48px;
+    font-family: inherit;
 }
 
 .container h1{
@@ -13,7 +13,7 @@
 .content{
     display:grid;
     grid-template-columns:2fr 380px;
-    gap:30px;
+    gap:var(--client-section-gap);
 }
 
 .lista{
@@ -28,8 +28,8 @@
     align-items:center;
     background:#fff;
     border:1px solid #e6e6e6;
-    border-radius:12px;
-    padding:20px;
+    border-radius:var(--client-card-radius);
+    padding:18px;
 }
 
 .card img{
@@ -94,7 +94,7 @@
 .resumo{
     background:#fff;
     border:1px solid #e6e6e6;
-    border-radius:12px;
+    border-radius:var(--client-card-radius);
     padding:25px;
     height:fit-content;
 }

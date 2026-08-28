@@ -52,27 +52,10 @@ select {
 ========================================================= */
 
 .container {
-    width: calc(100% - var(--sidebar-width));
+ margin-left: 290px;
+    padding: 40px;
     min-height: 100vh;
 
-    margin-left: var(--sidebar-width);
-
-    padding: 34px 38px 60px;
-
-    background:
-        radial-gradient(
-            circle at 0% 0%,
-            rgba(37, 99, 235, 0.07),
-            transparent 27%
-        ),
-        radial-gradient(
-            circle at 100% 0%,
-            rgba(96, 165, 250, 0.07),
-            transparent 25%
-        ),
-        var(--background);
-
-    color: var(--text);
 
     overflow-x: hidden;
 }
@@ -82,131 +65,56 @@ select {
    LIMITADOR DE CONTEÚDO
 ========================================================= */
 
-.header,
-.stats,
-.card {
-    width: 100%;
-    max-width: 1440px;
-    margin-left: auto;
-    margin-right: auto;
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 32px;
 }
 
-
-/* =========================================================
-   CABEÇALHO
-========================================================= */
-
-.header {
-    min-height: 68px;
-
-    margin-bottom: 24px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 24px;
+.topbar > div {
+  display: flex;
+  flex-direction: column;
 }
 
-.headerLeft {
-    display: flex;
-    align-items: center;
+.badge {
+  width: fit-content;
 
-    gap: 15px;
+  padding: 7px 14px;
 
-    min-width: 0;
+  margin-bottom: 12px;
+
+  border-radius: 999px;
+
+  background: rgba(37, 99, 235, 0.10);
+
+  color: #2563eb;
+
+  font-size: 12px;
+
+  font-weight: 700;
 }
 
-.headerIcon {
-    width: 54px;
-    height: 54px;
+.title {
+  font-size: 48px;
 
-    flex-shrink: 0;
+  font-weight: 800;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  line-height: 1.1;
 
-    border-radius: 15px;
+  color: #111827;
 
-    background: linear-gradient(
-        135deg,
-        var(--blue-dark),
-        #3b82f6
-    );
-
-    color: #fff;
-
-    font-size: 21px;
-
-    box-shadow:
-        0 8px 22px rgba(37, 99, 235, 0.22);
+  margin-bottom: 8px;
 }
 
-.header h1 {
-    color: var(--text);
+.topbar p {
+  color: #6b7280;
 
-    font-size: 29px;
-    font-weight: 750;
-
-    line-height: 1.2;
-
-    letter-spacing: -0.7px;
+  font-size: 16px;
 }
 
-.header p {
-    margin-top: 4px;
-
-    color: #64748b;
-
-    font-size: 12px;
-}
-
-.headerTotal {
-    min-width: 102px;
-
-    padding: 11px 15px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 10px;
-
-    border: 1px solid var(--border);
-
-    border-radius: 14px;
-
-    background: #fff;
-
-    box-shadow:
-        0 6px 18px rgba(15, 23, 42, 0.045);
-
-    color: var(--blue);
-}
-
-.headerTotal svg {
-    font-size: 18px;
-}
-
-.headerTotal div {
-    display: flex;
-    flex-direction: column;
-}
-
-.headerTotal strong {
-    color: var(--text);
-
-    font-size: 17px;
-    line-height: 1;
-}
-
-.headerTotal span {
-    margin-top: 3px;
-
-    color: var(--text-muted);
-
-    font-size: 9px;
-}
 
 
 /* =========================================================
@@ -584,6 +492,16 @@ tbody tr:last-child td {
     color: var(--blue);
 
     font-size: 15px;
+}
+
+.avatar img,
+.modalAvatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: inherit;
 }
 
 .userInfo > div:last-child {
