@@ -7,6 +7,7 @@ import styles from "./style.module.css";
 
 import Logo from "../../assets/imagens/Logo.png";
 
+
 export default function Header() {
 
     const [menuAberto, setMenuAberto] = useState(false);
@@ -24,9 +25,11 @@ export default function Header() {
             return null;
         }
 
+
         let caminho = String(foto)
             .trim()
             .replace(/\\/g, "/");
+
 
         if (!caminho) {
             return null;
@@ -38,7 +41,9 @@ export default function Header() {
             caminho.startsWith("http://") ||
             caminho.startsWith("https://")
         ) {
+
             return caminho;
+
         }
 
 
@@ -69,6 +74,7 @@ export default function Header() {
         // usuarios/foto.webp
 
         return `http://localhost:3333/uploads/${caminho}`;
+
     }
 
 

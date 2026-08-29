@@ -1,752 +1,1079 @@
-    /* =========================================================
-    HEADER
-    ========================================================= */
+@import url(
+    "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Poppins:wght@300;400;500;600&display=swap"
+);
 
-    .header {
 
-        position: fixed;
+/* =========================================================
+   HEADER
+========================================================= */
 
-        top: 20px;
-        left: 50%;
+.header {
+    position: fixed;
 
-        transform: translateX(-50%);
+    top: 18px;
+    left: 50%;
 
-        width: min(92%, 1450px);
+    transform: translateX(-50%);
 
-        height: 82px;
+    width: min(94%, 1380px);
 
-        padding: 0 35px;
+    height: 70px;
 
-        display: flex;
+    padding:
+        0
+        18px
+        0
+        25px;
 
-        align-items: center;
+    display: flex;
 
-        justify-content: space-between;
+    align-items: center;
 
-        border-radius: 22px;
+    justify-content: space-between;
 
-        overflow: visible;
+    gap: 25px;
 
-        background: linear-gradient(
+    border-radius: 16px;
+
+    overflow: visible;
+
+    background:
+        linear-gradient(
             135deg,
-            rgba(205, 225, 255, .92),
-            rgba(180, 210, 255, .80)
+            rgba(250, 249, 246, 0.91),
+            rgba(244, 245, 247, 0.84)
         );
 
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
+    backdrop-filter:
+        blur(22px)
+        saturate(135%);
 
-        border: 1px solid rgba(120, 170, 255, .25);
+    -webkit-backdrop-filter:
+        blur(22px)
+        saturate(135%);
 
-        box-shadow:
-            0 15px 35px rgba(35, 72, 170, .15),
-            inset 0 1px rgba(255, 255, 255, .5);
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.8);
 
-        transition: .35s;
+    box-shadow:
+        0 8px 35px
+        rgba(8, 18, 36, 0.09),
+        0 2px 8px
+        rgba(8, 18, 36, 0.035),
+        inset 0 1px
+        rgba(255, 255, 255, 0.9);
 
-        z-index: 1000;
-    }
+    font-family:
+        "Poppins",
+        sans-serif;
+
+    transition:
+        background 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+
+    z-index: 1000;
+}
 
 
-    /* =========================================================
-    EFEITO DO HEADER
-    ========================================================= */
+/* =========================================================
+   DETALHE INTERNO
+========================================================= */
 
-    .header::before {
+.header::before {
+    content: "";
 
-        content: "";
+    position: absolute;
 
-        position: absolute;
+    inset: 0;
 
-        inset: 0;
+    border-radius: inherit;
 
-        border-radius: inherit;
+    background:
+        linear-gradient(
+            105deg,
+            rgba(255, 255, 255, 0.35),
+            transparent 32%,
+            transparent 68%,
+            rgba(255, 255, 255, 0.18)
+        );
 
-        background: linear-gradient(
+    pointer-events: none;
+
+    z-index: 0;
+}
+
+
+/* =========================================================
+   LINHA SUTIL INFERIOR
+========================================================= */
+
+.header::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+
+    bottom: -1px;
+
+    transform:
+        translateX(-50%);
+
+    width: 92%;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
             90deg,
-            rgba(255,255,255,.18),
-            transparent 35%,
-            transparent 65%,
-            rgba(255,255,255,.18)
+            transparent,
+            rgba(30, 59, 100, 0.13),
+            transparent
         );
 
-        pointer-events: none;
+    pointer-events: none;
+}
 
-        z-index: 0;
-    }
 
+/* =========================================================
+   LOGO / LINK
+========================================================= */
 
-    /* =========================================================
-    LOGO
-    ========================================================= */
+.header > a:first-child {
+    position: relative;
 
-    .logo {
+    z-index: 3;
 
-        width: 80px;
+    display: flex;
 
-        height: auto;
+    align-items: center;
 
-        object-fit: contain;
+    justify-content: center;
 
-        transition: .35s;
+    flex-shrink: 0;
+}
 
-        cursor: pointer;
 
-        z-index: 2;
-    }
+.logo {
+    width: 69px;
 
+    height: auto;
 
-    .logo:hover {
+    display: block;
 
-        transform: scale(1.08);
+    object-fit: contain;
 
-    }
+    cursor: pointer;
 
+    transition:
+        transform 0.4s
+        cubic-bezier(
+            0.16,
+            1,
+            0.3,
+            1
+        ),
+        opacity 0.3s ease;
+}
 
-    /* =========================================================
-    USUÁRIO DESKTOP
-    ========================================================= */
 
-    .usuario {
+.logo:hover {
+    transform:
+        scale(1.045);
 
-        text-decoration: none;
+    opacity: 0.9;
+}
 
-        display: flex;
 
-        align-items: center;
+/* =========================================================
+   NAVEGAÇÃO
+========================================================= */
 
-        justify-content: center;
+.nav {
+    position: absolute;
 
-        width: 56px;
+    left: 50%;
 
-        height: 56px;
+    transform:
+        translateX(-50%);
 
-        flex-shrink: 0;
+    display: flex;
 
-        position: relative;
+    align-items: center;
 
-        z-index: 3;
+    justify-content: center;
 
-        border-radius: 50%;
+    gap: clamp(
+        22px,
+        2.6vw,
+        42px
+    );
 
-        transition: .3s;
-    }
+    z-index: 2;
+}
 
 
-    /* =========================================================
-    AVATAR COM FOTO
-    ========================================================= */
+/* =========================================================
+   LINKS
+========================================================= */
 
-    .avatar {
+.nav a {
+    position: relative;
 
-        width: 52px !important;
-        height: 52px !important;
+    padding:
+        8px
+        0;
 
-        min-width: 52px;
-        min-height: 52px;
+    color: #1d2c42;
 
-        max-width: 52px;
-        max-height: 52px;
+    text-decoration: none;
 
-        display: block;
+    font-family:
+        "Poppins",
+        sans-serif;
 
-        flex-shrink: 0;
+    font-size: 12px;
 
-        border-radius: 50% !important;
+    font-weight: 500;
 
-        object-fit: cover;
+    letter-spacing: 0.015em;
 
-        object-position: center;
+    white-space: nowrap;
 
-        aspect-ratio: 1 / 1;
+    transition:
+        color 0.3s ease,
+        transform 0.3s ease;
+}
 
-        border: 3px solid rgba(255,255,255,.95);
 
-        background: #2F66F5;
+/* =========================================================
+   TRAÇO DOS LINKS
+========================================================= */
 
-        box-shadow:
-            0 7px 18px rgba(47,102,245,.22);
+.nav a::after {
+    content: "";
 
-        transition:
-            transform .3s,
-            box-shadow .3s;
+    position: absolute;
 
-        cursor: pointer;
-    }
+    left: 0;
 
+    bottom: 1px;
 
-    .avatar:hover {
+    width: 100%;
 
-        transform: scale(1.08);
+    height: 1px;
 
-        box-shadow:
-            0 10px 25px rgba(47,102,245,.30);
+    border-radius: 100px;
 
-    }
+    background: #173c72;
 
+    transform:
+        scaleX(0);
 
-    /* =========================================================
-    FUNDO DA INICIAL
-    ========================================================= */
+    transform-origin:
+        right center;
 
-    .avatarInicial {
+    transition:
+        transform 0.4s
+        cubic-bezier(
+            0.16,
+            1,
+            0.3,
+            1
+        );
+}
 
-        width: 52px;
 
-        height: 52px;
+.nav a:hover {
+    color: #173c72;
+}
 
-        min-width: 52px;
-        min-height: 52px;
 
-        max-width: 52px;
-        max-height: 52px;
+.nav a:hover::after {
+    transform:
+        scaleX(1);
 
-        flex-shrink: 0;
+    transform-origin:
+        left center;
+}
 
-        border-radius: 50%;
 
-        aspect-ratio: 1 / 1;
+/* =========================================================
+   USUÁRIO DESKTOP
+========================================================= */
 
-        display: flex;
+.usuario {
+    position: relative;
 
-        align-items: center;
+    z-index: 3;
 
-        justify-content: center;
+    width: 46px;
 
-        font-size: 20px;
+    height: 46px;
 
-        font-weight: 700;
+    flex-shrink: 0;
 
-        color: #ffffff;
+    display: flex;
 
-        background: linear-gradient(
-            135deg,
-            #2F66F5 0%,
-            #4F82F7 50%,
-            #76A7FF 100%
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    text-decoration: none;
+
+    background:
+        rgba(255, 255, 255, 0.46);
+
+    border:
+        1px solid
+        rgba(22, 48, 83, 0.09);
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+}
+
+
+.usuario:hover {
+    transform:
+        translateY(-2px);
+
+    border-color:
+        rgba(23, 60, 114, 0.21);
+
+    box-shadow:
+        0 8px 22px
+        rgba(20, 48, 87, 0.12);
+}
+
+
+/* =========================================================
+   AVATAR FOTO
+========================================================= */
+
+.avatar {
+    width: 42px !important;
+
+    height: 42px !important;
+
+    min-width: 42px;
+
+    min-height: 42px;
+
+    max-width: 42px;
+
+    max-height: 42px;
+
+    display: block;
+
+    flex-shrink: 0;
+
+    border-radius: 50% !important;
+
+    object-fit: cover;
+
+    object-position: center;
+
+    aspect-ratio: 1 / 1;
+
+    border:
+        2px solid
+        rgba(255, 255, 255, 0.96);
+
+    background: #173c72;
+
+    box-shadow:
+        0 3px 12px
+        rgba(21, 45, 76, 0.14);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease;
+}
+
+
+.avatar:hover {
+    transform:
+        scale(1.04);
+
+    box-shadow:
+        0 5px 16px
+        rgba(21, 45, 76, 0.18);
+}
+
+
+/* =========================================================
+   AVATAR INICIAL
+========================================================= */
+
+.avatarInicial {
+    width: 42px;
+
+    height: 42px;
+
+    min-width: 42px;
+
+    min-height: 42px;
+
+    max-width: 42px;
+
+    max-height: 42px;
+
+    flex-shrink: 0;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    aspect-ratio: 1 / 1;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            145deg,
+            #122b4f,
+            #1e4f8e
         );
 
-        border: 3px solid rgba(255,255,255,.95);
+    border:
+        2px solid
+        rgba(255, 255, 255, 0.97);
 
-        box-shadow:
-            0 7px 18px rgba(47,102,245,.25);
+    box-shadow:
+        0 4px 14px
+        rgba(20, 52, 94, 0.17);
 
-        transition:
-            transform .3s,
-            box-shadow .3s;
+    font-family:
+        "Cormorant Garamond",
+        serif;
 
-        font-family: "Poppins", sans-serif;
+    font-size: 21px;
 
-        text-decoration: none;
+    font-weight: 500;
 
-        cursor: pointer;
-    }
+    line-height: 1;
 
+    text-decoration: none;
 
-    .avatarInicial:hover {
+    cursor: pointer;
 
-        transform: scale(1.08);
-
-        box-shadow:
-            0 10px 25px rgba(47,102,245,.32);
-
-    }
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease;
+}
 
 
-    /* =========================================================
-    NAVEGAÇÃO
-    ========================================================= */
+.avatarInicial:hover {
+    transform:
+        scale(1.04);
+
+    box-shadow:
+        0 6px 18px
+        rgba(20, 52, 94, 0.23);
+}
+
+
+/* =========================================================
+   HAMBURGUER
+========================================================= */
+
+.hamburguer {
+    position: relative;
+
+    z-index: 5;
+
+    display: none;
+
+    width: 42px;
+
+    height: 42px;
+
+    padding: 0;
+
+    border:
+        1px solid
+        rgba(21, 46, 79, 0.09);
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, 0.4);
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.3s ease,
+        border-color 0.3s ease,
+        transform 0.3s ease;
+}
+
+
+.hamburguer:hover {
+    background:
+        rgba(255, 255, 255, 0.8);
+
+    border-color:
+        rgba(21, 46, 79, 0.16);
+}
+
+
+.hamburguer span {
+    display: block;
+
+    width: 20px;
+
+    height: 1.5px;
+
+    border-radius: 50px;
+
+    background: #173354;
+
+    transition:
+        transform 0.35s ease,
+        opacity 0.25s ease;
+}
+
+
+/* =========================================================
+   HAMBURGUER ATIVO
+========================================================= */
+
+.ativo span:nth-child(1) {
+    transform:
+        rotate(45deg)
+        translate(4.5px, 4.5px);
+}
+
+
+.ativo span:nth-child(2) {
+    opacity: 0;
+}
+
+
+.ativo span:nth-child(3) {
+    transform:
+        rotate(-45deg)
+        translate(4.5px, -4.5px);
+}
+
+
+/* =========================================================
+   MENU MOBILE
+========================================================= */
+
+.menuMobile {
+    position: absolute;
+
+    top: calc(100% + 12px);
+
+    right: 0;
+
+    width: 290px;
+
+    padding:
+        18px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+
+    border-radius: 17px;
+
+    background:
+        rgba(249, 249, 247, 0.96);
+
+    backdrop-filter:
+        blur(22px);
+
+    -webkit-backdrop-filter:
+        blur(22px);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.9);
+
+    box-shadow:
+        0 20px 55px
+        rgba(9, 22, 40, 0.15);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform:
+        translateY(-8px)
+        scale(0.98);
+
+    transform-origin:
+        top right;
+
+    transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease,
+        transform 0.35s
+        cubic-bezier(
+            0.16,
+            1,
+            0.3,
+            1
+        );
+
+    z-index: 20;
+}
+
+
+/* =========================================================
+   LINKS MOBILE
+========================================================= */
+
+.menuMobile > a:not(.usuarioMobile) {
+    position: relative;
+
+    min-height: 43px;
+
+    padding:
+        0
+        13px;
+
+    display: flex;
+
+    align-items: center;
+
+    border-radius: 10px;
+
+    color: #26384e;
+
+    text-decoration: none;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    transition:
+        color 0.3s ease,
+        background 0.3s ease,
+        padding-left 0.3s ease;
+}
+
+
+.menuMobile > a:not(.usuarioMobile):hover {
+    padding-left: 18px;
+
+    color: #173c72;
+
+    background:
+        rgba(28, 67, 120, 0.055);
+}
+
+
+/* =========================================================
+   USUÁRIO MOBILE
+========================================================= */
+
+.usuarioMobile {
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding:
+        14px
+        12px
+        3px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    border-top:
+        1px solid
+        rgba(25, 54, 92, 0.1);
+
+    color: #26384e;
+
+    text-decoration: none;
+
+    font-weight: 500;
+
+    transition:
+        opacity 0.3s ease;
+}
+
+
+.usuarioMobile:hover {
+    opacity: 0.75;
+}
+
+
+/* =========================================================
+   CONTAINER AVATAR MOBILE
+========================================================= */
+
+.avatarMobile {
+    position: relative;
+
+    width: 42px;
+
+    height: 42px;
+
+    min-width: 42px;
+
+    min-height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+/* =========================================================
+   FOTO MOBILE
+========================================================= */
+
+.usuarioMobile .avatar {
+    width: 42px !important;
+
+    height: 42px !important;
+
+    min-width: 42px;
+
+    min-height: 42px;
+
+    max-width: 42px;
+
+    max-height: 42px;
+
+    border-radius: 50% !important;
+
+    object-fit: cover;
+
+    aspect-ratio: 1 / 1;
+}
+
+
+/* =========================================================
+   INICIAL MOBILE
+========================================================= */
+
+.usuarioMobile .avatarInicial {
+    width: 42px;
+
+    height: 42px;
+
+    min-width: 42px;
+
+    min-height: 42px;
+
+    max-width: 42px;
+
+    max-height: 42px;
+
+    border-radius: 50%;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            145deg,
+            #122b4f,
+            #1e4f8e
+        );
+
+    border:
+        2px solid
+        rgba(255, 255, 255, 0.97);
+
+    box-shadow:
+        0 4px 14px
+        rgba(20, 52, 94, 0.17);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 20px;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   NOME MOBILE
+========================================================= */
+
+.usuarioMobile > span {
+    color: #26384e;
+
+    font-size: 12px;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   MENU ABERTO
+========================================================= */
+
+.show {
+    opacity: 1;
+
+    visibility: visible;
+
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+/* =========================================================
+   RESPONSIVO - 1120px
+========================================================= */
+
+@media (max-width: 1120px) {
 
     .nav {
-
-        display: flex;
-
-        gap: 45px;
-
-        z-index: 2;
+        gap: 22px;
     }
 
 
     .nav a {
+        font-size: 11px;
+    }
 
-        position: relative;
+}
 
-        text-decoration: none;
 
-        color: #20406d;
+/* =========================================================
+   RESPONSIVO - 950px
+========================================================= */
 
-        font-weight: 600;
+@media (max-width: 950px) {
 
-        font-size: 16px;
-
-        transition: .3s;
+    .nav {
+        display: none;
     }
 
 
-    .nav a::after {
-
-        content: "";
-
-        position: absolute;
-
-        left: 50%;
-
-        bottom: -8px;
-
-        transform: translateX(-50%);
-
-        width: 0;
-
-        height: 3px;
-
-        border-radius: 50px;
-
-        background: #2F66F5;
-
-        transition: .3s;
+    .btn {
+        display: none;
     }
 
 
-    .nav a:hover {
-
-        color: #2F66F5;
-
+    .usuario {
+        margin-left: auto;
     }
 
-
-    .nav a:hover::after {
-
-        width: 100%;
-
-    }
-
-
-    /* =========================================================
-    HAMBURGUER
-    ========================================================= */
 
     .hamburguer {
+        display: flex;
 
-        display: none;
-
-        width: 44px;
-
-        height: 44px;
-
-        border: none;
-
-        border-radius: 12px;
-
-        justify-content: center;
-
-        align-items: center;
-
-        flex-direction: column;
-
-        gap: 6px;
-
-        cursor: pointer;
-
-        transition: .3s;
-
-        z-index: 5;
-
-        background: transparent;
+        margin-left: 5px;
     }
 
 
-    .hamburguer:hover {
+    .header {
+        height: 66px;
 
-        background: rgba(255,255,255,.4);
-
+        padding:
+            0
+            13px
+            0
+            20px;
     }
 
 
-    .hamburguer span {
+    .logo {
+        width: 64px;
+    }
 
-        width: 25px;
+}
 
-        height: 3px;
 
-        border-radius: 50px;
+/* =========================================================
+   RESPONSIVO - 600px
+========================================================= */
 
-        background: #2F66F5;
+@media (max-width: 600px) {
 
-        transition: .35s;
+    .header {
+        top: 11px;
+
+        width: calc(100% - 24px);
+
+        height: 62px;
+
+        padding:
+            0
+            10px
+            0
+            16px;
+
+        border-radius: 14px;
     }
 
 
-    /* =========================================================
-    HAMBURGUER ATIVO
-    ========================================================= */
-
-    .ativo span:nth-child(1) {
-
-        transform:
-            rotate(45deg)
-            translate(5px, 6px);
+    .logo {
+        width: 58px;
     }
 
 
-    .ativo span:nth-child(2) {
+    .usuario {
+        width: 40px;
 
-        opacity: 0;
+        height: 40px;
     }
 
 
-    .ativo span:nth-child(3) {
+    .avatar {
+        width: 37px !important;
 
-        transform:
-            rotate(-45deg)
-            translate(5px, -6px);
+        height: 37px !important;
+
+        min-width: 37px;
+
+        min-height: 37px;
+
+        max-width: 37px;
+
+        max-height: 37px;
     }
 
 
-    /* =========================================================
-    MENU MOBILE
-    ========================================================= */
+    .avatarInicial {
+        width: 37px;
+
+        height: 37px;
+
+        min-width: 37px;
+
+        min-height: 37px;
+
+        max-width: 37px;
+
+        max-height: 37px;
+
+        font-size: 18px;
+    }
+
+
+    .hamburguer {
+        width: 39px;
+
+        height: 39px;
+    }
+
 
     .menuMobile {
+        width: min(
+            300px,
+            calc(100vw - 24px)
+        );
 
-        position: absolute;
-
-        top: 95px;
+        top:
+            calc(100% + 10px);
 
         right: 0;
 
-        width: 280px;
-
-        padding: 25px;
-
-        border-radius: 22px;
-
-        background: linear-gradient(
-            180deg,
-            rgba(224,236,255,.98),
-            rgba(200,220,255,.95)
-        );
-
-        backdrop-filter: blur(18px);
-
-        -webkit-backdrop-filter: blur(18px);
-
-        box-shadow:
-            0 20px 40px rgba(0,0,0,.15);
-
-        display: flex;
-
-        flex-direction: column;
-
-        gap: 18px;
-
-        opacity: 0;
-
-        visibility: hidden;
-
-        transform: translateY(-15px);
-
-        transition: .35s;
-
-        z-index: 20;
+        border-radius: 15px;
     }
 
-
-    .menuMobile a {
-
-        text-decoration: none;
-
-        color: #23416d;
-
-        font-weight: 600;
-
-        transition: .3s;
-    }
-
-
-    .menuMobile a:hover {
-
-        color: #2F66F5;
-
-        padding-left: 12px;
-
-    }
-
-
-    /* =========================================================
-    USUÁRIO MOBILE
-    ========================================================= */
-
-    .usuarioMobile {
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 12px;
-
-        text-decoration: none;
-
-        color: #23416d;
-
-        font-weight: 600;
-
-        margin-top: 10px;
-
-        padding-top: 15px;
-
-        border-top:
-            1px solid
-            rgba(47,102,245,.15);
-    }
-
-
-    /* =========================================================
-    CONTAINER DO AVATAR MOBILE
-    ========================================================= */
 
     .avatarMobile {
+        width: 40px;
 
-        width: 52px;
+        height: 40px;
 
-        height: 52px;
+        min-width: 40px;
 
-        min-width: 52px;
-        min-height: 52px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        position: relative;
+        min-height: 40px;
     }
 
-
-    /* =========================================================
-    AVATAR MOBILE
-    ========================================================= */
 
     .usuarioMobile .avatar {
+        width: 40px !important;
 
-        width: 52px !important;
+        height: 40px !important;
 
-        height: 52px !important;
+        min-width: 40px;
 
-        min-width: 52px;
-        min-height: 52px;
+        min-height: 40px;
 
-        max-width: 52px;
-        max-height: 52px;
+        max-width: 40px;
 
-        border-radius: 50% !important;
-
-        object-fit: cover;
-
-        aspect-ratio: 1 / 1;
+        max-height: 40px;
     }
 
-
-    /* =========================================================
-    INICIAL MOBILE
-    ========================================================= */
 
     .usuarioMobile .avatarInicial {
+        width: 40px;
 
-        width: 52px;
+        height: 40px;
 
-        height: 52px;
+        min-width: 40px;
 
-        min-width: 52px;
+        min-height: 40px;
 
-        min-height: 52px;
+        max-width: 40px;
 
-        max-width: 52px;
+        max-height: 40px;
+    }
 
-        max-height: 52px;
+}
 
-        border-radius: 50%;
 
-        display: flex;
+/* =========================================================
+   TELAS MUITO PEQUENAS
+========================================================= */
 
-        align-items: center;
+@media (max-width: 380px) {
 
-        justify-content: center;
+    .header {
+        width:
+            calc(100% - 16px);
 
-        font-size: 19px;
-
-        font-weight: 700;
-
-        color: white;
-
-        background: linear-gradient(
-            135deg,
-            #2F66F5,
-            #76A7FF
-        );
-
-        border: 3px solid rgba(255,255,255,.95);
-
-        box-shadow:
-            0 7px 18px rgba(47,102,245,.25);
-
-        font-family: "Poppins", sans-serif;
+        top: 8px;
     }
 
 
-    /* =========================================================
-    NOME MOBILE
-    ========================================================= */
-
-    .usuarioMobile span {
-
-        font-size: 15px;
-
-        color: #23416d;
-
+    .logo {
+        width: 54px;
     }
 
 
-    /* =========================================================
-    MENU ABERTO
-    ========================================================= */
-
-    .show {
-
-        opacity: 1;
-
-        visibility: visible;
-
-        transform: translateY(0);
-
+    .menuMobile {
+        width:
+            calc(100vw - 16px);
     }
 
-
-    /* =========================================================
-    RESPONSIVIDADE - 950px
-    ========================================================= */
-
-    @media (max-width: 950px) {
-
-        .nav {
-
-            display: none;
-
-        }
-
-        .btn {
-
-            display: none;
-
-        }
-
-        .hamburguer {
-
-            display: flex;
-
-        }
-
-        .header {
-
-            height: 72px;
-
-            padding: 0 20px;
-
-        }
-
-    }
-
-
-    /* =========================================================
-    RESPONSIVIDADE - 600px
-    ========================================================= */
-
-    @media (max-width: 600px) {
-
-        .header {
-
-            width: 95%;
-
-            top: 12px;
-
-            height: 68px;
-
-            border-radius: 18px;
-
-        }
-
-
-        .logo {
-
-            width: 65px;
-
-        }
-
-
-        .menuMobile {
-
-            width: 100%;
-
-        }
-
-
-        .avatar {
-
-            width: 48px !important;
-
-            height: 48px !important;
-
-            min-width: 48px;
-
-            min-height: 48px;
-
-            max-width: 48px;
-
-            max-height: 48px;
-
-        }
-
-
-        .avatarInicial {
-
-            width: 48px;
-
-            height: 48px;
-
-            min-width: 48px;
-
-            min-height: 48px;
-
-            max-width: 48px;
-
-            max-height: 48px;
-
-        }
-
-
-        .avatarMobile {
-
-            width: 48px;
-
-            height: 48px;
-
-            min-width: 48px;
-
-            min-height: 48px;
-
-        }
-
-
-        .usuarioMobile .avatarInicial {
-
-            width: 48px;
-
-            height: 48px;
-
-            min-width: 48px;
-
-            min-height: 48px;
-
-        }
-
-    }
+}

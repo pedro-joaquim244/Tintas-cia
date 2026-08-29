@@ -1,919 +1,470 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import {
-    FiShoppingCart,
+    FiArrowRight,
+    FiArrowUpRight,
+    FiChevronDown,
     FiDroplet,
-    FiShield,
-    FiAward,
-    FiStar,
-    FiTruck,
-    FiMessageSquare,
-    FiChevronLeft,
-    FiChevronRight,
-    FiHeadphones,
+    FiShoppingBag,
     FiUsers,
-    FiPackage,
-    FiX,
-    FiCopy,
-    FiCheck,
-    FiGift
+    FiStar
 } from "react-icons/fi";
 
 import Header from "../components/Cabeçalho-Users";
-import { useNavigate } from "react-router-dom";
-import { api } from "../services/api";
 import styles from "../styles/Inicial.module.css";
+import { api } from "../services/api";
 
-import foto1 from "../assets/imagens/1.jpeg";
-import foto2 from "../assets/imagens/2.jpg";
-import foto3 from "../assets/imagens/3.jpg";
-import foto4 from "../assets/imagens/4.jpg";
-import foto5 from "../assets/imagens/5.jpg";
-import foto6 from "../assets/imagens/6.jpg";
-import foto7 from "../assets/imagens/7.jpg";
-import foto8 from "../assets/imagens/8.jpg";
+gsap.registerPlugin(ScrollTrigger);
 
-/* =========================================================
-   CUPONS DA ROLETA
-========================================================= */
-
-const CUPONS_ROLETA = {
-    5: "tintas5",
-    10: "tintas10",
-    20: "tintas20",
-    30: "tintas30"
-};
-
-/* =========================================================
-   ÂNGULOS DA ROLETA
-   0° = topo
-========================================================= */
-
-const ANGULOS_INICIAIS_ROLETA = {
-    5: 315,
-    10: 45,
-    20: 225,
-    30: 135
-};
-
-const fotosMarcas = [
-    foto1,
-    foto2,
-    foto3,
-    foto4,
-    foto5,
-    foto6,
-    foto7,
-    foto8
+const marcasParceiras = [
+    "SUVINIL",
+    "CORAL",
+    "SHERWIN-WILLIAMS",
+    "EUCATEX",
+    "ANJO"
 ];
 
-/* =========================================================
-   URL DA API
-========================================================= */
+const marcasLoop = Array.from(
+    { length: 4 },
+    () => marcasParceiras
+).flat();
 
-const API_URL =
-    import.meta.env.VITE_API_URL ||
-    "http://localhost:3333";
-
-/* =========================================================
-   URL DA FOTO
-========================================================= */
-
-function obterUrlFoto(foto) {
-    if (!foto) {
-        return null;
-    }
-
-    let caminho = String(foto)
-        .trim()
-        .replace(/\\/g, "/");
-
-    if (!caminho) {
-        return null;
-    }
-
-    if (
-        caminho.startsWith("http://") ||
-        caminho.startsWith("https://") ||
-        caminho.startsWith("data:")
-    ) {
-        return caminho;
-    }
-
-    caminho = caminho.replace(/^\.?\//, "");
-
-    if (caminho.startsWith("uploads/")) {
-        return `${API_URL}/${caminho}`;
-    }
-
-    return `${API_URL}/uploads/${caminho}`;
-}
-
-/* =========================================================
-   COMPONENTE
-========================================================= */
 
 export default function Inicial() {
+
     const navigate = useNavigate();
 
-    const wheelRef = useRef(null);
-    const testimonialsRef = useRef(null);
+    const heroRef = useRef(null);
+    const heroImagemRef = useRef(null);
+    const heroTextoRef = useRef(null);
 
-    const [usuario, setUsuario] = useState(null);
-    const [girando, setGirando] = useState(false);
-    const [resultadoRoleta, setResultadoRoleta] = useState(null);
-    const [modalRoleta, setModalRoleta] = useState(false);
-    const [codigoCopiado, setCodigoCopiado] = useState(false);
+    const manifestoRef = useRef(null);
 
-    const [feedbacks, setFeedbacks] = useState([]);
-    const [carregandoFeedbacks, setCarregandoFeedbacks] =
-        useState(true);
+    const visualRef = useRef(null);
+    const visualImagemRef = useRef(null);
+    const visualTextoRef = useRef(null);
 
-    const [estatisticas, setEstatisticas] = useState({
+    const categoriasRef = useRef(null);
+    const paletaRef = useRef(null);
+
+    const [corAtiva, setCorAtiva] = useState("#1f4ed8");
+    const [indicadores, setIndicadores] = useState({
         clientes: 0,
-        produtos: 0
+        pedidos: 0,
+        produtos: 0,
+        avaliacao: null
     });
+    const [carregandoIndicadores, setCarregandoIndicadores] = useState(true);
 
-    /* =====================================================
-       USUÁRIO
-    ===================================================== */
+    const cores = [
+        {
+            nome: "Azul Profundo",
+            hexadecimal: "#244a7c"
+        },
+        {
+            nome: "Terracota",
+            hexadecimal: "#b96548"
+        },
+        {
+            nome: "Verde Oliva",
+            hexadecimal: "#68745a"
+        },
+        {
+            nome: "Areia",
+            hexadecimal: "#d8c5aa"
+        },
+        {
+            nome: "Cinza Urbano",
+            hexadecimal: "#747b83"
+        },
+        {
+            nome: "Vinho",
+            hexadecimal: "#6f343d"
+        }
+    ];
 
     useEffect(() => {
-        try {
-            const usuarioSalvo =
-                localStorage.getItem("usuario");
+        let ativo = true;
 
-            if (usuarioSalvo) {
-                const usuarioConvertido =
-                    JSON.parse(usuarioSalvo);
+        async function carregarIndicadores() {
+            const [dashboardResultado, feedbacksResultado] =
+                await Promise.allSettled([
+                    api.get("/dashboard"),
+                    api.get("/feedbacks")
+                ]);
 
-                setUsuario(usuarioConvertido);
-            }
-        } catch (error) {
-            console.error(
-                "Erro ao carregar usuário:",
-                error
-            );
+            if (!ativo) return;
+
+            const resumo =
+                dashboardResultado.status === "fulfilled"
+                    ? dashboardResultado.value.data?.resumo || {}
+                    : {};
+
+            const feedbacks =
+                feedbacksResultado.status === "fulfilled" &&
+                Array.isArray(feedbacksResultado.value.data)
+                    ? feedbacksResultado.value.data
+                    : [];
+
+            const notasValidas = feedbacks
+                .map((feedback) => Number(feedback.nota))
+                .filter((nota) => Number.isFinite(nota) && nota > 0);
+
+            const mediaAvaliacao = notasValidas.length
+                ? notasValidas.reduce((total, nota) => total + nota, 0) /
+                  notasValidas.length
+                : null;
+
+            setIndicadores({
+                clientes: Number(resumo.clientes) || 0,
+                pedidos: Number(resumo.pedidos) || 0,
+                produtos: Number(resumo.produtos) || 0,
+                avaliacao: mediaAvaliacao
+            });
+            setCarregandoIndicadores(false);
         }
+
+        carregarIndicadores();
+
+        return () => {
+            ativo = false;
+        };
     }, []);
 
-    /* =====================================================
-       VERIFICA SE JÁ RODOU A ROLETA
-    ===================================================== */
+    const formatarQuantidade = (valor) =>
+        new Intl.NumberFormat("pt-BR").format(valor);
+
 
     useEffect(() => {
-        if (!usuario?.id) {
-            return;
-        }
 
-        try {
-            const resultadoSalvo =
-                localStorage.getItem(
-                    `roleta_${usuario.id}`
-                );
+        const contexto = gsap.context(() => {
 
-            if (resultadoSalvo) {
-                const resultado =
-                    JSON.parse(resultadoSalvo);
+            /* =====================================================
+               HERO
+            ===================================================== */
 
-                setResultadoRoleta(resultado);
-            }
-        } catch (error) {
-            console.error(
-                "Erro ao recuperar resultado da roleta:",
-                error
+            gsap.fromTo(
+                heroImagemRef.current,
+                {
+                    scale: 1.18
+                },
+                {
+                    scale: 1,
+                    duration: 1.8,
+                    ease: "power3.out"
+                }
             );
-        }
-    }, [usuario]);
 
-    /* =====================================================
-       MANTÉM O PONTEIRO SOBRE O PRÊMIO
-    ===================================================== */
 
-    useEffect(() => {
-        if (
-            !resultadoRoleta ||
-            !wheelRef.current
-        ) {
-            return;
-        }
+            gsap.fromTo(
+                heroTextoRef.current.children,
+                {
+                    y: 80,
+                    opacity: 0
+                },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1.1,
+                    stagger: 0.14,
+                    ease: "power3.out",
+                    delay: 0.25
+                }
+            );
 
-        const anguloInicial =
-            ANGULOS_INICIAIS_ROLETA[
-                resultadoRoleta.desconto
-            ];
 
-        if (typeof anguloInicial !== "number") {
-            return;
-        }
+            gsap.to(
+                heroImagemRef.current,
+                {
+                    yPercent: 15,
 
-        const rotacaoPremio =
-            (360 - anguloInicial) % 360;
+                    scrollTrigger: {
+                        trigger: heroRef.current,
+                        start: "top top",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                }
+            );
 
-        gsap.set(wheelRef.current, {
-            rotation: rotacaoPremio
+
+            /* =====================================================
+               SEÇÃO VISUAL
+            ===================================================== */
+
+            gsap.fromTo(
+                visualImagemRef.current,
+                {
+                    scale: 1.22
+                },
+                {
+                    scale: 1,
+
+                    scrollTrigger: {
+                        trigger: visualRef.current,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: 1.2
+                    }
+                }
+            );
+
+
+            gsap.fromTo(
+                visualTextoRef.current,
+                {
+                    opacity: 0,
+                    y: 70
+                },
+                {
+                    opacity: 1,
+                    y: 0,
+
+                    scrollTrigger: {
+                        trigger: visualRef.current,
+                        start: "top 60%",
+                        end: "top 30%",
+                        scrub: 1
+                    }
+                }
+            );
+
+
+            /* =====================================================
+               MANIFESTO
+            ===================================================== */
+
+            gsap.fromTo(
+                manifestoRef.current.children,
+                {
+                    opacity: 0,
+                    y: 80
+                },
+                {
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.18,
+                    duration: 1,
+
+                    scrollTrigger: {
+                        trigger: manifestoRef.current,
+                        start: "top 78%"
+                    }
+                }
+            );
+
+
+            /* =====================================================
+               CATEGORIAS
+            ===================================================== */
+
+            gsap.fromTo(
+                `.${styles.categoriaCard}`,
+                {
+                    opacity: 0,
+                    y: 100
+                },
+                {
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.15,
+                    duration: 1,
+
+                    scrollTrigger: {
+                        trigger: categoriasRef.current,
+                        start: "top 75%"
+                    }
+                }
+            );
+
+
+            /* =====================================================
+               PALETA
+            ===================================================== */
+
+            gsap.fromTo(
+                paletaRef.current,
+                {
+                    opacity: 0,
+                    y: 70
+                },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+
+                    scrollTrigger: {
+                        trigger: paletaRef.current,
+                        start: "top 80%"
+                    }
+                }
+            );
+
         });
-    }, [resultadoRoleta]);
 
-    /* =====================================================
-       BUSCAR FEEDBACKS
-    ===================================================== */
 
-    useEffect(() => {
-        const buscarFeedbacks = async () => {
-            try {
-                setCarregandoFeedbacks(true);
-
-                const response =
-                    await api.get("/feedbacks");
-
-                const dados =
-                    Array.isArray(response.data)
-                        ? response.data
-                        : [];
-
-                setFeedbacks(dados);
-            } catch (error) {
-                console.error(
-                    "Erro ao carregar feedbacks:",
-                    error
-                );
-
-                setFeedbacks([]);
-            } finally {
-                setCarregandoFeedbacks(false);
-            }
+        return () => {
+            contexto.revert();
         };
 
-        buscarFeedbacks();
     }, []);
 
-    /* =====================================================
-       BUSCAR ESTATÍSTICAS
-    ===================================================== */
-
-    useEffect(() => {
-        const buscarEstatisticas = async () => {
-            try {
-                const response =
-                    await api.get("/dashboard");
-
-                const resumo =
-                    response.data?.resumo || {};
-
-                setEstatisticas({
-                    clientes: Number(
-                        resumo.clientes || 0
-                    ),
-                    produtos: Number(
-                        resumo.produtos || 0
-                    )
-                });
-            } catch (error) {
-                console.error(
-                    "Erro ao carregar estatísticas:",
-                    error
-                );
-            }
-        };
-
-        buscarEstatisticas();
-    }, []);
-
-    /* =====================================================
-       ROLAR FEEDBACKS
-    ===================================================== */
-
-    const rolarFeedbacks = (direcao) => {
-        if (!testimonialsRef.current) {
-            return;
-        }
-
-        const container =
-            testimonialsRef.current;
-
-        const card =
-            container.querySelector(
-                `.${styles.testimonialCard}`
-            );
-
-        if (!card) {
-            return;
-        }
-
-        const gap = 24;
-
-        const quantidade =
-            card.offsetWidth + gap;
-
-        container.scrollBy({
-            left:
-                direcao === "left"
-                    ? -quantidade
-                    : quantidade,
-            behavior: "smooth"
-        });
-    };
-
-    /* =====================================================
-       SORTEAR DESCONTO
-    ===================================================== */
-
-    const sortearDesconto = () => {
-        const descontos = [5, 10, 20, 30];
-
-        const indice = Math.floor(
-            Math.random() * descontos.length
-        );
-
-        return descontos[indice];
-    };
-
-    /* =====================================================
-       GIRAR ROLETA
-    ===================================================== */
-
-    const girarRoleta = () => {
-        if (girando) {
-            return;
-        }
-
-        if (!usuario?.id) {
-            alert(
-                "Faça login para participar da roleta de descontos."
-            );
-
-            navigate("/login");
-            return;
-        }
-
-        if (resultadoRoleta) {
-            setModalRoleta(true);
-            return;
-        }
-
-        if (!wheelRef.current) {
-            return;
-        }
-
-        setGirando(true);
-
-        const desconto =
-            sortearDesconto();
-
-        const codigo =
-            CUPONS_ROLETA[desconto];
-
-        const anguloInicial =
-            ANGULOS_INICIAIS_ROLETA[desconto];
-
-        /*
-         * O ponteiro fica no topo (0°).
-         * A roleta gira o complemento do ângulo.
-         */
-
-        const anguloPremio =
-            (360 - anguloInicial) % 360;
-
-        const voltas = 5;
-
-        const rotacaoFinal =
-            voltas * 360 + anguloPremio;
-
-        gsap.to(wheelRef.current, {
-            rotation: rotacaoFinal,
-            duration: 5.2,
-            ease: "power4.out",
-
-            onComplete: () => {
-                const resultado = {
-                    desconto,
-                    codigo
-                };
-
-                setResultadoRoleta(resultado);
-
-                localStorage.setItem(
-                    `roleta_${usuario.id}`,
-                    JSON.stringify(resultado)
-                );
-
-                setGirando(false);
-
-                setTimeout(() => {
-                    setModalRoleta(true);
-                }, 350);
-            }
-        });
-    };
-
-    /* =====================================================
-       COPIAR CUPOM
-    ===================================================== */
-
-    const copiarCupom = async () => {
-        if (!resultadoRoleta?.codigo) {
-            return;
-        }
-
-        try {
-            await navigator.clipboard.writeText(
-                resultadoRoleta.codigo
-            );
-
-            setCodigoCopiado(true);
-
-            setTimeout(() => {
-                setCodigoCopiado(false);
-            }, 2000);
-        } catch (error) {
-            console.error(
-                "Erro ao copiar cupom:",
-                error
-            );
-        }
-    };
-
-    /* =====================================================
-       IR PARA CARRINHO
-    ===================================================== */
-
-    const irParaCarrinho = () => {
-        setModalRoleta(false);
-        navigate("/carrinho");
-    };
-
-    /* =====================================================
-       FECHAR MODAL
-    ===================================================== */
-
-    const fecharModal = () => {
-        setModalRoleta(false);
-        setCodigoCopiado(false);
-    };
-
-    /* =====================================================
-       ESTATÍSTICAS
-    ===================================================== */
-
-    const quantidadeFeedbacks =
-        feedbacks.length;
-
-    const mediaNotas =
-        feedbacks.length > 0
-            ? (
-                  feedbacks.reduce(
-                      (total, feedback) =>
-                          total +
-                          Number(
-                              feedback.nota || 0
-                          ),
-                      0
-                  ) / feedbacks.length
-              ).toFixed(1)
-            : "5.0";
-
-    const formatarEstatistica = (valor) =>
-        Number(valor).toLocaleString("pt-BR");
-
-    /* =====================================================
-       JSX
-    ===================================================== */
 
     return (
-        <div className={styles.container}>
+        <div className={styles.page}>
 
             <Header />
 
-            {/* =================================================
+
+            {/* =====================================================
                 HERO
-            ================================================= */}
+            ===================================================== */}
 
-            <section className={styles.hero}>
+            <section
+                ref={heroRef}
+                className={styles.hero}
+            >
 
-                <div className={styles.heroText}>
+                <div
+                    ref={heroImagemRef}
+                    className={styles.heroImagem}
+                />
+
+
+                <div className={styles.heroOverlay} />
+
+
+                <div
+                    ref={heroTextoRef}
+                    className={styles.heroConteudo}
+                >
+
+                    <span className={styles.heroEyebrow}>
+                        Tintas & Cia
+                    </span>
+
 
                     <h1>
-                        Transforme
+                        Sua casa,
                         <br />
-                        seus espaços
-                        <br />
-                        com <span>cor.</span>
+                        <em>do seu jeito.</em>
                     </h1>
 
+
                     <p>
-                        Encontre as melhores tintas,
-                        ferramentas e soluções para
-                        deixar cada ambiente exatamente
-                        do seu jeito.
+                        Descubra cores que transformam
+                        ambientes, despertam sensações
+                        e contam novas histórias.
                     </p>
 
-                    <div className={styles.heroButtons}>
+
+                    <div className={styles.heroAcoes}>
 
                         <button
-                            className={
-                                styles.primaryButton
-                            }
                             onClick={() =>
-                                navigate(
-                                    "/cliente/produtos"
-                                )
+                                navigate("/cliente/produtos")
                             }
                         >
-                            <FiShoppingCart />
-                            Ver produtos
+                            Explorar produtos
+
+                            <FiArrowRight />
                         </button>
 
+
                         <button
-                            className={
-                                styles.secondaryButton
-                            }
+                            className={styles.botaoTransparente}
                             onClick={() =>
                                 document
-                                    .getElementById(
-                                        "sobre"
-                                    )
+                                    .getElementById("categorias")
                                     ?.scrollIntoView({
-                                        behavior:
-                                            "smooth"
+                                        behavior: "smooth"
                                     })
                             }
                         >
-                            <FiDroplet />
-                            Conheça nossa loja
+                            Descobrir cores
                         </button>
 
                     </div>
 
-                    <div
-                        className={
-                            styles.heroBenefits
-                        }
-                    >
-
-                        <div>
-                            <FiShield />
-
-                            <div>
-                                <strong>
-                                    Compra segura
-                                </strong>
-
-                                <span>
-                                    Seus dados protegidos
-                                </span>
-                            </div>
-                        </div>
-
-                        <div>
-                            <FiTruck />
-
-                            <div>
-                                <strong>
-                                    Entrega rápida
-                                </strong>
-
-                                <span>
-                                    Receba onde estiver
-                                </span>
-                            </div>
-                        </div>
-
-                        <div>
-                            <FiAward />
-
-                            <div>
-                                <strong>
-                                    Qualidade garantida
-                                </strong>
-
-                                <span>
-                                    Grandes marcas
-                                </span>
-                            </div>
-                        </div>
-
-                    </div>
                 </div>
 
-                {/* =================================================
-                    ILUSTRAÇÃO
-                ================================================= */}
 
-                <div className={styles.heroImage}>
+                <div className={styles.scrollIndicador}>
 
-                    <div
-                        className={
-                            styles.paintArtwork
-                        }
-                    >
+                    <span>Explore</span>
 
-                        <div
-                            className={
-                                styles.paintCan
-                            }
-                        >
-
-                            <div
-                                className={
-                                    styles.paintCanTop
-                                }
-                            />
-
-                            <div
-                                className={
-                                    styles.paintCanBody
-                                }
-                            >
-
-                                <div
-                                    className={
-                                        styles.paintDrips
-                                    }
-                                >
-                                    <i />
-                                    <i />
-                                    <i />
-                                    <i />
-                                </div>
-
-                                <div
-                                    className={
-                                        styles.paintCanLabel
-                                    }
-                                >
-                                    <strong>
-                                        TINTAS+
-                                    </strong>
-
-                                    <span>
-                                        PREMIUM
-                                    </span>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div
-                            className={
-                                styles.paintRoller
-                            }
-                        >
-
-                            <div
-                                className={
-                                    styles.rollerHandle
-                                }
-                            />
-
-                            <div
-                                className={
-                                    styles.rollerGrip
-                                }
-                            >
-                                <span />
-                            </div>
-
-                        </div>
-
-                        <div
-                            className={
-                                styles.paintSheets
-                            }
-                        >
-                            <i />
-                            <i />
-                            <i />
-                            <i />
-                        </div>
-
-                    </div>
+                    <FiChevronDown />
 
                 </div>
 
             </section>
 
-            {/* =================================================
-                ESTATÍSTICAS + ROLETA
-            ================================================= */}
+
+
+            {/* =====================================================
+                TEXTO INTRODUTÓRIO
+            ===================================================== */}
+
+            <section className={styles.intro}>
+
+                <span>
+                    Uma nova forma de enxergar sua casa
+                </span>
+
+
+                <h2>
+                    Não é apenas tinta.
+                    <br />
+                    É a atmosfera que você cria.
+                </h2>
+
+            </section>
+
+
+
+            {/* =====================================================
+                VISUAL CINEMATOGRÁFICO
+            ===================================================== */}
 
             <section
-                className={
-                    styles.statsDiscount
-                }
+                ref={visualRef}
+                className={styles.visualSection}
             >
 
-                <div
-                    className={
-                        styles.statsCard
-                    }
-                >
+                <div className={styles.visualFrame}>
 
                     <div
-                        className={
-                            styles.statItem
-                        }
-                    >
-                        <div
-                            className={
-                                styles.statIcon
-                            }
-                        >
-                            <FiUsers />
-                        </div>
+                        ref={visualImagemRef}
+                        className={styles.visualImagem}
+                    />
 
-                        <strong>
-                            +
-                            {formatarEstatistica(
-                                estatisticas.clientes
-                            )}
-                        </strong>
+
+                    <div className={styles.visualOverlay} />
+
+
+                    <div
+                        ref={visualTextoRef}
+                        className={styles.visualTexto}
+                    >
 
                         <span>
-                            clientes satisfeitos
+                            Experimente
                         </span>
-                    </div>
 
-                    <div
-                        className={
-                            styles.statItem
-                        }
-                    >
-                        <div
-                            className={
-                                styles.statIcon
-                            }
-                        >
-                            <FiPackage />
-                        </div>
-
-                        <strong>
-                            +
-                            {formatarEstatistica(
-                                estatisticas.produtos
-                            )}
-                        </strong>
-
-                        <span>
-                            produtos disponíveis
-                        </span>
-                    </div>
-
-                    <div
-                        className={
-                            styles.statItem
-                        }
-                    >
-                        <div
-                            className={
-                                styles.statIcon
-                            }
-                        >
-                            <FiStar />
-                        </div>
-
-                        <strong>
-                            {mediaNotas}
-                        </strong>
-
-                        <span>
-                            média das avaliações
-                        </span>
-                    </div>
-
-                    <div
-                        className={
-                            styles.statItem
-                        }
-                    >
-                        <div
-                            className={
-                                styles.statIcon
-                            }
-                        >
-                            <FiMessageSquare />
-                        </div>
-
-                        <strong>
-                            {quantidadeFeedbacks > 0
-                                ? quantidadeFeedbacks
-                                : "+100"}
-                        </strong>
-
-                        <span>
-                            avaliações recebidas
-                        </span>
-                    </div>
-
-                </div>
-
-                {/* =================================================
-                    CARD DA ROLETA
-                ================================================= */}
-
-                <div
-                    className={
-                        styles.discountCard
-                    }
-                >
-
-                    <div
-                        className={
-                            styles.discountText
-                        }
-                    >
-
-                        <div
-                            className={
-                                styles.discountTitleIcon
-                            }
-                        >
-                            <FiGift />
-                        </div>
-
-                        <h3>
-                            Quer ganhar desconto?
-                        </h3>
+                        <h2>
+                            Veja além
+                            <br />
+                            <em>da cor.</em>
+                        </h2>
 
                         <p>
-                            Gire a roleta e descubra
-                            quantos % de desconto você
-                            ganhou para sua próxima compra.
+                            Textura, luz e personalidade
+                            em cada detalhe.
                         </p>
-
-                        <button
-                            onClick={girarRoleta}
-                            disabled={girando}
-                        >
-                            {girando
-                                ? "Girando..."
-                                : resultadoRoleta
-                                ? "Ver meu desconto"
-                                : "Girar roleta"}
-                        </button>
-
-                        <small>
-                            {resultadoRoleta
-                                ? "Você já participou da roleta."
-                                : "Disponível uma vez por usuário."}
-                        </small>
-
-                    </div>
-
-                    <div
-                        className={
-                            styles.wheelArea
-                        }
-                    >
-
-                        <div
-                            className={
-                                styles.wheelPointer
-                            }
-                        />
-
-                        <div
-                            ref={wheelRef}
-                            className={
-                                styles.discountWheel
-                            }
-                        >
-
-                            <span
-                                className={`${styles.wheelText} ${styles.wheelTextOne}`}
-                            >
-                                5%
-                            </span>
-
-                            <span
-                                className={`${styles.wheelText} ${styles.wheelTextTwo}`}
-                            >
-                                10%
-                            </span>
-
-                            <span
-                                className={`${styles.wheelText} ${styles.wheelTextThree}`}
-                            >
-                                20%
-                            </span>
-
-                            <span
-                                className={`${styles.wheelText} ${styles.wheelTextFour}`}
-                            >
-                                30%
-                            </span>
-
-                            <div
-                                className={
-                                    styles.wheelCenter
-                                }
-                            >
-                                <FiGift />
-                            </div>
-
-                        </div>
 
                     </div>
 
@@ -921,650 +472,487 @@ export default function Inicial() {
 
             </section>
 
-            {/* =================================================
-                SOBRE
-            ================================================= */}
+
+
+            {/* =====================================================
+                MANIFESTO
+            ===================================================== */}
 
             <section
-                id="sobre"
-                className={styles.about}
+                ref={manifestoRef}
+                className={styles.manifesto}
             >
 
-                <div
-                    className={
-                        styles.aboutHeader
-                    }
-                >
+                <span className={styles.sectionNumber}>
+                    01 — NOSSA ESSÊNCIA
+                </span>
 
-                    <span>
-                        Por que escolher a Tintas+
-                    </span>
 
-                    <h2>
-                        Tudo para sua pintura
-                    </h2>
+                <h2>
+                    Transformamos paredes
+                    <br />
+                    em <em>possibilidades.</em>
+                </h2>
+
+
+                <div className={styles.manifestoTexto}>
 
                     <p>
-                        Trabalhamos para oferecer
-                        produtos de qualidade, segurança
-                        e praticidade para todos os tipos
-                        de projetos.
+                        Cada ambiente tem uma história.
+                        A cor certa pode mudar completamente
+                        a forma como você sente e vive um espaço.
+                    </p>
+
+
+                    <button
+                        onClick={() =>
+                            navigate("/cliente/sobre")
+                        }
+                    >
+                        Conheça nossa história
+
+                        <FiArrowUpRight />
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            {/* =====================================================
+                CATEGORIAS
+            ===================================================== */}
+
+            <section
+                id="categorias"
+                ref={categoriasRef}
+                className={styles.categorias}
+            >
+
+                <div className={styles.sectionHeader}>
+
+                    <div>
+
+                        <span className={styles.sectionNumber}>
+                            02 — COLEÇÕES
+                        </span>
+
+                        <h2>
+                            Encontre
+                            <br />
+                            <em>seu estilo.</em>
+                        </h2>
+
+                    </div>
+
+
+                    <p>
+                        Escolha o ambiente e descubra
+                        tintas pensadas para cada necessidade.
                     </p>
 
                 </div>
 
-                <div
-                    className={
-                        styles.aboutGrid
-                    }
-                >
 
-                    <div
-                        className={
-                            styles.aboutCard
+                <div className={styles.categoriasGrid}>
+
+
+                    <article
+                        className={styles.categoriaCard}
+                        onClick={() =>
+                            navigate("/cliente/produtos")
                         }
                     >
-                        <div
-                            className={
-                                styles.aboutIcon
-                            }
-                        >
-                            <FiDroplet />
+
+                        <img
+                            src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=90"
+                            alt="Ambiente interno"
+                        />
+
+                        <div className={styles.categoriaOverlay} />
+
+
+                        <div className={styles.categoriaConteudo}>
+
+                            <span>01</span>
+
+                            <h3>
+                                Ambientes
+                                <br />
+                                internos
+                            </h3>
+
+                            <p>
+                                Conforto, personalidade
+                                e acabamento perfeito.
+                            </p>
+
+                            <FiArrowUpRight />
+
                         </div>
 
-                        <h3>
-                            Grande variedade
-                        </h3>
+                    </article>
 
-                        <p>
-                            Encontre tintas, ferramentas,
-                            acessórios e tudo o que precisa
-                            para sua pintura.
-                        </p>
-                    </div>
 
-                    <div
-                        className={
-                            styles.aboutCard
+
+                    <article
+                        className={styles.categoriaCard}
+                        onClick={() =>
+                            navigate("/cliente/produtos")
                         }
                     >
-                        <div
-                            className={
-                                styles.aboutIcon
-                            }
-                        >
-                            <FiShield />
+
+                        <img
+                            src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=90"
+                            alt="Área externa"
+                        />
+
+                        <div className={styles.categoriaOverlay} />
+
+
+                        <div className={styles.categoriaConteudo}>
+
+                            <span>02</span>
+
+                            <h3>
+                                Áreas
+                                <br />
+                                externas
+                            </h3>
+
+                            <p>
+                                Proteção e resistência
+                                sem abrir mão do design.
+                            </p>
+
+                            <FiArrowUpRight />
+
                         </div>
 
-                        <h3>
-                            Compra segura
-                        </h3>
+                    </article>
 
-                        <p>
-                            Seus dados e suas compras
-                            protegidos do início ao fim.
-                        </p>
-                    </div>
 
-                    <div
-                        className={
-                            styles.aboutCard
+
+                    <article
+                        className={styles.categoriaCard}
+                        onClick={() =>
+                            navigate("/cliente/produtos")
                         }
                     >
-                        <div
-                            className={
-                                styles.aboutIcon
-                            }
-                        >
-                            <FiAward />
+
+                        <img
+                            src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=90"
+                            alt="Madeira e acabamento"
+                        />
+
+                        <div className={styles.categoriaOverlay} />
+
+
+                        <div className={styles.categoriaConteudo}>
+
+                            <span>03</span>
+
+                            <h3>
+                                Acabamentos
+                                <br />
+                                especiais
+                            </h3>
+
+                            <p>
+                                Detalhes que elevam
+                                qualquer projeto.
+                            </p>
+
+                            <FiArrowUpRight />
+
                         </div>
 
-                        <h3>
-                            Grandes marcas
-                        </h3>
+                    </article>
 
-                        <p>
-                            Produtos das principais marcas
-                            do mercado de tintas.
-                        </p>
-                    </div>
-
-                    <div
-                        className={
-                            styles.aboutCard
-                        }
-                    >
-                        <div
-                            className={
-                                styles.aboutIcon
-                            }
-                        >
-                            <FiHeadphones />
-                        </div>
-
-                        <h3>
-                            Atendimento
-                        </h3>
-
-                        <p>
-                            Estamos sempre prontos para
-                            ajudar você a encontrar a melhor
-                            solução.
-                        </p>
-                    </div>
 
                 </div>
 
             </section>
 
-            {/* =================================================
-                FOTOS
-            ================================================= */}
 
-            <div className={styles.marcasWrapper}>
 
-                <div className={styles.marcasTrack}>
-
-                    {[0, 1, 2].map((grupo) => (
-                        <div
-                            className={styles.marcaGroup}
-                            key={`grupo-marcas-${grupo}`}
-                            aria-hidden={grupo !== 0}
-                        >
-                            {fotosMarcas.map((foto, index) => (
-                                <img
-                                    key={`${grupo}-${index}`}
-                                    src={foto}
-                                    alt={
-                                        grupo === 0
-                                            ? `Produto ${index + 1}`
-                                            : ""
-                                    }
-                                    className={styles.marcaImagem}
-                                />
-                            ))}
-                        </div>
-                    ))}
-
-                </div>
-            </div>
-
-            {/* =================================================
-                AVALIAÇÕES
-            ================================================= */}
+            {/* =====================================================
+                PALETA
+            ===================================================== */}
 
             <section
-                className={
-                    styles.testimonials
-                }
+                ref={paletaRef}
+                className={styles.paleta}
+                style={{
+                    "--cor-ativa": corAtiva
+                }}
             >
 
-                <div
-                    className={
-                        styles.feedbackSectionHeader
-                    }
-                >
+                <div className={styles.paletaBackground} />
 
-                    <div
-                        className={
-                            styles.feedbackIntro
-                        }
-                    >
 
-                        <span>
-                            O que nossos clientes dizem
+                <div className={styles.paletaConteudo}>
+
+                    <span className={styles.sectionNumber}>
+                        03 — EXPLORE
+                    </span>
+
+
+                    <h2>
+                        Qual cor combina
+                        <br />
+                        <em>com você?</em>
+                    </h2>
+
+
+                    <p>
+                        Passe pelas cores e encontre
+                        uma nova inspiração para seu ambiente.
+                    </p>
+
+
+                    <div className={styles.cores}>
+
+                        {cores.map((cor) => (
+
+                            <button
+                                key={cor.hexadecimal}
+                                className={
+                                    corAtiva === cor.hexadecimal
+                                        ? styles.corAtiva
+                                        : ""
+                                }
+                                onMouseEnter={() =>
+                                    setCorAtiva(
+                                        cor.hexadecimal
+                                    )
+                                }
+                                onClick={() =>
+                                    setCorAtiva(
+                                        cor.hexadecimal
+                                    )
+                                }
+                            >
+
+                                <span
+                                    style={{
+                                        background:
+                                            cor.hexadecimal
+                                    }}
+                                />
+
+                                <small>
+                                    {cor.nome}
+                                </small>
+
+                            </button>
+
+                        ))}
+
+                    </div>
+
+                </div>
+
+
+                <div className={styles.paletaCodigo}>
+
+                    <span>
+                        COR SELECIONADA
+                    </span>
+
+                    <strong>
+                        {corAtiva}
+                    </strong>
+
+                </div>
+
+            </section>
+
+
+
+            {/* =====================================================
+                NÚMEROS
+            ===================================================== */}
+
+            <section className={styles.numeros} aria-live="polite">
+
+                <div>
+
+                    <FiUsers />
+
+                    <strong>
+                        {carregandoIndicadores
+                            ? "—"
+                            : formatarQuantidade(indicadores.clientes)}
+                    </strong>
+
+                    <span>
+                        clientes
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <FiShoppingBag />
+
+                    <strong>
+                        {carregandoIndicadores
+                            ? "—"
+                            : formatarQuantidade(indicadores.pedidos)}
+                    </strong>
+
+                    <span>
+                        pedidos
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <FiDroplet />
+
+                    <strong>
+                        {carregandoIndicadores
+                            ? "—"
+                            : formatarQuantidade(indicadores.produtos)}
+                    </strong>
+
+                    <span>
+                        produtos
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <FiStar />
+
+                    <strong>
+                        {carregandoIndicadores
+                            ? "—"
+                            : indicadores.avaliacao === null
+                              ? "—"
+                              : indicadores.avaliacao
+                                    .toLocaleString("pt-BR", {
+                                        minimumFractionDigits: 1,
+                                        maximumFractionDigits: 1
+                                    })}
+                    </strong>
+
+                    <span>
+                        avaliação
+                    </span>
+
+                </div>
+
+            </section>
+
+
+
+            {/* =====================================================
+                MARCAS
+            ===================================================== */}
+
+            <section className={styles.marcas}>
+
+                <div className={styles.marcasCabecalho}>
+                    <div>
+                        <span className={styles.sectionNumber}>
+                            04 — NOSSAS MARCAS
                         </span>
 
                         <h2>
-                            Experiências que
-                            <strong>
-                                {" "}
-                                fazem a diferença.
-                            </strong>
+                            Qualidade que você
+                            <br />
+                            <em>já conhece.</em>
                         </h2>
-
-                        <p>
-                            Confira as avaliações de quem
-                            já comprou com a Tintas+.
-                        </p>
-
                     </div>
 
-                    <div
-                        className={
-                            styles.feedbackScoreCard
-                        }
-                    >
+                    <p>
+                        Trabalhamos com marcas reconhecidas para garantir
+                        acabamento, durabilidade e a cor certa para cada projeto.
+                    </p>
+                </div>
 
-                        <strong
-                            className={
-                                styles.feedbackScoreNumber
-                            }
-                        >
-                            {mediaNotas}
-                        </strong>
 
-                        <div>
+                <div
+                    className={styles.marcasTrack}
+                    aria-label="Marcas disponíveis"
+                >
 
-                            <div
-                                className={
-                                    styles.feedbackScoreStars
-                                }
-                            >
-                                {[1, 2, 3, 4, 5].map(
-                                    (star) => (
-                                        <FiStar
-                                            key={star}
-                                            className={
-                                                star <=
-                                                Math.round(
-                                                    Number(
-                                                        mediaNotas
-                                                    )
-                                                )
-                                                    ? styles.starActive
-                                                    : styles.starInactive
-                                            }
-                                        />
-                                    )
-                                )}
-                            </div>
+                    <div className={styles.marcasLinha}>
 
-                            <span>
-                                Avaliação dos clientes
-                            </span>
+                        <div className={styles.marcasGrupo} aria-hidden="true">
+                            {marcasLoop.map((marca, index) => (
+                                <span key={`marca-a-${marca}-${index}`}>
+                                    {marca}
+                                </span>
+                            ))}
+                        </div>
 
+                        <div className={styles.marcasGrupo} aria-hidden="true">
+                            {marcasLoop.map((marca, index) => (
+                                <span key={`marca-b-${marca}-${index}`}>
+                                    {marca}
+                                </span>
+                            ))}
                         </div>
 
                     </div>
 
                 </div>
 
-                <div
-                    className={
-                        styles.carouselWrapper
-                    }
-                >
+            </section>
+
+
+
+            {/* =====================================================
+                CTA FINAL
+            ===================================================== */}
+
+            <section className={styles.ctaFinal}>
+
+                <div className={styles.ctaImagem} />
+
+
+                <div className={styles.ctaOverlay} />
+
+
+                <div className={styles.ctaConteudo}>
+
+                    <span>
+                        Seu próximo ambiente começa aqui.
+                    </span>
+
+
+                    <h2>
+                        Pronto para
+                        <br />
+                        <em>mudar tudo?</em>
+                    </h2>
+
 
                     <button
-                        className={`${styles.carouselButton} ${styles.carouselButtonLeft}`}
                         onClick={() =>
-                            rolarFeedbacks("left")
-                        }
-                        aria-label="Avaliações anteriores"
-                    >
-                        <FiChevronLeft />
-                    </button>
-
-                    <div
-                        ref={testimonialsRef}
-                        className={
-                            styles.testimonialsGrid
+                            navigate("/cliente/produtos")
                         }
                     >
+                        Ver todas as tintas
 
-                        {carregandoFeedbacks ? (
-
-                            <div
-                                className={
-                                    styles.feedbackLoading
-                                }
-                            >
-                                <div
-                                    className={
-                                        styles.loadingSpinner
-                                    }
-                                />
-
-                                <p>
-                                    Carregando avaliações...
-                                </p>
-                            </div>
-
-                        ) : feedbacks.length === 0 ? (
-
-                            <div
-                                className={
-                                    styles.feedbackEmpty
-                                }
-                            >
-
-                                <FiMessageSquare />
-
-                                <h3>
-                                    Ainda não há avaliações
-                                </h3>
-
-                                <p>
-                                    Seja o primeiro a avaliar
-                                    nossa loja.
-                                </p>
-
-                            </div>
-
-                        ) : (
-
-                            [...feedbacks, ...feedbacks].map(
-                                (feedback, index) => {
-
-                                    const nome =
-                                        feedback.nome ||
-                                        feedback.usuario_nome ||
-                                        feedback.usuario?.nome ||
-                                        "Cliente";
-
-                                    const inicial =
-                                        nome
-                                            .charAt(0)
-                                            .toUpperCase();
-
-                                    const foto =
-                                        feedback.foto ||
-                                        feedback.usuario_foto;
-
-                                    return (
-                                        <article
-                                            key={`${feedback.id}-${index}`}
-                                            className={
-                                                styles.testimonialCard
-                                            }
-                                        >
-
-                                            <div
-                                                className={
-                                                    styles.testimonialTop
-                                                }
-                                            >
-
-                                                <div
-                                                    className={
-                                                        styles.testiIconWrapper
-                                                    }
-                                                >
-                                                    <FiMessageSquare
-                                                        className={
-                                                            styles.testiIcon
-                                                        }
-                                                    />
-                                                </div>
-
-                                                <div
-                                                    className={
-                                                        styles.feedbackRating
-                                                    }
-                                                >
-
-                                                    {[1, 2, 3, 4, 5].map(
-                                                        (star) => (
-                                                            <FiStar
-                                                                key={star}
-                                                                className={
-                                                                    star <=
-                                                                    Number(
-                                                                        feedback.nota ||
-                                                                            0
-                                                                    )
-                                                                        ? styles.starActive
-                                                                        : styles.starInactive
-                                                                }
-                                                            />
-                                                        )
-                                                    )}
-
-                                                </div>
-
-                                            </div>
-
-                                            <div
-                                                className={
-                                                    styles.feedbackCardScore
-                                                }
-                                            >
-                                                <strong>
-                                                    {Number(
-                                                        feedback.nota ||
-                                                            0
-                                                    ).toFixed(1)}
-                                                </strong>
-
-                                                <span>
-                                                    / 5
-                                                </span>
-                                            </div>
-
-                                            <p
-                                                className={
-                                                    styles.testimonialComment
-                                                }
-                                            >
-                                                {feedback.comentario ||
-                                                    "Excelente experiência!"}
-                                            </p>
-
-                                            <div
-                                                className={
-                                                    styles.userAuthor
-                                                }
-                                            >
-
-                                                {foto ? (
-
-                                                    <img
-                                                        src={obterUrlFoto(
-                                                            foto
-                                                        )}
-                                                        alt={nome}
-                                                        className={
-                                                            styles.feedbackAvatar
-                                                        }
-                                                        onError={(
-                                                            event
-                                                        ) => {
-                                                            event.currentTarget.style.display =
-                                                                "none";
-                                                        }}
-                                                    />
-
-                                                ) : (
-
-                                                    <div
-                                                        className={
-                                                            styles.feedbackAvatarInitial
-                                                        }
-                                                    >
-                                                        {inicial}
-                                                    </div>
-
-                                                )}
-
-                                                <div>
-
-                                                    <strong>
-                                                        {nome}
-                                                    </strong>
-
-                                                    <span>
-                                                        Cliente Tintas+
-                                                    </span>
-
-                                                    <small>
-                                                        Avaliação verificada
-                                                    </small>
-
-                                                </div>
-
-                                            </div>
-
-                                        </article>
-                                    );
-                                }
-                            )
-                        )}
-
-                    </div>
-
-                    <button
-                        className={`${styles.carouselButton} ${styles.carouselButtonRight}`}
-                        onClick={() =>
-                            rolarFeedbacks("right")
-                        }
-                        aria-label="Próximas avaliações"
-                    >
-                        <FiChevronRight />
+                        <FiArrowRight />
                     </button>
 
                 </div>
 
             </section>
 
-            {/* =================================================
-                MODAL DA ROLETA
-            ================================================= */}
 
-            {modalRoleta &&
-                resultadoRoleta && (
 
-                    <div
-                        className={
-                            styles.modalOverlay
-                        }
-                        onClick={fecharModal}
-                    >
-
-                        <div
-                            className={
-                                styles.couponModal
-                            }
-                            onClick={(event) =>
-                                event.stopPropagation()
-                            }
-                        >
-
-                            <button
-                                className={
-                                    styles.modalClose
-                                }
-                                onClick={fecharModal}
-                                aria-label="Fechar"
-                            >
-                                <FiX />
-                            </button>
-
-                            <div
-                                className={
-                                    styles.modalIcon
-                                }
-                            >
-                                <FiGift />
-                            </div>
-
-                            <span
-                                className={
-                                    styles.modalSmallTitle
-                                }
-                            >
-                                PARABÉNS!
-                            </span>
-
-                            <h2>
-                                Você ganhou
-                            </h2>
-
-                            <div
-                                className={
-                                    styles.modalDiscount
-                                }
-                            >
-                                {resultadoRoleta.desconto}%
-
-                                <span>
-                                    OFF
-                                </span>
-                            </div>
-
-                            <p
-                                className={
-                                    styles.modalDescription
-                                }
-                            >
-                                Use seu cupom na próxima
-                                compra e aproveite seu
-                                desconto exclusivo.
-                            </p>
-
-                            <div
-                                className={
-                                    styles.couponBox
-                                }
-                            >
-
-                                <div>
-
-                                    <span>
-                                        SEU CUPOM
-                                    </span>
-
-                                    <strong>
-                                        {
-                                            resultadoRoleta.codigo
-                                        }
-                                    </strong>
-
-                                </div>
-
-                                <button
-                                    onClick={
-                                        copiarCupom
-                                    }
-                                >
-
-                                    {codigoCopiado ? (
-                                        <>
-                                            <FiCheck />
-                                            Copiado
-                                        </>
-                                    ) : (
-                                        <>
-                                            <FiCopy />
-                                            Copiar
-                                        </>
-                                    )}
-
-                                </button>
-
-                            </div>
-
-                            <button
-                                className={
-                                    styles.continueCartButton
-                                }
-                                onClick={
-                                    irParaCarrinho
-                                }
-                            >
-                                <FiShoppingCart />
-                                Ir para o carrinho
-                            </button>
-
-                            <button
-                                className={
-                                    styles.modalContinueShopping
-                                }
-                                onClick={
-                                    fecharModal
-                                }
-                            >
-                                Continuar comprando
-                            </button>
-
-                        </div>
-
-                    </div>
-                )}
-
-            {/* =================================================
-                FOOTER
-            ================================================= */}
         </div>
     );
 }

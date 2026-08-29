@@ -13,6 +13,7 @@ import cuponsRoutes from "./routes/cupons.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import feedbacksRoutes from "./routes/feedbacks.routes.js";
 import fidelidadeRoutes from "./routes/fidelidade.routes.js";
+import cartoesRoutes from "./routes/cartoes.routes.js";
 
 import { config } from "./config.js";
 
@@ -166,6 +167,10 @@ app.use(
 app.use(
     "/fidelidade",
     fidelidadeRoutes
+);
+app.use(
+    "/cartoes",
+    cartoesRoutes
 );
 
 // =====================================================

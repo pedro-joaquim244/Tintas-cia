@@ -1,106 +1,224 @@
-import express from 'express';
-import pool from '../database.js';
-import { autenticarToken, autorizarTipos } from '../middlewares/autenticacao.js';
+import express from "express";
+import pool from "../database.js";
+
+import {
+    autenticarToken,
+    autorizarTipos
+} from "../middlewares/autenticacao.js";
+
 import upload from "../middlewares/upload.js";
 
+
 const router = express.Router();
+
+
+// =====================================================
+// CATEGORIAS PERMITIDAS
+// =====================================================
+
+const categoriasPermitidas = [
+
+    "Tintas para Parede",
+
+    "Tintas para Área Externa",
+
+    "Tintas para Madeira",
+
+    "Tintas para Metal",
+
+    "Efeitos e Acabamentos",
+
+    "Proteção e Segurança",
+
+    "Pincéis e Acessórios",
+
+    "Ferramentas",
+
+    "Preparação de Superfície",
+
+    "Complementos",
+
+    "Outros"
+
+];
 
 
 // =====================================================
 // LISTAR TODOS OS ITENS
 // =====================================================
 
-router.get("/", autenticarToken, async (req, res) => {
+router.get(
+    "/",
+    autenticarToken,
+    async (req, res) => {
 
-    try {
+        try {
 
-        const sql = `
-            SELECT
-                id,
-                nome,
-                descricao,
-                categoria,
-                preco,
-                quantidade,
-                foto,
-                CASE WHEN quantidade > 0 THEN 'Ativo' ELSE 'Inativo' END AS status,
-                COALESCE((
-                    SELECT COUNT(DISTINCT ip.pedido_id)
-                    FROM itens_pedidos ip
-                    WHERE ip.produto_id = itens.id
-                ), 0) AS quantidade_pedidos,
-                criado_em,
-                atualizado_em
-            FROM itens
-            ORDER BY id DESC
-        `;
+            const sql = `
+                SELECT
+                    id,
+                    nome,
+                    descricao,
+                    categoria,
+                    marca,
+                    cor,
+                    preco,
+                    quantidade,
+                    foto,
 
-        const [itens] = await pool.query(sql);
+                    CASE
+                        WHEN quantidade > 0
+                        THEN 'Ativo'
+                        ELSE 'Inativo'
+                    END AS status,
 
-        return res.json(itens);
+                    COALESCE(
+                        (
+                            SELECT
+                                COUNT(
+                                    DISTINCT ip.pedido_id
+                                )
 
-    } catch (error) {
+                            FROM itens_pedidos ip
 
-        console.error(error);
+                            WHERE
+                                ip.produto_id = itens.id
+                        ),
+                        0
+                    ) AS quantidade_pedidos,
 
-        return res.status(500).json({
-            erro: "Erro ao listar itens."
-        });
+                    criado_em,
+                    atualizado_em
+
+                FROM itens
+
+                ORDER BY id DESC
+            `;
+
+
+            const [itens] =
+                await pool.query(sql);
+
+
+            return res.status(200).json(
+                itens
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao listar itens:",
+                error
+            );
+
+
+            return res.status(500).json({
+
+                erro:
+                    "Erro ao listar itens.",
+
+                detalhe:
+                    error.message
+
+            });
+
+        }
 
     }
-
-});
+);
 
 
 // =====================================================
 // BUSCAR ITEM POR ID
 // =====================================================
 
-router.get("/:id", autenticarToken, async (req, res) => {
+router.get(
+    "/:id",
+    autenticarToken,
+    async (req, res) => {
 
-    try {
+        try {
 
-        const { id } = req.params;
+            const { id } =
+                req.params;
 
-        const sql = `
-            SELECT
-                id,
-                nome,
-                descricao,
-                categoria,
-                preco,
-                quantidade,
-                foto,
-                status,
-                criado_em,
-                atualizado_em
-            FROM itens
-            WHERE id = ?
-        `;
 
-        const [resultado] = await pool.query(sql, [id]);
+            const sql = `
+                SELECT
+                    id,
+                    nome,
+                    descricao,
+                    categoria,
+                    marca,
+                    cor,
+                    preco,
+                    quantidade,
+                    foto,
 
-        if (resultado.length === 0) {
+                    CASE
+                        WHEN quantidade > 0
+                        THEN 'Ativo'
+                        ELSE 'Inativo'
+                    END AS status,
 
-            return res.status(404).json({
-                erro: "Item não encontrado."
+                    criado_em,
+                    atualizado_em
+
+                FROM itens
+
+                WHERE id = ?
+            `;
+
+
+            const [resultado] =
+                await pool.query(
+                    sql,
+                    [id]
+                );
+
+
+            if (
+                resultado.length === 0
+            ) {
+
+                return res.status(404).json({
+
+                    erro:
+                        "Item não encontrado."
+
+                });
+
+            }
+
+
+            return res.status(200).json(
+                resultado[0]
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao buscar item:",
+                error
+            );
+
+
+            return res.status(500).json({
+
+                erro:
+                    "Erro ao buscar item.",
+
+                detalhe:
+                    error.message
+
             });
 
         }
 
-        return res.json(resultado[0]);
-
-    } catch (error) {
-
-        console.error(error);
-
-        return res.status(500).json({
-            erro: "Erro ao buscar item."
-        });
-
     }
-
-});
+);
 
 
 // =====================================================
@@ -109,92 +227,180 @@ router.get("/:id", autenticarToken, async (req, res) => {
 
 router.post(
     "/",
+
     autenticarToken,
-    autorizarTipos("admin"),
-    upload.single("foto"),
+
+    autorizarTipos(
+        "admin"
+    ),
+
+    upload.single(
+        "foto"
+    ),
+
     async (req, res) => {
 
         try {
 
             const {
+
                 nome,
+
                 descricao,
+
                 categoria,
+
+                marca,
+
+                cor,
+
                 preco,
+
                 quantidade
+
             } = req.body;
 
 
-            const foto = req.file
-                ? `uploads/${req.file.filename}`
-                : null;
+            // =================================================
+            // FOTO
+            // =================================================
+
+            const foto =
+                req.file
+                    ? `uploads/${req.file.filename}`
+                    : null;
 
 
-            // =============================================
-            // VALIDAÇÕES
-            // =============================================
+            // =================================================
+            // VALIDAR CAMPOS OBRIGATÓRIOS
+            // =================================================
 
-            if (!nome || preco === undefined) {
+            if (
+                !nome?.trim() ||
+                !categoria?.trim() ||
+                !marca?.trim() ||
+                !cor?.trim() ||
+                preco === undefined ||
+                preco === "" ||
+                quantidade === undefined ||
+                quantidade === ""
+            ) {
 
                 return res.status(400).json({
-                    erro: "Nome e preço são obrigatórios."
+
+                    erro:
+                        "Nome, categoria, marca, cor, preço e quantidade são obrigatórios."
+
                 });
 
             }
 
 
-            if (!categoria) {
+            // =================================================
+            // VALIDAR CATEGORIA
+            // =================================================
+
+            if (
+                !categoriasPermitidas.includes(
+                    categoria.trim()
+                )
+            ) {
 
                 return res.status(400).json({
-                    erro: "A categoria é obrigatória."
+
+                    erro:
+                        "Categoria inválida."
+
                 });
 
             }
 
 
-            // =============================================
-            // CATEGORIAS PERMITIDAS
-            // =============================================
+            // =================================================
+            // CONVERTER VALORES
+            // =================================================
 
-            const categoriasPermitidas = [
-
-                "Tintas para Parede",
-
-                "Tintas para Área Externa",
-
-                "Tintas para Madeira",
-
-                "Tintas para Metal",
-
-                "Efeitos e Acabamentos",
-
-                "Proteção e Segurança",
-
-                "Pincéis e Acessórios",
-
-                "Ferramentas",
-
-                "Preparação de Superfície",
-
-                "Complementos",
-
-                "Outros"
-
-            ];
+            const precoNumero =
+                Number(preco);
 
 
-            if (!categoriasPermitidas.includes(categoria)) {
+            const quantidadeNumero =
+                Number(quantidade);
+
+
+            // =================================================
+            // VALIDAR PREÇO
+            // =================================================
+
+            if (
+                Number.isNaN(precoNumero) ||
+                precoNumero < 0
+            ) {
 
                 return res.status(400).json({
-                    erro: "Categoria inválida."
+
+                    erro:
+                        "Preço inválido."
+
                 });
 
             }
 
 
-            // =============================================
-            // INSERIR
-            // =============================================
+            // =================================================
+            // VALIDAR QUANTIDADE
+            // =================================================
+
+            if (
+                Number.isNaN(
+                    quantidadeNumero
+                ) ||
+                quantidadeNumero < 0
+            ) {
+
+                return res.status(400).json({
+
+                    erro:
+                        "Quantidade inválida."
+
+                });
+
+            }
+
+
+            // =================================================
+            // VALIDAR QUANTIDADE INTEIRA
+            // =================================================
+
+            if (
+                !Number.isInteger(
+                    quantidadeNumero
+                )
+            ) {
+
+                return res.status(400).json({
+
+                    erro:
+                        "A quantidade deve ser um número inteiro."
+
+                });
+
+            }
+
+
+            // =================================================
+            // STATUS AUTOMÁTICO
+            // =================================================
+
+            const status =
+                quantidadeNumero > 0
+                    ? "Ativo"
+                    : "Inativo";
+
+
+            // =================================================
+            // INSERIR ITEM
+            // =================================================
 
             const sql = `
                 INSERT INTO itens
@@ -202,13 +408,18 @@ router.post(
                     nome,
                     descricao,
                     categoria,
+                    marca,
+                    cor,
                     preco,
                     quantidade,
                     status,
                     foto
                 )
+
                 VALUES
                 (
+                    ?,
+                    ?,
                     ?,
                     ?,
                     ?,
@@ -220,274 +431,91 @@ router.post(
             `;
 
 
-            const [resultado] = await pool.query(sql, [
+            const [resultado] =
+                await pool.query(
+                    sql,
+                    [
 
-                nome,
+                        nome.trim(),
 
-                descricao || null,
+                        descricao?.trim()
+                            || null,
 
-                categoria,
+                        categoria.trim(),
 
-                Number(preco),
+                        marca.trim(),
 
-                Number(quantidade) || 0,
+                        cor.trim(),
 
-                Number(quantidade) > 0 ? "Ativo" : "Inativo",
+                        precoNumero,
 
-                foto
+                        quantidadeNumero,
 
-            ]);
+                        status,
+
+                        foto
+
+                    ]
+                );
 
 
-            // =============================================
+            // =================================================
             // BUSCAR ITEM CRIADO
-            // =============================================
+            // =================================================
 
-            const [itemCriado] = await pool.query(
-                `
-                    SELECT
-                        id,
-                        nome,
-                        descricao,
-                        categoria,
-                        preco,
-                        quantidade,
-                        foto,
-                        CASE WHEN quantidade > 0 THEN 'Ativo' ELSE 'Inativo' END AS status,
-                        criado_em,
-                        atualizado_em
-                    FROM itens
-                    WHERE id = ?
-                `,
-                [resultado.insertId]
-            );
+            const [itemCriado] =
+                await pool.query(
+                    `
+                        SELECT
+                            id,
+                            nome,
+                            descricao,
+                            categoria,
+                            marca,
+                            cor,
+                            preco,
+                            quantidade,
+                            foto,
+
+                            CASE
+                                WHEN quantidade > 0
+                                THEN 'Ativo'
+                                ELSE 'Inativo'
+                            END AS status,
+
+                            criado_em,
+                            atualizado_em
+
+                        FROM itens
+
+                        WHERE id = ?
+                    `,
+                    [
+                        resultado.insertId
+                    ]
+                );
 
 
-            return res.status(201).json(itemCriado[0]);
+            return res.status(201).json({
 
-        } catch (error) {
+                mensagem:
+                    "Item cadastrado com sucesso!",
 
-            console.error("========== ERRO AO CRIAR ITEM ==========");
-            console.error(error);
-            console.error("Mensagem:", error.message);
-            console.error("Código:", error.code);
-            console.error("SQL:", error.sql);
+                item:
+                    itemCriado[0]
 
-
-            return res.status(500).json({
-                erro: "Erro ao criar item."
             });
 
-        }
-
-    }
-);
-
-
-// =====================================================
-// ATUALIZAR ITEM
-// =====================================================
-
-router.put(
-    "/:id",
-    autenticarToken,
-    autorizarTipos("admin"),
-    upload.single("foto"),
-    async (req, res) => {
-
-        try {
-
-            const { id } = req.params;
-
-
-            let {
-                nome,
-                descricao,
-                categoria,
-                preco,
-                quantidade
-            } = req.body;
-
-
-            // =============================================
-            // VALIDAÇÕES
-            // =============================================
-
-            if (
-                !nome ||
-                preco === undefined ||
-                quantidade === undefined ||
-                !categoria
-            ) {
-
-                return res.status(400).json({
-                    erro: "Nome, categoria, preço e quantidade são obrigatórios."
-                });
-
-            }
-
-
-            // =============================================
-            // CATEGORIAS PERMITIDAS
-            // =============================================
-
-            const categoriasPermitidas = [
-
-                "Tintas para Parede",
-
-                "Tintas para Área Externa",
-
-                "Tintas para Madeira",
-
-                "Tintas para Metal",
-
-                "Efeitos e Acabamentos",
-
-                "Proteção e Segurança",
-
-                "Pincéis e Acessórios",
-
-                "Ferramentas",
-
-                "Preparação de Superfície",
-
-                "Complementos",
-
-                "Outros"
-
-            ];
-
-
-            if (!categoriasPermitidas.includes(categoria)) {
-
-                return res.status(400).json({
-                    erro: "Categoria inválida."
-                });
-
-            }
-
-
-            // =============================================
-            // BUSCAR ITEM ATUAL
-            // =============================================
-
-            const [itemAtual] = await pool.query(
-                `
-                    SELECT
-                        foto
-                    FROM itens
-                    WHERE id = ?
-                `,
-                [id]
-            );
-
-
-            if (itemAtual.length === 0) {
-
-                return res.status(404).json({
-                    erro: "Item não encontrado."
-                });
-
-            }
-
-
-            // =============================================
-            // FOTO
-            // =============================================
-
-            const foto = req.file
-                ? `uploads/${req.file.filename}`
-                : itemAtual[0].foto;
-
-
-            // =============================================
-            // ATUALIZAR
-            // =============================================
-
-            const sql = `
-                UPDATE itens
-                SET
-                    nome = ?,
-                    descricao = ?,
-                    categoria = ?,
-                    preco = ?,
-                    quantidade = ?,
-                    status = CASE WHEN ? > 0 THEN 'Ativo' ELSE 'Inativo' END,
-                    foto = ?
-                WHERE id = ?
-            `;
-
-
-            const [resultado] = await pool.query(sql, [
-
-                nome,
-
-                descricao || null,
-
-                categoria,
-
-                Number(preco),
-
-                Number(quantidade),
-
-                Number(quantidade),
-
-                foto,
-
-                id
-
-            ]);
-
-
-            if (resultado.affectedRows === 0) {
-
-                return res.status(404).json({
-                    erro: "Item não encontrado."
-                });
-
-            }
-
-
-            // =============================================
-            // BUSCAR ITEM ATUALIZADO
-            // =============================================
-
-            const [itemAtualizado] = await pool.query(
-                `
-                    SELECT
-                        id,
-                        nome,
-                        descricao,
-                        categoria,
-                        preco,
-                        quantidade,
-                        foto,
-                        CASE WHEN quantidade > 0 THEN 'Ativo' ELSE 'Inativo' END AS status,
-                        COALESCE((
-                            SELECT COUNT(DISTINCT ip.pedido_id)
-                            FROM itens_pedidos ip
-                            WHERE ip.produto_id = itens.id
-                        ), 0) AS quantidade_pedidos,
-                        criado_em,
-                        atualizado_em
-                    FROM itens
-                    WHERE id = ?
-                `,
-                [id]
-            );
-
-
-            return res.status(200).json(
-                itemAtualizado[0]
-            );
 
         } catch (error) {
 
             console.error(
-                "========== ERRO AO ATUALIZAR ITEM =========="
+                "========== ERRO AO CRIAR ITEM =========="
             );
 
-            console.error(error);
+            console.error(
+                error
+            );
 
             console.error(
                 "Mensagem:",
@@ -506,7 +534,410 @@ router.put(
 
 
             return res.status(500).json({
-                erro: error.message
+
+                erro:
+                    "Erro ao criar item.",
+
+                detalhe:
+                    error.message
+
+            });
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// ATUALIZAR ITEM
+// =====================================================
+
+router.put(
+    "/:id",
+
+    autenticarToken,
+
+    autorizarTipos(
+        "admin"
+    ),
+
+    upload.single(
+        "foto"
+    ),
+
+    async (req, res) => {
+
+        try {
+
+            const { id } =
+                req.params;
+
+
+            const {
+
+                nome,
+
+                descricao,
+
+                categoria,
+
+                marca,
+
+                cor,
+
+                preco,
+
+                quantidade
+
+            } = req.body;
+
+
+            // =================================================
+            // VALIDAR CAMPOS OBRIGATÓRIOS
+            // =================================================
+
+            if (
+                !nome?.trim() ||
+                !categoria?.trim() ||
+                !marca?.trim() ||
+                !cor?.trim() ||
+                preco === undefined ||
+                preco === "" ||
+                quantidade === undefined ||
+                quantidade === ""
+            ) {
+
+                return res.status(400).json({
+
+                    erro:
+                        "Nome, categoria, marca, cor, preço e quantidade são obrigatórios."
+
+                });
+
+            }
+
+
+            // =================================================
+            // VALIDAR CATEGORIA
+            // =================================================
+
+            if (
+                !categoriasPermitidas.includes(
+                    categoria.trim()
+                )
+            ) {
+
+                return res.status(400).json({
+
+                    erro:
+                        "Categoria inválida."
+
+                });
+
+            }
+
+
+            // =================================================
+            // CONVERTER VALORES
+            // =================================================
+
+            const precoNumero =
+                Number(preco);
+
+
+            const quantidadeNumero =
+                Number(quantidade);
+
+
+            // =================================================
+            // VALIDAR PREÇO
+            // =================================================
+
+            if (
+                Number.isNaN(
+                    precoNumero
+                ) ||
+                precoNumero < 0
+            ) {
+
+                return res.status(400).json({
+
+                    erro:
+                        "Preço inválido."
+
+                });
+
+            }
+
+
+            // =================================================
+            // VALIDAR QUANTIDADE
+            // =================================================
+
+            if (
+                Number.isNaN(
+                    quantidadeNumero
+                ) ||
+                quantidadeNumero < 0
+            ) {
+
+                return res.status(400).json({
+
+                    erro:
+                        "Quantidade inválida."
+
+                });
+
+            }
+
+
+            // =================================================
+            // VALIDAR QUANTIDADE INTEIRA
+            // =================================================
+
+            if (
+                !Number.isInteger(
+                    quantidadeNumero
+                )
+            ) {
+
+                return res.status(400).json({
+
+                    erro:
+                        "A quantidade deve ser um número inteiro."
+
+                });
+
+            }
+
+
+            // =================================================
+            // BUSCAR ITEM ATUAL
+            // =================================================
+
+            const [itemAtual] =
+                await pool.query(
+                    `
+                        SELECT
+                            id,
+                            foto
+
+                        FROM itens
+
+                        WHERE id = ?
+                    `,
+                    [
+                        id
+                    ]
+                );
+
+
+            if (
+                itemAtual.length === 0
+            ) {
+
+                return res.status(404).json({
+
+                    erro:
+                        "Item não encontrado."
+
+                });
+
+            }
+
+
+            // =================================================
+            // FOTO
+            // =================================================
+
+            const foto =
+                req.file
+                    ? `uploads/${req.file.filename}`
+                    : itemAtual[0].foto;
+
+
+            // =================================================
+            // STATUS AUTOMÁTICO
+            // =================================================
+
+            const status =
+                quantidadeNumero > 0
+                    ? "Ativo"
+                    : "Inativo";
+
+
+            // =================================================
+            // ATUALIZAR ITEM
+            // =================================================
+
+            const sql = `
+                UPDATE itens
+
+                SET
+                    nome = ?,
+
+                    descricao = ?,
+
+                    categoria = ?,
+
+                    marca = ?,
+
+                    cor = ?,
+
+                    preco = ?,
+
+                    quantidade = ?,
+
+                    status = ?,
+
+                    foto = ?
+
+                WHERE id = ?
+            `;
+
+
+            const [resultado] =
+                await pool.query(
+                    sql,
+                    [
+
+                        nome.trim(),
+
+                        descricao?.trim()
+                            || null,
+
+                        categoria.trim(),
+
+                        marca.trim(),
+
+                        cor.trim(),
+
+                        precoNumero,
+
+                        quantidadeNumero,
+
+                        status,
+
+                        foto,
+
+                        id
+
+                    ]
+                );
+
+
+            if (
+                resultado.affectedRows === 0
+            ) {
+
+                return res.status(404).json({
+
+                    erro:
+                        "Item não encontrado."
+
+                });
+
+            }
+
+
+            // =================================================
+            // BUSCAR ITEM ATUALIZADO
+            // =================================================
+
+            const [itemAtualizado] =
+                await pool.query(
+                    `
+                        SELECT
+                            id,
+                            nome,
+                            descricao,
+                            categoria,
+                            marca,
+                            cor,
+                            preco,
+                            quantidade,
+                            foto,
+
+                            CASE
+                                WHEN quantidade > 0
+                                THEN 'Ativo'
+                                ELSE 'Inativo'
+                            END AS status,
+
+                            COALESCE(
+                                (
+                                    SELECT
+                                        COUNT(
+                                            DISTINCT ip.pedido_id
+                                        )
+
+                                    FROM itens_pedidos ip
+
+                                    WHERE
+                                        ip.produto_id = itens.id
+                                ),
+                                0
+                            ) AS quantidade_pedidos,
+
+                            criado_em,
+                            atualizado_em
+
+                        FROM itens
+
+                        WHERE id = ?
+                    `,
+                    [
+                        id
+                    ]
+                );
+
+
+            return res.status(200).json({
+
+                mensagem:
+                    "Item atualizado com sucesso!",
+
+                item:
+                    itemAtualizado[0]
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "========== ERRO AO ATUALIZAR ITEM =========="
+            );
+
+            console.error(
+                error
+            );
+
+            console.error(
+                "Mensagem:",
+                error.message
+            );
+
+            console.error(
+                "Código:",
+                error.code
+            );
+
+            console.error(
+                "SQL:",
+                error.sql
+            );
+
+
+            return res.status(500).json({
+
+                erro:
+                    "Erro ao atualizar item.",
+
+                detalhe:
+                    error.message
+
             });
 
         }
@@ -521,14 +952,57 @@ router.put(
 
 router.delete(
     "/:id",
+
     autenticarToken,
-    autorizarTipos("admin"),
+
+    autorizarTipos(
+        "admin"
+    ),
+
     async (req, res) => {
 
         try {
 
-            const { id } = req.params;
+            const { id } =
+                req.params;
 
+
+            // =================================================
+            // VERIFICAR SE ITEM EXISTE
+            // =================================================
+
+            const [item] =
+                await pool.query(
+                    `
+                        SELECT id
+
+                        FROM itens
+
+                        WHERE id = ?
+                    `,
+                    [
+                        id
+                    ]
+                );
+
+
+            if (
+                item.length === 0
+            ) {
+
+                return res.status(404).json({
+
+                    erro:
+                        "Item não encontrado."
+
+                });
+
+            }
+
+
+            // =================================================
+            // EXCLUIR
+            // =================================================
 
             const sql = `
                 DELETE FROM itens
@@ -536,17 +1010,12 @@ router.delete(
             `;
 
 
-            const [resultado] =
-                await pool.query(sql, [id]);
-
-
-            if (resultado.affectedRows === 0) {
-
-                return res.status(404).json({
-                    erro: "Item não encontrado."
-                });
-
-            }
+            await pool.query(
+                sql,
+                [
+                    id
+                ]
+            );
 
 
             return res.status(200).json({
@@ -556,15 +1025,41 @@ router.delete(
 
             });
 
+
         } catch (error) {
 
-            console.error(error);
+            console.error(
+                "Erro ao excluir item:",
+                error
+            );
+
+
+            // =================================================
+            // ITEM POSSUI RELACIONAMENTOS
+            // =================================================
+
+            if (
+                error.code ===
+                "ER_ROW_IS_REFERENCED_2"
+            ) {
+
+                return res.status(409).json({
+
+                    erro:
+                        "Não é possível excluir este item porque ele está relacionado a pedidos existentes."
+
+                });
+
+            }
 
 
             return res.status(500).json({
 
                 erro:
-                    "Erro ao deletar item."
+                    "Erro ao deletar item.",
+
+                detalhe:
+                    error.message
 
             });
 

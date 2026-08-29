@@ -9,6 +9,7 @@ import cuponsRoutes from "./cupons.routes.js";
 import dashboardRoutes from "./dashboard.routes.js";
 import feedbacksRoutes from "./feedbacks.routes.js";
 import fidelidadeRoutes from "./fidelidade.routes.js";
+import cartoesRoutes from "./cartoes.routes.js";
 
 const routes = express.Router();
 
@@ -50,11 +51,15 @@ routes.use(
     "/feedbacks",
     feedbacksRoutes
 );
+
 routes.use(
     "/fidelidade",
     fidelidadeRoutes
 );
-
+routes.use(
+    "/cartoes",
+    cartoesRoutes
+);
 routes.use(
     "/itens_pedidos",
     itens_pedidosRoutes
