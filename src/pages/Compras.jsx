@@ -15,6 +15,9 @@ export default function Compra() {
 
     const [modal, setModal] = useState(false);
     const [modalSucesso, setModalSucesso] = useState(false);
+    const [fidelidadeCompra, setFidelidadeCompra] = useState(null);
+    const [salvandoCupom, setSalvandoCupom] = useState(false);
+    const [cupomGuardado, setCupomGuardado] = useState(false);
 
     // ==========================
     // CUPOM
@@ -208,7 +211,7 @@ export default function Compra() {
         }
 
         try {
-            await api.post(
+            const resposta = await api.post(
                 "/pedidos",
                 {
                     usuario_id: usuario.id,
@@ -218,6 +221,10 @@ export default function Compra() {
                         ? cupom.id
                         : null
                 }
+            );
+
+            setFidelidadeCompra(
+                resposta.data?.fidelidade || null
             );
 
             // Fecha o modal de confirmação
@@ -236,6 +243,31 @@ export default function Compra() {
                 error.response?.data?.mensagem ||
                     "Erro ao finalizar compra."
             );
+        }
+    }
+
+    async function guardarCupomNoPerfil() {
+        const cupomFidelidade = fidelidadeCompra?.cupom;
+
+        if (!usuario?.id || !cupomFidelidade?.id) return;
+
+        try {
+            setSalvandoCupom(true);
+
+            await api.post("/fidelidade/cupons/salvar", {
+                usuario_id: usuario.id,
+                cupom_id: cupomFidelidade.id
+            });
+
+            setCupomGuardado(true);
+        } catch (error) {
+            console.error("Erro ao guardar cupom:", error);
+            alert(
+                error.response?.data?.erro ||
+                "Não foi possível guardar o cupom."
+            );
+        } finally {
+            setSalvandoCupom(false);
         }
     }
 
@@ -853,10 +885,49 @@ export default function Compra() {
 
                             </div>
 
+                            {fidelidadeCompra && (
+                                <div>
+                                    <span>
+                                        Pontos recebidos
+                                    </span>
+
+                                    <strong>
+                                        +{fidelidadeCompra.pontos_ganhos}
+                                    </strong>
+                                </div>
+                            )}
+
+                            {fidelidadeCompra?.cupom && (
+                                <div>
+                                    <span>
+                                        Cupom {fidelidadeCompra.cupom.rank}
+                                    </span>
+
+                                    <strong>
+                                        {fidelidadeCompra.cupom.codigo}
+                                    </strong>
+                                </div>
+                            )}
+
                         </div>
 
 
                         {/* BOTÃO */}
+
+                        {fidelidadeCompra?.cupom && (
+                            <button
+                                type="button"
+                                className={style.botaoGuardarCupom}
+                                onClick={guardarCupomNoPerfil}
+                                disabled={salvandoCupom || cupomGuardado}
+                            >
+                                {cupomGuardado
+                                    ? "Cupom guardado no perfil"
+                                    : salvandoCupom
+                                        ? "Guardando..."
+                                        : "Guardar cupom no perfil"}
+                            </button>
+                        )}
 
                         <button
                             type="button"

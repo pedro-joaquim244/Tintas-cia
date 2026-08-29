@@ -15,7 +15,8 @@ import {
     FaEnvelope,
     FaMapMarkerAlt,
     FaCalendarAlt,
-    FaTimes
+    FaTimes,
+    FaExclamationTriangle
 } from "react-icons/fa";
 
 import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho";
@@ -37,6 +38,15 @@ export default function Usuarios() {
 
     const [usuarioSelecionado, setUsuarioSelecionado] =
         useState(null);
+
+    const [usuarioParaExcluir, setUsuarioParaExcluir] =
+        useState(null);
+
+    const [excluindoUsuario, setExcluindoUsuario] =
+        useState(false);
+
+    const [erroExclusao, setErroExclusao] =
+        useState("");
 
     // =====================================================
     // BUSCAR USUÁRIOS
@@ -166,18 +176,34 @@ export default function Usuarios() {
     // EXCLUIR USUÁRIO
     // =====================================================
 
-    async function excluirUsuario(usuario) {
+    function abrirConfirmacaoExclusao(usuario) {
 
-        const confirmar =
-            window.confirm(
-                `Tem certeza que deseja excluir o usuário "${usuario.nome}"?`
-            );
+        setErroExclusao("");
+        setUsuarioParaExcluir(usuario);
+    }
 
-        if (!confirmar) {
+    function fecharConfirmacaoExclusao() {
+
+        if (excluindoUsuario) {
             return;
         }
 
+        setErroExclusao("");
+        setUsuarioParaExcluir(null);
+    }
+
+    async function excluirUsuario() {
+
+        if (!usuarioParaExcluir || excluindoUsuario) {
+            return;
+        }
+
+        const usuario = usuarioParaExcluir;
+
         try {
+
+            setExcluindoUsuario(true);
+            setErroExclusao("");
 
             await api.delete(
                 `/usuarios/${usuario.id}`
@@ -201,6 +227,8 @@ export default function Usuarios() {
                 );
             }
 
+            setUsuarioParaExcluir(null);
+
         } catch (error) {
 
             console.error(
@@ -208,11 +236,15 @@ export default function Usuarios() {
                 error
             );
 
-            alert(
+            setErroExclusao(
                 error.response?.data?.erro ||
                 error.response?.data?.message ||
                 "Não foi possível excluir o usuário."
             );
+
+        } finally {
+
+            setExcluindoUsuario(false);
         }
     }
 
@@ -321,11 +353,11 @@ export default function Usuarios() {
             </span>
 
             <h1 className={style.title}>
-              Produtos
+              Usuarios
             </h1>
 
             <p>
-              Gerencie todos os produtos da sua loja.
+              Gerencie todos os usuaios da sua loja.
             </p>
 
           </div>
@@ -850,7 +882,7 @@ export default function Usuarios() {
                                                                     : "Excluir usuário"
                                                             }
                                                             onClick={() =>
-                                                                excluirUsuario(
+                                                                abrirConfirmacaoExclusao(
                                                                     usuario
                                                                 )
                                                             }
@@ -1256,7 +1288,7 @@ export default function Usuarios() {
                                         style.modalDelete
                                     }
                                     onClick={() =>
-                                        excluirUsuario(
+                                        abrirConfirmacaoExclusao(
                                             usuarioSelecionado
                                         )
                                     }
@@ -1269,6 +1301,76 @@ export default function Usuarios() {
                                 </button>
 
                             )}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            )}
+
+            {usuarioParaExcluir && (
+
+                <div
+                    className={style.confirmOverlay}
+                    onClick={fecharConfirmacaoExclusao}
+                >
+
+                    <div
+                        className={style.confirmModal}
+                        role="alertdialog"
+                        aria-modal="true"
+                        aria-labelledby="titulo-confirmar-exclusao"
+                        aria-describedby="descricao-confirmar-exclusao"
+                        onClick={(event) =>
+                            event.stopPropagation()
+                        }
+                    >
+
+                        <div className={style.confirmIcon}>
+                            <FaExclamationTriangle />
+                        </div>
+
+                        <h2 id="titulo-confirmar-exclusao">
+                            Excluir usuário?
+                        </h2>
+
+                        <p id="descricao-confirmar-exclusao">
+                            Você está prestes a excluir permanentemente o usuário <strong>{usuarioParaExcluir.nome}</strong>. Esta ação não poderá ser desfeita.
+                        </p>
+
+                        {erroExclusao && (
+                            <div
+                                className={style.confirmError}
+                                role="alert"
+                            >
+                                {erroExclusao}
+                            </div>
+                        )}
+
+                        <div className={style.confirmActions}>
+
+                            <button
+                                type="button"
+                                className={style.cancelDeleteButton}
+                                onClick={fecharConfirmacaoExclusao}
+                                disabled={excluindoUsuario}
+                            >
+                                Cancelar
+                            </button>
+
+                            <button
+                                type="button"
+                                className={style.confirmDeleteButton}
+                                onClick={excluirUsuario}
+                                disabled={excluindoUsuario}
+                            >
+                                <FaTrash />
+                                {excluindoUsuario
+                                    ? "Excluindo..."
+                                    : "Sim, excluir usuário"}
+                            </button>
 
                         </div>
 

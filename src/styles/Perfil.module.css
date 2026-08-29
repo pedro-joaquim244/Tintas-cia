@@ -37,10 +37,19 @@
 ========================================================= */
 
 .content {
-    margin-left: 270px;
-    width: calc(100% - 270px);
     min-height: 100vh;
     padding: 48px 55px 70px;
+}
+
+.contentAdmin {
+    width: calc(100% - 290px);
+    margin-left: 290px;
+}
+
+.contentCliente {
+    width: min(92%, 1450px);
+    margin: 0 auto;
+    padding-top: 138px;
 }
 
 /* =========================================================
@@ -48,12 +57,34 @@
 ========================================================= */
 
 .topo {
-    margin-bottom: 35px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 30px;
+    padding-bottom: 24px;
+}
+
+.topoTexto {
+    min-width: 0;
+}
+
+.topoTag {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 7px 11px;
+  
+    border-radius: 999px;
+        background: rgba(37, 99, 235, 0.10);
+    color: #2563eb;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 .topo h1 {
     color: #0f172a;
-    font-size: 48px;
+    font-size: 40px;
     font-weight: 750;
     letter-spacing: -1.2px;
     line-height: 1.2;
@@ -84,8 +115,6 @@
 .leftCard,
 .rightCard {
     background: rgba(255, 255, 255, 0.94);
-
-    min-height: 851px;
 
     border: 1px solid rgba(226, 232, 240, 0.9);
     border-radius: 22px;
@@ -445,13 +474,271 @@
 }
 
 /* =========================================================
+   FIDELIDADE
+========================================================= */
+
+.fidelidadeCard {
+    margin-top: 24px;
+    padding: 18px;
+
+    border: 1px solid #dbeafe;
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8fbff 0%,
+            #eff6ff 100%
+        );
+
+    box-shadow:
+        0 6px 18px rgba(37, 99, 235, 0.06);
+}
+
+.fidelidadeHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 12px;
+}
+
+.fidelidadeLabel {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #2563eb;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fidelidadeHeader h3 {
+    color: #0f172a;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.fidelidadeNivel {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 6px 9px;
+
+    border: 1px solid #0a55b1;
+    border-radius: 20px;
+
+    background: #ffffff;
+    color: #2563eb;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.fidelidadeNivel svg {
+    font-size: 13px;
+}
+
+.fidelidadePontos {
+    display: flex;
+    align-items: baseline;
+
+    gap: 6px;
+
+    margin-top: 15px;
+}
+
+.fidelidadePontos strong {
+    color: #0f172a;
+
+    font-size: 28px;
+    font-weight: 750;
+
+    line-height: 1;
+}
+
+.fidelidadePontos span {
+    color: #64748b;
+
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.fidelidadeBarra {
+    width: 100%;
+    height: 9px;
+
+    margin-top: 14px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: #dbeafe;
+}
+
+.fidelidadeProgresso {
+    height: 100%;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            #2563eb,
+            #60a5fa
+        );
+
+    transition: width 0.45s ease;
+}
+
+.fidelidadeRodape {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-top: 9px;
+}
+
+.fidelidadeRodape span {
+    color: #64748b;
+
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.fidelidadeRodape strong {
+    color: #2563eb;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    text-align: right;
+}
+
+.fidelidadeLoading {
+    margin-top: 15px;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+.fidelidadeErro {
+    display: flex;
+    flex-direction: column;
+
+    gap: 9px;
+
+    margin-top: 14px;
+}
+
+.fidelidadeErro span {
+    color: #dc2626;
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.fidelidadeErro button {
+    width: fit-content;
+
+    padding: 7px 10px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.fidelidadeErro button:hover {
+    background: #1d4ed8;
+}
+
+.cuponsSalvos {
+    display: grid;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 14px;
+    border: 1px solid #dbeafe;
+    border-radius: 13px;
+    background: #f8fbff;
+}
+
+.cuponsSalvosTitulo {
+    color: #475569;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.cupomSalvo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px;
+    border: 1px dashed #93c5fd;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.cupomSalvo > div {
+    display: grid;
+    gap: 2px;
+}
+
+.cupomSalvo strong {
+    color: #1d4ed8;
+    font-size: 16px;
+}
+
+.cupomSalvo span {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.cupomSalvo button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 9px;
+    border: 0;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+/* =========================================================
    BOTÃO HISTÓRICO
 ========================================================= */
 
 .historyBtn {
     width: 100%;
 
-    margin-top: 22px;
+    margin-top: 12px;
 
     padding: 13px 15px;
 
@@ -468,7 +755,7 @@
 
     gap: 8px;
 
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 600;
 
     cursor: pointer;
@@ -513,7 +800,7 @@
 
     gap: 8px;
 
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 600;
 
     cursor: pointer;
@@ -569,7 +856,7 @@
 .titleEdit h3 {
     color: #0f172a;
 
-    font-size: 20px;
+    font-size: 23px;
     font-weight: 700;
 }
 
@@ -578,7 +865,7 @@
 
     color: #94a3b8;
 
-    font-size: 12px;
+    font-size: 16px;
 }
 
 .titleEdit button {
@@ -604,7 +891,7 @@
 
     color: #ffffff;
 
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
 
     cursor: pointer;
@@ -653,7 +940,7 @@
 
     color: #334155;
 
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 600;
 }
 
@@ -740,7 +1027,7 @@
 
     color: #0f172a;
 
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -772,7 +1059,7 @@
 
     color: #94a3b8;
 
-    font-size: 9px;
+    font-size: 13px;
     font-weight: 600;
 
     text-transform: uppercase;
@@ -787,7 +1074,7 @@
 
     color: #334155;
 
-    font-size: 12px;
+    font-size: 16px;
 
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -812,14 +1099,14 @@
 
 .feedbackHeader h3 {
     color: #0f172a;
-    font-size: 15px;
+    font-size: 16 px;
     font-weight: 700;
 }
 
 .feedbackHeader p {
     margin-top: 5px;
     color: #94a3b8;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .feedbackHeader > svg {
@@ -872,7 +1159,7 @@
     background: #ffffff;
     color: #0f172a;
     font: inherit;
-    font-size: 13px;
+    font-size: 16px;
 }
 
 .feedbackBox textarea:focus {
@@ -902,7 +1189,7 @@
     border-radius: 10px;
     background: #2563eb;
     color: #ffffff;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
 }
@@ -1073,7 +1360,7 @@
 .modalHeader h2 {
     color: #0f172a;
 
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 700;
 
     letter-spacing: -0.3px;
@@ -1084,7 +1371,7 @@
 
     color: #94a3b8;
 
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .closeModal {
@@ -1241,7 +1528,7 @@
 }
 
 .pedidoNumero strong {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -1256,7 +1543,7 @@
 
     color: #94a3b8;
 
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .dataPedido svg {
@@ -1276,7 +1563,7 @@
 
     color: #475569;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
 
     white-space: nowrap;
@@ -1382,7 +1669,7 @@
 
     color: #1e293b;
 
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
 
     text-overflow: ellipsis;
@@ -1392,13 +1679,13 @@
 .produtoInfo span {
     color: #94a3b8;
 
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .subtotal {
     color: #0f172a;
 
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
 
     white-space: nowrap;
@@ -1432,7 +1719,7 @@
 
     color: #64748b;
 
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .pagamento svg {
@@ -1460,7 +1747,7 @@
 .totalPedido span {
     color: #94a3b8;
 
-    font-size: 9px;
+    font-size: 11px;
 
     text-transform: uppercase;
 
@@ -1524,7 +1811,7 @@
 
     color: #94a3b8;
 
-    font-size: 12px;
+    font-size: 14px;
 
     line-height: 1.5;
 }
@@ -1542,7 +1829,7 @@
 
     color: #ffffff;
 
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
 
     cursor: pointer;
@@ -1579,7 +1866,7 @@
 }
 
 .estadoPedidos p {
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .spinner {
@@ -1699,11 +1986,18 @@
 @media (max-width: 1050px) {
 
     .content {
-        margin-left: 0;
-
-        width: 100%;
-
         padding: 35px 30px 60px;
+    }
+
+    .contentAdmin {
+        width: calc(100% - 290px);
+        margin-left: 290px;
+    }
+
+    .contentCliente {
+        width: min(92%, 1450px);
+        margin: 0 auto;
+        padding-top: 130px;
     }
 
     .container {
@@ -1725,6 +2019,13 @@
     }
 }
 
+@media (max-width: 900px) {
+    .contentAdmin {
+        width: calc(100% - 92px);
+        margin-left: 92px;
+    }
+}
+
 /* =========================================================
    RESPONSIVIDADE - 768px
 ========================================================= */
@@ -1735,8 +2036,16 @@
         padding: 28px 20px 50px;
     }
 
+    .contentCliente {
+        padding-top: 126px;
+    }
+
     .topo {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 16px;
         margin-bottom: 25px;
+        padding-bottom: 20px;
     }
 
     .topo h1 {
@@ -1822,6 +2131,11 @@
         padding: 20px 12px 40px;
     }
 
+    .contentCliente {
+        width: 95%;
+        padding-top: 122px;
+    }
+
     .topo {
         margin-bottom: 20px;
     }
@@ -1876,11 +2190,11 @@
     }
 
     .modalHeader h2 {
-        font-size: 17px;
+        font-size: 20px;
     }
 
     .modalHeader p {
-        font-size: 10px;
+        font-size: 12px;
     }
 
     .closeModal {
@@ -1898,15 +2212,15 @@
     }
 
     .produtoInfo strong {
-        font-size: 11px;
+        font-size: 13px;
     }
 
     .produtoInfo span {
-        font-size: 10px;
+        font-size: 12px;
     }
 
     .subtotal {
-        font-size: 11px;
+        font-size: 13px;
     }
 
     .pedidoFooter {

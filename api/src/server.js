@@ -12,6 +12,7 @@ import carrinhoRoutes from "./routes/carrinho.routes.js";
 import cuponsRoutes from "./routes/cupons.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import feedbacksRoutes from "./routes/feedbacks.routes.js";
+import fidelidadeRoutes from "./routes/fidelidade.routes.js";
 
 import { config } from "./config.js";
 
@@ -160,6 +161,11 @@ app.use(
 app.use(
     "/cupons",
     cuponsRoutes
+);
+
+app.use(
+    "/fidelidade",
+    fidelidadeRoutes
 );
 
 // =====================================================

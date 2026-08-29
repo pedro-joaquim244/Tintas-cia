@@ -2127,3 +2127,24 @@ input {
         font-size: 25px;
     }
 }
+.botaoGuardarCupom {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 14px;
+    border: 1px solid #2563eb;
+    border-radius: 12px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.botaoGuardarCupom:hover:not(:disabled) {
+    background: #dbeafe;
+}
+
+.botaoGuardarCupom:disabled {
+    cursor: default;
+    opacity: 0.75;
+}

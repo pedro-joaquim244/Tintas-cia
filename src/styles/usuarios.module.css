@@ -175,22 +175,27 @@ select {
 
     border-radius: 14px;
 
-    font-size: 18px;
+    font-size: 23px;
+}
+
+.statIcon svg {
+    width: 23px;
+    height: 23px;
 }
 
 .statIcon.blue {
-    background: var(--blue-light);
+    
     color: var(--blue);
 }
 
 .statIcon.green {
-    background: var(--green-light);
-    color: var(--green);
+    
+    color: var(--blue);
 }
 
 .statIcon.purple {
-    background: var(--purple-light);
-    color: var(--purple);
+   
+    color: var(--blue);
 }
 
 .statCard div:last-child {
@@ -203,7 +208,7 @@ select {
 .statCard span {
     color: #64748b;
 
-    font-size: 10px;
+    font-size: 16px;
     font-weight: 500;
 }
 
@@ -254,7 +259,7 @@ select {
 .controls h2 {
     color: var(--text);
 
-    font-size: 18px;
+    font-size: 23px;
     font-weight: 700;
 
     letter-spacing: -0.25px;
@@ -265,7 +270,7 @@ select {
 
     color: var(--text-muted);
 
-    font-size: 10px;
+    font-size: 16px;
 }
 
 .filters {
@@ -325,7 +330,7 @@ select {
 
     color: #334155;
 
-    font-size: 11px;
+    font-size: 15px;
 }
 
 .search input::placeholder {
@@ -349,7 +354,7 @@ select {
 
     color: #475569;
 
-    font-size: 11px;
+    font-size: 15px;
 
     cursor: pointer;
 
@@ -426,7 +431,7 @@ th {
 
     color: #64748b;
 
-    font-size: 9px;
+   font-size: 12px;
     font-weight: 700;
 
     letter-spacing: 0.35px;
@@ -476,8 +481,8 @@ tbody tr:last-child td {
 }
 
 .avatar {
-    width: 38px;
-    height: 38px;
+    width: 50px;
+    height: 50px;
 
     flex-shrink: 0;
 
@@ -487,11 +492,11 @@ tbody tr:last-child td {
 
     border-radius: 11px;
 
-    background: #eff6ff;
+    
 
     color: var(--blue);
 
-    font-size: 15px;
+    font-size: 22px;
 }
 
 .avatar img,
@@ -518,7 +523,7 @@ tbody tr:last-child td {
 
     color: #172033;
 
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 650;
 
     text-overflow: ellipsis;
@@ -530,7 +535,7 @@ tbody tr:last-child td {
 
     color: var(--text-muted);
 
-    font-size: 9px;
+    font-size: 12px;
 }
 
 
@@ -557,18 +562,21 @@ tbody tr:last-child td {
 
     color: #475569;
 
-    font-size: 10px;
+    font-size: 14px;
 
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .contact svg {
+    width: 10px;
+    height: 10px;
+
     flex-shrink: 0;
 
     color: #94a3b8;
 
-    font-size: 9px;
+    font-size: 10px;
 }
 
 
@@ -589,7 +597,7 @@ tbody tr:last-child td {
 
     border-radius: 7px;
 
-    font-size: 9px;
+    font-size: 14px;
     font-weight: 650;
 
     white-space: nowrap;
@@ -601,13 +609,16 @@ tbody tr:last-child td {
 }
 
 .clientBadge {
-    background: var(--blue-light);
+    
     color: var(--blue);
 }
 
 .adminBadge svg,
 .clientBadge svg {
-    font-size: 9px;
+    width: 13px;
+    height: 13px;
+
+    font-size: 15px;
 }
 
 
@@ -625,10 +636,13 @@ tbody tr:last-child td {
 
     color: #475569;
 
-    font-size: 10px;
+    font-size: 14px;
 }
 
 .location svg {
+    width: 10px;
+    height: 10px;
+
     flex-shrink: 0;
 
     color: #94a3b8;
@@ -657,15 +671,18 @@ tbody tr:last-child td {
 
     color: #64748b;
 
-    font-size: 10px;
+    font-size: 14px;
 
     white-space: nowrap;
 }
 
 .date svg {
+    width: 10px;
+    height: 10px;
+
     color: #94a3b8;
 
-    font-size: 9px;
+    font-size: 10px;
 }
 
 
@@ -702,6 +719,13 @@ tbody tr:last-child td {
 
 .actions button:hover {
     transform: translateY(-1px);
+}
+
+.actions button svg {
+    width: 14px;
+    height: 14px;
+
+    font-size: 14px;
 }
 
 .viewButton {
@@ -966,7 +990,7 @@ tbody tr:last-child td {
 .modalHeader h2 {
     color: var(--text);
 
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 700;
 }
 
@@ -977,7 +1001,7 @@ tbody tr:last-child td {
 
     color: var(--text-muted);
 
-    font-size: 9px;
+    font-size: 12px;
 }
 
 
@@ -1003,12 +1027,12 @@ tbody tr:last-child td {
 
     color: var(--blue);
 
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 650;
 }
 
 .modalType svg {
-    font-size: 9px;
+    font-size: 12px;
 }
 
 
@@ -1050,7 +1074,7 @@ tbody tr:last-child td {
 
     color: var(--blue);
 
-    font-size: 12px;
+    font-size: 16px;
 }
 
 .detailItem > div {
@@ -1063,7 +1087,7 @@ tbody tr:last-child td {
 .detailItem span {
     color: var(--text-muted);
 
-    font-size: 8px;
+    font-size: 11px;
     font-weight: 600;
 
     text-transform: uppercase;
@@ -1078,7 +1102,7 @@ tbody tr:last-child td {
 
     color: #334155;
 
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 600;
 
     line-height: 1.4;
@@ -1089,7 +1113,7 @@ tbody tr:last-child td {
 
     color: var(--text-muted);
 
-    font-size: 8px;
+    font-size: 11px;
 }
 
 
@@ -1122,7 +1146,7 @@ tbody tr:last-child td {
 .accountInfo span {
     color: var(--text-muted);
 
-    font-size: 8px;
+    font-size: 11px;
     font-weight: 600;
 
     text-transform: uppercase;
@@ -1135,7 +1159,7 @@ tbody tr:last-child td {
 
     color: #475569;
 
-    font-size: 9px;
+    font-size: 13px;
     font-weight: 600;
 }
 
@@ -1165,7 +1189,7 @@ tbody tr:last-child td {
 
     border-radius: 9px;
 
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 650;
 
     cursor: pointer;
@@ -1502,6 +1526,18 @@ tbody tr:last-child td {
 
 @media (max-width: 400px) {
 
+    .confirmOverlay {
+        padding: 14px;
+    }
+
+    .confirmModal {
+        padding: 25px 18px 18px;
+    }
+
+    .confirmActions {
+        grid-template-columns: 1fr;
+    }
+
     .container {
         padding-left: 10px;
         padding-right: 10px;
@@ -1522,4 +1558,163 @@ tbody tr:last-child td {
     .statCard {
         padding: 11px;
     }
+}
+
+/* =========================================================
+   CONFIRMAÇÃO DE EXCLUSÃO
+========================================================= */
+
+.confirmOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+
+    padding: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(15, 23, 42, 0.68);
+    backdrop-filter: blur(7px);
+
+    animation: aparecer 0.2s ease;
+}
+
+.confirmModal {
+    width: 100%;
+    max-width: 440px;
+
+    padding: 30px;
+
+    border: 1px solid #fee2e2;
+    border-radius: 20px;
+
+    background: #ffffff;
+
+    box-shadow: 0 30px 80px rgba(15, 23, 42, 0.28);
+
+    text-align: center;
+
+    animation: abrir 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.confirmIcon {
+    width: 62px;
+    height: 62px;
+
+    margin: 0 auto 17px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #fef2f2;
+    color: #dc2626;
+
+    font-size: 25px;
+}
+
+.confirmModal h2 {
+    color: var(--text);
+
+    font-size: 21px;
+    font-weight: 750;
+}
+
+.confirmModal p {
+    margin-top: 9px;
+
+    color: #64748b;
+
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.confirmModal p strong {
+    color: #334155;
+    font-weight: 700;
+}
+
+.confirmError {
+    margin-top: 15px;
+    padding: 10px 12px;
+
+    border: 1px solid #fecaca;
+    border-radius: 9px;
+
+    background: #fef2f2;
+    color: #b91c1c;
+
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.confirmActions {
+    margin-top: 23px;
+
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+
+    gap: 9px;
+}
+
+.confirmActions button {
+    min-height: 43px;
+
+    padding: 9px 13px;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.18s ease,
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.cancelDeleteButton {
+    border: 1px solid #e2e8f0;
+
+    background: #f8fafc;
+    color: #475569;
+}
+
+.cancelDeleteButton:hover:not(:disabled) {
+    background: #f1f5f9;
+    transform: translateY(-1px);
+}
+
+.confirmDeleteButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    border: none;
+
+    background: #dc2626;
+    color: #ffffff;
+
+    box-shadow: 0 7px 17px rgba(220, 38, 38, 0.22);
+}
+
+.confirmDeleteButton:hover:not(:disabled) {
+    background: #b91c1c;
+    transform: translateY(-1px);
+
+    box-shadow: 0 10px 22px rgba(220, 38, 38, 0.28);
+}
+
+.confirmActions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
 }

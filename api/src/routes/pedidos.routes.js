@@ -3,6 +3,23 @@ import pool from "../database.js";
 
 const router = express.Router();
 
+const RANKS_FIDELIDADE = [
+    { nome: "Bronze", pontos: 0, desconto: 0 },
+    { nome: "Prata", pontos: 500, desconto: 5 },
+    { nome: "Ouro", pontos: 1500, desconto: 10 },
+    { nome: "Platina", pontos: 3000, desconto: 15 }
+];
+
+function obterRankFidelidade(pontos) {
+    return [...RANKS_FIDELIDADE]
+        .reverse()
+        .find((rank) => pontos >= rank.pontos);
+}
+
+function gerarCodigoFidelidade(rank) {
+    return rank.toUpperCase();
+}
+
 
 // =====================================================
 // FINALIZAR COMPRA
@@ -308,6 +325,101 @@ router.post("/", async (req, res) => {
 
 
         // =================================================
+        // FIDELIDADE
+        // 1 ponto para cada real efetivamente pago.
+        // Ao subir de rank, o cupom correspondente é criado
+        // na mesma transação do pedido.
+        // =================================================
+
+        const pontosGanhos = Math.floor(Number(total));
+        let saldoPontos = 0;
+        let cupomFidelidade = null;
+
+        const [usuarios] = await connection.query(
+            `
+            SELECT id, pontos
+            FROM usuarios
+            WHERE id = ?
+            FOR UPDATE
+            `,
+            [usuario_id]
+        );
+
+        if (usuarios.length === 0) {
+            await connection.rollback();
+
+            return res.status(404).json({
+                mensagem: "Usuário não encontrado."
+            });
+        }
+
+        const saldoAnterior = Number(usuarios[0].pontos || 0);
+        const rankAnterior = obterRankFidelidade(saldoAnterior);
+
+        saldoPontos = saldoAnterior + pontosGanhos;
+        const rankAtual = obterRankFidelidade(saldoPontos);
+
+        await connection.query(
+            `UPDATE usuarios SET pontos = ? WHERE id = ?`,
+            [saldoPontos, usuario_id]
+        );
+
+        if (pontosGanhos > 0) {
+            await connection.query(
+                `
+                INSERT INTO historico_pontos
+                    (usuario_id, pedido_id, pontos, tipo, descricao)
+                VALUES (?, ?, ?, 'GANHO', ?)
+                `,
+                [
+                    usuario_id,
+                    pedidoId,
+                    pontosGanhos,
+                    `Pontos da compra #${pedidoId}`
+                ]
+            );
+        }
+
+        const subiuDeRank = rankAtual.pontos > rankAnterior.pontos;
+
+        if (subiuDeRank) {
+            const codigo = gerarCodigoFidelidade(rankAtual.nome);
+            const [cuponsDoRank] = await connection.query(
+                `SELECT id FROM cupons WHERE codigo = ? LIMIT 1`,
+                [codigo]
+            );
+
+            let cupomId = cuponsDoRank[0]?.id;
+
+            if (!cupomId) {
+                const [resultadoCupom] = await connection.query(
+                    `
+                    INSERT INTO cupons
+                        (codigo, tipo, desconto, valor_minimo, limite_uso,
+                         usos, validade_inicio, validade_fim, status)
+                    VALUES (?, 'porcentagem', ?, 0, NULL, 0, NULL, NULL, 'Ativo')
+                    `,
+                    [
+                        codigo,
+                        rankAtual.desconto
+                    ]
+                );
+
+                cupomId = resultadoCupom.insertId;
+            }
+
+            cupomFidelidade = {
+                id: cupomId,
+                codigo,
+                rank: rankAtual.nome,
+                tipo: "porcentagem",
+                desconto: rankAtual.desconto,
+                validade_fim: null
+            };
+        }
+
+
+        // =================================================
         // LIMPAR CARRINHO
         // =================================================
 
@@ -371,6 +483,15 @@ router.post("/", async (req, res) => {
                 codigo_cupom:
                     codigoCupom
 
+            },
+
+            fidelidade: {
+                pontos_ganhos: pontosGanhos,
+                saldo_atual: saldoPontos,
+                rank_anterior: rankAnterior.nome,
+                rank_atual: rankAtual.nome,
+                subiu_de_rank: subiuDeRank,
+                cupom: cupomFidelidade
             }
 
         });

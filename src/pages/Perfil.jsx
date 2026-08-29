@@ -19,7 +19,8 @@ import {
     FiHome,
     FiHash,
     FiMap,
-    FiStar
+    FiStar,
+    FiCopy
 } from "react-icons/fi";
 
 import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
@@ -104,6 +105,18 @@ export default function Perfil() {
 
     const [modalFeedback, setModalFeedback] =
         useState(false);
+
+    const [fidelidade, setFidelidade] =
+        useState(null);
+
+    const [carregandoFidelidade, setCarregandoFidelidade] =
+        useState(false);
+
+    const [erroFidelidade, setErroFidelidade] =
+        useState("");
+
+    const [cuponsSalvos, setCuponsSalvos] = useState([]);
+    const [cupomCopiado, setCupomCopiado] = useState("");
 
 
     // =====================================================
@@ -266,6 +279,91 @@ export default function Perfil() {
         }
 
         buscarPedidos();
+
+    }, [usuario?.id]);
+
+
+    // =====================================================
+    // BUSCAR FIDELIDADE
+    // =====================================================
+
+    async function buscarFidelidade() {
+
+        if (!usuario?.id) {
+            return;
+        }
+
+        try {
+
+            setCarregandoFidelidade(true);
+            setErroFidelidade("");
+
+            const resposta = await api.get(
+                `/fidelidade/${usuario.id}`
+            );
+
+            setFidelidade(resposta.data);
+
+        } catch (error) {
+
+            console.error(
+                "ERRO AO BUSCAR FIDELIDADE:",
+                error
+            );
+
+            setFidelidade(null);
+
+            setErroFidelidade(
+                error.response?.data?.erro ||
+                error.response?.data?.message ||
+                "Não foi possível carregar seus pontos."
+            );
+
+        } finally {
+
+            setCarregandoFidelidade(false);
+
+        }
+
+    }
+
+    async function buscarCuponsSalvos() {
+        if (!usuario?.id) return;
+
+        try {
+            const resposta = await api.get(
+                `/fidelidade/${usuario.id}/cupons`
+            );
+            setCuponsSalvos(resposta.data || []);
+        } catch (error) {
+            console.error("Erro ao buscar cupons salvos:", error);
+            setCuponsSalvos([]);
+        }
+    }
+
+    async function copiarCupom(codigo) {
+        try {
+            await navigator.clipboard.writeText(codigo);
+            setCupomCopiado(codigo);
+            window.setTimeout(() => setCupomCopiado(""), 1800);
+        } catch (error) {
+            console.error("Erro ao copiar cupom:", error);
+        }
+    }
+
+
+    // =====================================================
+    // BUSCAR FIDELIDADE AUTOMATICAMENTE
+    // =====================================================
+
+    useEffect(() => {
+
+        if (!usuario?.id) {
+            return;
+        }
+
+        buscarFidelidade();
+        buscarCuponsSalvos();
 
     }, [usuario?.id]);
 
@@ -992,6 +1090,29 @@ export default function Perfil() {
 
 
     // =====================================================
+    // FIDELIDADE
+    // =====================================================
+
+    const pontosFidelidade =
+        Number(fidelidade?.pontos || 0);
+
+    const proximaRecompensa =
+        Number(
+            fidelidade?.proxima_recompensa ||
+            pontosFidelidade ||
+            1
+        );
+
+    const porcentagemFidelidade =
+        fidelidade?.proxima_recompensa
+            ? Math.min(
+                (pontosFidelidade / proximaRecompensa) * 100,
+                100
+            )
+            : 100;
+
+
+    // =====================================================
     // RENDER
     // =====================================================
 
@@ -1001,17 +1122,27 @@ export default function Perfil() {
 
             {header}
 
-            <main className={styles.content}>
+            <main
+                className={`${styles.content} ${
+                    usuario?.tipo === "admin"
+                        ? styles.contentAdmin
+                        : styles.contentCliente
+                }`}
+            >
 
                 <div className={styles.topo}>
 
-                    <h1>
-                        Meu perfil
-                    </h1>
+                    <div className={styles.topoTexto}>
+                        <span className={styles.topoTag}>
+                            Minha conta
+                        </span>
 
-                    <p>
-                        Gerencie suas informações pessoais e de acesso.
-                    </p>
+                        <h1>Meu perfil</h1>
+
+                        <p>
+                            Gerencie suas informações pessoais, endereço e acesso.
+                        </p>
+                    </div>
 
                 </div>
 
@@ -1257,7 +1388,212 @@ export default function Perfil() {
                         </div>
 
 
+                        {/* =================================================
+                            FIDELIDADE
+                        ================================================= */}
+
+                        {usuario?.tipo !== "admin" && (
+
+                            <div className={styles.fidelidadeCard}>
+
+                                <div
+                                    className={
+                                        styles.fidelidadeHeader
+                                    }
+                                >
+
+                                    <div>
+
+                                        <span
+                                            className={
+                                                styles.fidelidadeLabel
+                                            }
+                                        >
+                                            Clube de Fidelidade
+                                        </span>
+
+                                        <h3>
+                                            Seus pontos
+                                        </h3>
+
+                                    </div>
+
+                                    <div
+                                        className={
+                                            styles.fidelidadeNivel
+                                        }
+                                    >
+
+                                        <FiStar />
+
+                                        {carregandoFidelidade
+                                            ? "..."
+                                            : fidelidade?.nivel ||
+                                              "Bronze"}
+
+                                    </div>
+
+                                </div>
+
+
+                                {carregandoFidelidade ? (
+
+                                    <div
+                                        className={
+                                            styles.fidelidadeLoading
+                                        }
+                                    >
+                                        Carregando seus pontos...
+                                    </div>
+
+                                ) : erroFidelidade ? (
+
+                                    <div
+                                        className={
+                                            styles.fidelidadeErro
+                                        }
+                                    >
+
+                                        <span>
+                                            {erroFidelidade}
+                                        </span>
+
+                                        <button
+                                            type="button"
+                                            onClick={
+                                                buscarFidelidade
+                                            }
+                                        >
+                                            Tentar novamente
+                                        </button>
+
+                                    </div>
+
+                                ) : (
+
+                                    <>
+
+                                        <div
+                                            className={
+                                                styles.fidelidadePontos
+                                            }
+                                        >
+
+                                            <strong>
+                                                {pontosFidelidade}
+                                            </strong>
+
+                                            <span>
+                                                pontos
+                                            </span>
+
+                                        </div>
+
+
+                                        <div
+                                            className={
+                                                styles.fidelidadeBarra
+                                            }
+                                        >
+
+                                            <div
+                                                className={
+                                                    styles.fidelidadeProgresso
+                                                }
+                                                style={{
+                                                    width:
+                                                        `${porcentagemFidelidade}%`
+                                                }}
+                                            />
+
+                                        </div>
+
+
+                                        <div
+                                            className={
+                                                styles.fidelidadeRodape
+                                            }
+                                        >
+
+                                            {fidelidade?.proxima_recompensa ? (
+
+                                                <>
+
+                                                    <span>
+                                                        {pontosFidelidade} /{" "}
+                                                        {
+                                                            fidelidade
+                                                                .proxima_recompensa
+                                                        } pontos
+                                                    </span>
+
+                                                    <strong>
+                                                        Faltam{" "}
+                                                        {
+                                                            fidelidade
+                                                                .faltam_pontos
+                                                        } pontos para {" "}
+                                                        {
+                                                            fidelidade
+                                                                .proximo_nivel
+                                                        }
+                                                    </strong>
+
+                                                </>
+
+                                            ) : (
+
+                                                <strong>
+                                                    Você alcançou todas as recompensas 
+                                                </strong>
+
+                                            )}
+
+                                        </div>
+
+                                    </>
+
+                                )}
+
+                            </div>
+
+                        )}
+
+
                         {/* HISTÓRICO */}
+
+                        {cuponsSalvos.length > 0 && (
+                            <div className={styles.cuponsSalvos}>
+                                <span className={styles.cuponsSalvosTitulo}>
+                                    Cupons guardados
+                                </span>
+
+                                {cuponsSalvos.map((cupomSalvo) => (
+                                    <div
+                                        className={styles.cupomSalvo}
+                                        key={cupomSalvo.id}
+                                    >
+                                        <div>
+                                            <strong>{cupomSalvo.codigo}</strong>
+                                            <span>
+                                                {Number(cupomSalvo.desconto)}% de desconto
+                                            </span>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => copiarCupom(cupomSalvo.codigo)}
+                                            title="Copiar cupom"
+                                        >
+                                            <FiCopy />
+                                            {cupomCopiado === cupomSalvo.codigo
+                                                ? "Copiado"
+                                                : "Copiar"}
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
                         <button
                             className={

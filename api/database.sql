@@ -78,3 +78,18 @@ END;
 
 ALTER TABLE pedidos
     ADD COLUMN IF NOT EXISTS estoque_baixado TINYINT(1) NOT NULL DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS cupons_usuarios (
+    id INT NOT NULL AUTO_INCREMENT,
+    usuario_id INT NOT NULL,
+    cupom_id INT NOT NULL,
+    salvo_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_cupom_usuario (usuario_id, cupom_id),
+    CONSTRAINT fk_cupons_usuarios_usuario
+        FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_cupons_usuarios_cupom
+        FOREIGN KEY (cupom_id) REFERENCES cupons(id)
+        ON DELETE CASCADE
+);
