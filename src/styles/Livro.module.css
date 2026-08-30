@@ -1,86 +1,221 @@
-/* =========================================================
-   LIVRO DE CORES — VERSÃO COMPACTA
-========================================================= */
+
+@import url(
+  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap"
+);
 
 * {
   box-sizing: border-box;
 }
 
+:root {
+  --livro-navy: #172033;
+  --livro-navy-soft: #24324f;
+  --livro-blue: #3264c8;
+  --livro-blue-soft: #a9c2f3;
+  --livro-ivory: #f4f1e9;
+  --livro-paper: #fbfaf6;
+  --livro-text: #182235;
+  --livro-muted: #747f8f;
+  --livro-line: rgba(24, 34, 53, 0.13);
+}
+
+
 /* =========================================================
-   CONTAINER GERAL
+   CAPA / CONTAINER
 ========================================================= */
 
 .capaContainer,
 .livroContainer {
-  margin-top: 0;
-  padding-top: 112px;
-  min-height: calc(100vh - 70px);
   width: 100%;
+  min-height: 100vh;
+  padding-top: 112px;
 
+  background:
+    radial-gradient(
+      circle at 82% 12%,
+      rgba(50, 100, 200, 0.055),
+      transparent 28%
+    ),
+    var(--livro-ivory);
+
+  color: var(--livro-text);
+  font-family: "Poppins", sans-serif;
+}
+
+.capaContainer {
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background:
-    radial-gradient(
-      circle at 10% 15%,
-      rgba(177, 151, 252, 0.08),
-      transparent 28%
-    ),
-    radial-gradient(
-      circle at 90% 85%,
-      rgba(75, 145, 220, 0.07),
-      transparent 30%
-    ),
-    #f7f7f5;
-
-  padding: 18px;
-
-  position: relative;
-  overflow: hidden;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 75px;
 }
+
 
 /* =========================================================
-   CAPA
+   HERO
 ========================================================= */
 
-.capaContainer {
-  flex-direction: column;
-  gap: 10px;
+.heroLivro {
+  width: min(1400px, 100%);
+
+  display: grid;
+  grid-template-columns:
+    minmax(360px, 0.82fr)
+    minmax(620px, 1.18fr);
+
+  align-items: center;
+  gap: 76px;
 }
 
+.heroTexto {
+  min-width: 0;
+}
+
+.heroEyebrow {
+  display: block;
+
+  margin-bottom: 24px;
+
+  color: #8791a0;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  letter-spacing: 0.22em;
+}
+
+.heroTexto h1 {
+  max-width: 610px;
+
+  margin: 0;
+
+  color: var(--livro-text);
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(70px, 6vw, 104px);
+  font-weight: 400;
+
+  line-height: 0.84;
+  letter-spacing: -0.052em;
+}
+
+.heroTexto h1 em {
+  display: block;
+
+  color: var(--livro-blue);
+
+  font-weight: 400;
+}
+
+.heroTexto > p {
+  max-width: 500px;
+
+  margin-top: 30px;
+
+  color: var(--livro-muted);
+
+  font-size: 11px;
+  font-weight: 300;
+
+  line-height: 1.9;
+}
+
+.botaoVerCores {
+  min-height: 54px;
+
+  margin-top: 34px;
+  padding: 0 24px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  border: none;
+
+  background: var(--livro-navy);
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease;
+}
+
+.botaoVerCores:hover {
+  background: var(--livro-blue);
+  transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   CAPA DO LIVRO
+========================================================= */
+
 .capaLivro {
-  width: min(850px, 90vw);
-  height: 450px;
+  position: relative;
+
+  width: 100%;
+  height: 560px;
 
   display: grid;
   grid-template-columns: 1fr 1fr;
 
-  background: #fff;
-  border-radius: 7px;
   overflow: hidden;
 
-  box-shadow:
-    0 14px 35px rgba(18, 52, 90, 0.13);
+  background: #ffffff;
 
-  position: relative;
+  box-shadow:
+    0 30px 80px
+    rgba(20, 31, 49, 0.13);
 }
 
-/* =========================================================
-   CAPA — ESQUERDA
-========================================================= */
+.capaLivro::after {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  bottom: 0;
+  left: 50%;
+
+  width: 34px;
+
+  z-index: 10;
+
+  transform: translateX(-50%);
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.065),
+      rgba(255, 255, 255, 0.52),
+      rgba(0, 0, 0, 0.045),
+      rgba(0, 0, 0, 0)
+    );
+}
 
 .capaEsquerda {
   position: relative;
-  padding: 28px 32px;
+
+  padding: 42px;
+
   overflow: hidden;
 
   background:
     linear-gradient(
-      145deg,
-      #fff 0%,
-      #f9fbff 60%,
-      #f1f5fa 100%
+      150deg,
+      #fbfaf6 0%,
+      #f1eee6 100%
     );
 }
 
@@ -89,444 +224,459 @@
 
   position: absolute;
 
-  width: 350px;
-  height: 100px;
+  width: 300px;
+  height: 300px;
 
-  right: -120px;
-  top: 50px;
+  right: -150px;
+  bottom: -140px;
 
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(37, 103, 189, 0.18),
-      rgba(242, 174, 18, 0.25),
-      rgba(225, 50, 65, 0.16),
-      transparent
-    );
-
-  filter: blur(13px);
-  transform: rotate(-12deg);
-  opacity: 0.65;
-}
-
-.capaEsquerda::after {
-  content: "";
-
-  position: absolute;
-
-  width: 340px;
-  height: 65px;
-
-  left: -110px;
-  bottom: 25px;
+  border-radius: 50%;
 
   background:
-    linear-gradient(
-      90deg,
-      #1766c2,
-      #20a36b,
-      #f3b500,
-      #ed3c3c
-    );
-
-  opacity: 0.11;
-  filter: blur(18px);
-  transform: rotate(-15deg);
+    rgba(50, 100, 200, 0.08);
 }
-
-/* =========================================================
-   LOGO
-========================================================= */
 
 .logoLivro,
 .logoPagina {
+  position: relative;
+  z-index: 3;
+
   display: flex;
   align-items: center;
-  gap: 8px;
-
-  position: relative;
-  z-index: 5;
+  gap: 11px;
 }
 
 .logoLivro strong,
 .logoPagina strong {
   display: block;
 
-  font-family: Arial, sans-serif;
-  font-size: 19px;
+  color: var(--livro-text);
 
-  color: #123b76;
-  letter-spacing: -0.6px;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .logoLivro small,
 .logoPagina small {
   display: block;
 
-  font-size: 8px;
-  color: #172d4f;
-  letter-spacing: 4px;
-  margin-top: 1px;
+  margin-top: 2px;
+
+  color: #9098a4;
+
+  font-size: 7px;
+  font-weight: 600;
+
+  letter-spacing: 0.14em;
 }
 
-/* =========================================================
-   LOGO COLORIDO
-========================================================= */
-
 .logoMarca {
+  position: relative;
+
   width: 32px;
   height: 32px;
 
-  position: relative;
-  transform: rotate(-8deg);
   flex-shrink: 0;
+
+  transform: rotate(-8deg);
 }
 
 .logoMarca span {
   position: absolute;
 
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
 
-  border-radius: 4px 10px 4px 10px;
+  border-radius: 4px 9px 4px 9px;
+
   transform: rotate(45deg);
 }
 
 .logoMarca span:nth-child(1) {
-  background: #f5b800;
-  left: 1px;
   top: 1px;
+  left: 1px;
+  background: #f5b800;
 }
 
 .logoMarca span:nth-child(2) {
-  background: #ed3c3c;
-  left: 13px;
   top: 1px;
+  left: 13px;
+  background: #ed3c3c;
 }
 
 .logoMarca span:nth-child(3) {
-  background: #1766c2;
-  left: 2px;
   top: 13px;
+  left: 2px;
+  background: #1766c2;
 }
 
 .logoMarca span:nth-child(4) {
-  background: #20a36b;
-  left: 14px;
   top: 13px;
+  left: 14px;
+  background: #20a36b;
 }
 
-/* =========================================================
-   TÍTULO DA CAPA
-========================================================= */
-
-.capaEsquerda h1 {
-  position: relative;
-  z-index: 5;
-
-  margin-top: 42px;
-  margin-bottom: 9px;
-
-  font-family: Arial, sans-serif;
-  font-size: clamp(34px, 4vw, 48px);
-
-  line-height: 0.95;
-  color: #123f80;
-
-  letter-spacing: -2px;
-}
-
-.capaEsquerda p {
-  position: relative;
-  z-index: 5;
-
-  font-size: 12px;
-  line-height: 1.45;
-
-  color: #555;
-  max-width: 330px;
-}
-
-/* =========================================================
-   LATAS
-========================================================= */
-
-.latas,
-.latasPagina {
+.numeroEdicao {
   position: absolute;
 
-  bottom: -5px;
-  right: 15px;
+  top: 44px;
+  right: 42px;
 
-  width: 300px;
-  height: 135px;
+  color: #939ba6;
 
-  z-index: 5;
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.14em;
 }
 
-.lata {
+.capaEsquerda h2 {
+  position: relative;
+  z-index: 2;
+
+  margin-top: 88px;
+
+  color: var(--livro-text);
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: 57px;
+  font-weight: 500;
+
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+}
+
+.capaEsquerda > p {
+  position: relative;
+  z-index: 2;
+
+  max-width: 340px;
+
+  margin-top: 20px;
+
+  color: #6f7988;
+
+  font-size: 10px;
+
+  line-height: 1.8;
+}
+
+.coresMini {
   position: absolute;
 
-  width: 100px;
-  height: 75px;
+  left: 42px;
+  right: 42px;
+  bottom: 42px;
 
-  border-radius: 10px 10px 22px 22px;
+  z-index: 3;
 
-  background:
-    linear-gradient(
-      90deg,
-      #777,
-      #f5f5f5 15%,
-      #aaa 45%,
-      #fff 60%,
-      #888
-    );
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
 
-  border: 2px solid #9b9b9b;
+  gap: 5px;
+}
+
+.coresMini span {
+  height: 49px;
 
   box-shadow:
-    0 8px 12px rgba(0, 0, 0, 0.16);
+    inset 0 0 0 1px
+    rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 0.25s ease;
 }
 
-.lata::before {
-  content: "";
-
-  position: absolute;
-
-  width: 88px;
-  height: 12px;
-
-  left: 4px;
-  top: -7px;
-
-  border-radius: 50%;
-
-  background: #d9d9d9;
-  border: 2px solid #858585;
+.coresMini span:hover {
+  transform: translateY(-3px);
 }
 
-.lata .tinta {
-  position: absolute;
-
-  width: 75px;
-  height: 15px;
-
-  left: 10px;
-  top: 0;
-
-  border-radius: 50%;
-}
-
-.lata.azul {
-  left: 0;
-  bottom: 10px;
-}
-
-.lata.azul .tinta {
-  background: #1765c0;
-}
-
-.lata.amarela {
-  left: 78px;
-  bottom: -2px;
-}
-
-.lata.amarela .tinta {
-  background: #f4ae00;
-}
-
-.lata.vermelha {
-  left: 156px;
-  bottom: 18px;
-}
-
-.lata.vermelha .tinta {
-  background: #df2334;
-}
 
 /* =========================================================
-   CAPA — DIREITA
+   CAPA DIREITA
 ========================================================= */
 
 .capaDireita {
   position: relative;
 
-  padding: 28px 32px;
+  padding: 42px;
 
-  background: #fff;
   overflow: hidden;
-}
 
-.pincelada {
-  position: absolute;
-
-  width: 340px;
-  height: 90px;
-
-  right: -120px;
-  top: -8px;
-
-  background:
-    linear-gradient(
-      90deg,
-      #1b70c8,
-      #eeb300,
-      #ef3e46,
-      #7e55b7
-    );
-
-  opacity: 0.16;
-
-  transform: rotate(-12deg);
-  filter: blur(8px);
-}
-
-.miniLogo {
   display: flex;
-  align-items: center;
-  gap: 6px;
-
-  position: relative;
-  z-index: 5;
-}
-
-.miniLogo .logoMarca {
-  transform: scale(0.55);
-}
-
-.miniLogo strong {
-  font-size: 17px;
-  color: #123f80;
-}
-
-.capaDireita h2 {
-  position: relative;
-  z-index: 5;
-
-  font-size: 25px;
-  color: #123f80;
-
-  margin-top: 48px;
-  margin-bottom: 9px;
-}
-
-.capaDireita p {
-  position: relative;
-  z-index: 5;
-
-  color: #666;
-  line-height: 1.45;
-
-  max-width: 300px;
-  font-size: 11px;
-}
-
-.coresMini {
-  margin-top: 25px;
-
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-
-  gap: 7px;
-  max-width: 230px;
-}
-
-.coresMini span {
-  height: 44px;
-
-  border-radius: 3px;
-
-  box-shadow:
-    inset 0 0 0 1px rgba(0, 0, 0, 0.08);
-
-  transition: transform 0.25s ease;
-}
-
-.coresMini span:hover {
-  transform: scale(1.04);
-}
-
-/* =========================================================
-   BOTÃO
-========================================================= */
-
-.botaoVerCores {
-  border: none;
+  flex-direction: column;
+  justify-content: space-between;
 
   background:
-    linear-gradient(
-      135deg,
-      #2d6cc0,
-      #174a8d
+    radial-gradient(
+      circle at 70% 26%,
+      rgba(169, 194, 243, 0.13),
+      transparent 28%
+    ),
+    var(--livro-navy);
+
+  color: #ffffff;
+}
+
+.capaEtiqueta {
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.45
     );
 
-  color: #fff;
-
-  font-size: 13px;
+  font-size: 8px;
   font-weight: 600;
 
-  padding: 9px 25px;
-
-  border-radius: 6px;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 5px 12px rgba(33, 83, 145, 0.22);
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  letter-spacing: 0.18em;
 }
 
-.botaoVerCores:hover {
-  transform: translateY(-2px);
+.circuloCapa {
+  position: absolute;
 
-  box-shadow:
-    0 7px 16px rgba(33, 83, 145, 0.3);
+  width: 250px;
+  height: 250px;
+
+  top: 95px;
+  left: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transform: translateX(-50%);
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.1
+    );
+
+  border-radius: 50%;
+
+  color: var(--livro-blue-soft);
 }
+
+.circuloCapa::before,
+.circuloCapa::after {
+  content: "";
+
+  position: absolute;
+
+  border-radius: 50%;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.07
+    );
+}
+
+.circuloCapa::before {
+  width: 190px;
+  height: 190px;
+}
+
+.circuloCapa::after {
+  width: 310px;
+  height: 310px;
+}
+
+.capaDireitaRodape {
+  position: relative;
+  z-index: 3;
+
+  display: grid;
+  grid-template-columns:
+    1fr
+    1fr;
+
+  align-items: end;
+  gap: 25px;
+}
+
+.capaDireitaRodape strong {
+  color: #ffffff;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 30px;
+  font-weight: 500;
+
+  line-height: 0.92;
+}
+
+.capaDireitaRodape span {
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.44
+    );
+
+  font-size: 8px;
+
+  line-height: 1.7;
+}
+
 
 /* =========================================================
-   CONTAINER DO LIVRO
+   LIVRO ABERTO
 ========================================================= */
 
 .livroContainer {
-  gap: 12px;
+  padding:
+    155px
+    50px
+    85px;
+}
 
-  perspective: 2200px;
-  flex-direction: row;
+.livroTopo {
+  width: min(1400px, 100%);
+
+  margin:
+    0
+    auto
+    48px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 40px;
+
+  padding-bottom: 28px;
+
+  border-bottom:
+    1px solid
+    var(--livro-line);
+}
+
+.livroTopo > div > span {
+  display: block;
+
+  margin-bottom: 14px;
+
+  color: #8a94a1;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.2em;
+}
+
+.livroTopo h1 {
+  margin: 0;
+
+  color: var(--livro-text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:
+    clamp(
+      55px,
+      5vw,
+      78px
+    );
+
+  font-weight: 400;
+
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+}
+
+.livroTopo h1 em {
+  color: var(--livro-blue);
+  font-weight: 400;
+}
+
+.fecharCatalogo {
+  min-height: 44px;
+
+  padding: 0 16px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  border:
+    1px solid
+    var(--livro-line);
+
+  background:
+    transparent;
+
+  color: #677384;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.fecharCatalogo:hover {
+  background: var(--livro-navy);
+  color: #ffffff;
+}
+
+.livroAreaCentral {
+  width: min(1400px, 100%);
+
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns:
+    50px
+    minmax(0, 1fr)
+    50px;
+
+  align-items: center;
+
+  gap: 18px;
 }
 
 .areaLivro {
-  width: min(900px, 78vw);
-
   position: relative;
+
+  width: 100%;
+
   perspective: 2200px;
 }
 
-/* =========================================================
-   LIVRO
-========================================================= */
-
 .livro {
-  width: 100%;
-  height: 500px;
-
   position: relative;
 
-  transform-style: preserve-3d;
+  width: 100%;
+  height: 650px;
+
   perspective: 2200px;
+  transform-style: preserve-3d;
 
   filter:
     drop-shadow(
-      0 16px 22px rgba(0, 0, 0, 0.14)
+      0 25px 36px
+      rgba(19, 29, 45, 0.14)
     );
 }
-
-/* =========================================================
-   PÁGINAS BASE
-========================================================= */
 
 .paginasBase {
   position: absolute;
@@ -535,409 +685,469 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
 
-  background: #fff;
   overflow: hidden;
 
-  border-radius: 4px;
-
-  box-shadow:
-    inset 0 0 20px rgba(0, 0, 0, 0.03);
+  background: #ffffff;
 
   transform-style: preserve-3d;
 }
-
-/* =========================================================
-   PÁGINAS
-========================================================= */
-
-.paginaEsquerda,
-.paginaDireita {
-  position: relative;
-
-  height: 100%;
-  overflow: hidden;
-
-  background:
-    linear-gradient(
-      135deg,
-      #fff,
-      #fafafa
-    );
-}
-
-.paginaEsquerda {
-  border-right: 1px solid #ddd;
-}
-
-/* =========================================================
-   SOMBRA CENTRAL
-========================================================= */
 
 .paginasBase::after {
   content: "";
 
   position: absolute;
 
+  z-index: 20;
+
   top: 0;
   bottom: 0;
-
   left: 50%;
-  width: 28px;
+
+  width: 38px;
 
   transform: translateX(-50%);
+
+  pointer-events: none;
 
   background:
     linear-gradient(
       90deg,
       transparent,
-      rgba(0, 0, 0, 0.06),
-      rgba(0, 0, 0, 0.025),
+      rgba(0, 0, 0, 0.07),
+      rgba(255, 255, 255, 0.62),
+      rgba(0, 0, 0, 0.05),
       transparent
     );
-
-  pointer-events: none;
-  z-index: 20;
 }
 
-/* =========================================================
-   PÁGINA INICIAL — ESQUERDA
-========================================================= */
+.paginaEsquerda,
+.paginaDireita {
+  position: relative;
 
-.conteudoInicial {
   height: 100%;
 
-  padding: 30px;
+  overflow: hidden;
 
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #f8f6f0
+    );
+}
+
+.paginaEsquerda {
+  border-right:
+    1px solid
+    rgba(24, 34, 53, 0.09);
+}
+
+
+/* =========================================================
+   PÁGINAS INICIAIS
+========================================================= */
+
+.conteudoInicial,
+.conteudoInicialDireita,
+.conteudoCategoria {
   position: relative;
+
+  height: 100%;
+
+  padding: 45px;
+
   overflow: hidden;
 }
 
-.conteudoInicial::after {
+.conteudoInicial::after,
+.conteudoInicialDireita::after {
   content: "";
 
   position: absolute;
 
-  width: 350px;
-  height: 140px;
+  width: 280px;
+  height: 280px;
 
-  bottom: -45px;
-  left: -90px;
+  right: -150px;
+  bottom: -140px;
+
+  border-radius: 50%;
 
   background:
-    linear-gradient(
-      120deg,
-      #1976d2,
-      #f3b500,
-      #ed3346
+    rgba(
+      50,
+      100,
+      200,
+      0.07
     );
-
-  opacity: 0.12;
-  filter: blur(15px);
-
-  transform: rotate(-12deg);
-}
-
-.conteudoInicial h1 {
-  position: relative;
-  z-index: 5;
-
-  margin-top: 42px;
-
-  font-size: 39px;
-
-  line-height: 0.95;
-  color: #123f80;
-
-  letter-spacing: -1.7px;
-}
-
-.conteudoInicial p {
-  position: relative;
-  z-index: 5;
-
-  color: #555;
-
-  font-size: 12px;
-  line-height: 1.45;
-
-  max-width: 300px;
-}
-
-.latasPagina {
-  bottom: 10px;
-  right: 12px;
-
-  transform: scale(0.68);
-  transform-origin: bottom right;
-}
-
-/* =========================================================
-   PÁGINA INICIAL — DIREITA
-========================================================= */
-
-.conteudoInicialDireita {
-  height: 100%;
-
-  padding: 32px;
-
-  position: relative;
-}
-
-.conteudoInicialDireita h2 {
-  margin-top: 42px;
-  margin-bottom: 10px;
-
-  font-size: 28px;
-
-  line-height: 1;
-  color: #123f80;
-}
-
-.conteudoInicialDireita p {
-  color: #666;
-
-  line-height: 1.45;
-
-  max-width: 320px;
-  font-size: 11px;
 }
 
 .numeroPagina {
   position: absolute;
 
-  right: 25px;
-  top: 20px;
+  top: 34px;
+  right: 38px;
 
-  font-size: 9px;
-  color: #999;
+  color: #a0a6af;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.12em;
+}
+
+.conteudoInicial h1 {
+  position: relative;
+  z-index: 2;
+
+  margin-top: 100px;
+
+  color: var(--livro-text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 62px;
+  font-weight: 500;
+
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+}
+
+.conteudoInicial > p,
+.conteudoInicialDireita > p {
+  position: relative;
+  z-index: 2;
+
+  max-width: 420px;
+
+  margin-top: 20px;
+
+  color: #727d8c;
+
+  font-size: 10px;
+
+  line-height: 1.8;
 }
 
 .amostrasInicio {
-  margin-top: 25px;
+  position: absolute;
+
+  left: 45px;
+  right: 45px;
+  bottom: 45px;
+
+  z-index: 3;
 
   display: grid;
-
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns:
+    repeat(3, 1fr);
 
   gap: 8px;
-
-  max-width: 280px;
 }
 
 .amostrasInicio span {
-  height: 52px;
-
-  border-radius: 3px;
+  height: 56px;
 
   box-shadow:
-    inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+    inset 0 0 0 1px
+    rgba(0, 0, 0, 0.08);
 }
 
+.sectionLabel {
+  display: block;
+
+  position: relative;
+  z-index: 2;
+
+  color: #8b94a0;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.18em;
+}
+
+.conteudoInicialDireita h2 {
+  position: relative;
+  z-index: 2;
+
+  margin-top: 82px;
+
+  color: var(--livro-text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 48px;
+  font-weight: 500;
+
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+
+.passosLivro {
+  position: relative;
+  z-index: 2;
+
+  margin-top: 60px;
+
+  border-top:
+    1px solid
+    var(--livro-line);
+}
+
+.passosLivro > div {
+  min-height: 66px;
+
+  display: grid;
+  grid-template-columns:
+    45px
+    1fr;
+
+  align-items: center;
+
+  border-bottom:
+    1px solid
+    var(--livro-line);
+}
+
+.passosLivro span {
+  color: var(--livro-blue);
+
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.passosLivro p {
+  color: #5f6b7c;
+
+  font-size: 10px;
+}
+
+
 /* =========================================================
-   CATEGORIA
+   CATEGORIAS
 ========================================================= */
 
 .conteudoCategoria {
-  height: 100%;
-
-  padding: 30px;
-
-  position: relative;
-  overflow: hidden;
+  padding: 42px;
 }
 
 .conteudoCategoria h2 {
   position: relative;
-  z-index: 5;
+  z-index: 2;
 
-  margin: 0 0 5px;
+  margin:
+    15px
+    0
+    7px;
 
-  color: #123f80;
+  color: var(--livro-text);
 
-  font-size: 26px;
-  line-height: 1.1;
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 42px;
+  font-weight: 600;
+
+  line-height: 1;
+  letter-spacing: -0.035em;
 }
 
 .descricao {
   position: relative;
-  z-index: 5;
+  z-index: 2;
 
-  color: #666;
+  max-width: 430px;
 
-  font-size: 10px;
-  line-height: 1.4;
+  color: #737e8d;
 
-  max-width: 350px;
+  font-size: 9px;
 
-  margin-bottom: 11px;
+  line-height: 1.55;
 }
 
 .linha {
+  width: 100%;
   height: 1px;
 
-  width: 100%;
+  margin: 18px 0 22px;
 
-  background: #ddd;
-
-  margin-bottom: 15px;
+  background:
+    var(--livro-line);
 }
-
-/* =========================================================
-   MANCHA
-========================================================= */
 
 .manchaDecorativa {
   position: absolute;
 
-  width: 160px;
-  height: 75px;
+  width: 230px;
+  height: 230px;
 
-  right: -40px;
-  top: -25px;
+  top: -130px;
+  right: -120px;
+
+  border-radius: 50%;
 
   background:
-    linear-gradient(
-      120deg,
-      #e83f5b,
-      #b845b8,
-      #3577c4
+    rgba(
+      50,
+      100,
+      200,
+      0.05
     );
-
-  opacity: 0.11;
-
-  filter: blur(13px);
-
-  transform: rotate(-20deg);
 }
 
-/* =========================================================
-   GRADE DE CORES
-========================================================= */
-
 .gradeCores {
+  position: relative;
+  z-index: 3;
+
   display: grid;
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
 
-  grid-template-columns: repeat(5, 1fr);
-
-  gap: 13px 8px;
+  gap:
+    22px
+    10px;
 }
 
 .corItem {
-  text-align: center;
   min-width: 0;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  text-align: left;
+
+  cursor: pointer;
 }
 
 .amostraCor {
-  width: 100%;
-  height: 48px;
-
-  border-radius: 3px;
-
   position: relative;
 
-  cursor: pointer;
+  width: 100%;
+  height: 73px;
+
+  overflow: hidden;
 
   box-shadow:
-    inset 0 0 0 1px rgba(0, 0, 0, 0.08),
-    0 2px 4px rgba(0, 0, 0, 0.06);
+    inset 0 0 0 1px
+    rgba(0, 0, 0, 0.1);
 
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
-.amostraCor:hover {
-  transform: scale(1.04);
-
-  z-index: 30;
+.corItem:hover
+.amostraCor {
+  transform: translateY(-4px);
 
   box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.18);
+    inset 0 0 0 1px
+    rgba(0, 0, 0, 0.12),
+    0 13px 24px
+    rgba(25, 35, 52, 0.12);
 }
-
-/* =========================================================
-   NOME HOVER
-========================================================= */
 
 .nomeHover {
   position: absolute;
 
-  left: 50%;
-  top: 50%;
+  inset: auto 6px 6px 6px;
 
-  transform:
-    translate(-50%, -50%)
-    scale(0.75);
+  padding: 6px;
 
   background:
-    rgba(15, 37, 70, 0.95);
+    rgba(
+      17,
+      28,
+      47,
+      0.86
+    );
 
-  color: #fff;
+  color: #ffffff;
 
-  padding: 5px 8px;
-
-  border-radius: 4px;
-
-  white-space: nowrap;
-
-  font-size: 9px;
+  font-size: 7px;
   font-weight: 600;
+
+  text-align: center;
 
   opacity: 0;
 
-  pointer-events: none;
+  transform:
+    translateY(5px);
 
   transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
-.amostraCor:hover .nomeHover {
+.corItem:hover
+.nomeHover {
   opacity: 1;
 
   transform:
-    translate(-50%, -50%)
-    scale(1);
+    translateY(0);
 }
 
 .nomeCor {
   display: block;
 
-  margin-top: 4px;
+  margin-top: 7px;
 
-  color: #555;
+  overflow: hidden;
+
+  color: #4e5a6c;
 
   font-size: 8px;
+  font-weight: 500;
 
-  white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
-
-/* =========================================================
-   RODAPÉ
-========================================================= */
 
 .rodapePagina {
   position: absolute;
 
-  bottom: 13px;
+  left: 42px;
+  right: 42px;
+  bottom: 23px;
 
-  left: 30px;
-  right: 30px;
-
-  padding-top: 5px;
-
-  border-top: 1px solid #ddd;
+  padding-top: 9px;
 
   display: flex;
-
   justify-content: space-between;
 
-  font-size: 7px;
+  border-top:
+    1px solid
+    var(--livro-line);
 
-  color: #999;
+  color: #9aa1aa;
+
+  font-size: 7px;
 }
+
+.paginaVazia {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #8d96a2;
+
+  font-size: 10px;
+
+  letter-spacing: 0.12em;
+}
+
 
 /* =========================================================
    FOLHA VIRANDO
@@ -946,33 +1156,22 @@
 .folhaVirando {
   position: absolute;
 
-  top: 0;
-  bottom: 0;
-
-  width: 100%;
-
-  left: 0;
+  inset: 0;
 
   z-index: 50;
 
+  width: 100%;
+  height: 100%;
+
   transform-style: preserve-3d;
-
-  transform-origin: center center;
-
   perspective: 2200px;
-
-  will-change: transform;
 
   pointer-events: none;
 
-  backface-visibility: visible;
-
-  -webkit-backface-visibility: visible;
+  will-change: transform;
 }
 
 .folhaDireita {
-  right: auto;
-
   transform-origin: center center;
 
   animation:
@@ -1002,29 +1201,6 @@
     forwards;
 }
 
-.folhaVirando::before {
-  content: "";
-
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 3px;
-
-  z-index: 10;
-
-  background: linear-gradient(
-    90deg,
-    rgba(120, 120, 120, 0.22),
-    rgba(255, 255, 255, 0.8),
-    rgba(120, 120, 120, 0.18)
-  );
-
-  transform: translateX(-50%);
-
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.13);
-}
-
 .frenteFolha,
 .versoFolha {
   position: absolute;
@@ -1034,69 +1210,33 @@
   width: 100%;
   height: 100%;
 
-  background: #fff;
-
   overflow: hidden;
 
-  display: block;
-
-  transform-style: preserve-3d;
+  background: #ffffff;
 
   backface-visibility: hidden;
-
   -webkit-backface-visibility: hidden;
-
-  box-shadow:
-    0 10px 22px rgba(0, 0, 0, 0.12),
-    inset 0 0 12px rgba(0, 0, 0, 0.035);
-}
-
-.frenteFolha::after,
-.versoFolha::after {
-  content: "";
-
-  position: absolute;
-  inset: 0;
-
-  pointer-events: none;
-
-  opacity: 0.7;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(0, 0, 0, 0.16),
-      transparent 18%,
-      transparent 82%,
-      rgba(0, 0, 0, 0.12)
-    );
-
-  mix-blend-mode: multiply;
-}
-
-.folhaDupla {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
 
   transform-style: preserve-3d;
-
-  backface-visibility: hidden;
-
-  -webkit-backface-visibility: hidden;
 }
 
 .versoFolha {
   transform: rotateY(180deg);
 }
 
-/* =========================================================
-   ANIMAÇÕES
-========================================================= */
+.folhaDupla {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+  grid-template-columns:
+    1fr
+    1fr;
+
+  backface-visibility: hidden;
+}
 
 @keyframes virarDireita {
-
   0% {
     transform: rotateY(0deg);
   }
@@ -1111,7 +1251,6 @@
 }
 
 @keyframes virarEsquerda {
-
   0% {
     transform: rotateY(0deg);
   }
@@ -1125,360 +1264,1016 @@
   }
 }
 
+
 /* =========================================================
-   SETAS
+   NAVEGAÇÃO DO LIVRO
 ========================================================= */
 
 .seta {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
 
-  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  border: none;
+  border:
+    1px solid
+    var(--livro-line);
+
   border-radius: 50%;
 
   background:
-    linear-gradient(
-      135deg,
-      #285c9f,
-      #163d72
+    rgba(
+      255,
+      255,
+      255,
+      0.5
     );
 
-  color: #fff;
+  color: var(--livro-text);
 
-  font-size: 34px;
-  line-height: 30px;
-
-  display: flex;
-
-  justify-content: center;
-  align-items: center;
+  font-family: serif;
+  font-size: 30px;
 
   cursor: pointer;
 
-  padding: 0 0 5px 0;
-
-  z-index: 100;
-
   transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    opacity 0.2s ease;
-
-  box-shadow:
-    0 4px 12px rgba(23, 60, 110, 0.2);
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease,
+    opacity 0.25s ease;
 }
 
 .seta:hover:not(:disabled) {
-  background:
-    linear-gradient(
-      135deg,
-      #3474c2,
-      #1b4b89
-    );
+  background: var(--livro-navy);
 
-  transform: scale(1.06);
-}
+  color: #ffffff;
 
-.seta:active:not(:disabled) {
-  transform: scale(0.95);
+  transform: scale(1.04);
 }
 
 .seta:disabled {
-  opacity: 0.2;
+  opacity: 0.22;
+
   cursor: not-allowed;
-  box-shadow: none;
 }
-
-/* =========================================================
-   FECHAR
-========================================================= */
-
-.fecharLivro {
-  position: absolute;
-
-  z-index: 200;
-
-  top: -13px;
-  right: -13px;
-
-  width: 32px;
-  height: 32px;
-
-  border: none;
-  border-radius: 50%;
-
-  background: #fff;
-
-  color: #244d80;
-
-  font-size: 20px;
-
-  cursor: pointer;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  line-height: 1;
-
-  box-shadow:
-    0 3px 12px rgba(0, 0, 0, 0.12);
-
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease;
-}
-
-.fecharLivro:hover {
-  background: #f2f5f9;
-  transform: rotate(90deg);
-}
-
-/* =========================================================
-   INDICADORES
-========================================================= */
 
 .indicadores {
   position: absolute;
 
   left: 50%;
-  bottom: -21px;
+  bottom: -30px;
 
-  transform: translateX(-50%);
+  z-index: 120;
 
   display: flex;
-
   align-items: center;
 
-  gap: 5px;
+  gap: 7px;
 
-  z-index: 150;
+  transform:
+    translateX(-50%);
 }
 
 .indicadores button {
-  width: 6px;
-  height: 6px;
+  width: 22px;
+  height: 3px;
 
-  border: none;
   padding: 0;
 
-  border-radius: 50%;
+  border: none;
 
-  background: #bfc7d2;
+  background:
+    rgba(
+      24,
+      34,
+      53,
+      0.18
+    );
 
   cursor: pointer;
 
   transition:
-    width 0.2s ease,
-    transform 0.2s ease,
-    background 0.2s ease;
+    width 0.25s ease,
+    background 0.25s ease;
 }
 
-.indicadores button:disabled {
-  cursor: default;
+.indicadores
+.indicadorAtivo {
+  width: 45px;
+
+  background: var(--livro-blue);
 }
 
-.indicadores button:hover {
-  transform: scale(1.3);
-  background: #8fa4bd;
+.dicaLivro {
+  width: min(1400px, 100%);
+
+  margin:
+    48px
+    auto
+    0;
+
+  color: #7c8795;
+
+  font-size: 9px;
+
+  text-align: center;
 }
 
-.indicadores .indicadorAtivo {
-  width: 18px;
-  border-radius: 8px;
-  background: #1f4f8f;
-}
 
 /* =========================================================
-   PÁGINA VAZIA
+   MODAL DA COR
 ========================================================= */
 
-.paginaVazia {
-  width: 100%;
-  height: 100%;
+.modalOverlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 99999;
+
+  padding: 28px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
-  color: #777;
+  background:
+    rgba(
+      7,
+      13,
+      24,
+      0.78
+    );
 
-  font-size: 15px;
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
+
+  animation:
+    aparecerModal
+    0.25s
+    ease;
 }
 
+.modalCor {
+  width: min(1050px, 100%);
+  max-height:
+    calc(
+      100vh - 56px
+    );
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background: var(--livro-paper);
+
+  box-shadow:
+    0 35px 100px
+    rgba(0, 0, 0, 0.32);
+
+  font-family:
+    "Poppins",
+    sans-serif;
+}
+
+.modalTopo {
+  min-height: 95px;
+
+  padding:
+    22px
+    28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  border-bottom:
+    1px solid
+    var(--livro-line);
+}
+
+.modalCorAmostra {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+}
+
+.modalCorAmostra > span {
+  width: 54px;
+  height: 54px;
+
+  flex-shrink: 0;
+
+  box-shadow:
+    inset 0 0 0 1px
+    rgba(0, 0, 0, 0.1);
+}
+
+.modalCorAmostra > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.modalCorAmostra small {
+  color: #9199a4;
+
+  font-size: 7px;
+  font-weight: 600;
+
+  letter-spacing: 0.15em;
+}
+
+.modalCorAmostra strong {
+  margin-top: 2px;
+
+  color: var(--livro-text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.modalCorAmostra p {
+  color: #89929e;
+
+  font-size: 8px;
+}
+
+.fecharModal {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid
+    var(--livro-line);
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: #6d7888;
+
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.fecharModal:hover {
+  background: var(--livro-navy);
+  color: #ffffff;
+
+  transform: rotate(90deg);
+}
+
+.modalCabecalho {
+  padding:
+    30px
+    28px
+    22px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 25px;
+}
+
+.modalCabecalho > div:first-child > span {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: #8993a0;
+
+  font-size: 7px;
+  font-weight: 600;
+
+  letter-spacing: 0.17em;
+}
+
+.modalCabecalho h2 {
+  color: var(--livro-text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:
+    clamp(
+      38px,
+      4vw,
+      54px
+    );
+
+  font-weight: 500;
+
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+
+.modalCabecalho h2 em {
+  color: var(--livro-blue);
+
+  font-weight: 400;
+}
+
+.contagemProdutos {
+  min-width: 88px;
+
+  padding-left: 22px;
+
+  display: flex;
+  flex-direction: column;
+
+  border-left:
+    1px solid
+    var(--livro-line);
+}
+
+.contagemProdutos strong {
+  color: var(--livro-text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 33px;
+  font-weight: 600;
+
+  line-height: 1;
+}
+
+.contagemProdutos span {
+  color: #8a94a0;
+
+  font-size: 7px;
+
+  text-transform: uppercase;
+}
+
+.modalConteudo {
+  min-height: 270px;
+
+  padding:
+    0
+    28px
+    28px;
+
+  overflow-y: auto;
+}
+
+.produtosGrid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 13px;
+}
+
+.produtoCard {
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns:
+    105px
+    minmax(0, 1fr);
+
+  min-height: 150px;
+
+  border:
+    1px solid
+    var(--livro-line);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.58
+    );
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.produtoCard:hover {
+  transform:
+    translateY(-3px);
+
+  box-shadow:
+    0 15px 30px
+    rgba(
+      21,
+      31,
+      49,
+      0.08
+    );
+}
+
+.produtoImagem {
+  position: relative;
+
+  min-width: 0;
+
+  padding: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    #eeece5;
+}
+
+.produtoImagem > span {
+  position: absolute;
+
+  top: 8px;
+  left: 8px;
+
+  max-width:
+    calc(
+      100% - 16px
+    );
+
+  padding:
+    4px
+    5px;
+
+  overflow: hidden;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.88
+    );
+
+  color: var(--livro-navy);
+
+  font-size: 6px;
+  font-weight: 700;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.produtoImagem img {
+  width: 100%;
+  height: 95px;
+
+  object-fit: contain;
+}
+
+.produtoInfo {
+  min-width: 0;
+
+  padding:
+    15px
+    14px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.disponivel {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  color: #4b8059;
+
+  font-size: 7px;
+  font-weight: 600;
+}
+
+.produtoInfo h3 {
+  margin-top: 9px;
+
+  overflow: hidden;
+
+  color: var(--livro-text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 20px;
+  font-weight: 600;
+
+  line-height: 1;
+
+  display:
+    -webkit-box;
+
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.produtoMeta {
+  margin-top: 8px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.produtoMeta span {
+  overflow: hidden;
+
+  color: #8b94a1;
+
+  font-size: 7px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.precoProduto {
+  margin-top: auto;
+  padding-top: 10px;
+
+  color: var(--livro-text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.estadoModal {
+  min-height: 270px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.estadoModal > svg {
+  margin-bottom: 15px;
+
+  color: var(--livro-blue);
+}
+
+.estadoModal strong {
+  color: var(--livro-text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.estadoModal p {
+  max-width: 430px;
+
+  margin-top: 8px;
+
+  color: #7d8795;
+
+  font-size: 9px;
+
+  line-height: 1.7;
+}
+
+.loader {
+  animation:
+    girar
+    0.8s
+    linear
+    infinite;
+}
+
+.modalRodape {
+  min-height: 76px;
+
+  padding:
+    15px
+    28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  border-top:
+    1px solid
+    var(--livro-line);
+
+  background:
+    #f0eee7;
+}
+
+.modalRodape p {
+  color: #838c98;
+
+  font-size: 8px;
+}
+
+.modalRodape p strong {
+  color: #596678;
+}
+
+.modalRodape button {
+  min-height: 44px;
+
+  padding: 0 16px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  border: none;
+
+  background: var(--livro-navy);
+  color: #ffffff;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.modalRodape button:hover {
+  background: var(--livro-blue);
+
+  transform: translateY(-2px);
+}
+
+
 /* =========================================================
-   TABLET
+   SCROLLBAR
 ========================================================= */
 
-@media (max-width: 900px) {
+.modalConteudo::-webkit-scrollbar {
+  width: 6px;
+}
 
-  .capaLivro {
-    width: 92vw;
-    height: 430px;
+.modalConteudo::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modalConteudo::-webkit-scrollbar-thumb {
+  background:
+    rgba(
+      24,
+      34,
+      53,
+      0.18
+    );
+
+  border-radius: 999px;
+}
+
+
+/* =========================================================
+   ANIMAÇÕES
+========================================================= */
+
+@keyframes aparecerModal {
+  from {
+    opacity: 0;
   }
 
-  .capaEsquerda,
-  .capaDireita {
-    padding: 25px;
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   1200PX
+========================================================= */
+
+@media (max-width: 1200px) {
+  .heroLivro {
+    grid-template-columns:
+      minmax(300px, 0.78fr)
+      minmax(540px, 1.22fr);
+
+    gap: 45px;
+  }
+
+  .capaLivro {
+    height: 520px;
+  }
+
+  .heroTexto h1 {
+    font-size:
+      clamp(
+        62px,
+        6vw,
+        88px
+      );
   }
 
   .livro {
-    height: 470px;
+    height: 610px;
   }
 
   .conteudoCategoria {
-    padding: 27px;
+    padding: 34px;
   }
 
   .gradeCores {
-    gap: 11px 7px;
+    gap:
+      18px
+      8px;
   }
 
   .amostraCor {
-    height: 44px;
+    height: 66px;
+  }
+
+  .produtosGrid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
   }
 }
 
+
 /* =========================================================
-   TABLET PEQUENO
+   1000PX
 ========================================================= */
 
-@media (max-width: 750px) {
+@media (max-width: 1000px) {
+  .capaContainer {
+    padding:
+      135px
+      35px
+      75px;
+  }
+
+  .heroLivro {
+    grid-template-columns: 1fr;
+
+    gap: 55px;
+  }
+
+  .heroTexto {
+    max-width: 720px;
+  }
 
   .capaLivro {
-    height: 430px;
+    height: 560px;
   }
 
-  .capaEsquerda,
-  .capaDireita {
-    padding: 24px;
-  }
-
-  .capaEsquerda h1 {
-    font-size: 40px;
-  }
-
-  .latas {
-    transform: scale(0.65);
-    transform-origin: bottom right;
-    right: -15px;
-  }
-
-  .capaDireita h2 {
-    font-size: 24px;
-    margin-top: 50px;
-  }
-
-  .areaLivro {
-    width: 86vw;
+  .livroContainer {
+    padding:
+      135px
+      35px
+      80px;
   }
 
   .livro {
-    height: 460px;
+    height: 570px;
   }
 
   .conteudoCategoria {
-    padding: 25px;
+    padding: 30px;
   }
 
   .conteudoCategoria h2 {
-    font-size: 25px;
-  }
-
-  .descricao {
-    font-size: 10px;
+    font-size: 36px;
   }
 
   .gradeCores {
-    gap: 10px 6px;
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(0, 1fr)
+      );
   }
 
   .amostraCor {
-    height: 42px;
+    height: 64px;
   }
 
   .rodapePagina {
-    left: 25px;
-    right: 25px;
-  }
-
-  .seta {
-    width: 40px;
-    height: 40px;
-    font-size: 32px;
+    left: 30px;
+    right: 30px;
   }
 }
 
+
 /* =========================================================
-   CELULAR
+   800PX
+========================================================= */
+
+@media (max-width: 800px) {
+  .capaContainer {
+    padding:
+      115px
+      22px
+      65px;
+  }
+
+  .heroTexto h1 {
+    font-size: 68px;
+  }
+
+  .capaLivro {
+    height: 520px;
+  }
+
+  .capaEsquerda,
+  .capaDireita {
+    padding: 32px;
+  }
+
+  .numeroEdicao {
+    top: 34px;
+    right: 32px;
+  }
+
+  .coresMini {
+    left: 32px;
+    right: 32px;
+    bottom: 32px;
+  }
+
+  .livroContainer {
+    padding:
+      115px
+      22px
+      70px;
+  }
+
+  .livroTopo {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .livroAreaCentral {
+    grid-template-columns:
+      40px
+      minmax(0, 1fr)
+      40px;
+
+    gap: 8px;
+  }
+
+  .seta {
+    width: 38px;
+    height: 38px;
+
+    font-size: 25px;
+  }
+
+  .livro {
+    height: 550px;
+  }
+
+  .conteudoInicial,
+  .conteudoInicialDireita,
+  .conteudoCategoria {
+    padding: 26px;
+  }
+
+  .conteudoInicial h1 {
+    margin-top: 90px;
+
+    font-size: 48px;
+  }
+
+  .conteudoInicialDireita h2 {
+    margin-top: 70px;
+
+    font-size: 39px;
+  }
+
+  .gradeCores {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(0, 1fr)
+      );
+  }
+
+  .amostraCor {
+    height: 60px;
+  }
+
+  .rodapePagina {
+    left: 26px;
+    right: 26px;
+  }
+
+  .modalOverlay {
+    padding: 16px;
+  }
+
+  .modalCor {
+    max-height:
+      calc(
+        100vh - 32px
+      );
+  }
+}
+
+
+/* =========================================================
+   650PX
 ========================================================= */
 
 @media (max-width: 650px) {
-
-  .capaContainer,
-  .livroContainer {
-    min-height: calc(100vh - 65px);
-    padding: 15px 8px;
+  .heroTexto h1 {
+    font-size: 56px;
   }
-
-  /* CAPA */
 
   .capaLivro {
-    width: 94vw;
-    height: 500px;
-    display: block;
-  }
+    height: 560px;
 
-  .capaEsquerda {
-    height: 100%;
-    padding: 24px;
+    grid-template-columns: 1fr;
   }
 
   .capaDireita {
     display: none;
   }
 
-  .capaEsquerda h1 {
-    margin-top: 38px;
-    font-size: 38px;
+  .capaEsquerda {
+    padding: 30px;
   }
 
-  .capaEsquerda p {
-    font-size: 12px;
+  .numeroEdicao {
+    top: 32px;
+    right: 30px;
   }
 
-  .latas {
-    transform: scale(0.58);
-    transform-origin: bottom right;
-    right: -30px;
+  .capaEsquerda h2 {
+    margin-top: 100px;
+
+    font-size: 54px;
   }
 
-  .botaoVerCores {
-    font-size: 13px;
-    padding: 10px 22px;
+  .coresMini {
+    left: 30px;
+    right: 30px;
+    bottom: 30px;
   }
 
-  /* LIVRO */
-
-  .livroContainer {
-    position: relative;
-    width: 100%;
+  .livroAreaCentral {
+    display: block;
   }
 
   .areaLivro {
-    width: 88vw;
-    max-width: 450px;
+    width: 100%;
   }
 
   .livro {
-    height: 500px;
+    height: 590px;
   }
 
-  .paginasBase {
+  .paginasBase,
+  .folhaDupla {
     grid-template-columns: 1fr;
   }
 
@@ -1487,155 +2282,795 @@
   }
 
   .paginaDireita {
-    display: block;
     width: 100%;
-  }
-
-  .folhaVirando {
-    width: 100%;
-  }
-
-  .conteudoCategoria {
-    padding: 25px 18px;
-  }
-
-  .conteudoCategoria h2 {
-    font-size: 25px;
-  }
-
-  .descricao {
-    font-size: 10px;
-    max-width: 100%;
-  }
-
-  .gradeCores {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px 6px;
-  }
-
-  .amostraCor {
-    height: 48px;
-  }
-
-  .nomeCor {
-    font-size: 8px;
-  }
-
-  .rodapePagina {
-    left: 18px;
-    right: 18px;
-    font-size: 7px;
   }
 
   .seta {
     position: absolute;
 
-    width: 38px;
-    height: 38px;
-
-    font-size: 29px;
-
     z-index: 150;
+
+    top: 58%;
+
+    transform:
+      translateY(-50%);
+  }
+
+  .seta:hover:not(:disabled) {
+    transform:
+      translateY(-50%)
+      scale(1.04);
   }
 
   .setaEsquerda {
-    left: -3px;
+    left: 5px;
   }
 
   .setaDireita {
-    right: -3px;
-  }
-
-  .fecharLivro {
-    width: 31px;
-    height: 31px;
-
-    top: -10px;
-    right: -6px;
-
-    font-size: 19px;
-  }
-
-  .indicadores {
-    bottom: -20px;
-  }
-}
-
-/* =========================================================
-   CELULAR PEQUENO
-========================================================= */
-
-@media (max-width: 430px) {
-
-  .capaEsquerda {
-    padding: 22px;
-  }
-
-  .logoLivro strong {
-    font-size: 18px;
-  }
-
-  .capaEsquerda h1 {
-    font-size: 34px;
-    margin-top: 35px;
-  }
-
-  .capaEsquerda p {
-    font-size: 11px;
-  }
-
-  .latas {
-    transform: scale(0.50);
-    right: -40px;
-  }
-
-  .livro {
-    height: 480px;
+    right: 5px;
   }
 
   .conteudoCategoria {
-    padding: 23px 16px;
+    padding: 34px 42px;
   }
 
   .conteudoCategoria h2 {
-    font-size: 23px;
+    font-size: 42px;
   }
 
   .gradeCores {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px 7px;
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(0, 1fr)
+      );
+
+    gap:
+      20px
+      10px;
   }
 
   .amostraCor {
-    height: 55px;
+    height: 72px;
   }
 
-  .nomeCor {
+  .rodapePagina {
+    left: 42px;
+    right: 42px;
+  }
+
+  .produtosGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .modalCabecalho {
+    align-items: flex-start;
+  }
+
+  .modalRodape {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .modalRodape button {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   480PX
+========================================================= */
+
+@media (max-width: 480px) {
+  .capaContainer {
+    padding:
+      100px
+      15px
+      55px;
+  }
+
+  .heroEyebrow {
     font-size: 8px;
   }
 
-  .seta {
-    width: 35px;
-    height: 35px;
-    font-size: 27px;
+  .heroTexto h1 {
+    font-size: 49px;
+  }
+
+  .heroTexto > p {
+    font-size: 10px;
+  }
+
+  .capaLivro {
+    height: 520px;
+  }
+
+  .capaEsquerda {
+    padding: 24px;
+  }
+
+  .numeroEdicao {
+    top: 26px;
+    right: 24px;
+  }
+
+  .capaEsquerda h2 {
+    margin-top: 80px;
+
+    font-size: 47px;
+  }
+
+  .coresMini {
+    left: 24px;
+    right: 24px;
+    bottom: 24px;
+  }
+
+  .coresMini span {
+    height: 42px;
+  }
+
+  .livroContainer {
+    padding:
+      100px
+      14px
+      65px;
+  }
+
+  .livroTopo h1 {
+    font-size: 48px;
+  }
+
+  .livro {
+    height: 570px;
+  }
+
+  .conteudoCategoria {
+    padding: 30px 34px;
+  }
+
+  .conteudoCategoria h2 {
+    font-size: 36px;
+  }
+
+  .gradeCores {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .amostraCor {
+    height: 74px;
+  }
+
+  .rodapePagina {
+    left: 34px;
+    right: 34px;
+  }
+
+  .modalOverlay {
+    padding: 8px;
+  }
+
+  .modalCor {
+    max-height:
+      calc(
+        100vh - 16px
+      );
+  }
+
+  .modalTopo,
+  .modalCabecalho,
+  .modalConteudo,
+  .modalRodape {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .modalCabecalho {
+    flex-direction: column;
+  }
+
+  .contagemProdutos {
+    padding-left: 0;
+
+    flex-direction: row;
+    align-items: baseline;
+
+    gap: 5px;
+
+    border-left: none;
+  }
+
+  .produtoCard {
+    grid-template-columns:
+      88px
+      minmax(0, 1fr);
+  }
+
+  .produtoImagem {
+    padding: 11px;
+  }
+
+  .produtoImagem img {
+    height: 85px;
   }
 }
+
 
 /* =========================================================
    ACESSIBILIDADE
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-
   .folhaDireita,
-  .folhaEsquerda {
+  .folhaEsquerda,
+  .loader {
     animation-duration: 1ms;
   }
 
-  .amostraCor,
+  .corItem,
   .seta,
   .botaoVerCores,
-  .fecharLivro {
+  .fecharModal,
+  .produtoCard {
     transition: none;
+  }
+}
+
+/* =========================================================
+   ADICIONAR AO CARRINHO — MODAL DE COR
+========================================================= */
+
+.adicionarCarrinho {
+  width: 100%;
+  min-height: 40px;
+
+  margin-top: 13px;
+  padding: 0 12px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border: none;
+
+  background:
+    var(--livro-navy);
+
+  color: #ffffff;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.adicionarCarrinho:hover:not(:disabled) {
+  background:
+    var(--livro-blue);
+
+  transform:
+    translateY(-2px);
+}
+
+.adicionarCarrinho:disabled {
+  opacity: 0.6;
+
+  cursor: wait;
+}
+
+.loaderBotao {
+  animation:
+    girar
+    0.8s
+    linear
+    infinite;
+}
+
+
+/* =========================================================
+   MODAL DE CONFIRMAÇÃO DO CARRINHO
+========================================================= */
+
+.confirmacaoOverlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 100000;
+
+  padding: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(
+      7,
+      13,
+      24,
+      0.82
+    );
+
+  backdrop-filter: blur(13px);
+  -webkit-backdrop-filter: blur(13px);
+
+  animation:
+    aparecerModal
+    0.22s
+    ease;
+}
+
+.confirmacaoModal {
+  position: relative;
+
+  width:
+    min(
+      470px,
+      100%
+    );
+
+  padding:
+    42px;
+
+  overflow: hidden;
+
+  background:
+    var(--livro-paper);
+
+  color:
+    var(--livro-text);
+
+  box-shadow:
+    0
+    35px
+    100px
+    rgba(
+      0,
+      0,
+      0,
+      0.32
+    );
+
+  animation:
+    abrirConfirmacao
+    0.32s
+    cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+}
+
+.confirmacaoModal::before {
+  content: "";
+
+  position: absolute;
+
+  width: 250px;
+  height: 250px;
+
+  top: -145px;
+  right: -120px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(
+      50,
+      100,
+      200,
+      0.08
+    );
+
+  pointer-events: none;
+}
+
+.fecharConfirmacao {
+  position: absolute;
+
+  z-index: 5;
+
+  top: 18px;
+  right: 18px;
+
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid
+    var(--livro-line);
+
+  border-radius: 50%;
+
+  background:
+    transparent;
+
+  color: #778291;
+
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.fecharConfirmacao:hover {
+  background:
+    var(--livro-navy);
+
+  color: #ffffff;
+
+  transform:
+    rotate(90deg);
+}
+
+.confirmacaoIcone {
+  position: relative;
+  z-index: 2;
+
+  width: 58px;
+  height: 58px;
+
+  margin-bottom: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background:
+    var(--livro-navy);
+
+  color: #ffffff;
+}
+
+.confirmacaoEyebrow {
+  position: relative;
+  z-index: 2;
+
+  display: block;
+
+  margin-bottom: 10px;
+
+  color: #8a94a1;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.18em;
+}
+
+.confirmacaoModal h2 {
+  position: relative;
+  z-index: 2;
+
+  margin: 0;
+
+  color:
+    var(--livro-text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 48px;
+  font-weight: 500;
+
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+
+.confirmacaoModal h2 em {
+  display: block;
+
+  color:
+    var(--livro-blue);
+
+  font-weight: 400;
+}
+
+.confirmacaoModal > p {
+  position: relative;
+  z-index: 2;
+
+  max-width: 370px;
+
+  margin-top: 18px;
+
+  color: #727d8c;
+
+  font-size: 9px;
+
+  line-height: 1.7;
+}
+
+.produtoConfirmacao {
+  position: relative;
+  z-index: 2;
+
+  margin-top: 26px;
+  padding:
+    14px
+    0;
+
+  display: grid;
+  grid-template-columns:
+    82px
+    minmax(0, 1fr);
+
+  align-items: center;
+
+  gap: 14px;
+
+  border-top:
+    1px solid
+    var(--livro-line);
+
+  border-bottom:
+    1px solid
+    var(--livro-line);
+}
+
+.produtoConfirmacaoImagem {
+  width: 82px;
+  height: 82px;
+
+  padding: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    #eeece5;
+}
+
+.produtoConfirmacaoImagem img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+}
+
+.produtoConfirmacaoInfo {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.produtoConfirmacaoInfo > span {
+  color:
+    var(--livro-blue);
+
+  font-size: 7px;
+  font-weight: 600;
+
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.produtoConfirmacaoInfo > strong {
+  overflow: hidden;
+
+  color:
+    var(--livro-text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 22px;
+  font-weight: 600;
+
+  line-height: 1.05;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.produtoConfirmacaoInfo > small {
+  color: #87919e;
+
+  font-size: 8px;
+}
+
+.produtoConfirmacaoInfo > b {
+  margin-top: 5px;
+
+  color:
+    var(--livro-text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.confirmacaoAcoes {
+  position: relative;
+  z-index: 2;
+
+  margin-top: 26px;
+
+  display: grid;
+  grid-template-columns:
+    1fr
+    1fr;
+
+  gap: 8px;
+}
+
+.confirmacaoAcoes button {
+  min-height: 50px;
+
+  padding:
+    0
+    14px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.continuarNoLivro {
+  border:
+    1px solid
+    var(--livro-line);
+
+  background:
+    transparent;
+
+  color:
+    var(--livro-text);
+}
+
+.continuarNoLivro:hover {
+  border-color:
+    rgba(
+      24,
+      34,
+      53,
+      0.26
+    );
+
+  background:
+    rgba(
+      24,
+      34,
+      53,
+      0.04
+    );
+
+  transform:
+    translateY(-2px);
+}
+
+.irCarrinho {
+  border:
+    1px solid
+    var(--livro-navy);
+
+  background:
+    var(--livro-navy);
+
+  color: #ffffff;
+}
+
+.irCarrinho:hover {
+  border-color:
+    var(--livro-blue);
+
+  background:
+    var(--livro-blue);
+
+  transform:
+    translateY(-2px);
+}
+
+@keyframes abrirConfirmacao {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(22px)
+      scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVO — CARRINHO / CONFIRMAÇÃO
+========================================================= */
+
+@media (max-width: 650px) {
+  .adicionarCarrinho {
+    min-height: 42px;
+  }
+
+  .confirmacaoOverlay {
+    padding: 14px;
+  }
+
+  .confirmacaoModal {
+    padding:
+      36px
+      26px;
+  }
+
+  .confirmacaoModal h2 {
+    font-size: 43px;
+  }
+
+  .confirmacaoAcoes {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .confirmacaoModal {
+    padding:
+      32px
+      20px;
+  }
+
+  .confirmacaoModal h2 {
+    font-size: 39px;
+  }
+
+  .produtoConfirmacao {
+    grid-template-columns:
+      70px
+      minmax(0, 1fr);
+  }
+
+  .produtoConfirmacaoImagem {
+    width: 70px;
+    height: 70px;
   }
 }

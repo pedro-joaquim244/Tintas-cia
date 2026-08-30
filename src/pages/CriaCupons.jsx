@@ -16,7 +16,8 @@
         FaMoneyBillWave,
         FaCopy,
         FaCheckCircle,
-        FaBan
+        FaBan,
+        FaExclamationTriangle
     } from "react-icons/fa";
 
 
@@ -41,6 +42,10 @@
         const [mensagem, setMensagem] = useState("");
 
         const [erro, setErro] = useState("");
+
+        const [cupomParaExcluir, setCupomParaExcluir] = useState(null);
+
+        const [excluindoCupom, setExcluindoCupom] = useState(false);
 
 
         // =====================================================
@@ -88,6 +93,27 @@
             buscarCupons();
 
         }, []);
+
+
+        useEffect(() => {
+
+            if (!cupomParaExcluir) return undefined;
+
+            function fecharComEscape(event) {
+
+                if (event.key === "Escape" && !excluindoCupom) {
+
+                    setCupomParaExcluir(null);
+
+                }
+
+            }
+
+            window.addEventListener("keydown", fecharComEscape);
+
+            return () => window.removeEventListener("keydown", fecharComEscape);
+
+        }, [cupomParaExcluir, excluindoCupom]);
 
 
         // =====================================================
@@ -311,22 +337,32 @@
         // EXCLUIR
         // =====================================================
 
-        async function excluirCupom(id) {
+        function abrirModalExcluir(cupom) {
 
-            const confirmar =
-                window.confirm(
-                    "Tem certeza que deseja excluir este cupom?"
-                );
+            setErro("");
+
+            setCupomParaExcluir(cupom);
+
+        }
 
 
-            if (!confirmar) {
+        function fecharModalExcluir() {
 
-                return;
+            if (excluindoCupom) return;
 
-            }
+            setCupomParaExcluir(null);
+
+        }
+
+
+        async function excluirCupom() {
+
+            if (!cupomParaExcluir || excluindoCupom) return;
 
 
             try {
+
+                setExcluindoCupom(true);
 
                 setErro("");
 
@@ -334,7 +370,7 @@
 
 
                 await api.delete(
-                    `/cupons/${id}`
+                    `/cupons/${cupomParaExcluir.id}`
                 );
 
 
@@ -344,6 +380,8 @@
 
 
                 await buscarCupons();
+
+                setCupomParaExcluir(null);
 
 
             } catch (error) {
@@ -358,6 +396,10 @@
                     error.response?.data?.erro ||
                     "Não foi possível excluir o cupom."
                 );
+
+            } finally {
+
+                setExcluindoCupom(false);
 
             }
 
@@ -1140,8 +1182,8 @@
                                                     type="button"
                                                     className={style.deleteButton}
                                                     onClick={() =>
-                                                        excluirCupom(
-                                                            cupom.id
+                                                        abrirModalExcluir(
+                                                            cupom
                                                         )
                                                     }
                                                     title="Excluir cupom"
@@ -1166,6 +1208,63 @@
                     </section>
 
                 </div>
+
+                {cupomParaExcluir && (
+
+                    <div
+                        className={style.confirmOverlay}
+                        onClick={fecharModalExcluir}
+                    >
+
+                        <div
+                            className={style.confirmModal}
+                            role="alertdialog"
+                            aria-modal="true"
+                            aria-labelledby="titulo-excluir-cupom"
+                            aria-describedby="descricao-excluir-cupom"
+                            onClick={(event) => event.stopPropagation()}
+                        >
+
+                            <div className={style.confirmIcon}>
+                                <FaExclamationTriangle />
+                            </div>
+
+                            <h2 id="titulo-excluir-cupom">
+                                Excluir cupom?
+                            </h2>
+
+                            <p id="descricao-excluir-cupom">
+                                Tem certeza que deseja excluir permanentemente o cupom <strong>{cupomParaExcluir.codigo}</strong>? Esta ação não poderá ser desfeita.
+                            </p>
+
+                            <div className={style.confirmActions}>
+
+                                <button
+                                    type="button"
+                                    className={style.cancelDeleteButton}
+                                    onClick={fecharModalExcluir}
+                                    disabled={excluindoCupom}
+                                >
+                                    Cancelar
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className={style.confirmDeleteButton}
+                                    onClick={excluirCupom}
+                                    disabled={excluindoCupom}
+                                >
+                                    <FaTrash />
+                                    {excluindoCupom ? "Excluindo..." : "Sim, excluir cupom"}
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                )}
 
             </main>
 

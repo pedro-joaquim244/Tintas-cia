@@ -2286,3 +2286,718 @@
         height: 40px;
     }
 }
+
+
+/* =========================================================
+   PIXEL COLOR — REDESIGN EDITORIAL / PREMIUM
+   Mantém toda a estrutura e funcionalidades existentes.
+========================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap");
+
+.page {
+    --perfil-navy: #172033;
+    --perfil-navy-soft: #25314a;
+    --perfil-blue: #3264c8;
+    --perfil-blue-soft: #a9c2f3;
+    --perfil-ivory: #f4f1e9;
+    --perfil-paper: #fbfaf6;
+    --perfil-text: #182235;
+    --perfil-muted: #747f8f;
+    --perfil-line: rgba(24, 34, 53, 0.13);
+
+    background:
+        radial-gradient(circle at 88% 7%, rgba(50, 100, 200, 0.055), transparent 29%),
+        var(--perfil-ivory);
+
+    color: var(--perfil-text);
+}
+
+.content {
+    padding-top: 145px;
+    padding-bottom: 110px;
+}
+
+.contentCliente {
+    width: min(1400px, calc(100% - 100px));
+}
+
+.topo {
+    margin-bottom: 58px;
+    padding-bottom: 34px;
+    border-bottom: 1px solid var(--perfil-line);
+}
+
+.topoTag {
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #8a94a2;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+.topo h1 {
+    color: var(--perfil-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(66px, 6vw, 94px);
+    font-weight: 400;
+    line-height: 0.86;
+    letter-spacing: -0.05em;
+}
+
+.topo p {
+    max-width: 620px;
+    margin-top: 18px;
+    color: var(--perfil-muted);
+    font-size: 11px;
+    font-weight: 300;
+    line-height: 1.8;
+}
+
+.container {
+    grid-template-columns: 345px minmax(0, 1fr);
+    gap: 34px;
+}
+
+.leftCard,
+.rightCard {
+    border: 1px solid var(--perfil-line);
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.52);
+    box-shadow: none;
+    backdrop-filter: blur(8px);
+}
+
+.leftCard {
+    position: sticky;
+    top: 128px;
+    padding: 34px 28px;
+}
+
+.rightCard {
+    padding: 36px;
+}
+
+.leftCard:hover,
+.rightCard:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* AVATAR */
+
+.avatar {
+    width: 144px;
+    height: 144px;
+    border: 1px solid rgba(24, 34, 53, 0.12);
+    background: linear-gradient(145deg, #1b2741, #315d9f);
+    box-shadow: 0 18px 34px rgba(20, 31, 49, 0.13);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 52px;
+    font-weight: 500;
+}
+
+.camera {
+    width: 38px;
+    height: 38px;
+    right: calc(50% - 78px);
+    bottom: 2px;
+    border: 4px solid var(--perfil-paper);
+    background: var(--perfil-navy);
+    box-shadow: 0 8px 20px rgba(20, 31, 49, 0.2);
+}
+
+.camera:hover {
+    background: var(--perfil-blue);
+}
+
+.nomeUsuario {
+    color: var(--perfil-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.emailUsuario {
+    margin-top: 8px;
+    color: #818b98;
+    font-size: 9px;
+}
+
+.photoBtn,
+.historyBtn {
+    min-height: 44px;
+    border: 1px solid var(--perfil-line);
+    border-radius: 0;
+    background: transparent;
+    color: var(--perfil-navy);
+    font-size: 9px;
+    font-weight: 600;
+    box-shadow: none;
+}
+
+.photoBtn:hover,
+.historyBtn:hover {
+    background: var(--perfil-navy);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: none;
+}
+
+.leftCard small {
+    color: #9ba3ad;
+    font-size: 8px;
+}
+
+/* CONTA */
+
+.account {
+    border-top: 1px solid var(--perfil-line);
+}
+
+.account h3,
+.systemInfo h3,
+.feedbackHeader h3 {
+    color: var(--perfil-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.row {
+    border-bottom: 1px solid rgba(24, 34, 53, 0.075);
+}
+
+.row > svg {
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--perfil-blue);
+}
+
+.row span {
+    color: #959da8;
+    font-size: 7px;
+    letter-spacing: .1em;
+}
+
+.row strong {
+    color: #485466;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.badge {
+    border: 1px solid rgba(50, 100, 200, 0.16);
+    border-radius: 0;
+    background: rgba(50, 100, 200, 0.06);
+    color: var(--perfil-blue) !important;
+    font-size: 8px !important;
+}
+
+/* FIDELIDADE */
+
+.fidelidadeCard {
+    border: 1px solid var(--perfil-line);
+    border-radius: 0;
+    background: linear-gradient(145deg, #172033, #22304c);
+    color: #fff;
+    box-shadow: none;
+}
+
+.fidelidadeLabel {
+    color: rgba(255,255,255,.45);
+    font-size: 7px;
+    letter-spacing: .13em;
+}
+
+.fidelidadeHeader h3 {
+    color: #fff;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.fidelidadeNivel {
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 0;
+    background: rgba(255,255,255,.05);
+    color: var(--perfil-blue-soft);
+    font-size: 8px;
+}
+
+.fidelidadePontos strong {
+    color: #fff;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 38px;
+    font-weight: 500;
+}
+
+.fidelidadePontos span {
+    color: rgba(255,255,255,.46);
+    font-size: 9px;
+}
+
+.fidelidadeBarra {
+    height: 5px;
+    border-radius: 0;
+    background: rgba(255,255,255,.1);
+}
+
+.fidelidadeProgresso {
+    border-radius: 0;
+    background: linear-gradient(90deg, #6d93d5, #bfd0f1);
+}
+
+.fidelidadeRodape span {
+    color: rgba(255,255,255,.38);
+    font-size: 7px;
+}
+
+.fidelidadeRodape strong {
+    color: var(--perfil-blue-soft);
+    font-size: 7px;
+}
+
+.cuponsSalvos {
+    border: 0;
+    border-top: 1px solid rgba(255,255,255,.11);
+    border-radius: 0;
+    background: transparent;
+}
+
+.cuponsSalvosTitulo {
+    color: rgba(255,255,255,.48);
+    font-size: 7px;
+}
+
+.cupomSalvo {
+    border: 0;
+    border-top: 1px solid rgba(255,255,255,.08);
+    border-radius: 0;
+    background: transparent;
+}
+
+.cupomSalvo strong {
+    color: #fff;
+    font-size: 10px;
+}
+
+.cupomSalvo span {
+    color: rgba(255,255,255,.4);
+    font-size: 7px;
+}
+
+.cupomSalvo button {
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 0;
+    background: rgba(255,255,255,.05);
+    font-size: 7px;
+}
+
+.logout {
+    min-height: 44px;
+    border-radius: 0;
+    background: rgba(183, 76, 76, 0.035);
+    box-shadow: none;
+    font-size: 9px;
+}
+
+.logout:hover {
+    box-shadow: none;
+}
+
+/* FORMULÁRIO */
+
+.titleEdit {
+    border-bottom: 1px solid var(--perfil-line);
+}
+
+.titleEdit h3 {
+    color: var(--perfil-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.titleEdit p {
+    color: #8b94a0;
+    font-size: 9px;
+}
+
+.titleEdit button {
+    min-height: 42px;
+    padding: 0 15px;
+    border-radius: 0;
+    background: var(--perfil-navy);
+    font-size: 9px;
+    box-shadow: none;
+}
+
+.titleEdit button:hover {
+    background: var(--perfil-blue);
+    box-shadow: none;
+}
+
+.rightCard label {
+    color: #566172;
+    font-size: 8px;
+}
+
+.inputBox > svg {
+    color: #98a1ad;
+    font-size: 14px;
+}
+
+.rightCard input {
+    height: 47px;
+    border: 1px solid var(--perfil-line);
+    border-radius: 0;
+    background: rgba(255,255,255,.74);
+    color: var(--perfil-text);
+    font-size: 10px;
+}
+
+.rightCard input:focus {
+    border-color: rgba(50, 100, 200, .48);
+    box-shadow: 0 0 0 3px rgba(50, 100, 200, .05);
+}
+
+.rightCard input:disabled {
+    background: rgba(235,232,224,.66);
+}
+
+/* SISTEMA */
+
+.systemInfo {
+    border-top: 1px solid var(--perfil-line);
+}
+
+.systemGrid {
+    gap: 0;
+    border-top: 1px solid var(--perfil-line);
+    border-left: 1px solid var(--perfil-line);
+}
+
+.systemGrid > div {
+    border: 0;
+    border-right: 1px solid var(--perfil-line);
+    border-bottom: 1px solid var(--perfil-line);
+    border-radius: 0;
+    background: transparent;
+}
+
+.systemGrid span {
+    color: #9aa2ad;
+    font-size: 7px;
+}
+
+.systemGrid strong {
+    color: #4a5667;
+    font-size: 9px;
+    font-weight: 500;
+}
+
+/* FEEDBACK */
+
+.feedbackBox {
+    border-top: 1px solid var(--perfil-line);
+}
+
+.feedbackHeader p {
+    color: #8b94a0;
+    font-size: 9px;
+}
+
+.rating button svg {
+    width: 23px;
+    height: 23px;
+}
+
+.starActive {
+    color: #c99d45;
+}
+
+.feedbackBox textarea {
+    min-height: 110px;
+    border: 1px solid var(--perfil-line);
+    border-radius: 0;
+    background: rgba(255,255,255,.72);
+    color: var(--perfil-text);
+    font-size: 10px;
+}
+
+.feedbackBox textarea:focus {
+    border-color: rgba(50, 100, 200, .5);
+    box-shadow: 0 0 0 3px rgba(50, 100, 200, .05);
+}
+
+.feedbackFooter > span {
+    color: #9aa2ad;
+    font-size: 8px;
+}
+
+.feedbackFooter button {
+    min-height: 40px;
+    border-radius: 0;
+    background: var(--perfil-navy);
+    font-size: 9px;
+}
+
+.feedbackFooter button:hover:not(:disabled) {
+    background: var(--perfil-blue);
+}
+
+/* MODAIS */
+
+.modalOverlay,
+.feedbackModalOverlay {
+    background: rgba(7, 13, 24, .78);
+    backdrop-filter: blur(11px);
+}
+
+.modal {
+    border-radius: 0;
+    background: var(--perfil-paper);
+    box-shadow: 0 32px 100px rgba(0,0,0,.32);
+}
+
+.modalHeader {
+    border-bottom: 1px solid var(--perfil-line);
+}
+
+.modalHeader h2 {
+    color: var(--perfil-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 33px;
+    font-weight: 600;
+}
+
+.modalHeader p {
+    color: #89929e;
+    font-size: 8px;
+}
+
+.closeModal {
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--perfil-line);
+    background: transparent;
+    color: #6e7988;
+}
+
+.closeModal:hover {
+    background: var(--perfil-navy);
+    color: #fff;
+}
+
+.pedido {
+    border: 1px solid var(--perfil-line);
+    border-radius: 0;
+    background: rgba(255,255,255,.6);
+    box-shadow: none;
+}
+
+.pedidoHeader {
+    border-bottom: 1px solid var(--perfil-line);
+}
+
+.pedidoNumero strong {
+    color: var(--perfil-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 19px;
+}
+
+.dataPedido {
+    color: #8f98a4;
+    font-size: 7px;
+}
+
+.status {
+    border-radius: 0;
+    font-size: 7px;
+}
+
+.itemPedido {
+    border-bottom: 1px solid rgba(24,34,53,.075);
+}
+
+.produtoImagem {
+    border: 1px solid rgba(24,34,53,.075);
+    border-radius: 0;
+    background: #eeece5;
+}
+
+.produtoInfo strong {
+    color: var(--perfil-text);
+    font-size: 10px;
+}
+
+.produtoInfo span {
+    color: #89939f;
+    font-size: 8px;
+}
+
+.subtotal {
+    color: var(--perfil-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 19px;
+}
+
+.pedidoFooter {
+    background: rgba(235,232,224,.48);
+    border-top: 1px solid var(--perfil-line);
+}
+
+.totalPedido strong {
+    color: var(--perfil-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 24px;
+}
+
+.feedbackModal {
+    border: 0;
+    border-radius: 0;
+    background: var(--perfil-paper);
+    box-shadow: 0 30px 90px rgba(0,0,0,.3);
+}
+
+.feedbackModal p {
+    color: var(--perfil-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.feedbackModal button {
+    border-radius: 0;
+    background: var(--perfil-navy);
+    font-size: 9px;
+}
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 1250px) {
+    .content {
+        padding-left: 35px;
+        padding-right: 35px;
+    }
+
+    .contentCliente {
+        width: min(100%, 1400px);
+    }
+
+    .container {
+        grid-template-columns: 315px minmax(0, 1fr);
+        gap: 25px;
+    }
+
+    .systemGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1050px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .leftCard {
+        position: static;
+    }
+}
+
+@media (max-width: 820px) {
+    .content {
+        padding: 115px 22px 75px;
+    }
+
+    .contentAdmin {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .topo {
+        margin-bottom: 40px;
+    }
+
+    .topo h1 {
+        font-size: 62px;
+    }
+
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .titleEdit {
+        flex-direction: column;
+    }
+
+    .titleEdit button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .content {
+        padding: 100px 14px 60px;
+    }
+
+    .contentCliente {
+        width: 100%;
+    }
+
+    .topo h1 {
+        font-size: 52px;
+    }
+
+    .leftCard,
+    .rightCard {
+        padding: 24px 18px;
+    }
+
+    .systemGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .feedbackFooter {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .feedbackFooter button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .itemPedido {
+        grid-template-columns: 54px minmax(0, 1fr);
+    }
+
+    .subtotal {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .pedidoFooter {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 420px) {
+    .topo h1 {
+        font-size: 46px;
+    }
+
+    .leftCard,
+    .rightCard {
+        padding: 22px 14px;
+    }
+}

@@ -42,6 +42,11 @@ export default function Inicial() {
     const heroImagemRef = useRef(null);
     const heroTextoRef = useRef(null);
 
+    const introContainerRef = useRef(null);
+    const introPaintRef = useRef(null);
+    const introRollerRef = useRef(null);
+    const introBrandRef = useRef(null);
+
     const manifestoRef = useRef(null);
 
     const visualRef = useRef(null);
@@ -144,38 +149,178 @@ export default function Inicial() {
         const contexto = gsap.context(() => {
 
             /* =====================================================
-               HERO
+               ABERTURA COM TINTA + HERO
             ===================================================== */
 
-            gsap.fromTo(
+            const body = document.body;
+
+            body.style.overflow = "hidden";
+
+            const alturaRolo =
+                introRollerRef.current.getBoundingClientRect().height;
+
+            const posicaoInicialRolo = alturaRolo * 0.32 + 16;
+
+            const distanciaSaida =
+                -(window.innerHeight + alturaRolo + 24);
+
+            gsap.set(
                 heroImagemRef.current,
                 {
-                    scale: 1.18
-                },
-                {
-                    scale: 1,
-                    duration: 1.8,
-                    ease: "power3.out"
+                    scale: 1.12,
+                    force3D: true
                 }
             );
 
-
-            gsap.fromTo(
+            gsap.set(
                 heroTextoRef.current.children,
                 {
-                    y: 80,
+                    y: 60,
                     opacity: 0
-                },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 1.1,
-                    stagger: 0.14,
-                    ease: "power3.out",
-                    delay: 0.25
                 }
             );
 
+            gsap.set(
+                introBrandRef.current,
+                {
+                    y: 16,
+                    opacity: 0
+                }
+            );
+
+            /*
+             * O rolo começa inteiro abaixo da viewport. A distância usa
+             * a altura real do SVG para funcionar também em telas menores.
+             */
+            gsap.set(
+                introRollerRef.current,
+                {
+                    y: posicaoInicialRolo,
+                    force3D: true
+                }
+            );
+
+            const tlAbertura = gsap.timeline({
+                defaults: {
+                    ease: "power3.inOut"
+                },
+                onComplete: () => {
+                    body.style.overflow = "";
+                }
+            });
+
+            tlAbertura
+                .to(
+                    introBrandRef.current,
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.42,
+                        ease: "power2.out"
+                    }
+                )
+                .to(
+                    introBrandRef.current,
+                    {
+                        y: -12,
+                        opacity: 0,
+                        duration: 0.24,
+                        ease: "power2.in"
+                    },
+                    "+=0.06"
+                )
+
+                .to(
+                    introRollerRef.current,
+                    {
+                        y: 0,
+                        duration: 0.56,
+                        ease: "power3.out",
+                        force3D: true
+                    },
+                    "-=0.08"
+                )
+
+                /*
+                 * AQUI ESTÁ A CORREÇÃO PRINCIPAL:
+                 *
+                 * não animamos mais o rolo e a tinta separadamente.
+                 * O SVG azul + o rolo pertencem ao mesmo container,
+                 * então os dois sobem EXATAMENTE juntos.
+                 */
+                .fromTo(
+                    introContainerRef.current,
+                    {
+                        y: 0
+                    },
+                    {
+                        y: distanciaSaida,
+                        duration: 2.35,
+                        ease: "power2.inOut",
+                        force3D: true
+                    },
+                    "-=0.02"
+                )
+
+                /*
+                 * Pequena inclinação visual do rolo durante a subida.
+                 * Não existe movimento vertical aqui, portanto ele
+                 * continua preso à borda da tinta.
+                 */
+                .to(
+                    introRollerRef.current,
+                    {
+                        rotation: -0.7,
+                        duration: 0.55,
+                        ease: "sine.inOut",
+                        force3D: true
+                    },
+                    "<"
+                )
+                .to(
+                    introRollerRef.current,
+                    {
+                        rotation: 0.45,
+                        duration: 0.75,
+                        ease: "sine.inOut"
+                    },
+                    ">-0.08"
+                )
+                .to(
+                    introRollerRef.current,
+                    {
+                        rotation: 0,
+                        duration: 0.6,
+                        ease: "sine.inOut"
+                    },
+                    ">-0.08"
+                )
+                .set(
+                    introContainerRef.current,
+                    {
+                        display: "none"
+                    }
+                )
+                .to(
+                    heroImagemRef.current,
+                    {
+                        scale: 1,
+                        duration: 1.35,
+                        ease: "power3.out"
+                    },
+                    "-=0.08"
+                )
+                .to(
+                    heroTextoRef.current.children,
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.9,
+                        stagger: 0.11,
+                        ease: "power3.out"
+                    },
+                    "-=1.0"
+                );
 
             gsap.to(
                 heroImagemRef.current,
@@ -308,6 +453,7 @@ export default function Inicial() {
 
 
         return () => {
+            document.body.style.overflow = "";
             contexto.revert();
         };
 
@@ -316,6 +462,198 @@ export default function Inicial() {
 
     return (
         <div className={styles.page}>
+
+            {/* =====================================================
+                ABERTURA — EFEITO DE TINTA
+            ===================================================== */}
+
+            <div
+                ref={introContainerRef}
+                className={styles.introPaint}
+                aria-hidden="true"
+            >
+
+                <div
+                    ref={introBrandRef}
+                    className={styles.introBrand}
+                >
+                    <div className={styles.introBrandMark}>
+                        <span />
+                        <span />
+                        <span />
+                        <span />
+                    </div>
+
+                    <div className={styles.introBrandText}>
+                        <strong>PIXEL COLOR</strong>
+                        <span>COR • ESPAÇO • ATMOSFERA</span>
+                    </div>
+                </div>
+
+
+                <svg
+                    className={styles.introPaintSvg}
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                >
+                    <defs>
+                        <filter
+                            id="paint-edge-home"
+                            x="-20%"
+                            y="-20%"
+                            width="140%"
+                            height="140%"
+                        >
+                            <feTurbulence
+                                type="fractalNoise"
+                                baseFrequency="0.018 0.07"
+                                numOctaves="2"
+                                seed="8"
+                                result="noise"
+                            />
+
+                            <feDisplacementMap
+                                in="SourceGraphic"
+                                in2="noise"
+                                scale="1.8"
+                                xChannelSelector="R"
+                                yChannelSelector="G"
+                            />
+                        </filter>
+                    </defs>
+
+                    <path
+                        ref={introPaintRef}
+                        className={styles.introPaintPath}
+                        d="M 0 0 V 100 Q 14 98 28 100 Q 43 102 57 99 Q 72 97 86 100 Q 94 101 100 100 V 0 Z"
+                    />
+                </svg>
+
+
+                <div
+                    ref={introRollerRef}
+                    className={styles.introRoller}
+                >
+                    <svg
+                        viewBox="0 0 300 400"
+                        className={styles.introRollerSvg}
+                    >
+                        <ellipse
+                            cx="150"
+                            cy="112"
+                            rx="108"
+                            ry="13"
+                            fill="rgba(7, 13, 24, 0.20)"
+                            filter="blur(7px)"
+                        />
+
+                        <path
+                            d="M 250 100 L 270 100 L 270 171 L 175 220 L 175 261"
+                            fill="none"
+                            stroke="#8f9baa"
+                            strokeWidth="10"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+
+                        <path
+                            d="M 250 100 L 270 100 L 270 171 L 175 220 L 175 261"
+                            fill="none"
+                            stroke="#d8dde4"
+                            strokeWidth="4"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+
+                        <rect
+                            x="159"
+                            y="260"
+                            width="32"
+                            height="112"
+                            rx="10"
+                            fill="#172033"
+                        />
+
+                        <rect
+                            x="164"
+                            y="266"
+                            width="7"
+                            height="98"
+                            rx="3"
+                            fill="rgba(255,255,255,0.16)"
+                        />
+
+                        <circle
+                            cx="175"
+                            cy="351"
+                            r="4"
+                            fill="#0b1220"
+                        />
+
+                        <rect
+                            x="34"
+                            y="88"
+                            width="12"
+                            height="24"
+                            rx="3"
+                            fill="#cbd3dc"
+                        />
+
+                        <rect
+                            x="254"
+                            y="88"
+                            width="12"
+                            height="24"
+                            rx="3"
+                            fill="#cbd3dc"
+                        />
+
+                        <rect
+                            x="40"
+                            y="80"
+                            width="220"
+                            height="40"
+                            rx="11"
+                            fill="#f4f1e9"
+                            stroke="#d9d5ca"
+                            strokeWidth="2"
+                        />
+
+                        <path
+                            d="M 48 88 Q 70 113 91 90 Q 119 116 149 94 Q 180 116 209 87 Q 232 112 252 95"
+                            fill="none"
+                            stroke="#d7d3c8"
+                            strokeWidth="4"
+                            strokeLinecap="round"
+                            opacity="0.82"
+                        />
+
+                        <path
+                            d="M 55 114 Q 87 88 121 109 Q 160 86 191 113 Q 220 91 246 109"
+                            fill="none"
+                            stroke="#ece8df"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            opacity="0.95"
+                        />
+
+                        <path
+                            d="M 45 100 L 255 100"
+                            fill="none"
+                            stroke="#ffffff"
+                            strokeWidth="2"
+                            strokeDasharray="5 8"
+                            opacity="0.72"
+                        />
+                    </svg>
+                </div>
+
+
+                <span className={styles.introEdition}>
+                    01 — ABERTURA
+                </span>
+
+            </div>
 
             <Header />
 

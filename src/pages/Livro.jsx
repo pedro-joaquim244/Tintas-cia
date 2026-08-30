@@ -1,7 +1,20 @@
-
 import { useState } from "react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  LoaderCircle,
+  Package,
+  Palette,
+  ShoppingBag,
+  ShoppingCart,
+  X,
+} from "lucide-react";
+
 import style from "../styles/Livro.module.css";
 import Cabecalho from "../components/Cabeçalho-Users/index.jsx";
+import { api } from "../services/api";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/authContext";
 
 const categorias = [
   {
@@ -142,24 +155,196 @@ const categorias = [
 ];
 
 export default function Livro() {
+  const navigate = useNavigate();
+  const { usuario } = useAuth();
+
   const [livroAberto, setLivroAberto] = useState(false);
-
-  // 0 = capa
-  // 1 = primeira folha de cores
-  // 2 = segunda folha...
   const [folhaAtual, setFolhaAtual] = useState(0);
-
   const [animando, setAnimando] = useState(false);
   const [direcao, setDirecao] = useState("direita");
   const [folhaAnimada, setFolhaAnimada] = useState(null);
+
+  // =========================================================
+  // MODAL DE PRODUTOS POR COR
+  // =========================================================
+
+  const [modalCorAberto, setModalCorAberto] = useState(false);
+  const [corSelecionada, setCorSelecionada] = useState(null);
+  const [produtosCor, setProdutosCor] = useState([]);
+  const [carregandoProdutos, setCarregandoProdutos] = useState(false);
+  const [erroProdutos, setErroProdutos] = useState("");
+
+  // =========================================================
+  // CARRINHO + CONFIRMAÇÃO
+  // =========================================================
+
+  const [adicionandoId, setAdicionandoId] = useState(null);
+  const [produtoAdicionado, setProdutoAdicionado] = useState(null);
+  const [modalConfirmacaoAberto, setModalConfirmacaoAberto] = useState(false);
 
   const folhas = [];
 
   for (let i = 0; i < categorias.length; i += 2) {
     folhas.push({
       esquerda: categorias[i],
-      direita: categorias[i + 1] || null
+      direita: categorias[i + 1] || null,
     });
+  }
+
+  function normalizarTexto(texto) {
+    return String(texto || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toLowerCase();
+  }
+
+  function obterListaProdutos(dados) {
+    if (Array.isArray(dados)) return dados;
+    if (Array.isArray(dados?.itens)) return dados.itens;
+    if (Array.isArray(dados?.produtos)) return dados.produtos;
+    if (Array.isArray(dados?.data)) return dados.data;
+
+    return [];
+  }
+
+  function produtoDisponivel(produto) {
+    const status = normalizarTexto(produto?.status);
+
+    return (
+      status === "ativo" &&
+      Number(produto?.quantidade || produto?.estoque_disponivel || 0) > 0
+    );
+  }
+
+  function produtoCorrespondeCor(produto, cor) {
+    const corBanco = normalizarTexto(
+      produto?.cor ||
+      produto?.cor_nome ||
+      produto?.nome_cor
+    );
+
+    const nomeCor = normalizarTexto(cor?.nome);
+    const hexCor = normalizarTexto(cor?.cor);
+
+    if (!corBanco) return false;
+
+    return (
+      corBanco === nomeCor ||
+      corBanco === hexCor ||
+      corBanco.includes(nomeCor) ||
+      nomeCor.includes(corBanco)
+    );
+  }
+
+  function formatarPreco(valor) {
+    return Number(valor || 0).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  }
+
+  function imagemProduto(produto) {
+    if (!produto?.foto) {
+      return "/img/tinta.png";
+    }
+
+    if (
+      produto.foto.startsWith("http://") ||
+      produto.foto.startsWith("https://")
+    ) {
+      return produto.foto;
+    }
+
+    return `http://localhost:3333/${produto.foto}`;
+  }
+
+  async function abrirModalCor(cor) {
+    setCorSelecionada(cor);
+    setModalCorAberto(true);
+    setProdutosCor([]);
+    setErroProdutos("");
+    setCarregandoProdutos(true);
+
+    try {
+      const resposta = await api.get("/itens");
+      const lista = obterListaProdutos(resposta.data);
+
+      const correspondentes = lista.filter(
+        (produto) =>
+          produtoDisponivel(produto) &&
+          produtoCorrespondeCor(produto, cor)
+      );
+
+      setProdutosCor(correspondentes);
+    } catch (error) {
+      console.error(
+        "Erro ao buscar produtos da cor:",
+        error.response?.data || error
+      );
+
+      setErroProdutos(
+        "Não foi possível consultar os produtos disponíveis agora."
+      );
+    } finally {
+      setCarregandoProdutos(false);
+    }
+  }
+
+  function fecharModalCor() {
+    setModalCorAberto(false);
+    setCorSelecionada(null);
+    setProdutosCor([]);
+    setErroProdutos("");
+  }
+
+
+  async function adicionarAoCarrinho(produto) {
+    if (!usuario?.id) {
+      alert("Faça login para adicionar produtos ao carrinho.");
+      navigate("/login");
+      return;
+    }
+
+    if (adicionandoId !== null) {
+      return;
+    }
+
+    try {
+      setAdicionandoId(produto.id);
+
+      await api.post("/carrinho", {
+        usuario_id: usuario.id,
+        produto_id: produto.id,
+        quantidade: 1,
+      });
+
+      setProdutoAdicionado(produto);
+      setModalConfirmacaoAberto(true);
+    } catch (error) {
+      console.error(
+        "Erro ao adicionar produto ao carrinho:",
+        error.response?.data || error
+      );
+
+      alert(
+        error.response?.data?.erro ||
+        "Não foi possível adicionar o produto ao carrinho."
+      );
+    } finally {
+      setAdicionandoId(null);
+    }
+  }
+
+  function fecharModalConfirmacao() {
+    setModalConfirmacaoAberto(false);
+    setProdutoAdicionado(null);
+  }
+
+  function irParaCarrinho() {
+    fecharModalConfirmacao();
+    fecharModalCor();
+    navigate("/cliente/carrinho");
   }
 
   function abrirLivro() {
@@ -179,10 +364,12 @@ export default function Livro() {
     }
 
     setDirecao(lado);
+
     setFolhaAnimada({
       origem: folhaAtual,
-      destino: novaPagina
+      destino: novaPagina,
     });
+
     setAnimando(true);
 
     setTimeout(() => {
@@ -223,11 +410,17 @@ export default function Livro() {
     return (
       <>
         <div className={style.paginaEsquerda}>
-          <PaginaCategoria categoria={folha?.esquerda} />
+          <PaginaCategoria
+            categoria={folha?.esquerda}
+            onSelecionarCor={abrirModalCor}
+          />
         </div>
 
         <div className={style.paginaDireita}>
-          <PaginaCategoria categoria={folha?.direita} />
+          <PaginaCategoria
+            categoria={folha?.direita}
+            onSelecionarCor={abrirModalCor}
+          />
         </div>
       </>
     );
@@ -239,225 +432,494 @@ export default function Livro() {
 
       {!livroAberto ? (
         <main className={style.capaContainer}>
-
-          <div className={style.capaLivro}>
-
-            <div className={style.capaEsquerda}>
-
-              <div className={style.logoLivro}>
-                <div className={style.logoMarca}>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-
-                <div>
-                  <strong>Cores & Cia</strong>
-                  <small>TINTAS</small>
-                </div>
-              </div>
+          <section className={style.heroLivro}>
+            <div className={style.heroTexto}>
+              <span className={style.heroEyebrow}>
+                PIXEL COLOR • CATÁLOGO DE CORES
+              </span>
 
               <h1>
-                Paleta
-                <br />
-                de Cores.
+                Encontre a cor
+                <em> perfeita.</em>
               </h1>
 
               <p>
-                Explore nossa paleta de cores
-                <br />
-                e encontre o tom perfeito para
-                <br />
-                o seu projeto!
+                Explore nossa curadoria de tonalidades e descubra quais
+                produtos estão realmente disponíveis no estoque para cada cor.
               </p>
-
-              <div className={style.latas}>
-                <div className={`${style.lata} ${style.azul}`}>
-                  <div className={style.tinta}></div>
-                </div>
-
-                <div className={`${style.lata} ${style.amarela}`}>
-                  <div className={style.tinta}></div>
-                </div>
-
-                <div className={`${style.lata} ${style.vermelha}`}>
-                  <div className={style.tinta}></div>
-                </div>
-              </div>
-
-            </div>
-
-            <div className={style.capaDireita}>
-
-              <div className={style.pincelada}></div>
-
-              <div className={style.miniLogo}>
-                <div className={style.logoMarca}>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-
-                <strong>Cores & Cia</strong>
-              </div>
-
-              <h2>
-                Descubra novas cores.
-              </h2>
-
-              <p>
-                Encontre a combinação perfeita para
-                transformar seus ambientes.
-              </p>
-
-              <div className={style.coresMini}>
-                <span style={{ background: "#F4F1E8" }}></span>
-                <span style={{ background: "#D9A441" }}></span>
-                <span style={{ background: "#D71920" }}></span>
-                <span style={{ background: "#2855B5" }}></span>
-                <span style={{ background: "#5B8C51" }}></span>
-                <span style={{ background: "#9966CC" }}></span>
-              </div>
-
-            </div>
-
-          </div>
-
-          <button
-            className={style.botaoVerCores}
-            onClick={abrirLivro}
-          >
-            Ver Todas as Cores
-          </button>
-
-        </main>
-      ) : (
-
-        <main className={style.livroContainer}>
-
-          <button
-            className={`${style.seta} ${style.setaEsquerda}`}
-            onClick={paginaAnterior}
-            disabled={folhaAtual === 0 || animando}
-          >
-            ‹
-          </button>
-
-          <div className={style.areaLivro}>
-
-            <button
-              className={style.fecharLivro}
-              onClick={fecharLivro}
-            >
-              ×
-            </button>
-
-            <div className={style.livro}>
-
-              {/* =====================================
-                  FOLHA ANTERIOR / PARTE FIXA
-              ===================================== */}
-
-              <div className={style.paginasBase}>
-                {renderFolha(folhaAtual)}
-
-              </div>
-
-
-              {/* =====================================
-                  FOLHA QUE VIRA
-              ===================================== */}
-
-              {animando && (
-                <div
-                  className={`
-                    ${style.folhaVirando}
-                    ${
-                      direcao === "direita"
-                        ? style.folhaDireita
-                        : style.folhaEsquerda
-                    }
-                  `}
-                >
-
-                  <div className={style.frenteFolha}>
-                    <div className={style.folhaDupla}>
-                      {renderFolha(folhaAnimada?.origem)}
-                    </div>
-
-                  </div>
-
-                  <div className={style.versoFolha}>
-                    <div className={style.folhaDupla}>
-                      {renderFolha(folhaAnimada?.destino)}
-                    </div>
-
-                  </div>
-
-                </div>
-              )}
-
-            </div>
-
-          </div>
-
-          <button
-            className={`${style.seta} ${style.setaDireita}`}
-            onClick={proximaPagina}
-            disabled={
-              folhaAtual === folhas.length || animando
-            }
-          >
-            ›
-          </button>
-
-
-          <div className={style.indicadores}>
-
-            {Array.from({
-              length: folhas.length + 1
-            }).map((_, index) => (
 
               <button
-                key={index}
-                className={
-                  folhaAtual === index
-                    ? style.indicadorAtivo
-                    : ""
-                }
-                disabled={animando || folhaAtual === index}
-                onClick={() => {
-                  if (index > folhaAtual) {
-                    virarPagina(index, "direita");
-                  } else if (index < folhaAtual) {
-                    virarPagina(index, "esquerda");
-                  }
-                }}
-              />
+                type="button"
+                className={style.botaoVerCores}
+                onClick={abrirLivro}
+              >
+                Explorar paleta
+                <ArrowRight size={16} />
+              </button>
+            </div>
 
-            ))}
+            <div className={style.capaLivro}>
+              <div className={style.capaEsquerda}>
+                <div className={style.logoLivro}>
+                  <div className={style.logoMarca}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
 
+                  <div>
+                    <strong>Pixel Color</strong>
+                    <small>PALETA 2026</small>
+                  </div>
+                </div>
+
+                <span className={style.numeroEdicao}>01 — 08</span>
+
+                <h2>
+                  Cores que
+                  <br />
+                  transformam.
+                </h2>
+
+                <p>
+                  Uma seleção pensada para interiores, fachadas e projetos
+                  que pedem personalidade.
+                </p>
+
+                <div className={style.coresMini}>
+                  <span style={{ background: "#F4F1E8" }}></span>
+                  <span style={{ background: "#D9A441" }}></span>
+                  <span style={{ background: "#D71920" }}></span>
+                  <span style={{ background: "#2855B5" }}></span>
+                  <span style={{ background: "#5B8C51" }}></span>
+                  <span style={{ background: "#9966CC" }}></span>
+                </div>
+              </div>
+
+              <div className={style.capaDireita}>
+                <span className={style.capaEtiqueta}>
+                  CURADORIA PIXEL COLOR
+                </span>
+
+                <div className={style.circuloCapa}>
+                  <Palette size={62} strokeWidth={1.25} />
+                </div>
+
+                <div className={style.capaDireitaRodape}>
+                  <strong>
+                    Escolha.
+                    <br />
+                    Compare.
+                    <br />
+                    Transforme.
+                  </strong>
+
+                  <span>
+                    Clique em uma cor no livro para consultar
+                    os produtos disponíveis no banco.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      ) : (
+        <main className={style.livroContainer}>
+          <div className={style.livroTopo}>
+            <div>
+              <span>PIXEL COLOR • LIVRO DE CORES</span>
+              <h1>
+                Sua paleta,
+                <em> seu projeto.</em>
+              </h1>
+            </div>
+
+            <button
+              type="button"
+              className={style.fecharCatalogo}
+              onClick={fecharLivro}
+            >
+              Fechar catálogo
+              <X size={16} />
+            </button>
           </div>
 
+          <div className={style.livroAreaCentral}>
+            <button
+              type="button"
+              className={`${style.seta} ${style.setaEsquerda}`}
+              onClick={paginaAnterior}
+              disabled={folhaAtual === 0 || animando}
+              aria-label="Página anterior"
+            >
+              ‹
+            </button>
+
+            <div className={style.areaLivro}>
+              <div className={style.livro}>
+                <div className={style.paginasBase}>
+                  {renderFolha(folhaAtual)}
+                </div>
+
+                {animando && (
+                  <div
+                    className={`
+                      ${style.folhaVirando}
+                      ${
+                        direcao === "direita"
+                          ? style.folhaDireita
+                          : style.folhaEsquerda
+                      }
+                    `}
+                  >
+                    <div className={style.frenteFolha}>
+                      <div className={style.folhaDupla}>
+                        {renderFolha(folhaAnimada?.origem)}
+                      </div>
+                    </div>
+
+                    <div className={style.versoFolha}>
+                      <div className={style.folhaDupla}>
+                        {renderFolha(folhaAnimada?.destino)}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className={style.indicadores}>
+                {Array.from({
+                  length: folhas.length + 1,
+                }).map((_, index) => (
+                  <button
+                    type="button"
+                    key={index}
+                    className={
+                      folhaAtual === index
+                        ? style.indicadorAtivo
+                        : ""
+                    }
+                    disabled={animando || folhaAtual === index}
+                    onClick={() => {
+                      if (index > folhaAtual) {
+                        virarPagina(index, "direita");
+                      } else if (index < folhaAtual) {
+                        virarPagina(index, "esquerda");
+                      }
+                    }}
+                    aria-label={`Ir para página ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className={`${style.seta} ${style.setaDireita}`}
+              onClick={proximaPagina}
+              disabled={folhaAtual === folhas.length || animando}
+              aria-label="Próxima página"
+            >
+              ›
+            </button>
+          </div>
+
+          <p className={style.dicaLivro}>
+            Clique em qualquer amostra para consultar os produtos
+            disponíveis nessa cor.
+          </p>
         </main>
+      )}
+
+      {modalCorAberto && corSelecionada && (
+        <div
+          className={style.modalOverlay}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              fecharModalCor();
+            }
+          }}
+        >
+          <section className={style.modalCor}>
+            <div className={style.modalTopo}>
+              <div className={style.modalCorAmostra}>
+                <span
+                  style={{
+                    backgroundColor: corSelecionada.cor,
+                  }}
+                ></span>
+
+                <div>
+                  <small>COR SELECIONADA</small>
+                  <strong>{corSelecionada.nome}</strong>
+                  <p>{corSelecionada.cor}</p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className={style.fecharModal}
+                onClick={fecharModalCor}
+                aria-label="Fechar modal"
+              >
+                <X />
+              </button>
+            </div>
+
+            <div className={style.modalCabecalho}>
+              <div>
+                <span>DISPONIBILIDADE NO CATÁLOGO</span>
+
+                <h2>
+                  Produtos nesta
+                  <em> tonalidade.</em>
+                </h2>
+              </div>
+
+              {!carregandoProdutos && !erroProdutos && (
+                <div className={style.contagemProdutos}>
+                  <strong>{produtosCor.length}</strong>
+                  <span>
+                    {produtosCor.length === 1
+                      ? "produto"
+                      : "produtos"}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className={style.modalConteudo}>
+              {carregandoProdutos ? (
+                <div className={style.estadoModal}>
+                  <LoaderCircle
+                    className={style.loader}
+                    size={30}
+                  />
+
+                  <strong>Consultando estoque...</strong>
+
+                  <p>
+                    Estamos buscando os produtos cadastrados com
+                    a cor {corSelecionada.nome}.
+                  </p>
+                </div>
+              ) : erroProdutos ? (
+                <div className={style.estadoModal}>
+                  <Package size={30} />
+
+                  <strong>Não foi possível carregar.</strong>
+
+                  <p>{erroProdutos}</p>
+                </div>
+              ) : produtosCor.length === 0 ? (
+                <div className={style.estadoModal}>
+                  <ShoppingBag size={30} />
+
+                  <strong>
+                    Nenhum produto disponível nessa cor.
+                  </strong>
+
+                  <p>
+                    A tonalidade existe na paleta, mas não há
+                    produto ativo com estoque correspondente no momento.
+                  </p>
+                </div>
+              ) : (
+                <div className={style.produtosGrid}>
+                  {produtosCor.map((produto) => (
+                    <article
+                      className={style.produtoCard}
+                      key={produto.id}
+                    >
+                      <div className={style.produtoImagem}>
+                        {produto?.marca && (
+                          <span>{produto.marca}</span>
+                        )}
+
+                        <img
+                          src={imagemProduto(produto)}
+                          alt={produto.nome || "Produto"}
+                          onError={(event) => {
+                            event.currentTarget.src =
+                              "/img/tinta.png";
+                          }}
+                        />
+                      </div>
+
+                      <div className={style.produtoInfo}>
+                        <span className={style.disponivel}>
+                          <CheckCircle2 size={12} />
+                          Disponível
+                        </span>
+
+                        <h3>
+                          {produto.nome || "Produto sem nome"}
+                        </h3>
+
+                        <div className={style.produtoMeta}>
+                          {produto?.marca && (
+                            <span>{produto.marca}</span>
+                          )}
+
+                          <span>
+                            Estoque: {Number(produto.quantidade || 0)}
+                          </span>
+                        </div>
+
+                        <strong className={style.precoProduto}>
+                          {formatarPreco(produto.preco)}
+                        </strong>
+
+                        <button
+                          type="button"
+                          className={style.adicionarCarrinho}
+                          disabled={adicionandoId === produto.id}
+                          onClick={() => adicionarAoCarrinho(produto)}
+                        >
+                          {adicionandoId === produto.id ? (
+                            <>
+                              <LoaderCircle
+                                className={style.loaderBotao}
+                                size={15}
+                              />
+                              Adicionando...
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingCart size={15} />
+                              Adicionar ao carrinho
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className={style.modalRodape}>
+              <p>
+                Exibindo apenas produtos <strong>ativos</strong> e
+                com <strong>estoque disponível</strong>.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => navigate("/cliente/produtos")}
+              >
+                Ver catálogo completo
+                <ArrowRight size={15} />
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {modalConfirmacaoAberto && produtoAdicionado && (
+        <div
+          className={style.confirmacaoOverlay}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              fecharModalConfirmacao();
+            }
+          }}
+        >
+          <section className={style.confirmacaoModal}>
+            <button
+              type="button"
+              className={style.fecharConfirmacao}
+              onClick={fecharModalConfirmacao}
+              aria-label="Fechar confirmação"
+            >
+              <X size={18} />
+            </button>
+
+            <div className={style.confirmacaoIcone}>
+              <CheckCircle2 size={28} />
+            </div>
+
+            <span className={style.confirmacaoEyebrow}>
+              PRODUTO ADICIONADO
+            </span>
+
+            <h2>
+              Adicionado ao
+              <em> carrinho.</em>
+            </h2>
+
+            <p>
+              O produto foi adicionado com sucesso e já está disponível
+              no seu carrinho.
+            </p>
+
+            <div className={style.produtoConfirmacao}>
+              <div className={style.produtoConfirmacaoImagem}>
+                <img
+                  src={imagemProduto(produtoAdicionado)}
+                  alt={produtoAdicionado.nome || "Produto"}
+                  onError={(event) => {
+                    event.currentTarget.src = "/img/tinta.png";
+                  }}
+                />
+              </div>
+
+              <div className={style.produtoConfirmacaoInfo}>
+                {produtoAdicionado?.marca && (
+                  <span>{produtoAdicionado.marca}</span>
+                )}
+
+                <strong>
+                  {produtoAdicionado.nome || "Produto"}
+                </strong>
+
+                <small>
+                  {corSelecionada?.nome || produtoAdicionado?.cor || ""}
+                </small>
+
+                <b>
+                  {formatarPreco(produtoAdicionado.preco)}
+                </b>
+              </div>
+            </div>
+
+            <div className={style.confirmacaoAcoes}>
+              <button
+                type="button"
+                className={style.continuarNoLivro}
+                onClick={fecharModalConfirmacao}
+              >
+                Continuar escolhendo
+              </button>
+
+              <button
+                type="button"
+                className={style.irCarrinho}
+                onClick={irParaCarrinho}
+              >
+                Ir para o carrinho
+                <ArrowRight size={15} />
+              </button>
+            </div>
+          </section>
+        </div>
       )}
     </>
   );
 }
 
 
-/* ==================================================
-   COMPONENTE — PÁGINA INICIAL
-================================================== */
+/* =========================================================
+   PÁGINA INICIAL DO LIVRO
+========================================================= */
 
 function PaginaInicial() {
   return (
     <div className={style.conteudoInicial}>
+      <span className={style.numeroPagina}>01</span>
 
       <div className={style.logoPagina}>
-
         <div className={style.logoMarca}>
           <span></span>
           <span></span>
@@ -466,10 +928,9 @@ function PaginaInicial() {
         </div>
 
         <div>
-          <strong>Cores & Cia</strong>
-          <small>TINTAS</small>
+          <strong>Pixel Color</strong>
+          <small>CATÁLOGO</small>
         </div>
-
       </div>
 
       <h1>
@@ -479,41 +940,30 @@ function PaginaInicial() {
       </h1>
 
       <p>
-        Explore nossa seleção de cores e encontre
-        o tom perfeito para transformar seu ambiente.
+        Uma seleção de tonalidades para descobrir
+        novas possibilidades para o seu ambiente.
       </p>
 
-      <div className={style.latasPagina}>
-
-        <div className={`${style.lata} ${style.azul}`}>
-          <div className={style.tinta}></div>
-        </div>
-
-        <div className={`${style.lata} ${style.vermelha}`}>
-          <div className={style.tinta}></div>
-        </div>
-
-        <div className={`${style.lata} ${style.amarela}`}>
-          <div className={style.tinta}></div>
-        </div>
-
+      <div className={style.amostrasInicio}>
+        <span style={{ background: "#F2F0E9" }}></span>
+        <span style={{ background: "#D71920" }}></span>
+        <span style={{ background: "#FFD21F" }}></span>
+        <span style={{ background: "#2855B5" }}></span>
+        <span style={{ background: "#5B8C51" }}></span>
+        <span style={{ background: "#9966CC" }}></span>
       </div>
-
     </div>
   );
 }
 
 
-/* ==================================================
-   PÁGINA INICIAL DIREITA
-================================================== */
-
 function PaginaInicialDireita() {
   return (
     <div className={style.conteudoInicialDireita}>
+      <span className={style.numeroPagina}>02</span>
 
-      <span className={style.numeroPagina}>
-        01
+      <span className={style.sectionLabel}>
+        COMO USAR
       </span>
 
       <h2>
@@ -523,33 +973,37 @@ function PaginaInicialDireita() {
       </h2>
 
       <p>
-        Navegue pelo nosso catálogo e descubra
-        diferentes tonalidades para cada estilo
-        de ambiente.
+        Navegue pelas categorias, escolha uma tonalidade
+        e clique na amostra. O sistema consulta o banco e
+        mostra os produtos disponíveis naquela cor.
       </p>
 
-      <div className={style.amostrasInicio}>
+      <div className={style.passosLivro}>
+        <div>
+          <span>01</span>
+          <p>Explore as categorias</p>
+        </div>
 
-        <span style={{ background: "#F2F0E9" }}></span>
-        <span style={{ background: "#D71920" }}></span>
-        <span style={{ background: "#FFD21F" }}></span>
-        <span style={{ background: "#2855B5" }}></span>
-        <span style={{ background: "#5B8C51" }}></span>
-        <span style={{ background: "#9966CC" }}></span>
+        <div>
+          <span>02</span>
+          <p>Clique em uma cor</p>
+        </div>
 
+        <div>
+          <span>03</span>
+          <p>Veja os produtos disponíveis</p>
+        </div>
       </div>
-
     </div>
   );
 }
 
 
-/* ==================================================
+/* =========================================================
    PÁGINA DE CATEGORIA
-================================================== */
+========================================================= */
 
-function PaginaCategoria({ categoria }) {
-
+function PaginaCategoria({ categoria, onSelecionarCor }) {
   if (!categoria) {
     return (
       <div className={style.paginaVazia}>
@@ -560,12 +1014,13 @@ function PaginaCategoria({ categoria }) {
 
   return (
     <div className={style.conteudoCategoria}>
-
       <div className={style.manchaDecorativa}></div>
 
-      <h2>
-        {categoria.titulo}
-      </h2>
+      <span className={style.sectionLabel}>
+        PALETA PIXEL COLOR
+      </span>
+
+      <h2>{categoria.titulo}</h2>
 
       <p className={style.descricao}>
         {categoria.descricao}
@@ -574,47 +1029,36 @@ function PaginaCategoria({ categoria }) {
       <div className={style.linha}></div>
 
       <div className={style.gradeCores}>
-
         {categoria.cores.map((cor, index) => (
-
-          <div
+          <button
+            type="button"
             className={style.corItem}
-            key={index}
+            key={`${categoria.titulo}-${cor.nome}-${index}`}
+            onClick={() => onSelecionarCor(cor)}
+            aria-label={`Ver produtos disponíveis na cor ${cor.nome}`}
           >
-
             <div
               className={style.amostraCor}
               style={{
-                backgroundColor: cor.cor
+                backgroundColor: cor.cor,
               }}
             >
-
               <span className={style.nomeHover}>
-                {cor.nome}
+                Ver disponibilidade
               </span>
-
             </div>
 
             <span className={style.nomeCor}>
               {cor.nome}
             </span>
-
-          </div>
-
+          </button>
         ))}
-
       </div>
 
       <div className={style.rodapePagina}>
-        <span>
-          Cores & Cia — Tintas
-        </span>
-
-        <span>
-          Catálogo de Cores
-        </span>
+        <span>Pixel Color</span>
+        <span>{categoria.titulo}</span>
       </div>
-
     </div>
   );
 }

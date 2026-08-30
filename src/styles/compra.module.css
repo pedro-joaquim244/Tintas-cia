@@ -1688,3 +1688,895 @@ select {
         flex-direction: column;
     }
 }
+
+
+/* =========================================================
+   PIXEL COLOR — AJUSTE FINAL DE LAYOUT
+   Mantém toda a funcionalidade do JSX e redefine apenas
+   apresentação, espaçamento, proporções e responsividade.
+========================================================= */
+
+@import url(
+    "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap"
+);
+
+.container {
+    --pc-navy: #172033;
+    --pc-navy-2: #21304d;
+    --pc-blue: #3264c8;
+    --pc-blue-soft: #a9c2f3;
+    --pc-ivory: #f4f1e9;
+    --pc-paper: #fbfaf6;
+    --pc-text: #182235;
+    --pc-muted: #747f8f;
+    --pc-line: rgba(24, 34, 53, 0.13);
+
+    width: 100%;
+    min-height: 100vh;
+    padding: 150px 50px 110px;
+
+    background:
+        radial-gradient(circle at 88% 2%, rgba(50,100,200,.05), transparent 28%),
+        var(--pc-ivory);
+
+    color: var(--pc-text);
+    font-family: "Poppins", sans-serif;
+}
+
+.checkoutShell {
+    width: min(1400px, 100%);
+    max-width: none;
+    margin: 0 auto;
+}
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.pageHeader {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 32px;
+
+    margin-bottom: 68px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--pc-line);
+}
+
+.backButton {
+    min-height: 44px;
+    padding: 0;
+    align-self: start;
+
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #788393;
+
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.backButton:hover {
+    transform: translateX(-3px);
+    border-color: transparent;
+    background: transparent;
+    color: var(--pc-blue);
+}
+
+.eyebrow {
+    margin-bottom: 12px;
+    color: #8a94a1;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .2em;
+}
+
+.titleGroup h1 {
+    color: var(--pc-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(58px, 5.4vw, 88px);
+    font-weight: 400;
+    line-height: .92;
+    letter-spacing: -.045em;
+}
+
+.titleGroup p {
+    max-width: 560px;
+    margin-top: 17px;
+    color: var(--pc-muted);
+    font-size: 11px;
+    font-weight: 300;
+    line-height: 1.8;
+}
+
+.secureBadge {
+    min-height: 40px;
+    padding: 0 15px;
+
+    border: 1px solid var(--pc-line);
+    border-radius: 999px;
+    background: rgba(255,255,255,.42);
+
+    color: #617083;
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.secureBadge svg {
+    color: var(--pc-blue);
+}
+
+/* =========================
+   GRID PRINCIPAL
+========================= */
+
+.conteudo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 390px;
+    gap: 34px;
+    align-items: start;
+}
+
+.colunaPrincipal {
+    min-width: 0;
+    gap: 28px;
+}
+
+.colunaResumo {
+    min-width: 0;
+    position: sticky;
+    top: 132px;
+    gap: 18px;
+}
+
+/* =========================
+   SEÇÕES
+========================= */
+
+.cardSection {
+    width: 100%;
+    padding: 31px;
+
+    border: 1px solid var(--pc-line);
+    border-radius: 0;
+    background: rgba(255,255,255,.52);
+    box-shadow: none;
+}
+
+.sectionHeader {
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--pc-line);
+}
+
+.sectionHeader > div {
+    gap: 13px;
+}
+
+.sectionStep {
+    width: 30px;
+    height: 30px;
+
+    border: 1px solid rgba(50,100,200,.2);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--pc-blue);
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.sectionHeader h2 {
+    color: var(--pc-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 27px;
+    font-weight: 600;
+    letter-spacing: -.02em;
+}
+
+.itemCount,
+.securityText {
+    color: #8993a0;
+    font-size: 9px;
+    font-weight: 500;
+}
+
+.securityText {
+    color: #748296;
+}
+
+/* =========================
+   PRODUTOS
+========================= */
+
+.produto {
+    grid-template-columns: 92px minmax(0, 1fr) auto;
+    gap: 20px;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(24,34,53,.09);
+}
+
+.produto img {
+    width: 92px;
+    height: 92px;
+    padding: 10px;
+
+    object-fit: contain;
+    border: 1px solid rgba(24,34,53,.08);
+    border-radius: 0;
+    background: #f6f4ee;
+}
+
+.produtoInfo h3 {
+    color: var(--pc-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.05;
+}
+
+.produtoInfo p {
+    margin-top: 7px;
+    color: #8a94a1;
+    font-size: 9px;
+}
+
+.produto > strong {
+    color: var(--pc-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.vazio {
+    border-radius: 0;
+    background: transparent;
+}
+
+/* =========================
+   CUPOM
+========================= */
+
+.cupomResumo {
+    padding: 26px;
+}
+
+.cupomInput {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 100px;
+    gap: 9px;
+}
+
+.cupomInput input {
+    height: 50px;
+    border: 1px solid var(--pc-line);
+    border-radius: 0;
+    background: rgba(255,255,255,.62);
+    font-size: 10px;
+}
+
+.cupomInput button {
+    min-width: 0;
+    height: 50px;
+    padding: 0 14px;
+
+    border-radius: 0;
+    background: var(--pc-navy);
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.cupomInput button:hover {
+    box-shadow: none;
+    background: var(--pc-blue);
+}
+
+.sucesso,
+.erro,
+.cardError {
+    border-radius: 0;
+}
+
+.cupomAplicado {
+    border-radius: 0;
+    border-color: rgba(50,100,200,.18);
+    background: rgba(50,100,200,.045);
+}
+
+/* =========================
+   FORMAS DE PAGAMENTO
+========================= */
+
+.paymentGrid {
+    gap: 10px;
+}
+
+.paymentOption {
+    min-height: 92px;
+    padding: 15px;
+
+    border: 1px solid var(--pc-line);
+    border-radius: 0;
+    background: rgba(255,255,255,.48);
+}
+
+.paymentOption:hover {
+    border-color: rgba(50,100,200,.34);
+    box-shadow: none;
+}
+
+.paymentOptionActive {
+    border-color: var(--pc-navy);
+    background: var(--pc-navy);
+    box-shadow: none;
+}
+
+.paymentIcon {
+    width: 37px;
+    height: 37px;
+    border-radius: 50%;
+    background: rgba(24,34,53,.06);
+    color: #5d697a;
+}
+
+.paymentOptionActive .paymentIcon {
+    background: rgba(255,255,255,.1);
+    color: var(--pc-blue-soft);
+}
+
+.paymentOption strong {
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.paymentOption small {
+    font-size: 8px;
+}
+
+.paymentOptionActive strong {
+    color: #fff;
+}
+
+.paymentOptionActive small {
+    color: rgba(255,255,255,.46);
+}
+
+.paymentOptionActive .radioFake {
+    border-color: #fff;
+    background: #fff;
+    box-shadow: inset 0 0 0 4px var(--pc-navy);
+}
+
+.infoPagamento {
+    margin-top: 14px;
+    border-radius: 0;
+    border-color: rgba(50,100,200,.14);
+    background: rgba(50,100,200,.035);
+}
+
+/* =========================
+   CARTÕES SALVOS
+========================= */
+
+.creditArea {
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top-color: var(--pc-line);
+}
+
+.savedCardsHeader strong {
+    color: var(--pc-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 19px;
+    font-weight: 600;
+}
+
+.savedCardsHeader span {
+    font-size: 9px;
+}
+
+.savedCard {
+    min-height: 70px;
+    border: 1px solid var(--pc-line);
+    border-radius: 0;
+    background: rgba(255,255,255,.56);
+}
+
+.savedCard:hover {
+    border-color: rgba(50,100,200,.32);
+    background: rgba(255,255,255,.74);
+}
+
+.savedCardActive {
+    border-color: var(--pc-navy);
+    background: rgba(23,32,51,.055);
+    box-shadow: none;
+}
+
+.savedCardBrand {
+    border-radius: 50%;
+    background: var(--pc-navy);
+    color: #fff;
+}
+
+.principalBadge {
+    border-radius: 0;
+    background: rgba(50,100,200,.09);
+    color: var(--pc-blue);
+}
+
+.deleteCard {
+    border-radius: 0;
+}
+
+/* =========================
+   CARTÃO — PREVIEW + FORM
+========================= */
+
+.creditContent {
+    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+    gap: 18px;
+}
+
+.cardPreviewColumn {
+    min-height: 470px;
+    padding: 25px;
+
+    border: 1px solid var(--pc-line);
+    border-radius: 0;
+
+    background: #eeece4;
+}
+
+.cardForm {
+    min-height: 470px;
+    padding: 24px;
+
+    border: 1px solid var(--pc-line);
+    border-radius: 0;
+
+    background: rgba(255,255,255,.62);
+}
+
+.creditCardFace {
+    border-radius: 18px;
+}
+
+.creditCardFront {
+    background:
+        radial-gradient(circle at 82% 12%, rgba(255,255,255,.12), transparent 28%),
+        radial-gradient(circle at 18% 85%, rgba(109,149,225,.25), transparent 34%),
+        linear-gradient(135deg, #101a2c 0%, #172b50 55%, #274f96 100%);
+}
+
+.creditCardBack {
+    background: linear-gradient(135deg, #0d1727, #193768);
+}
+
+.formIntro {
+    margin-bottom: 21px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--pc-line);
+}
+
+.formIntro span {
+    color: var(--pc-blue);
+    font-size: 7px;
+}
+
+.formIntro h3 {
+    color: var(--pc-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.formGroup label {
+    color: #536071;
+    font-size: 9px;
+    font-weight: 500;
+}
+
+.formGroup input,
+.selectWrap select {
+    height: 46px;
+    border: 1px solid var(--pc-line);
+    border-radius: 0;
+    background: rgba(255,255,255,.82);
+    font-size: 11px;
+}
+
+.saveCardCheck {
+    border-radius: 0;
+    border-color: rgba(50,100,200,.15);
+    background: rgba(50,100,200,.035);
+}
+
+.checkVisual {
+    border-radius: 0;
+}
+
+.selectedSavedCard {
+    border-radius: 0;
+    border-color: rgba(50,100,200,.16);
+    background: rgba(50,100,200,.035);
+}
+
+.savedSelectedIcon {
+    border-radius: 50%;
+    background: var(--pc-navy);
+}
+
+/* =========================
+   RESUMO
+========================= */
+
+.resumo {
+    padding: 32px;
+
+    border: 0;
+    border-radius: 0;
+
+    background: var(--pc-navy);
+    color: #fff;
+
+    box-shadow: none;
+}
+
+.summaryTop {
+    margin-bottom: 20px;
+}
+
+.summaryTop span {
+    color: rgba(255,255,255,.4);
+    font-size: 8px;
+    letter-spacing: .18em;
+}
+
+.summaryTop svg {
+    color: var(--pc-blue-soft);
+}
+
+.resumo > h2 {
+    margin-bottom: 28px;
+
+    color: #fff;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 38px;
+    font-weight: 400;
+    line-height: .95;
+}
+
+.summaryLine,
+.installmentSummary {
+    margin-bottom: 15px;
+}
+
+.summaryLine span,
+.installmentSummary span {
+    color: rgba(255,255,255,.48);
+    font-size: 9px;
+}
+
+.summaryLine strong,
+.installmentSummary strong {
+    color: rgba(255,255,255,.9);
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.desconto span,
+.desconto strong {
+    color: #98d4a6;
+}
+
+.resumo hr {
+    margin: 24px 0;
+    background: rgba(255,255,255,.13);
+}
+
+.total span {
+    color: rgba(255,255,255,.48);
+    font-size: 8px;
+    letter-spacing: .13em;
+}
+
+.total strong {
+    color: #fff;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 32px;
+    font-weight: 500;
+}
+
+.finalizar {
+    min-height: 54px;
+    margin-top: 27px;
+    border-radius: 0;
+
+    background: #fff;
+    color: var(--pc-navy);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.finalizar:hover:not(:disabled) {
+    background: var(--pc-blue-soft);
+    box-shadow: none;
+}
+
+.secureFooter {
+    color: rgba(255,255,255,.36);
+    font-size: 7px;
+}
+
+.secureFooter svg {
+    color: var(--pc-blue-soft);
+}
+
+/* =========================
+   MODAIS
+========================= */
+
+.modalOverlay,
+.modalSucessoOverlay {
+    background: rgba(8,14,24,.76);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.modal,
+.modalSucesso {
+    width: min(470px, 100%);
+    padding: 42px;
+
+    border-radius: 0;
+    background: var(--pc-ivory);
+
+    box-shadow: 0 35px 100px rgba(0,0,0,.28);
+}
+
+.modalIcon,
+.iconeSucesso {
+    border-radius: 50%;
+    background: var(--pc-navy);
+}
+
+.iconeSucesso {
+    background: #4f805d;
+}
+
+.modal h2,
+.modalSucesso h2 {
+    color: var(--pc-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 43px;
+    font-weight: 500;
+    line-height: .95;
+}
+
+.modalData,
+.resumoSucesso > div {
+    border-color: var(--pc-line);
+}
+
+.modalActions button,
+.botaoGuardarCupom,
+.botaoSucesso {
+    border-radius: 0;
+}
+
+.modalActions button:last-child,
+.botaoSucesso {
+    background: var(--pc-navy);
+}
+
+.botaoGuardarCupom {
+    background: rgba(50,100,200,.09);
+    color: var(--pc-blue);
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media (max-width: 1200px) {
+
+    .container {
+        padding: 135px 35px 90px;
+    }
+
+    .conteudo {
+        grid-template-columns: minmax(0, 1fr) 350px;
+        gap: 25px;
+    }
+
+    .cardSection {
+        padding: 26px;
+    }
+
+    .creditContent {
+        grid-template-columns: 1fr;
+    }
+
+    .cardPreviewColumn,
+    .cardForm {
+        min-height: auto;
+    }
+}
+
+@media (max-width: 1000px) {
+
+    .pageHeader {
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: start;
+    }
+
+    .secureBadge {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .conteudo {
+        grid-template-columns: 1fr;
+    }
+
+    .colunaResumo {
+        position: static;
+        display: grid;
+        grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+        gap: 20px;
+    }
+
+    .cupomResumo,
+    .resumo {
+        height: 100%;
+    }
+}
+
+@media (max-width: 760px) {
+
+    .container {
+        padding: 110px 22px 70px;
+    }
+
+    .pageHeader {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        margin-bottom: 48px;
+    }
+
+    .backButton,
+    .secureBadge {
+        grid-column: auto;
+    }
+
+    .secureBadge {
+        justify-self: start;
+    }
+
+    .titleGroup h1 {
+        font-size: 58px;
+    }
+
+    .cardSection {
+        padding: 22px;
+    }
+
+    .sectionHeader {
+        align-items: flex-start;
+    }
+
+    .paymentGrid,
+    .savedCardsList,
+    .creditContent,
+    .colunaResumo {
+        grid-template-columns: 1fr;
+    }
+
+    .produto {
+        grid-template-columns: 76px minmax(0,1fr);
+        gap: 14px;
+    }
+
+    .produto img {
+        width: 76px;
+        height: 76px;
+    }
+
+    .produto > strong {
+        grid-column: 2;
+        justify-self: start;
+    }
+}
+
+@media (max-width: 560px) {
+
+    .container {
+        padding: 96px 15px 60px;
+    }
+
+    .titleGroup h1 {
+        font-size: 49px;
+    }
+
+    .cardSection,
+    .resumo {
+        padding: 20px 17px;
+    }
+
+    .sectionHeader {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .cupomInput {
+        grid-template-columns: 1fr;
+    }
+
+    .cupomInput button {
+        width: 100%;
+    }
+
+    .formRow {
+        grid-template-columns: 1fr;
+    }
+
+    .cardPreviewColumn {
+        padding: 18px 12px;
+    }
+
+    .produto {
+        grid-template-columns: 68px minmax(0,1fr);
+    }
+
+    .produto img {
+        width: 68px;
+        height: 68px;
+    }
+
+    .produtoInfo h3 {
+        font-size: 19px;
+    }
+
+    .modal,
+    .modalSucesso {
+        padding: 34px 24px;
+    }
+
+    .modalActions {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 400px) {
+
+    .titleGroup h1 {
+        font-size: 44px;
+    }
+
+    .cardSection,
+    .resumo {
+        padding: 18px 14px;
+    }
+
+    .produto {
+        grid-template-columns: 60px minmax(0,1fr);
+    }
+
+    .produto img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .resumo > h2 {
+        font-size: 34px;
+    }
+
+    .total strong {
+        font-size: 28px;
+    }
+}

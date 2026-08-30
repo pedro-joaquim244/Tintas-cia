@@ -1203,6 +1203,124 @@ width: 30px;
       height:20px;
     width:20px;
 }
+
+/* =========================================================
+   CONFIRMAÇÃO DE EXCLUSÃO
+========================================================= */
+
+.confirmOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.68);
+    backdrop-filter: blur(7px);
+}
+
+.confirmModal {
+    width: 100%;
+    max-width: 440px;
+    padding: 30px;
+    border: 1px solid #fee2e2;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 30px 80px rgba(15, 23, 42, 0.28);
+    text-align: center;
+}
+
+.confirmIcon {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fef2f2;
+    color: #dc2626;
+    font-size: 25px;
+}
+
+.confirmModal h2 {
+    color: #0f172a;
+    font-size: 21px;
+    font-weight: 750;
+}
+
+.confirmModal p {
+    margin-top: 9px;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.confirmModal p strong {
+    color: #334155;
+    font-weight: 700;
+}
+
+.confirmActions {
+    margin-top: 23px;
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 9px;
+}
+
+.confirmActions button {
+    min-height: 43px;
+    padding: 9px 13px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.cancelDeleteButton {
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #475569;
+}
+
+.cancelDeleteButton:hover:not(:disabled) {
+    background: #f1f5f9;
+    transform: translateY(-1px);
+}
+
+.confirmDeleteButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: none;
+    background: #dc2626;
+    color: #ffffff;
+    box-shadow: 0 7px 17px rgba(220, 38, 38, 0.22);
+}
+
+.confirmDeleteButton:hover:not(:disabled) {
+    background: #b91c1c;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(220, 38, 38, 0.28);
+}
+
+.confirmActions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+@media (max-width: 480px) {
+    .confirmModal {
+        padding: 24px 18px;
+    }
+
+    .confirmActions {
+        grid-template-columns: 1fr;
+    }
+}
 /* =========================================================
    VAZIO
 ========================================================= */

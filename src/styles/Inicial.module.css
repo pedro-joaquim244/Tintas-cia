@@ -58,6 +58,307 @@ button {
 }
 
 
+
+/* =========================================================
+   ABERTURA — EFEITO DE TINTA
+========================================================= */
+
+.introPaint {
+    position: fixed;
+    inset: 0;
+
+    z-index: 999999;
+
+    width: 100%;
+    height: 100dvh;
+
+    /*
+     * IMPORTANTE:
+     * o cabo do rolo pode ultrapassar a área azul enquanto
+     * a página é revelada.
+     */
+    overflow: visible;
+
+    background: transparent;
+
+    pointer-events: all;
+
+    will-change: transform;
+}
+
+.introPaintSvg {
+    position: absolute;
+    inset: 0;
+
+    z-index: 2;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    will-change: transform;
+}
+
+.introPaintPath {
+    fill: #315ab0;
+
+    will-change: transform;
+}
+
+
+
+/* =========================================================
+   BORDA MOLHADA — CONTATO ENTRE TINTA E ROLO
+========================================================= */
+
+.introPaint::after {
+    content: "";
+
+    position: absolute;
+
+    z-index: 3;
+
+    left: 0;
+    bottom: -2px;
+
+    width: 100%;
+    height: 10px;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(49, 90, 176, 0.96) 0%,
+            rgba(49, 90, 176, 0.72) 42%,
+            rgba(49, 90, 176, 0.12) 100%
+        );
+
+    filter:
+        blur(1.5px);
+
+    opacity: 0.9;
+}
+
+.introBrand {
+    position: absolute;
+
+    z-index: 4;
+
+    top: 50%;
+    left: 50%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    transform:
+        translate(
+            -50%,
+            -50%
+        );
+
+    color: #ffffff;
+
+    will-change:
+        transform,
+        opacity;
+}
+
+.introBrandMark {
+    position: relative;
+
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+}
+
+.introBrandMark span {
+    position: absolute;
+
+    width: 20px;
+    height: 20px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.48
+        );
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.96
+        );
+}
+
+.introBrandMark span:nth-child(1) {
+    top: 0;
+    left: 0;
+}
+
+.introBrandMark span:nth-child(2) {
+    top: 0;
+    right: 0;
+
+    opacity: 0.82;
+}
+
+.introBrandMark span:nth-child(3) {
+    bottom: 0;
+    left: 0;
+
+    opacity: 0.68;
+}
+
+.introBrandMark span:nth-child(4) {
+    right: 0;
+    bottom: 0;
+
+    opacity: 0.52;
+}
+
+.introBrandText {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.introBrandText strong {
+    color: #ffffff;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        clamp(
+            25px,
+            2.4vw,
+            38px
+        );
+
+    font-weight: 500;
+
+    line-height: 0.95;
+
+    letter-spacing: -0.025em;
+}
+
+.introBrandText span {
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.58
+        );
+
+    font-size: 7px;
+    font-weight: 500;
+
+    letter-spacing: 0.22em;
+}
+
+.introEdition {
+    position: absolute;
+
+    z-index: 4;
+
+    right: 34px;
+    bottom: 26px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.42
+        );
+
+    font-size: 7px;
+    font-weight: 600;
+
+    letter-spacing: 0.18em;
+}
+
+.introRoller {
+    position: absolute;
+
+    z-index: 5;
+
+    left: 50%;
+
+    /*
+     * O cilindro azul do SVG fica aproximadamente a 25%
+     * da altura total do desenho. Como a proporção do SVG
+     * é 300 x 400, este cálculo posiciona o centro do cilindro
+     * exatamente sobre a borda inferior da tinta.
+     */
+    top:
+        calc(
+            100% -
+            clamp(
+                73px,
+                7.33vw,
+                110px
+            )
+        );
+
+    width:
+        clamp(
+            220px,
+            22vw,
+            330px
+        );
+
+    transform:
+        translate3d(-50%, calc(32% + 16px), 0);
+
+    transform-origin:
+        50%
+        25%;
+
+    will-change:
+        transform;
+
+    backface-visibility: hidden;
+
+    visibility: visible;
+}
+
+.introRollerSvg {
+    width: 100%;
+    height: auto;
+
+    display: block;
+
+    overflow: visible;
+
+    filter:
+        drop-shadow(
+            0
+            14px
+            20px
+            rgba(
+                7,
+                13,
+                24,
+                0.16
+            )
+        );
+}
+
+
 /* =========================================================
    HERO
 ========================================================= */
@@ -2090,5 +2391,79 @@ button {
 @media (prefers-reduced-motion: reduce) {
     .marcasLinha {
         animation-play-state: paused;
+    }
+}
+
+
+/* =========================================================
+   ABERTURA — RESPONSIVO
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .introBrand {
+        gap: 11px;
+    }
+
+    .introBrandMark {
+        width: 34px;
+        height: 34px;
+    }
+
+    .introBrandMark span {
+        width: 15px;
+        height: 15px;
+    }
+
+    .introBrandText strong {
+        font-size: 24px;
+    }
+
+    .introBrandText span {
+        font-size: 6px;
+
+        letter-spacing: 0.16em;
+    }
+
+    .introRoller {
+        width: 235px;
+        bottom: -205px;
+    }
+
+    .introEdition {
+        right: 18px;
+        bottom: 18px;
+    }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    .introPaint {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+    .introRoller {
+        top:
+            calc(
+                100% -
+                clamp(
+                    70px,
+                    18vw,
+                    92px
+                )
+            );
+
+        width:
+            clamp(
+                210px,
+                54vw,
+                276px
+            );
     }
 }

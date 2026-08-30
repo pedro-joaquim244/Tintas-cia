@@ -1,1272 +1,2954 @@
 /* =========================================================
-   CONTAINER
+   FONTES
 ========================================================= */
 
-.container {
-  width: 100%;
-  min-height: 100vh;
-  padding-top: 112px;
+@import url(
+    "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap"
+);
 
-  background: linear-gradient(to bottom, #f7f8ff, #f4f4f4);
 
-  font-family: "Poppins", sans-serif;
+/* =========================================================
+   RESET
+========================================================= */
 
-  overflow-x: hidden;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.main {
-  width: 100%;
-  max-width: var(--client-content-max);
-  margin: 0 auto;
-  padding: 0 var(--client-page-gutter) 48px;
 
-  box-sizing: border-box;
+html {
+    scroll-behavior: smooth;
 }
+
+
+body {
+    margin: 0;
+
+    background: #f4f1e9;
+
+    color: #172033;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+}
+
+
+button {
+    font-family:
+        "Poppins",
+        sans-serif;
+}
+
+
+/* =========================================================
+   PÁGINA
+========================================================= */
+
+.page {
+    width: 100%;
+
+    min-height: 100vh;
+
+    overflow-x: hidden;
+
+    background: #f4f1e9;
+
+    color: #172033;
+}
+
 
 /* =========================================================
    HERO
 ========================================================= */
 
 .hero {
-  width: 100%;
+    position: relative;
 
-  background: white;
+    width: 100%;
+    height: 100vh;
 
-  border-radius: 0 0 28px 28px;
+    min-height: 720px;
 
-  display: flex;
+    display: flex;
 
-  overflow: hidden;
+    align-items: center;
 
-  margin-bottom: 25px;
+    overflow: hidden;
 
-  position: relative;
-
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.07);
+    background: #0a111d;
 }
 
-.hero::before {
-  content: "";
-
-  position: absolute;
-
-  width: 280px;
-  height: 280px;
-
-  background: rgba(59, 97, 255, 0.07);
-
-  border-radius: 50%;
-
-  top: -100px;
-  left: -100px;
-
-  filter: blur(8px);
-}
-
-.heroTexto {
-  width: 45%;
-
-  padding: 45px 40px;
-
-  display: flex;
-
-  flex-direction: column;
-
-  justify-content: center;
-
-  z-index: 2;
-}
-
-.subtitulo {
-  font-size: 12px;
-
-  font-weight: 700;
-
-  color: #1547d4;
-
-  margin-bottom: 12px;
-
-  letter-spacing: 1.5px;
-}
-
-.heroTexto h1 {
-  font-size: 48px;
-
-  line-height: 1.05;
-
-  color: #071b63;
-
-  font-weight: 800;
-
-  margin-bottom: 15px;
-}
-
-/* =========================================================
-   TEXTO COLORIDO
-========================================================= */
-
-.heroTexto h1 span {
-  background: linear-gradient(
-    270deg,
-    #ffb800,
-    #ff4fa3,
-    #694cff,
-    #00c2ff,
-    #32d74b,
-    #ffb800
-  );
-
-  background-size: 1200% 1200%;
-
-  animation: corAnimada 8s ease infinite;
-
-  -webkit-background-clip: text;
-
-  -webkit-text-fill-color: transparent;
-
-  filter:
-    drop-shadow(
-      0 0 8px rgba(255, 79, 163, 0.28)
-    );
-}
-
-@keyframes corAnimada {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  25% {
-    background-position: 50% 100%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  75% {
-    background-position: 50% 0%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* =========================================================
-   LINHA COLORIDA
-========================================================= */
-
-.linhaColorida {
-  display: flex;
-
-  align-items: center;
-
-  gap: 0;
-
-  margin-bottom: 18px;
-}
-
-.amarelo,
-.rosa,
-.azul {
-  height: 4px;
-
-  border-radius: 20px;
-
-  animation: pulse 2s infinite alternate;
-}
-
-.amarelo {
-  width: 35px;
-
-  background: #ffb800;
-}
-
-.rosa {
-  width: 28px;
-
-  background: #ff4fa3;
-}
-
-.azul {
-  width: 35px;
-
-  background: #3b61ff;
-}
-
-@keyframes pulse {
-  from {
-    transform: scaleX(1);
-  }
-
-  to {
-    transform: scaleX(1.1);
-  }
-}
-
-/* =========================================================
-   TEXTO HERO
-========================================================= */
-
-.heroTexto p {
-  font-size: 15px;
-
-  line-height: 1.55;
-
-  color: #555;
-
-  margin-bottom: 18px;
-}
 
 /* =========================================================
    IMAGEM HERO
 ========================================================= */
 
 .heroImagem {
-  width: 55%;
+    position: absolute;
 
-  overflow: hidden;
+    inset: -8% 0;
+
+    width: 100%;
+    height: 116%;
+
+    object-fit: cover;
+
+    object-position: center;
+
+    will-change: transform;
 }
 
-.heroImagem img {
-  width: 92%;
-
-  height: 100%;
-
-  object-fit: cover;
-
-  border-bottom-left-radius: 180px;
-
-  transition: 0.5s ease;
-}
-
-.heroImagem img:hover {
-  transform: scale(1.04);
-}
 
 /* =========================================================
-   CARDS
+   OVERLAY HERO
 ========================================================= */
 
-.cardsInfo {
-  width: 100%;
+.heroOverlay {
+    position: absolute;
 
-  background: white;
+    inset: 0;
 
-  border-radius: 18px;
+    z-index: 1;
 
-  padding: 25px 22px;
-
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: stretch;
-
-  margin-bottom: 25px;
-
-  gap: 12px;
-
-  box-shadow:
-    0 8px 25px rgba(0, 0, 0, 0.045);
+    background:
+        linear-gradient(
+            90deg,
+            rgba(5, 10, 18, 0.88) 0%,
+            rgba(5, 10, 18, 0.68) 38%,
+            rgba(5, 10, 18, 0.28) 70%,
+            rgba(5, 10, 18, 0.12) 100%
+        );
 }
 
-.cardInfo {
-  flex: 1;
 
-  display: flex;
+.heroOverlay::after {
+    content: "";
 
-  align-items: flex-start;
+    position: absolute;
 
-  gap: 15px;
+    inset: 0;
 
-  padding: 20px;
-
-  border-radius: 17px;
-
-  transition: 0.3s ease;
-
-  cursor: pointer;
-
-  position: relative;
-
-  overflow: hidden;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(5, 10, 18, 0.05),
+            rgba(5, 10, 18, 0.25)
+        );
 }
 
-.cardInfo::before {
-  content: "";
-
-  position: absolute;
-
-  inset: 0;
-
-  background: linear-gradient(
-    135deg,
-    rgba(59, 97, 255, 0.07),
-    rgba(255, 79, 163, 0.07)
-  );
-
-  opacity: 0;
-
-  transition: 0.3s;
-}
-
-.cardInfo:hover::before {
-  opacity: 1;
-}
-
-.cardInfo:hover {
-  transform: translateY(-6px);
-
-  box-shadow:
-    0 10px 22px rgba(36, 81, 230, 0.12);
-}
 
 /* =========================================================
-   ÍCONE
+   CONTEÚDO HERO
 ========================================================= */
 
-.icone {
-  min-width: 65px;
+.heroConteudo {
+    position: relative;
 
-  min-height: 65px;
+    z-index: 3;
 
-  border-radius: 50%;
+    width:
+        min(
+            1400px,
+            calc(100% - 120px)
+        );
 
-  background: #eef2ff;
+    margin: 0 auto;
 
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  color: #2451e6;
-
-  transition: 0.3s;
-
-  z-index: 2;
+    padding-top: 70px;
 }
 
-.cardInfo:hover .icone {
-  transform: rotate(8deg) scale(1.05);
 
-  background: #2451e6;
+.heroEyebrow {
+    display: block;
 
-  color: white;
+    margin-bottom: 24px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.68
+        );
+
+    font-size: 11px;
+
+    font-weight: 500;
+
+    letter-spacing: 0.27em;
+
+    text-transform: uppercase;
 }
 
-.cardInfo h3 {
-  font-size: 22px;
 
-  color: #071b63;
+.heroConteudo h1 {
+    max-width: 980px;
 
-  margin-bottom: 8px;
+    color: #ffffff;
 
-  position: relative;
+    font-family:
+        "Cormorant Garamond",
+        serif;
 
-  z-index: 2;
+    font-size:
+        clamp(
+            72px,
+            9vw,
+            140px
+        );
+
+    font-weight: 400;
+
+    line-height: 0.82;
+
+    letter-spacing: -0.055em;
 }
 
-.cardInfo p,
-.cardInfo li {
-  position: relative;
 
-  z-index: 2;
+.heroConteudo h1 em {
+    color: #f5f0e7;
+
+    font-weight: 400;
 }
 
-.cardInfo p {
-  font-size: 14px;
 
-  line-height: 1.5;
+.heroConteudo > p {
+    max-width: 515px;
 
-  color: #555;
+    margin-top: 38px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.72
+        );
+
+    font-size: 14px;
+
+    font-weight: 300;
+
+    line-height: 1.9;
 }
 
-.cardInfo ul {
-  padding-left: 17px;
-}
-
-.cardInfo li {
-  font-size: 14px;
-
-  color: #555;
-
-  margin-bottom: 8px;
-}
-
-.divisor {
-  width: 1px;
-
-  height: 120px;
-
-  background: #ddd;
-
-  margin-top: 8px;
-}
 
 /* =========================================================
-   BANNER
+   BOTÃO HERO
 ========================================================= */
 
-.banner {
-  width: 100%;
+.heroBotao {
+    min-height: 54px;
 
-  background:
-    linear-gradient(
-      135deg,
-      #00195d,
-      #0b2c94
-    );
+    margin-top: 37px;
 
-  border-radius: 22px;
+    padding:
+        0
+        25px;
 
-  display: flex;
+    display: inline-flex;
 
-  align-items: center;
+    align-items: center;
 
-  overflow: hidden;
+    justify-content: center;
 
-  margin-bottom: 25px;
+    gap: 13px;
 
-  min-height: 250px;
+    border: none;
 
-  position: relative;
+    background: #ffffff;
 
-  box-shadow:
-    0 14px 32px rgba(0, 25, 93, 0.28);
+    color: #172033;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.02em;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.3s ease,
+        background 0.3s ease,
+        color 0.3s ease;
 }
 
-.banner::before {
-  content: "";
 
-  position: absolute;
+.heroBotao:hover {
+    transform:
+        translateY(-3px);
 
-  width: 380px;
+    background: #172033;
 
-  height: 380px;
-
-  background: rgba(255, 255, 255, 0.05);
-
-  border-radius: 50%;
-
-  right: -140px;
-
-  top: -120px;
+    color: #ffffff;
 }
 
-.bannerTexto {
-  width: 28%;
-
-  padding: 30px 20px 30px 32px;
-
-  z-index: 2;
-}
-
-.bannerTexto h2 {
-  font-size: 40px;
-
-  line-height: 1.05;
-
-  color: white;
-
-  font-weight: 800;
-
-  margin-bottom: 13px;
-}
-
-.bannerTexto h2 span {
-  background: linear-gradient(
-    270deg,
-    #ffb800,
-    #ff4fa3,
-    #694cff,
-    #00c2ff,
-    #32d74b,
-    #ffb800
-  );
-
-  background-size: 1200% 1200%;
-
-  animation: corAnimada 8s ease infinite;
-
-  -webkit-background-clip: text;
-
-  -webkit-text-fill-color: transparent;
-}
-
-.bannerTexto p {
-  color: white;
-
-  font-size: 14px;
-
-  line-height: 1.5;
-}
 
 /* =========================================================
-   ITENS BANNER
+   SCROLL
 ========================================================= */
 
-.bannerItens {
-  width: 42%;
+.scrollIndicador {
+    position: absolute;
 
-  display: flex;
+    z-index: 4;
 
-  align-items: center;
+    right: 50px;
+    bottom: 42px;
 
-  justify-content: center;
+    display: flex;
 
-  gap: 12px;
+    flex-direction: column;
 
-  z-index: 2;
+    align-items: center;
+
+    gap: 9px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.55
+        );
+
+    font-size: 9px;
+
+    font-weight: 500;
+
+    letter-spacing: 0.2em;
+
+    text-transform: uppercase;
 }
 
-.item {
-  display: flex;
 
-  flex-direction: column;
-
-  align-items: center;
-
-  text-align: center;
-
-  gap: 9px;
-
-  min-width: 90px;
-
-  transition: 0.3s ease;
-
-  cursor: pointer;
+.scrollIndicador svg {
+    animation:
+        scrollBounce
+        1.7s
+        infinite;
 }
 
-.item:hover {
-  transform: translateY(-5px) scale(1.03);
+
+@keyframes scrollBounce {
+
+    0%,
+    100% {
+        transform:
+            translateY(0);
+    }
+
+    50% {
+        transform:
+            translateY(8px);
+    }
+
 }
 
-.item img {
-  width: 42px;
-
-  transition: 0.3s;
-}
-
-.item:hover img {
-  transform: rotate(-6deg) scale(1.08);
-}
-
-.item span {
-  color: white;
-
-  font-size: 13px;
-
-  font-weight: 500;
-
-  line-height: 1.3;
-}
-
-.linhaVertical {
-  width: 1px;
-
-  height: 70px;
-
-  background: rgba(255, 255, 255, 0.25);
-}
 
 /* =========================================================
-   IMAGEM BANNER
+   LABELS
 ========================================================= */
 
-.bannerImagem {
-  width: 30%;
+.sectionLabel,
+.sectionNumber,
+.sectionNumberClaro {
+    display: block;
 
-  height: 100%;
+    font-size: 10px;
 
-  display: flex;
+    font-weight: 600;
 
-  align-items: flex-end;
+    letter-spacing: 0.19em;
 
-  justify-content: flex-end;
-
-  overflow: hidden;
+    text-transform: uppercase;
 }
 
-.bannerImagem img {
-  width: 100%;
 
-  height: 100%;
-
-  object-fit: cover;
-
-  transition: 0.5s ease;
+.sectionLabel,
+.sectionNumber {
+    color: #7d8795;
 }
 
-.bannerImagem img:hover {
-  transform: scale(1.05);
+
+.sectionNumberClaro {
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.46
+        );
 }
+
 
 /* =========================================================
-   LOCALIZAÇÃO
+   INTRO
 ========================================================= */
 
-.localizacao {
-  width: 100%;
+.intro {
+    width:
+        min(
+            1250px,
+            calc(100% - 100px)
+        );
 
-  background: white;
+    min-height: 620px;
 
-  border-radius: 16px;
+    margin: 0 auto;
 
-  padding: 20px 25px;
+    display: flex;
 
-  display: flex;
+    flex-direction: column;
 
-  align-items: center;
-
-  justify-content: space-between;
-
-  box-shadow:
-    0 7px 22px rgba(0, 0, 0, 0.05);
-
-  transition: 0.3s ease;
+    justify-content: center;
 }
 
-.localizacao:hover {
-  transform: translateY(-3px);
+
+.intro .sectionLabel {
+    margin-bottom: 30px;
 }
 
-.localTexto {
-  display: flex;
 
-  align-items: center;
+.intro h2 {
+    max-width: 1150px;
 
-  gap: 15px;
+    color: #182235;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        clamp(
+            56px,
+            7vw,
+            105px
+        );
+
+    font-weight: 400;
+
+    line-height: 0.92;
+
+    letter-spacing: -0.05em;
 }
 
-.iconBox {
-  width: 62px;
 
-  height: 62px;
+.intro h2 em {
+    color: #3264c8;
 
-  border-radius: 50%;
-
-  background: #f2e8ff;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  color: #8a3dff;
-
-  transition: 0.3s;
+    font-weight: 400;
 }
 
-.localizacao:hover .iconBox {
-  transform: rotate(8deg) scale(1.05);
+
+/* =========================================================
+   HISTÓRIA
+========================================================= */
+
+.historia {
+    width:
+        min(
+            1400px,
+            calc(100% - 100px)
+        );
+
+    margin: 0 auto;
+
+    padding:
+        70px
+        0
+        170px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.15fr)
+        minmax(390px, 0.85fr);
+
+    align-items: center;
+
+    gap: 90px;
 }
 
-.localTexto p {
-  font-size: 15px;
 
-  color: #666;
+/* =========================================================
+   IMAGEM HISTÓRIA
+========================================================= */
+
+.historiaImagemWrapper {
+    position: relative;
+
+    height: 720px;
+
+    overflow: hidden;
+
+    background: #172033;
 }
 
-.localizacao button {
-  border: none;
 
-  background:
-    linear-gradient(
-      135deg,
-      #2451e6,
-      #4f7cff
-    );
+.historiaImagemWrapper img {
+    width: 100%;
+    height: 100%;
 
-  color: white;
+    object-fit: cover;
 
-  font-size: 14px;
+    object-position: center;
 
-  font-weight: 600;
-
-  height: 48px;
-
-  padding: 0 25px;
-
-  border-radius: 10px;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  cursor: pointer;
-
-  transition: 0.3s ease;
-
-  box-shadow:
-    0 7px 18px rgba(36, 81, 230, 0.25);
+    will-change: transform;
 }
 
-.localizacao button:hover {
-  transform: translateY(-3px) scale(1.02);
 
-  box-shadow:
-    0 10px 25px rgba(36, 81, 230, 0.35);
+.historiaImagemOverlay {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 1;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent 50%,
+            rgba(5, 10, 18, 0.65)
+        );
 }
+
+
+/* =========================================================
+   LEGENDA IMAGEM
+========================================================= */
+
+.imagemLegenda {
+    position: absolute;
+
+    left: 30px;
+    bottom: 28px;
+
+    z-index: 2;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    color: #ffffff;
+}
+
+
+.imagemLegenda span {
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.6
+        );
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.2em;
+}
+
+
+.imagemLegenda strong {
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 28px;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   HISTÓRIA CONTEÚDO
+========================================================= */
+
+.historiaConteudo {
+    padding-right: 20px;
+}
+
+
+.historiaConteudo
+.sectionNumber {
+    margin-bottom: 32px;
+}
+
+
+.historiaConteudo h2 {
+    color: #182235;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        clamp(
+            58px,
+            6vw,
+            92px
+        );
+
+    font-weight: 400;
+
+    line-height: 0.88;
+
+    letter-spacing: -0.05em;
+}
+
+
+.historiaConteudo h2 em {
+    color: #3264c8;
+
+    font-weight: 400;
+}
+
+
+.historiaLinha {
+    width: 70px;
+    height: 1px;
+
+    margin:
+        42px
+        0;
+
+    background:
+        rgba(
+            24,
+            34,
+            53,
+            0.28
+        );
+}
+
+
+.historiaConteudo p {
+    max-width: 510px;
+
+    margin-bottom: 20px;
+
+    color: #687385;
+
+    font-size: 13px;
+
+    font-weight: 300;
+
+    line-height: 1.95;
+}
+
+
+/* =========================================================
+   ASSINATURA
+========================================================= */
+
+.assinatura {
+    margin-top: 45px;
+
+    padding-top: 26px;
+
+    border-top:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.14
+        );
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.assinatura span {
+    color: #8d96a3;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.17em;
+}
+
+
+.assinatura strong {
+    color: #172033;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 26px;
+
+    font-weight: 500;
+
+    font-style: italic;
+}
+
+
+/* =========================================================
+   MANIFESTO
+========================================================= */
+
+.manifesto {
+    position: relative;
+
+    width: 100%;
+    height: 92vh;
+
+    min-height: 720px;
+
+    overflow: hidden;
+
+    background: #111827;
+}
+
+
+.manifestoImagem {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    object-position: center;
+
+    will-change: transform;
+}
+
+
+.manifestoOverlay {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 1;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(7, 13, 24, 0.25),
+            rgba(7, 13, 24, 0.75)
+        );
+}
+
+
+.manifestoConteudo {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 2;
+
+    padding: 60px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    color: #ffffff;
+}
+
+
+.manifestoConteudo > span {
+    margin-bottom: 26px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.62
+        );
+
+    font-size: 10px;
+
+    font-weight: 500;
+
+    letter-spacing: 0.25em;
+}
+
+
+.manifestoConteudo h2 {
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        clamp(
+            70px,
+            9vw,
+            140px
+        );
+
+    font-weight: 400;
+
+    line-height: 0.8;
+
+    letter-spacing: -0.05em;
+}
+
+
+.manifestoConteudo h2 em {
+    color: #e8edf8;
+
+    font-weight: 400;
+}
+
+
+.manifestoConteudo p {
+    max-width: 470px;
+
+    margin-top: 37px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.7
+        );
+
+    font-size: 13px;
+
+    font-weight: 300;
+
+    line-height: 1.9;
+}
+
+
+/* =========================================================
+   PROPÓSITO
+========================================================= */
+
+.proposito {
+    width:
+        min(
+            1250px,
+            calc(100% - 100px)
+        );
+
+    margin: 0 auto;
+
+    padding:
+        170px
+        0;
+}
+
+
+.propositoCabecalho {
+    margin-bottom: 80px;
+}
+
+
+.propositoCabecalho
+.sectionNumber {
+    margin-bottom: 30px;
+}
+
+
+.propositoCabecalho h2 {
+    color: #182235;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        clamp(
+            60px,
+            7vw,
+            108px
+        );
+
+    font-weight: 400;
+
+    line-height: 0.88;
+
+    letter-spacing: -0.052em;
+}
+
+
+.propositoCabecalho h2 em {
+    color: #3264c8;
+
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   GRID PROPÓSITO
+========================================================= */
+
+.propositoGrid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            1fr
+        );
+
+    border-top:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.15
+        );
+
+    border-bottom:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.15
+        );
+}
+
+
+/* =========================================================
+   CARD PROPÓSITO
+========================================================= */
+
+.propositoCard {
+    min-height: 410px;
+
+    padding:
+        38px
+        35px
+        45px;
+
+    border-right:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.15
+        );
+
+    transition:
+        background
+        0.35s
+        ease;
+}
+
+
+.propositoCard:first-child {
+    border-left:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.15
+        );
+}
+
+
+.propositoCard:hover {
+    background: #ebe7dc;
+}
+
+
+.propositoTopo {
+    margin-bottom: 85px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    color: #3264c8;
+}
+
+
+.propositoTopo span {
+    color: #8b94a1;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.15em;
+}
+
+
+.propositoCard h3 {
+    margin-bottom: 20px;
+
+    color: #182235;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 48px;
+
+    font-weight: 500;
+
+    letter-spacing: -0.035em;
+}
+
+
+.propositoCard p {
+    max-width: 315px;
+
+    color: #707b8b;
+
+    font-size: 12px;
+
+    font-weight: 300;
+
+    line-height: 1.9;
+}
+
+
+/* =========================================================
+   VALORES
+========================================================= */
+
+.valores {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+
+.valores span {
+    padding:
+        9px
+        13px;
+
+    border:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.16
+        );
+
+    border-radius: 999px;
+
+    color: #626d7e;
+
+    font-size: 10px;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   DIFERENCIAIS
+========================================================= */
+
+.diferenciais {
+    width: 100%;
+
+    padding:
+        150px
+        50px;
+
+    background: #172033;
+
+    color: #ffffff;
+}
+
+
+.diferenciaisCabecalho {
+    width:
+        min(
+            1250px,
+            100%
+        );
+
+    margin:
+        0
+        auto
+        85px;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 70px;
+}
+
+
+.diferenciaisCabecalho
+.sectionNumberClaro {
+    margin-bottom: 29px;
+}
+
+
+.diferenciaisCabecalho h2 {
+    max-width: 780px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        clamp(
+            56px,
+            6vw,
+            92px
+        );
+
+    font-weight: 400;
+
+    line-height: 0.89;
+
+    letter-spacing: -0.045em;
+}
+
+
+.diferenciaisCabecalho h2 em {
+    color: #8caef1;
+
+    font-weight: 400;
+}
+
+
+.diferenciaisCabecalho > p {
+    max-width: 320px;
+
+    padding-bottom: 5px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.54
+        );
+
+    font-size: 12px;
+
+    font-weight: 300;
+
+    line-height: 1.9;
+}
+
+
+/* =========================================================
+   GRID DIFERENCIAIS
+========================================================= */
+
+.diferenciaisGrid {
+    width:
+        min(
+            1400px,
+            100%
+        );
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(0, 1fr)
+        );
+
+    border-top:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.14
+        );
+
+    border-bottom:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.14
+        );
+}
+
+
+.diferencialCard {
+    min-height: 410px;
+
+    padding:
+        32px
+        28px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    border-right:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.14
+        );
+
+    transition:
+        background
+        0.35s
+        ease;
+}
+
+
+.diferencialCard:first-child {
+    border-left:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.14
+        );
+}
+
+
+.diferencialCard:hover {
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.045
+        );
+}
+
+
+.diferencialTopo {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+}
+
+
+.diferencialTopo span {
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.38
+        );
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.18em;
+}
+
+
+.diferencialTopo svg {
+    color: #8caef1;
+
+    transition:
+        transform
+        0.3s
+        ease;
+}
+
+
+.diferencialCard:hover
+.diferencialTopo svg {
+    transform:
+        translateY(-4px)
+        rotate(-5deg);
+}
+
+
+.diferencialConteudo h3 {
+    max-width: 260px;
+
+    margin-bottom: 17px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 36px;
+
+    font-weight: 500;
+
+    line-height: 0.98;
+}
+
+
+.diferencialConteudo p {
+    max-width: 250px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.5
+        );
+
+    font-size: 11px;
+
+    font-weight: 300;
+
+    line-height: 1.85;
+}
+
+
+/* =========================================================
+   MARCAS
+========================================================= */
+
+.marcas {
+    width: 100%;
+
+    padding:
+        100px
+        50px;
+
+    background: #f4f1e9;
+
+    text-align: center;
+}
+
+
+.marcasTitulo {
+    display: block;
+
+    margin-bottom: 47px;
+
+    color: #858e9b;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.21em;
+}
+
+
+.marcasLista {
+    width:
+        min(
+            1250px,
+            100%
+        );
+
+    margin: 0 auto;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 25px;
+}
+
+
+.marcasLista strong {
+    color: #283446;
+
+    font-size:
+        clamp(
+            13px,
+            1.45vw,
+            20px
+        );
+
+    font-weight: 600;
+
+    letter-spacing: 0.04em;
+}
+
+
+.marcasLista i {
+    width: 4px;
+    height: 4px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #abb2bd;
+}
+
+
+/* =========================================================
+   EXPERIÊNCIA
+========================================================= */
+
+.experiencia {
+    width:
+        min(
+            1400px,
+            calc(100% - 100px)
+        );
+
+    margin: 0 auto;
+
+    padding:
+        90px
+        0
+        170px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(390px, 0.85fr)
+        minmax(0, 1.15fr);
+
+    align-items: stretch;
+}
+
+
+/* =========================================================
+   TEXTO EXPERIÊNCIA
+========================================================= */
+
+.experienciaConteudo {
+    min-height: 650px;
+
+    padding:
+        70px
+        70px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    background: #ebe7dc;
+}
+
+
+.experienciaConteudo
+.sectionNumber {
+    margin-bottom: 30px;
+}
+
+
+.experienciaConteudo h2 {
+    color: #182235;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        clamp(
+            55px,
+            5.8vw,
+            88px
+        );
+
+    font-weight: 400;
+
+    line-height: 0.88;
+
+    letter-spacing: -0.05em;
+}
+
+
+.experienciaConteudo h2 em {
+    color: #3264c8;
+
+    font-weight: 400;
+}
+
+
+.experienciaConteudo > p {
+    max-width: 430px;
+
+    margin-top: 36px;
+
+    color: #707a89;
+
+    font-size: 12px;
+
+    font-weight: 300;
+
+    line-height: 1.95;
+}
+
+
+/* =========================================================
+   DETALHE EXPERIÊNCIA
+========================================================= */
+
+.experienciaDetalhe {
+    margin-top: 45px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+}
+
+
+.experienciaDetalhe > span {
+    width: 45px;
+    height: 1px;
+
+    background: #3264c8;
+}
+
+
+.experienciaDetalhe p {
+    max-width: 210px;
+
+    color: #465266;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 21px;
+
+    font-style: italic;
+
+    line-height: 1.15;
+}
+
+
+/* =========================================================
+   IMAGEM EXPERIÊNCIA
+========================================================= */
+
+.experienciaImagem {
+    position: relative;
+
+    min-height: 650px;
+
+    overflow: hidden;
+
+    background: #172033;
+}
+
+
+.experienciaImagem img {
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+
+    inset: 0;
+
+    object-fit: cover;
+
+    object-position: center;
+
+    will-change: transform;
+}
+
+
+/* =========================================================
+   CTA LOJAS
+========================================================= */
+
+.lojasCta {
+    width:
+        min(
+            1250px,
+            calc(100% - 100px)
+        );
+
+    min-height: 290px;
+
+    margin:
+        0
+        auto
+        150px;
+
+    padding:
+        55px
+        60px;
+
+    display: grid;
+
+    grid-template-columns:
+        auto
+        1fr
+        auto;
+
+    align-items: center;
+
+    gap: 35px;
+
+    border-top:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.15
+        );
+
+    border-bottom:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.15
+        );
+}
+
+
+.lojasCtaIcone {
+    width: 70px;
+    height: 70px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #172033;
+
+    color: #ffffff;
+}
+
+
+.lojasCtaTexto > span {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: #8b94a1;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.18em;
+}
+
+
+.lojasCtaTexto h2 {
+    color: #182235;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 42px;
+
+    font-weight: 500;
+
+    line-height: 1;
+}
+
+
+.lojasCtaTexto p {
+    max-width: 520px;
+
+    margin-top: 12px;
+
+    color: #717c8b;
+
+    font-size: 11px;
+
+    line-height: 1.7;
+}
+
+
+.lojasCta > button {
+    min-height: 52px;
+
+    padding:
+        0
+        23px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    border: none;
+
+    background: #172033;
+
+    color: #ffffff;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform
+        0.3s
+        ease,
+        background
+        0.3s
+        ease;
+}
+
+
+.lojasCta > button:hover {
+    transform:
+        translateY(-3px);
+
+    background: #3264c8;
+}
+
+
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+.modalOverlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 99999;
+
+    padding: 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow-y: auto;
+
+    background:
+        rgba(
+            6,
+            12,
+            22,
+            0.78
+        );
+
+    backdrop-filter:
+        blur(12px);
+
+    -webkit-backdrop-filter:
+        blur(12px);
+
+    animation:
+        modalFade
+        0.25s
+        ease;
+}
+
 
 /* =========================================================
    MODAL
 ========================================================= */
 
-.modalOverlay {
-  position: fixed;
-
-  inset: 0;
-
-  background: rgba(5, 15, 45, 0.7);
-
-  backdrop-filter: blur(6px);
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  z-index: 9999;
-
-  padding: 20px;
-
-  animation: fadeModal 0.3s ease;
-}
-
-@keyframes fadeModal {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
 .modal {
-  width: 100%;
+    width:
+        min(
+            1100px,
+            100%
+        );
 
-  max-width: 950px;
+    max-height:
+        calc(
+            100vh - 60px
+        );
 
-  background: white;
+    overflow-y: auto;
 
-  border-radius: 22px;
+    padding: 48px;
 
-  padding: 28px;
+    background: #f4f1e9;
 
-  position: relative;
+    box-shadow:
+        0
+        30px
+        90px
+        rgba(
+            0,
+            0,
+            0,
+            0.3
+        );
 
-  overflow: hidden;
-
-  animation: subirModal 0.35s ease;
-
-  box-shadow:
-    0 25px 60px rgba(0, 0, 0, 0.22);
+    animation:
+        modalSubir
+        0.35s
+        ease;
 }
 
-@keyframes subirModal {
-  from {
-    transform: translateY(30px) scale(0.97);
-
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0) scale(1);
-
-    opacity: 1;
-  }
-}
-
-.modal::before {
-  content: "";
-
-  position: absolute;
-
-  width: 280px;
-
-  height: 280px;
-
-  border-radius: 50%;
-
-  background: rgba(59, 97, 255, 0.07);
-
-  top: -100px;
-
-  right: -100px;
-}
-
-/* =========================================================
-   TOPO MODAL
-========================================================= */
 
 .modalTopo {
-  display: flex;
+    margin-bottom: 48px;
 
-  justify-content: space-between;
+    display: flex;
 
-  align-items: flex-start;
+    align-items: flex-start;
 
-  margin-bottom: 25px;
+    justify-content: space-between;
 
-  position: relative;
-
-  z-index: 2;
+    gap: 40px;
 }
+
 
 .modalSubtitulo {
-  font-size: 11px;
+    display: block;
 
-  font-weight: 700;
+    margin-bottom: 15px;
 
-  color: #2451e6;
+    color: #7a8492;
 
-  letter-spacing: 1.5px;
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.22em;
 }
+
 
 .modalTopo h2 {
-  font-size: 38px;
+    color: #182235;
 
-  color: #071b63;
+    font-family:
+        "Cormorant Garamond",
+        serif;
 
-  margin-top: 7px;
+    font-size:
+        clamp(
+            48px,
+            5vw,
+            75px
+        );
 
-  line-height: 1.1;
+    font-weight: 400;
+
+    line-height: 0.9;
+
+    letter-spacing: -0.04em;
 }
 
-.modalTopo h2 span {
-  background: linear-gradient(
-    270deg,
-    #ffb800,
-    #ff4fa3,
-    #694cff,
-    #00c2ff,
-    #32d74b,
-    #ffb800
-  );
 
-  background-size: 1200% 1200%;
+.modalTopo h2 em {
+    color: #3264c8;
 
-  animation: corAnimada 8s ease infinite;
-
-  -webkit-background-clip: text;
-
-  -webkit-text-fill-color: transparent;
+    font-weight: 400;
 }
+
+
+/* =========================================================
+   BOTÃO FECHAR
+========================================================= */
 
 .fecharModal {
-  width: 42px;
+    width: 45px;
+    height: 45px;
 
-  height: 42px;
+    flex-shrink: 0;
 
-  border: none;
+    display: flex;
 
-  border-radius: 11px;
+    align-items: center;
 
-  background: #f2f4ff;
+    justify-content: center;
 
-  color: #2451e6;
+    border:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.16
+        );
 
-  cursor: pointer;
+    border-radius: 50%;
 
-  transition: 0.3s ease;
+    background: transparent;
 
-  display: flex;
+    color: #172033;
 
-  align-items: center;
+    cursor: pointer;
 
-  justify-content: center;
+    transition:
+        background
+        0.25s
+        ease,
+        color
+        0.25s
+        ease,
+        transform
+        0.25s
+        ease;
 }
+
 
 .fecharModal:hover {
-  transform: rotate(90deg) scale(1.05);
+    background: #172033;
 
-  background: #2451e6;
+    color: #ffffff;
 
-  color: white;
+    transform:
+        rotate(90deg);
 }
+
 
 /* =========================================================
    GRID LOJAS
 ========================================================= */
 
 .lojasGrid {
-  display: grid;
+    display: grid;
 
-  grid-template-columns: repeat(3, 1fr);
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0, 1fr)
+        );
 
-  gap: 15px;
+    border-top:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.15
+        );
 
-  position: relative;
-
-  z-index: 2;
+    border-bottom:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.15
+        );
 }
 
-.lojaCard {
-  background:
-    linear-gradient(
-      180deg,
-      #fff,
-      #f7f9ff
-    );
-
-  border-radius: 17px;
-
-  padding: 20px;
-
-  border: 1px solid #e7ebff;
-
-  transition: 0.3s ease;
-
-  position: relative;
-
-  overflow: hidden;
-}
-
-.lojaCard::before {
-  content: "";
-
-  position: absolute;
-
-  inset: 0;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(59, 97, 255, 0.07),
-      rgba(255, 79, 163, 0.07)
-    );
-
-  opacity: 0;
-
-  transition: 0.3s;
-}
-
-.lojaCard:hover::before {
-  opacity: 1;
-}
-
-.lojaCard:hover {
-  transform: translateY(-6px);
-
-  box-shadow:
-    0 14px 28px rgba(36, 81, 230, 0.12);
-}
-
-.lojaTop {
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: center;
-
-  margin-bottom: 17px;
-
-  position: relative;
-
-  z-index: 2;
-}
-
-.lojaIcone {
-  width: 52px;
-
-  height: 52px;
-
-  border-radius: 16px;
-
-  background: #eef2ff;
-
-  color: #2451e6;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-}
-
-.avaliacao {
-  background: #fff6da;
-
-  color: #e3a400;
-
-  padding: 6px 10px;
-
-  border-radius: 25px;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 5px;
-
-  font-size: 12px;
-
-  font-weight: 700;
-}
-
-.lojaCard h3 {
-  font-size: 21px;
-
-  color: #071b63;
-
-  margin-bottom: 17px;
-
-  position: relative;
-
-  z-index: 2;
-}
-
-.infoLinha {
-  display: flex;
-
-  align-items: flex-start;
-
-  gap: 9px;
-
-  margin-bottom: 12px;
-
-  color: #555;
-
-  position: relative;
-
-  z-index: 2;
-}
-
-.infoLinha svg {
-  min-width: 16px;
-
-  margin-top: 3px;
-
-  color: #2451e6;
-}
-
-.infoLinha span {
-  font-size: 13px;
-
-  line-height: 1.45;
-}
-
-.botaoRota {
-  width: 100%;
-
-  margin-top: 10px;
-
-  height: 45px;
-
-  border: none;
-
-  border-radius: 10px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #2451e6,
-      #4f7cff
-    );
-
-  color: white;
-
-  font-size: 14px;
-
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: 0.3s ease;
-
-  position: relative;
-
-  z-index: 2;
-}
-
-.botaoRota:hover {
-  transform: translateY(-3px);
-
-  box-shadow:
-    0 9px 20px rgba(36, 81, 230, 0.3);
-}
 
 /* =========================================================
-   RESPONSIVO
+   CARD LOJA
 ========================================================= */
 
-@media (max-width: 1400px) {
+.lojaCard {
+    min-height: 420px;
 
-  .heroTexto h1 {
-    font-size: 43px;
-  }
+    padding: 27px;
 
-  .bannerTexto h2 {
-    font-size: 36px;
-  }
+    display: flex;
 
-  .item span {
-    font-size: 13px;
-  }
+    flex-direction: column;
+
+    border-right:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.15
+        );
+
+    transition:
+        background
+        0.3s
+        ease;
 }
 
-@media (max-width: 1100px) {
 
-  .hero {
-    flex-direction: column;
-  }
-
-  .heroTexto,
-  .heroImagem {
-    width: 100%;
-  }
-
-  .heroTexto {
-    padding: 38px 32px;
-  }
-
-  .heroImagem img {
-    width: 100%;
-
-    border-bottom-left-radius: 0;
-  }
-
-  .cardsInfo {
-    flex-direction: column;
-
-    gap: 15px;
-  }
-
-  .divisor {
-    display: none;
-  }
-
-  .banner {
-    flex-direction: column;
-
-    padding: 28px 0 0;
-  }
-
-  .bannerTexto,
-  .bannerItens,
-  .bannerImagem {
-    width: 100%;
-  }
-
-  .bannerTexto {
-    padding: 0 25px;
-  }
-
-  .bannerItens {
-    flex-wrap: wrap;
-
-    padding: 25px 20px;
-  }
-
-  .linhaVertical {
-    display: none;
-  }
-
-  .bannerImagem {
-    height: 220px;
-  }
-
-  .localizacao {
-    flex-direction: column;
-
-    gap: 18px;
-  }
-
-  .lojasGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .modal {
-    max-height: 90vh;
-
-    overflow-y: auto;
-  }
+.lojaCard:first-child {
+    border-left:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.15
+        );
 }
 
-@media (max-width: 768px) {
 
-  .main {
-    padding: 0 15px 30px;
-  }
+.lojaCard:hover {
+    background: #ebe7dc;
+}
 
-  .heroTexto {
-    padding: 32px 24px;
-  }
 
-  .heroTexto h1 {
-    font-size: 36px;
-  }
+/* =========================================================
+   TOPO LOJA
+========================================================= */
 
-  .heroTexto p {
-    font-size: 14px;
-  }
+.lojaTop {
+    margin-bottom: 32px;
 
-  .bannerTexto h2 {
-    font-size: 32px;
-  }
+    display: flex;
 
-  .bannerTexto p {
-    font-size: 14px;
-  }
+    align-items: center;
 
-  .cardInfo {
-    flex-direction: column;
+    justify-content: space-between;
+}
 
-    padding: 20px;
-  }
 
-  .cardInfo h3 {
-    font-size: 22px;
-  }
+.lojaIcone {
+    width: 45px;
+    height: 45px;
 
-  .cardInfo p,
-  .cardInfo li {
-    font-size: 14px;
-  }
+    display: flex;
 
-  .localTexto {
-    flex-direction: column;
-
-    text-align: center;
-  }
-
-  .localTexto p {
-    font-size: 15px;
-  }
-
-  .localizacao button {
-    width: 100%;
+    align-items: center;
 
     justify-content: center;
 
-    font-size: 14px;
-  }
+    background: #172033;
 
-  .modal {
-    padding: 20px;
-  }
+    color: #ffffff;
+}
 
-  .modalTopo {
-    gap: 15px;
-  }
 
-  .modalTopo h2 {
-    font-size: 30px;
-  }
+.avaliacao {
+    display: flex;
 
-  .lojaCard h3 {
-    font-size: 21px;
-  }
+    align-items: center;
 
-  .infoLinha span {
-    font-size: 13px;
-  }
+    gap: 6px;
+
+    color: #b18229;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+
+.lojaNumero {
+    margin-bottom: 10px;
+
+    color: #9299a4;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.16em;
+}
+
+
+.lojaCard h3 {
+    min-height: 75px;
+
+    margin-bottom: 26px;
+
+    color: #182235;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 31px;
+
+    font-weight: 500;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   INFORMAÇÕES
+========================================================= */
+
+.infoLoja {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+
+.infoLinha {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    color: #737d8b;
+}
+
+
+.infoLinha svg {
+    flex-shrink: 0;
+
+    color: #3264c8;
+}
+
+
+.infoLinha span {
+    font-size: 11px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   BOTÃO ROTA
+========================================================= */
+
+.botaoRota {
+    margin-top: auto;
+
+    padding:
+        18px
+        0
+        7px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border: none;
+
+    border-bottom:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.4
+        );
+
+    background: transparent;
+
+    color: #172033;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        padding
+        0.25s
+        ease;
+}
+
+
+.botaoRota:hover {
+    padding-left: 7px;
+
+    padding-right: 7px;
+}
+
+
+/* =========================================================
+   ANIMAÇÕES MODAL
+========================================================= */
+
+@keyframes modalFade {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+
+@keyframes modalSubir {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(30px)
+            scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+/* =========================================================
+   SELEÇÃO
+========================================================= */
+
+::selection {
+    background: #3264c8;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   1200PX
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .historia {
+        gap: 55px;
+
+        grid-template-columns:
+            1.05fr
+            0.95fr;
+    }
+
+
+    .historiaImagemWrapper {
+        height: 630px;
+    }
+
+
+    .diferenciaisGrid {
+        grid-template-columns:
+            repeat(
+                2,
+                1fr
+            );
+    }
+
+
+    .diferencialCard {
+        border-bottom:
+            1px solid
+            rgba(
+                255,
+                255,
+                255,
+                0.14
+            );
+    }
+
+
+    .experienciaConteudo {
+        padding:
+            55px
+            45px;
+    }
+
+}
+
+
+/* =========================================================
+   1000PX
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .heroConteudo {
+        width:
+            calc(
+                100% - 70px
+            );
+    }
+
+
+    .intro,
+    .proposito,
+    .lojasCta {
+        width:
+            calc(
+                100% - 70px
+            );
+    }
+
+
+    .historia {
+        width:
+            calc(
+                100% - 70px
+            );
+
+        grid-template-columns:
+            1fr;
+
+        gap: 60px;
+    }
+
+
+    .historiaImagemWrapper {
+        height: 620px;
+    }
+
+
+    .historiaConteudo {
+        max-width: 650px;
+
+        padding-right: 0;
+    }
+
+
+    .propositoGrid {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .propositoCard,
+    .propositoCard:first-child {
+        min-height: auto;
+
+        border-left:
+            1px solid
+            rgba(
+                24,
+                34,
+                53,
+                0.15
+            );
+
+        border-right:
+            1px solid
+            rgba(
+                24,
+                34,
+                53,
+                0.15
+            );
+
+        border-bottom:
+            1px solid
+            rgba(
+                24,
+                34,
+                53,
+                0.15
+            );
+    }
+
+
+    .propositoTopo {
+        margin-bottom: 45px;
+    }
+
+
+    .diferenciaisCabecalho {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 30px;
+    }
+
+
+    .experiencia {
+        width:
+            calc(
+                100% - 70px
+            );
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .experienciaConteudo {
+        min-height: 520px;
+    }
+
+
+    .experienciaImagem {
+        min-height: 540px;
+    }
+
+
+    .lojasCta {
+        grid-template-columns:
+            auto
+            1fr;
+    }
+
+
+    .lojasCta > button {
+        grid-column:
+            1 / -1;
+
+        width: fit-content;
+    }
+
+
+    .lojasGrid {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .lojaCard,
+    .lojaCard:first-child {
+        min-height: 320px;
+
+        border-left:
+            1px solid
+            rgba(
+                24,
+                34,
+                53,
+                0.15
+            );
+
+        border-right:
+            1px solid
+            rgba(
+                24,
+                34,
+                53,
+                0.15
+            );
+
+        border-bottom:
+            1px solid
+            rgba(
+                24,
+                34,
+                53,
+                0.15
+            );
+    }
+
+}
+
+
+/* =========================================================
+   768PX
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .hero {
+        min-height: 680px;
+    }
+
+
+    .heroConteudo {
+        width:
+            calc(
+                100% - 40px
+            );
+
+        padding-top: 90px;
+    }
+
+
+    .heroConteudo h1 {
+        font-size:
+            clamp(
+                58px,
+                18vw,
+                88px
+            );
+    }
+
+
+    .heroConteudo > p {
+        max-width: 400px;
+
+        font-size: 12px;
+    }
+
+
+    .scrollIndicador {
+        display: none;
+    }
+
+
+    .intro {
+        width:
+            calc(
+                100% - 40px
+            );
+
+        min-height: 500px;
+    }
+
+
+    .intro h2 {
+        font-size:
+            clamp(
+                48px,
+                14vw,
+                72px
+            );
+    }
+
+
+    .historia {
+        width:
+            calc(
+                100% - 40px
+            );
+
+        padding-bottom: 110px;
+    }
+
+
+    .historiaImagemWrapper {
+        height: 500px;
+    }
+
+
+    .historiaConteudo h2 {
+        font-size:
+            clamp(
+                52px,
+                14vw,
+                75px
+            );
+    }
+
+
+    .manifesto {
+        height: 80vh;
+
+        min-height: 600px;
+    }
+
+
+    .manifestoConteudo {
+        padding: 30px;
+    }
+
+
+    .manifestoConteudo h2 {
+        font-size:
+            clamp(
+                57px,
+                16vw,
+                90px
+            );
+    }
+
+
+    .proposito {
+        width:
+            calc(
+                100% - 40px
+            );
+
+        padding:
+            110px
+            0;
+    }
+
+
+    .propositoCabecalho {
+        margin-bottom: 55px;
+    }
+
+
+    .propositoCabecalho h2 {
+        font-size:
+            clamp(
+                52px,
+                14vw,
+                78px
+            );
+    }
+
+
+    .diferenciais {
+        padding:
+            100px
+            20px;
+    }
+
+
+    .diferenciaisCabecalho {
+        margin-bottom: 55px;
+    }
+
+
+    .diferenciaisGrid {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .diferencialCard,
+    .diferencialCard:first-child {
+        min-height: 330px;
+
+        border-left:
+            1px solid
+            rgba(
+                255,
+                255,
+                255,
+                0.14
+            );
+
+        border-bottom:
+            1px solid
+            rgba(
+                255,
+                255,
+                255,
+                0.14
+            );
+    }
+
+
+    .marcas {
+        padding:
+            80px
+            20px;
+    }
+
+
+    .marcasLista {
+        flex-direction: column;
+
+        gap: 25px;
+    }
+
+
+    .marcasLista i {
+        display: none;
+    }
+
+
+    .experiencia {
+        width:
+            calc(
+                100% - 40px
+            );
+
+        padding:
+            60px
+            0
+            110px;
+    }
+
+
+    .experienciaConteudo {
+        min-height: auto;
+
+        padding:
+            55px
+            30px;
+    }
+
+
+    .experienciaImagem {
+        min-height: 480px;
+    }
+
+
+    .lojasCta {
+        width:
+            calc(
+                100% - 40px
+            );
+
+        margin-bottom: 100px;
+
+        padding:
+            45px
+            30px;
+
+        grid-template-columns:
+            1fr;
+
+        gap: 25px;
+    }
+
+
+    .lojasCtaIcone {
+        width: 60px;
+        height: 60px;
+    }
+
+
+    .modalOverlay {
+        padding: 15px;
+    }
+
+
+    .modal {
+        max-height:
+            calc(
+                100vh - 30px
+            );
+
+        padding:
+            30px
+            22px;
+    }
+
+
+    .modalTopo {
+        margin-bottom: 35px;
+    }
+
+}
+
+
+/* =========================================================
+   480PX
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .hero {
+        min-height: 640px;
+    }
+
+
+    .heroConteudo {
+        width:
+            calc(
+                100% - 30px
+            );
+    }
+
+
+    .heroEyebrow {
+        font-size: 9px;
+    }
+
+
+    .heroConteudo h1 {
+        font-size: 56px;
+
+        line-height: 0.88;
+    }
+
+
+    .heroConteudo > p {
+        margin-top: 28px;
+
+        line-height: 1.75;
+    }
+
+
+    .heroBotao {
+        min-height: 50px;
+
+        padding:
+            0
+            19px;
+
+        font-size: 10px;
+    }
+
+
+    .intro {
+        width:
+            calc(
+                100% - 30px
+            );
+
+        min-height: 430px;
+    }
+
+
+    .intro h2 {
+        font-size: 46px;
+    }
+
+
+    .historia {
+        width:
+            calc(
+                100% - 30px
+            );
+
+        padding:
+            30px
+            0
+            90px;
+    }
+
+
+    .historiaImagemWrapper {
+        height: 390px;
+    }
+
+
+    .historiaConteudo h2 {
+        font-size: 51px;
+    }
+
+
+    .manifesto {
+        min-height: 560px;
+    }
+
+
+    .manifestoConteudo h2 {
+        font-size: 54px;
+    }
+
+
+    .proposito {
+        width:
+            calc(
+                100% - 30px
+            );
+
+        padding:
+            90px
+            0;
+    }
+
+
+    .propositoCabecalho h2 {
+        font-size: 51px;
+    }
+
+
+    .propositoCard {
+        padding:
+            28px
+            24px
+            34px;
+    }
+
+
+    .propositoCard h3 {
+        font-size: 40px;
+    }
+
+
+    .diferenciais {
+        padding:
+            90px
+            15px;
+    }
+
+
+    .diferenciaisCabecalho h2 {
+        font-size: 51px;
+    }
+
+
+    .diferencialCard {
+        min-height: 300px;
+
+        padding: 25px;
+    }
+
+
+    .diferencialConteudo h3 {
+        font-size: 32px;
+    }
+
+
+    .experiencia {
+        width:
+            calc(
+                100% - 30px
+            );
+    }
+
+
+    .experienciaConteudo {
+        padding:
+            45px
+            22px;
+    }
+
+
+    .experienciaConteudo h2 {
+        font-size: 51px;
+    }
+
+
+    .experienciaImagem {
+        min-height: 390px;
+    }
+
+
+    .lojasCta {
+        width:
+            calc(
+                100% - 30px
+            );
+
+        padding:
+            40px
+            22px;
+    }
+
+
+    .lojasCtaTexto h2 {
+        font-size: 37px;
+    }
+
+
+    .modal {
+        padding:
+            27px
+            16px;
+    }
+
+
+    .modalTopo h2 {
+        font-size: 44px;
+    }
+
+
+    .fecharModal {
+        width: 39px;
+        height: 39px;
+    }
+
+
+    .lojaCard {
+        min-height: 310px;
+
+        padding: 22px;
+    }
+
 }

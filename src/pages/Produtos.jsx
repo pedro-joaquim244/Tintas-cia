@@ -1,6 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+    useEffect,
+    useMemo,
+    useState
+} from "react";
 
 import Cabecalho from "../components/Cabeçalho-Users";
+
 import style from "../styles/Cores.module.css";
 
 import {
@@ -11,212 +16,433 @@ import {
     FaSearch,
     FaShieldAlt,
     FaCreditCard,
-    FaGem
+    FaGem,
+    FaArrowRight,
+    FaPaintRoller,
+    FaBoxOpen
 } from "react-icons/fa";
 
-import { useNavigate } from "react-router-dom";
-import { api } from "../services/api";
-import { useAuth } from "../contexts/authContext";
+import {
+    useNavigate
+} from "react-router-dom";
+
+import {
+    api
+} from "../services/api";
+
+import {
+    useAuth
+} from "../contexts/authContext";
+
+
+// =====================================================
+// BANNERS
+// =====================================================
+
+import Banner1 from "../assets/imagens/banner1.png";
+import Banner2 from "../assets/imagens/banner2.png";
+import Banner3 from "../assets/imagens/banner3.png";
+
 
 export default function Produtos() {
-    const { usuario } = useAuth();
-    const navigate = useNavigate();
+
+    const {
+        usuario
+    } = useAuth();
+
+    const navigate =
+        useNavigate();
+
 
     // =====================================================
     // ESTADOS
     // =====================================================
 
-    const [produtos, setProdutos] = useState([]);
-    const [busca, setBusca] = useState("");
-    const [categoriaSelecionada, setCategoriaSelecionada] =
-        useState("Todos");
-    const [modalCarrinho, setModalCarrinho] = useState(false);
-    const [slideAtual, setSlideAtual] = useState(0);
+    const [
+        produtos,
+        setProdutos
+    ] = useState([]);
 
-    const [categoriasAbertas, setCategoriasAbertas] = useState({
+    const [
+        busca,
+        setBusca
+    ] = useState("");
+
+    const [
+        categoriaSelecionada,
+        setCategoriaSelecionada
+    ] = useState("Todos");
+
+    const [
+        modalCarrinho,
+        setModalCarrinho
+    ] = useState(false);
+
+    const [
+        slideAtual,
+        setSlideAtual
+    ] = useState(0);
+
+
+    const [
+        categoriasAbertas,
+        setCategoriasAbertas
+    ] = useState({
+
         "Tintas para Parede": true,
+
         "Tintas para Área Externa": true,
+
         "Tintas para Madeira": true,
+
         "Tintas para Metal": true,
+
         "Efeitos e Acabamentos": true,
+
         "Proteção e Segurança": true,
+
         "Pincéis e Acessórios": true,
+
         "Ferramentas": true,
+
         "Preparação de Superfície": true,
+
         "Complementos": true,
+
         "Outros": true
+
     });
 
-    // =====================================================
-    // BANNERS
-    // =====================================================
-
-    const banners = [
-        {
-            imagem: "/img/banner.png",
-            titulo: "Transforme",
-            destaque: "seu mundo",
-            descricao:
-                "As melhores tintas e ferramentas para dar vida às suas ideias."
-        },
-        {
-            imagem: "/img/banner.png",
-            titulo: "Dê vida",
-            destaque: "às suas ideias",
-            descricao:
-                "Encontre tudo o que precisa para transformar seus ambientes."
-        },
-        {
-            imagem: "/img/banner.png",
-            titulo: "Sua casa",
-            destaque: "com novas cores",
-            descricao:
-                "Qualidade e variedade para deixar cada espaço do seu jeito."
-        }
-    ];
 
     // =====================================================
-    // BUSCAR PRODUTOS DO BANCO
+    // CONTEÚDO DOS BANNERS
+    // =====================================================
+
+    const banners = useMemo(
+        () => [
+
+            {
+                imagem:
+                    Banner1,
+
+                subtitulo:
+                    "PIXEL COLOR",
+
+                titulo:
+                    "Cores para",
+
+                destaque:
+                    "transformar espaços.",
+
+                descricao:
+                    "Tintas, acabamentos e ferramentas selecionadas para dar vida aos seus projetos."
+            },
+
+            {
+                imagem:
+                    Banner2,
+
+                subtitulo:
+                    "ENCONTRE SUA COR",
+
+                titulo:
+                    "Seu projeto.",
+
+                destaque:
+                    "Seu estilo.",
+
+                descricao:
+                    "Explore diferentes tonalidades, marcas e acabamentos para encontrar a combinação ideal."
+            },
+
+            {
+                imagem:
+                    Banner3,
+
+                subtitulo:
+                    "QUALIDADE EM CADA DETALHE",
+
+                titulo:
+                    "Tudo para",
+
+                destaque:
+                    "a sua transformação.",
+
+                descricao:
+                    "Do preparo da superfície ao acabamento final, encontre tudo em um só lugar."
+            }
+
+        ],
+        []
+    );
+
+
+    // =====================================================
+    // BUSCAR PRODUTOS
     // =====================================================
 
     useEffect(() => {
+
         async function carregarProdutos() {
+
             try {
-                const resposta = await api.get("/itens");
 
-                console.log(
-                    "RESPOSTA DOS PRODUTOS:",
-                    resposta.data
-                );
+                const resposta =
+                    await api.get(
+                        "/itens"
+                    );
 
-                const dados = resposta.data;
 
-                let listaProdutos = [];
+                const dados =
+                    resposta.data;
 
-                if (Array.isArray(dados)) {
-                    listaProdutos = dados;
-                } else if (Array.isArray(dados?.itens)) {
-                    listaProdutos = dados.itens;
-                } else if (Array.isArray(dados?.produtos)) {
-                    listaProdutos = dados.produtos;
-                } else if (Array.isArray(dados?.data)) {
-                    listaProdutos = dados.data;
+
+                let listaProdutos =
+                    [];
+
+
+                if (
+                    Array.isArray(
+                        dados
+                    )
+                ) {
+
+                    listaProdutos =
+                        dados;
+
+                } else if (
+                    Array.isArray(
+                        dados?.itens
+                    )
+                ) {
+
+                    listaProdutos =
+                        dados.itens;
+
+                } else if (
+                    Array.isArray(
+                        dados?.produtos
+                    )
+                ) {
+
+                    listaProdutos =
+                        dados.produtos;
+
+                } else if (
+                    Array.isArray(
+                        dados?.data
+                    )
+                ) {
+
+                    listaProdutos =
+                        dados.data;
+
                 }
 
-                console.log(
-                    "PRODUTOS ENCONTRADOS:",
-                    listaProdutos
-                );
 
-                // =================================================
-                // MOSTRAR SOMENTE PRODUTOS ATIVOS
-                // =================================================
+                // =========================================
+                // SOMENTE ATIVOS E COM ESTOQUE
+                // =========================================
 
-                const produtosAtivos = listaProdutos.filter((produto) => {
-                    const status = String(produto?.status || "")
-                        .trim()
-                        .toLowerCase();
+                const produtosAtivos =
+                    listaProdutos.filter(
+                        (produto) => {
 
-                    return status === "ativo" && Number(produto?.quantidade) > 0;
-                });
+                            const status =
+                                String(
+                                    produto?.status ||
+                                    ""
+                                )
+                                    .trim()
+                                    .toLowerCase();
 
-                console.log(
-                    "PRODUTOS ATIVOS:",
+
+                            return (
+                                status ===
+                                    "ativo" &&
+                                Number(
+                                    produto?.quantidade
+                                ) > 0
+                            );
+
+                        }
+                    );
+
+
+                setProdutos(
                     produtosAtivos
                 );
 
-                setProdutos(produtosAtivos);
+            } catch (
+                error
+            ) {
 
-            } catch (error) {
                 console.error(
                     "ERRO AO BUSCAR PRODUTOS:",
-                    error.response?.data || error
+                    error.response?.data ||
+                    error
                 );
 
+
                 setProdutos([]);
+
             }
+
         }
 
+
         carregarProdutos();
+
     }, []);
+
 
     // =====================================================
     // CARROSSEL AUTOMÁTICO
     // =====================================================
 
     useEffect(() => {
-        const intervalo = setInterval(() => {
-            setSlideAtual((atual) =>
-                atual === banners.length - 1
-                    ? 0
-                    : atual + 1
-            );
-        }, 5000);
 
-        return () => clearInterval(intervalo);
+        const intervalo =
+            setInterval(
+                () => {
+
+                    setSlideAtual(
+                        (atual) =>
+                            atual ===
+                            banners.length - 1
+                                ? 0
+                                : atual + 1
+                    );
+
+                },
+                5000
+            );
+
+
+        return () =>
+            clearInterval(
+                intervalo
+            );
+
     }, [banners.length]);
 
+
     // =====================================================
-    // CARROSSEL
+    // PRÓXIMO SLIDE
     // =====================================================
 
     function proximoSlide() {
-        setSlideAtual((atual) =>
-            atual === banners.length - 1
-                ? 0
-                : atual + 1
+
+        setSlideAtual(
+            (atual) =>
+                atual ===
+                banners.length - 1
+                    ? 0
+                    : atual + 1
         );
+
     }
 
+
+    // =====================================================
+    // SLIDE ANTERIOR
+    // =====================================================
+
     function slideAnterior() {
-        setSlideAtual((atual) =>
-            atual === 0
-                ? banners.length - 1
-                : atual - 1
+
+        setSlideAtual(
+            (atual) =>
+                atual === 0
+                    ? banners.length - 1
+                    : atual - 1
         );
+
     }
+
 
     // =====================================================
     // ABRIR / FECHAR CATEGORIA
     // =====================================================
 
-    function abrirCategoria(nome) {
-        setCategoriasAbertas((anterior) => ({
-            ...anterior,
-            [nome]: !anterior[nome]
-        }));
+    function abrirCategoria(
+        nome
+    ) {
+
+        setCategoriasAbertas(
+            (anterior) => ({
+
+                ...anterior,
+
+                [nome]:
+                    !anterior[
+                        nome
+                    ]
+
+            })
+        );
+
     }
 
+
     // =====================================================
-    // TEXTO DO PRODUTO
+    // NORMALIZAR TEXTO
     // =====================================================
 
-    function textoProduto(produto) {
-        return `
-            ${produto?.nome || ""}
-            ${produto?.descricao || ""}
-            ${produto?.categoria || ""}
-            ${produto?.categoria_nome || ""}
-            ${produto?.categoriaNome || ""}
-            ${produto?.tipo || ""}
-            ${produto?.marca || ""}
-        `
+    function normalizarTexto(
+        texto
+    ) {
+
+        return String(
+            texto || ""
+        )
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase();
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            )
+            .toLowerCase()
+            .trim();
+
     }
+
+
+    // =====================================================
+    // TEXTO COMPLETO DO PRODUTO
+    // =====================================================
+
+    function textoProduto(
+        produto
+    ) {
+
+        return normalizarTexto(
+            `
+                ${produto?.nome || ""}
+                ${produto?.descricao || ""}
+                ${produto?.categoria || ""}
+                ${produto?.categoria_nome || ""}
+                ${produto?.categoriaNome || ""}
+                ${produto?.tipo || ""}
+                ${produto?.marca || ""}
+                ${produto?.cor || ""}
+            `
+        );
+
+    }
+
 
     // =====================================================
     // DESCOBRIR CATEGORIA
     // =====================================================
 
-    function descobrirCategoria(produto) {
-        const texto = textoProduto(produto);
+    function descobrirCategoria(
+        produto
+    ) {
 
-        // =================================================
-        // SE O BANCO JÁ POSSUI UMA CATEGORIA,
-        // TENTA USAR PRIMEIRO
-        // =================================================
+        const texto =
+            textoProduto(
+                produto
+            );
+
 
         const categoriaBanco =
             produto?.categoria ||
@@ -224,15 +450,19 @@ export default function Produtos() {
             produto?.categoriaNome ||
             produto?.tipo;
 
-        if (categoriaBanco) {
+
+        if (
+            categoriaBanco
+        ) {
+
             const categoriaNormalizada =
-                String(categoriaBanco)
-                    .normalize("NFD")
-                    .replace(/[\u0300-\u036f]/g, "")
-                    .toLowerCase()
-                    .trim();
+                normalizarTexto(
+                    categoriaBanco
+                );
+
 
             const categoriasBanco = {
+
                 "tintas para parede":
                     "Tintas para Parede",
 
@@ -295,416 +525,833 @@ export default function Produtos() {
 
                 "outros":
                     "Outros"
+
             };
 
-            if (categoriasBanco[categoriaNormalizada]) {
-                return categoriasBanco[categoriaNormalizada];
+
+            if (
+                categoriasBanco[
+                    categoriaNormalizada
+                ]
+            ) {
+
+                return categoriasBanco[
+                    categoriaNormalizada
+                ];
+
             }
+
         }
 
-        // =================================================
-        // TINTAS PARA ÁREA EXTERNA
-        // =================================================
 
         if (
-            texto.includes("area externa") ||
-            texto.includes("externa") ||
-            texto.includes("exterior") ||
-            texto.includes("fachada")
+            texto.includes(
+                "area externa"
+            ) ||
+            texto.includes(
+                "externa"
+            ) ||
+            texto.includes(
+                "exterior"
+            ) ||
+            texto.includes(
+                "fachada"
+            )
         ) {
+
             return "Tintas para Área Externa";
+
         }
 
-        // =================================================
-        // TINTAS PARA MADEIRA
-        // =================================================
 
         if (
-            texto.includes("madeira") ||
-            texto.includes("verniz") ||
-            texto.includes("stain")
+            texto.includes(
+                "madeira"
+            ) ||
+            texto.includes(
+                "verniz"
+            ) ||
+            texto.includes(
+                "stain"
+            )
         ) {
+
             return "Tintas para Madeira";
+
         }
 
-        // =================================================
-        // TINTAS PARA METAL
-        // =================================================
 
         if (
-            texto.includes("metal") ||
-            texto.includes("ferro") ||
-            texto.includes("esmalte")
+            texto.includes(
+                "metal"
+            ) ||
+            texto.includes(
+                "ferro"
+            ) ||
+            texto.includes(
+                "esmalte"
+            )
         ) {
+
             return "Tintas para Metal";
+
         }
 
-        // =================================================
-        // EFEITOS E ACABAMENTOS
-        // =================================================
 
         if (
-            texto.includes("efeito") ||
-            texto.includes("textura") ||
-            texto.includes("acabamento") ||
-            texto.includes("brilho") ||
-            texto.includes("fosco")
+            texto.includes(
+                "efeito"
+            ) ||
+            texto.includes(
+                "textura"
+            ) ||
+            texto.includes(
+                "acabamento"
+            ) ||
+            texto.includes(
+                "brilho"
+            ) ||
+            texto.includes(
+                "fosco"
+            )
         ) {
+
             return "Efeitos e Acabamentos";
+
         }
 
-        // =================================================
-        // PROTEÇÃO E SEGURANÇA
-        // =================================================
 
         if (
-            texto.includes("protecao") ||
-            texto.includes("impermeabilizante") ||
-            texto.includes("antimofo") ||
-            texto.includes("anti mofo") ||
-            texto.includes("seguranca")
+            texto.includes(
+                "protecao"
+            ) ||
+            texto.includes(
+                "impermeabilizante"
+            ) ||
+            texto.includes(
+                "antimofo"
+            ) ||
+            texto.includes(
+                "anti mofo"
+            ) ||
+            texto.includes(
+                "seguranca"
+            )
         ) {
+
             return "Proteção e Segurança";
+
         }
 
-        // =================================================
-        // PINCÉIS E ACESSÓRIOS
-        // =================================================
 
         if (
-            texto.includes("pincel") ||
-            texto.includes("pinceis") ||
-            texto.includes("rolo") ||
-            texto.includes("fita") ||
-            texto.includes("acessorio") ||
-            texto.includes("bandeja") ||
-            texto.includes("trincha")
+            texto.includes(
+                "pincel"
+            ) ||
+            texto.includes(
+                "pinceis"
+            ) ||
+            texto.includes(
+                "rolo"
+            ) ||
+            texto.includes(
+                "fita"
+            ) ||
+            texto.includes(
+                "acessorio"
+            ) ||
+            texto.includes(
+                "bandeja"
+            ) ||
+            texto.includes(
+                "trincha"
+            )
         ) {
+
             return "Pincéis e Acessórios";
+
         }
 
-        // =================================================
-        // FERRAMENTAS
-        // =================================================
 
         if (
-            texto.includes("ferramenta") ||
-            texto.includes("espatula") ||
-            texto.includes("lixa") ||
-            texto.includes("desempenadeira") ||
-            texto.includes("trinca") ||
-            texto.includes("cacamba") ||
-            texto.includes("martelo") ||
-            texto.includes("chave") ||
-            texto.includes("serrote")
+            texto.includes(
+                "ferramenta"
+            ) ||
+            texto.includes(
+                "espatula"
+            ) ||
+            texto.includes(
+                "lixa"
+            ) ||
+            texto.includes(
+                "desempenadeira"
+            ) ||
+            texto.includes(
+                "trinca"
+            ) ||
+            texto.includes(
+                "cacamba"
+            ) ||
+            texto.includes(
+                "martelo"
+            ) ||
+            texto.includes(
+                "chave"
+            ) ||
+            texto.includes(
+                "serrote"
+            )
         ) {
+
             return "Ferramentas";
+
         }
 
-        // =================================================
-        // PREPARAÇÃO DE SUPERFÍCIE
-        // =================================================
 
         if (
-            texto.includes("massa") ||
-            texto.includes("selador") ||
-            texto.includes("fundo") ||
-            texto.includes("cal") ||
-            texto.includes("removedor") ||
-            texto.includes("preparacao")
+            texto.includes(
+                "massa"
+            ) ||
+            texto.includes(
+                "selador"
+            ) ||
+            texto.includes(
+                "fundo"
+            ) ||
+            texto.includes(
+                "cal"
+            ) ||
+            texto.includes(
+                "removedor"
+            ) ||
+            texto.includes(
+                "preparacao"
+            )
         ) {
+
             return "Preparação de Superfície";
+
         }
 
-        // =================================================
-        // COMPLEMENTOS
-        // =================================================
 
         if (
-            texto.includes("complemento") ||
-            texto.includes("diluente") ||
-            texto.includes("thinner") ||
-            texto.includes("solvente") ||
-            texto.includes("aguarras") ||
-            texto.includes("cola")
+            texto.includes(
+                "complemento"
+            ) ||
+            texto.includes(
+                "diluente"
+            ) ||
+            texto.includes(
+                "thinner"
+            ) ||
+            texto.includes(
+                "solvente"
+            ) ||
+            texto.includes(
+                "aguarras"
+            ) ||
+            texto.includes(
+                "cola"
+            )
         ) {
+
             return "Complementos";
+
         }
 
-        // =================================================
-        // TINTAS PARA PAREDE
-        // =================================================
 
         if (
-            texto.includes("tinta") ||
-            texto.includes("latex") ||
-            texto.includes("pva") ||
-            texto.includes("acrilica")
+            texto.includes(
+                "tinta"
+            ) ||
+            texto.includes(
+                "latex"
+            ) ||
+            texto.includes(
+                "pva"
+            ) ||
+            texto.includes(
+                "acrilica"
+            )
         ) {
+
             return "Tintas para Parede";
+
         }
 
-        // =================================================
-        // OUTROS
-        // =================================================
 
         return "Outros";
+
     }
+
 
     // =====================================================
     // CATEGORIAS
     // =====================================================
 
-    const categorias = useMemo(() => {
-        const nomesCategorias = [
-            "Tintas para Parede",
-            "Tintas para Área Externa",
-            "Tintas para Madeira",
-            "Tintas para Metal",
-            "Efeitos e Acabamentos",
-            "Proteção e Segurança",
-            "Pincéis e Acessórios",
-            "Ferramentas",
-            "Preparação de Superfície",
-            "Complementos",
-            "Outros"
-        ];
+    const categorias =
+        useMemo(
+            () => {
 
-        return nomesCategorias.map((nome) => {
-            const produtosCategoria =
-                produtos.filter(
-                    (produto) =>
-                        descobrirCategoria(produto) === nome
+                const nomesCategorias =
+                    [
+
+                        "Tintas para Parede",
+
+                        "Tintas para Área Externa",
+
+                        "Tintas para Madeira",
+
+                        "Tintas para Metal",
+
+                        "Efeitos e Acabamentos",
+
+                        "Proteção e Segurança",
+
+                        "Pincéis e Acessórios",
+
+                        "Ferramentas",
+
+                        "Preparação de Superfície",
+
+                        "Complementos",
+
+                        "Outros"
+
+                    ];
+
+
+                return nomesCategorias.map(
+                    (nome) => {
+
+                        const produtosCategoria =
+                            produtos.filter(
+                                (produto) =>
+                                    descobrirCategoria(
+                                        produto
+                                    ) ===
+                                    nome
+                            );
+
+
+                        return {
+
+                            nome,
+
+                            produtos:
+                                produtosCategoria
+
+                        };
+
+                    }
                 );
 
-            return {
-                nome,
-                produtos: produtosCategoria
-            };
-        });
-    }, [produtos]);
+            },
+            [produtos]
+        );
+
 
     // =====================================================
-    // FILTRO DOS PRODUTOS
+    // FILTRAR PRODUTOS
     // =====================================================
 
-    const produtosFiltrados = useMemo(() => {
-        const pesquisa =
-            busca
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .toLowerCase()
-                .trim();
+    const produtosFiltrados =
+        useMemo(
+            () => {
 
-        return produtos.filter((produto) => {
+                const pesquisa =
+                    normalizarTexto(
+                        busca
+                    );
 
-            // =================================================
-            // SEGURANÇA:
-            // NUNCA MOSTRAR INATIVOS OU ESGOTADOS
-            // =================================================
 
-            const status = String(produto?.status || "")
-                .trim()
-                .toLowerCase();
+                return produtos.filter(
+                    (produto) => {
 
-            if (status !== "ativo" || Number(produto?.quantidade) <= 0) {
-                return false;
-            }
+                        const status =
+                            normalizarTexto(
+                                produto?.status
+                            );
 
-            const texto = textoProduto(produto);
 
-            const correspondePesquisa =
-                texto.includes(pesquisa);
+                        if (
+                            status !==
+                                "ativo" ||
+                            Number(
+                                produto?.quantidade
+                            ) <= 0
+                        ) {
 
-            const correspondeCategoria =
-                categoriaSelecionada === "Todos" ||
-                descobrirCategoria(produto) ===
-                    categoriaSelecionada;
+                            return false;
 
-            return (
-                correspondePesquisa &&
-                correspondeCategoria
-            );
-        });
-    }, [
-        produtos,
-        busca,
-        categoriaSelecionada
-    ]);
+                        }
+
+
+                        const texto =
+                            textoProduto(
+                                produto
+                            );
+
+
+                        const correspondePesquisa =
+                            texto.includes(
+                                pesquisa
+                            );
+
+
+                        const correspondeCategoria =
+                            categoriaSelecionada ===
+                                "Todos" ||
+                            descobrirCategoria(
+                                produto
+                            ) ===
+                                categoriaSelecionada;
+
+
+                        return (
+                            correspondePesquisa &&
+                            correspondeCategoria
+                        );
+
+                    }
+                );
+
+            },
+            [
+                produtos,
+                busca,
+                categoriaSelecionada
+            ]
+        );
+
 
     // =====================================================
-    // PRODUTOS DE UMA CATEGORIA
+    // PRODUTOS DA CATEGORIA
     // =====================================================
 
-    function produtosDaCategoria(nomeCategoria) {
+    function produtosDaCategoria(
+        nomeCategoria
+    ) {
+
         return produtosFiltrados.filter(
             (produto) =>
-                descobrirCategoria(produto) ===
+                descobrirCategoria(
+                    produto
+                ) ===
                 nomeCategoria
         );
+
     }
 
+
     // =====================================================
-    // IMAGEM DO PRODUTO
+    // IMAGEM PRODUTO
     // =====================================================
 
-    function imagemProduto(produto) {
-        if (!produto?.foto) {
-            return "/img/tinta.png";
-        }
+    function imagemProduto(
+        produto
+    ) {
 
         if (
-            produto.foto.startsWith("http://") ||
-            produto.foto.startsWith("https://")
+            !produto?.foto
         ) {
-            return produto.foto;
+
+            return "/img/tinta.png";
+
         }
 
+
+        if (
+            produto.foto.startsWith(
+                "http://"
+            ) ||
+            produto.foto.startsWith(
+                "https://"
+            )
+        ) {
+
+            return produto.foto;
+
+        }
+
+
         return `http://localhost:3333/${produto.foto}`;
+
     }
 
+
     // =====================================================
-    // ADICIONAR AO CARRINHO
+    // PREÇO
     // =====================================================
 
-    async function adicionarCarrinho(produto) {
+    function formatarPreco(
+        preco
+    ) {
+
+        return Number(
+            preco || 0
+        ).toLocaleString(
+            "pt-BR",
+            {
+
+                style:
+                    "currency",
+
+                currency:
+                    "BRL"
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // COR
+    // =====================================================
+
+    function obterCorProduto(
+        produto
+    ) {
+
+        return (
+            produto?.cor ||
+            produto?.cor_nome ||
+            produto?.nome_cor ||
+            ""
+        );
+
+    }
+
+
+    // =====================================================
+    // MARCA
+    // =====================================================
+
+    function obterMarcaProduto(
+        produto
+    ) {
+
+        return (
+            produto?.marca ||
+            ""
+        );
+
+    }
+
+
+    // =====================================================
+    // CARRINHO
+    // =====================================================
+
+    async function adicionarCarrinho(
+        produto
+    ) {
+
         try {
-            if (!usuario) {
+
+            if (
+                !usuario
+            ) {
+
                 alert(
                     "Faça login para adicionar produtos"
                 );
 
-                navigate("/login");
+
+                navigate(
+                    "/login"
+                );
+
+
                 return;
+
             }
 
-            // Segurança adicional:
-            // impede adicionar produto que não esteja ativo
-            const status = String(produto?.status || "")
-                .trim()
-                .toLowerCase();
 
-            if (status !== "ativo" || Number(produto?.quantidade) <= 0) {
+            const status =
+                normalizarTexto(
+                    produto?.status
+                );
+
+
+            if (
+                status !==
+                    "ativo" ||
+                Number(
+                    produto?.quantidade
+                ) <= 0
+            ) {
+
                 alert(
                     "Este produto não está disponível."
                 );
 
+
                 return;
+
             }
+
 
             await api.post(
                 "/carrinho",
                 {
-                    usuario_id: usuario.id,
-                    produto_id: produto.id,
-                    quantidade: 1
+
+                    usuario_id:
+                        usuario.id,
+
+                    produto_id:
+                        produto.id,
+
+                    quantidade:
+                        1
+
                 }
             );
 
-            setModalCarrinho(true);
 
-        } catch (error) {
+            setModalCarrinho(
+                true
+            );
+
+        } catch (
+            error
+        ) {
+
             console.error(
                 "Erro ao adicionar:",
-                error.response?.data || error
+                error.response?.data ||
+                error
             );
+
 
             alert(
                 error.response?.data?.erro ||
                 "Erro ao adicionar produto"
             );
+
         }
+
     }
+
+
+    // =====================================================
+    // QUANTIDADE ENCONTRADA
+    // =====================================================
+
+    const quantidadeEncontrada =
+        produtosFiltrados.length;
+
 
     // =====================================================
     // RENDER
     // =====================================================
 
     return (
+
         <>
+
             <Cabecalho />
 
-            <main className={style.page}>
+
+            <main
+                className={
+                    style.page
+                }
+            >
+
 
                 {/* =================================================
-                    CARROSSEL
+                    HERO
                 ================================================= */}
 
-                <section className={style.banner}>
+                <section
+                    className={
+                        style.banner
+                    }
+                >
 
-                    <button
-                        className={`${style.setaBanner} ${style.esquerda}`}
-                        onClick={slideAnterior}
-                        aria-label="Banner anterior"
+                    {/* =============================================
+                        IMAGEM DO BANNER
+                    ============================================= */}
+
+                    <img
+                        key={
+                            slideAtual
+                        }
+                        src={
+                            banners[
+                                slideAtual
+                            ].imagem
+                        }
+                        alt=""
+                        className={
+                            style.bannerImagemFundo
+                        }
+                    />
+
+
+                    {/* =============================================
+                        LEVE SOMBRA SOMENTE NO LADO DO TEXTO
+                    ============================================= */}
+
+                    <div
+                        className={
+                            style.bannerOverlay
+                        }
+                    />
+
+
+                    {/* =============================================
+                        CONTEÚDO ESQUERDO
+                    ============================================= */}
+
+                    <div
+                        className={
+                            style.bannerConteudo
+                        }
+                        key={
+                            `texto-${slideAtual}`
+                        }
                     >
-                        <FaChevronLeft />
-                    </button>
 
-                    <div className={style.bannerConteudo}>
+                        <span
+                            className={
+                                style.bannerEyebrow
+                            }
+                        >
 
-                        <div className={style.bannerTexto}>
-
-                            <h1>
-                                {banners[slideAtual].titulo}
-                                <br />
-
-                                <strong>
-                                    {banners[slideAtual].destaque}
-                                </strong>
-                            </h1>
-
-                            <p>
-                                {banners[slideAtual].descricao}
-                            </p>
-
-                            <button
-                                className={
-                                    style.botaoBanner
-                                }
-                                onClick={() =>
-                                    document
-                                        .getElementById(
-                                            "produtos"
-                                        )
-                                        ?.scrollIntoView({
-                                            behavior:
-                                                "smooth"
-                                        })
-                                }
-                            >
-                                Ver produtos
-                            </button>
-
-                        </div>
-
-                        <img
-                            src={
+                            {
                                 banners[
                                     slideAtual
-                                ].imagem
+                                ].subtitulo
                             }
-                            alt="Produtos"
+
+                        </span>
+
+
+                        <h1>
+
+                            {
+                                banners[
+                                    slideAtual
+                                ].titulo
+                            }
+
+                            <br />
+
+
+                            <em>
+
+                                {
+                                    banners[
+                                        slideAtual
+                                    ].destaque
+                                }
+
+                            </em>
+
+                        </h1>
+
+
+                        <p>
+
+                            {
+                                banners[
+                                    slideAtual
+                                ].descricao
+                            }
+
+                        </p>
+
+
+                        <button
+                            type="button"
                             className={
-                                style.bannerImagem
+                                style.botaoBanner
                             }
-                        />
+                            onClick={() =>
+                                document
+                                    .getElementById(
+                                        "produtos"
+                                    )
+                                    ?.scrollIntoView({
+                                        behavior:
+                                            "smooth"
+                                    })
+                            }
+                        >
+
+                            Explorar produtos
+
+                            <FaArrowRight />
+
+                        </button>
 
                     </div>
 
+
+                    {/* =============================================
+                        SETA ESQUERDA
+                    ============================================= */}
+
                     <button
-                        className={`${style.setaBanner} ${style.direita}`}
-                        onClick={proximoSlide}
-                        aria-label="Próximo banner"
+                        type="button"
+                        className={
+                            `${style.setaBanner} ${style.esquerda}`
+                        }
+                        onClick={
+                            slideAnterior
+                        }
+                        aria-label="Banner anterior"
                     >
-                        <FaChevronRight />
+
+                        <FaChevronLeft />
+
                     </button>
 
-                    <div className={style.indicadores}>
+
+                    {/* =============================================
+                        SETA DIREITA
+                    ============================================= */}
+
+                    <button
+                        type="button"
+                        className={
+                            `${style.setaBanner} ${style.direita}`
+                        }
+                        onClick={
+                            proximoSlide
+                        }
+                        aria-label="Próximo banner"
+                    >
+
+                        <FaChevronRight />
+
+                    </button>
+
+
+                    {/* =============================================
+                        INDICADORES
+                    ============================================= */}
+
+                    <div
+                        className={
+                            style.indicadores
+                        }
+                    >
 
                         {banners.map(
-                            (_, index) => (
+                            (
+                                _,
+                                index
+                            ) => (
+
                                 <button
-                                    key={index}
+                                    type="button"
+                                    key={
+                                        index
+                                    }
                                     className={
                                         index ===
                                         slideAtual
@@ -722,6 +1369,7 @@ export default function Produtos() {
                                         }`
                                     }
                                 />
+
                             )
                         )}
 
@@ -729,30 +1377,150 @@ export default function Produtos() {
 
                 </section>
 
+
                 {/* =================================================
-                    PESQUISA E CATEGORIAS
+                    INTRO CATÁLOGO
                 ================================================= */}
 
                 <section
-                    className={style.filtros}
+                    className={
+                        style.catalogoIntro
+                    }
+                >
+
+                    <div>
+
+                        <span
+                            className={
+                                style.sectionLabel
+                            }
+                        >
+                            NOSSO CATÁLOGO
+                        </span>
+
+
+                        <h2>
+
+                            Encontre o produto
+
+                            <br />
+
+                            <em>
+                                ideal para seu projeto.
+                            </em>
+
+                        </h2>
+
+                    </div>
+
+
+                    <p>
+
+                        Explore nossa seleção de
+                        tintas, acabamentos,
+                        ferramentas e acessórios
+                        para cada etapa da sua
+                        transformação.
+
+                    </p>
+
+                </section>
+
+
+                {/* =================================================
+                    PESQUISA E FILTROS
+                ================================================= */}
+
+                <section
+                    className={
+                        style.filtros
+                    }
                 >
 
                     <div
-                        className={style.pesquisa}
+                        className={
+                            style.filtrosTopo
+                        }
                     >
-                        <FaSearch />
 
-                        <input
-                            type="text"
-                            placeholder="Buscar por produtos, marcas ou categorias..."
-                            value={busca}
-                            onChange={(e) =>
-                                setBusca(
-                                    e.target.value
-                                )
+                        <div
+                            className={
+                                style.pesquisa
                             }
-                        />
+                        >
+
+                            <FaSearch />
+
+
+                            <input
+                                type="text"
+                                placeholder="Buscar produtos, marcas, cores ou categorias..."
+                                value={
+                                    busca
+                                }
+                                onChange={(
+                                    event
+                                ) =>
+                                    setBusca(
+                                        event.target.value
+                                    )
+                                }
+                            />
+
+
+                            {busca && (
+
+                                <button
+                                    type="button"
+                                    className={
+                                        style.limparBusca
+                                    }
+                                    onClick={() =>
+                                        setBusca("")
+                                    }
+                                >
+
+                                    Limpar
+
+                                </button>
+
+                            )}
+
+                        </div>
+
+
+                        <div
+                            className={
+                                style.resultadoBusca
+                            }
+                        >
+
+                            <strong>
+                                {
+                                    quantidadeEncontrada
+                                }
+                            </strong>
+
+
+                            <span>
+
+                                {
+                                    quantidadeEncontrada ===
+                                    1
+                                        ? "produto"
+                                        : "produtos"
+                                }
+
+                            </span>
+
+                        </div>
+
                     </div>
+
+
+                    {/* =============================================
+                        CATEGORIAS
+                    ============================================= */}
 
                     <div
                         className={
@@ -761,6 +1529,7 @@ export default function Produtos() {
                     >
 
                         <button
+                            type="button"
                             className={
                                 categoriaSelecionada ===
                                 "Todos"
@@ -773,12 +1542,19 @@ export default function Produtos() {
                                 )
                             }
                         >
+
                             Todos
+
                         </button>
 
+
                         {categorias.map(
-                            (categoria) => (
+                            (
+                                categoria
+                            ) => (
+
                                 <button
+                                    type="button"
                                     key={
                                         categoria.nome
                                     }
@@ -794,10 +1570,13 @@ export default function Produtos() {
                                         )
                                     }
                                 >
+
                                     {
                                         categoria.nome
                                     }
+
                                 </button>
+
                             )
                         )}
 
@@ -805,17 +1584,23 @@ export default function Produtos() {
 
                 </section>
 
+
                 {/* =================================================
-                    LISTA DE PRODUTOS
+                    LISTA PRODUTOS
                 ================================================= */}
 
                 <section
-                    className={style.lista}
                     id="produtos"
+                    className={
+                        style.lista
+                    }
                 >
 
                     {categorias.map(
-                        (categoria) => {
+                        (
+                            categoria,
+                            categoriaIndex
+                        ) => {
 
                             if (
                                 categoriaSelecionada !==
@@ -823,15 +1608,31 @@ export default function Produtos() {
                                 categoriaSelecionada !==
                                     categoria.nome
                             ) {
+
                                 return null;
+
                             }
+
 
                             const produtosCategoria =
                                 produtosDaCategoria(
                                     categoria.nome
                                 );
 
+
+                            if (
+                                produtosCategoria.length ===
+                                    0 &&
+                                !busca
+                            ) {
+
+                                return null;
+
+                            }
+
+
                             return (
+
                                 <section
                                     className={
                                         style.categoria
@@ -841,7 +1642,9 @@ export default function Produtos() {
                                     }
                                 >
 
-                                    {/* TÍTULO DA CATEGORIA */}
+                                    {/* =================================
+                                        CABEÇALHO
+                                    ================================= */}
 
                                     <div
                                         className={
@@ -849,47 +1652,107 @@ export default function Produtos() {
                                         }
                                     >
 
-                                        <h2>
-                                            {
-                                                categoria.nome
-                                            }
-                                        </h2>
-
-                                        <button
+                                        <div
                                             className={
-                                                style.botaoCategoria
-                                            }
-                                            onClick={() =>
-                                                abrirCategoria(
-                                                    categoria.nome
-                                                )
-                                            }
-                                            aria-label={
-                                                categoriasAbertas[
-                                                    categoria.nome
-                                                ]
-                                                    ? "Fechar categoria"
-                                                    : "Abrir categoria"
+                                                style.tituloCategoriaTexto
                                             }
                                         >
 
-                                            {
-                                                categoriasAbertas[
-                                                    categoria.nome
-                                                ]
-                                                    ? (
-                                                        <FaChevronDown />
-                                                    )
-                                                    : (
-                                                        <FaChevronRight />
-                                                    )
-                                            }
+                                            <span>
 
-                                        </button>
+                                                {
+                                                    String(
+                                                        categoriaIndex +
+                                                        1
+                                                    ).padStart(
+                                                        2,
+                                                        "0"
+                                                    )
+                                                }
+
+                                                {" — "}
+
+                                                CATEGORIA
+
+                                            </span>
+
+
+                                            <h2>
+
+                                                {
+                                                    categoria.nome
+                                                }
+
+                                            </h2>
+
+                                        </div>
+
+
+                                        <div
+                                            className={
+                                                style.categoriaDireita
+                                            }
+                                        >
+
+                                            <span>
+
+                                                {
+                                                    produtosCategoria.length
+                                                }
+
+                                                {" "}
+
+                                                {
+                                                    produtosCategoria.length ===
+                                                    1
+                                                        ? "produto"
+                                                        : "produtos"
+                                                }
+
+                                            </span>
+
+
+                                            <button
+                                                type="button"
+                                                className={
+                                                    style.botaoCategoria
+                                                }
+                                                onClick={() =>
+                                                    abrirCategoria(
+                                                        categoria.nome
+                                                    )
+                                                }
+                                                aria-label={
+                                                    categoriasAbertas[
+                                                        categoria.nome
+                                                    ]
+                                                        ? "Fechar categoria"
+                                                        : "Abrir categoria"
+                                                }
+                                            >
+
+                                                {
+                                                    categoriasAbertas[
+                                                        categoria.nome
+                                                    ]
+                                                        ? (
+                                                            <FaChevronDown />
+                                                        )
+                                                        : (
+                                                            <FaChevronRight />
+                                                        )
+                                                }
+
+                                            </button>
+
+                                        </div>
 
                                     </div>
 
-                                    {/* PRODUTOS */}
+
+                                    {/* =================================
+                                        PRODUTOS
+                                    ================================= */}
 
                                     {
                                         categoriasAbertas[
@@ -911,11 +1774,22 @@ export default function Produtos() {
                                                                 style.semProdutos
                                                             }
                                                         >
-                                                            {
-                                                                busca
-                                                                    ? "Nenhum produto encontrado."
-                                                                    : "Nenhum produto cadastrado nesta categoria."
-                                                            }
+
+                                                            <FaBoxOpen />
+
+
+                                                            <strong>
+                                                                Nenhum produto encontrado
+                                                            </strong>
+
+
+                                                            <p>
+
+                                                                Tente buscar por outro
+                                                                nome, marca ou categoria.
+
+                                                            </p>
+
                                                         </div>
 
                                                     ) : (
@@ -923,108 +1797,228 @@ export default function Produtos() {
                                                         produtosCategoria.map(
                                                             (
                                                                 produto
-                                                            ) => (
+                                                            ) => {
 
-                                                                <article
-                                                                    className={
-                                                                        style.produto
-                                                                    }
-                                                                    key={
-                                                                        produto.id
-                                                                    }
-                                                                >
+                                                                const marca =
+                                                                    obterMarcaProduto(
+                                                                        produto
+                                                                    );
 
-                                                                    {/* IMAGEM */}
 
-                                                                    <div
+                                                                const cor =
+                                                                    obterCorProduto(
+                                                                        produto
+                                                                    );
+
+
+                                                                return (
+
+                                                                    <article
                                                                         className={
-                                                                            style.imagemProdutoBox
+                                                                            style.produto
+                                                                        }
+                                                                        key={
+                                                                            produto.id
                                                                         }
                                                                     >
 
-                                                                        <img
-                                                                            src={
-                                                                                imagemProduto(
-                                                                                    produto
-                                                                                )
-                                                                            }
-                                                                            alt={
-                                                                                produto.nome ||
-                                                                                "Produto"
-                                                                            }
-                                                                            onError={(
-                                                                                event
-                                                                            ) => {
-                                                                                event.currentTarget.src =
-                                                                                    "/img/tinta.png";
-                                                                            }}
-                                                                        />
-
-                                                                    </div>
-
-                                                                    {/* INFORMAÇÕES */}
-
-                                                                    <div
-                                                                        className={
-                                                                            style.produtoInfo
-                                                                        }
-                                                                    >
-
-                                                                        <h3>
-                                                                            {
-                                                                                produto.nome ||
-                                                                                "Produto sem nome"
-                                                                            }
-                                                                        </h3>
-
-                                                                        <span className={style.estoqueDisponivel}>
-                                                                            Estoque: {produto.quantidade} unidade(s)
-                                                                        </span>
+                                                                        {/* IMAGEM */}
 
                                                                         <div
                                                                             className={
-                                                                                style.produtoRodape
+                                                                                style.imagemProdutoBox
                                                                             }
                                                                         >
 
-                                                                            <strong>
-                                                                                R${" "}
-                                                                                {
-                                                                                    Number(
-                                                                                        produto.preco ||
-                                                                                        0
-                                                                                    )
-                                                                                        .toFixed(
-                                                                                            2
-                                                                                        )
-                                                                                        .replace(
-                                                                                            ".",
-                                                                                            ","
-                                                                                        )
-                                                                                }
-                                                                            </strong>
+                                                                            {
+                                                                                marca && (
 
-                                                                            <button
-                                                                                className={
-                                                                                    style.carrinho
-                                                                                }
-                                                                                onClick={() =>
-                                                                                    adicionarCarrinho(
+                                                                                    <span
+                                                                                        className={
+                                                                                            style.marcaImagem
+                                                                                        }
+                                                                                    >
+
+                                                                                        {
+                                                                                            marca
+                                                                                        }
+
+                                                                                    </span>
+
+                                                                                )
+                                                                            }
+
+
+                                                                            <img
+                                                                                src={
+                                                                                    imagemProduto(
                                                                                         produto
                                                                                     )
                                                                                 }
-                                                                                aria-label="Adicionar ao carrinho"
-                                                                            >
-                                                                                <FaShoppingCart />
-                                                                            </button>
+                                                                                alt={
+                                                                                    produto.nome ||
+                                                                                    "Produto"
+                                                                                }
+                                                                                onError={(
+                                                                                    event
+                                                                                ) => {
+
+                                                                                    event.currentTarget.src =
+                                                                                        "/img/tinta.png";
+
+                                                                                }}
+                                                                            />
 
                                                                         </div>
 
-                                                                    </div>
 
-                                                                </article>
+                                                                        {/* INFO */}
 
-                                                            )
+                                                                        <div
+                                                                            className={
+                                                                                style.produtoInfo
+                                                                            }
+                                                                        >
+
+                                                                            <div
+                                                                                className={
+                                                                                    style.produtoMeta
+                                                                                }
+                                                                            >
+
+                                                                                <span>
+
+                                                                                    {
+                                                                                        marca ||
+                                                                                        descobrirCategoria(
+                                                                                            produto
+                                                                                        )
+                                                                                    }
+
+                                                                                </span>
+
+                                                                            </div>
+
+
+                                                                            <h3>
+
+                                                                                {
+                                                                                    produto.nome ||
+                                                                                    "Produto sem nome"
+                                                                                }
+
+                                                                            </h3>
+
+
+                                                                            {
+                                                                                cor && (
+
+                                                                                    <div
+                                                                                        className={
+                                                                                            style.corProduto
+                                                                                        }
+                                                                                    >
+
+                                                                                        <span
+                                                                                            className={
+                                                                                                style.corBolinha
+                                                                                            }
+                                                                                        />
+
+                                                                                        {
+                                                                                            cor
+                                                                                        }
+
+                                                                                    </div>
+
+                                                                                )
+                                                                            }
+
+
+                                                                            <span
+                                                                                className={
+                                                                                    style.estoqueDisponivel
+                                                                                }
+                                                                            >
+
+                                                                                Em estoque
+
+                                                                                <small>
+
+                                                                                    {
+                                                                                        produto.quantidade
+                                                                                    }
+
+                                                                                    {" "}
+
+                                                                                    unidade(s)
+
+                                                                                </small>
+
+                                                                            </span>
+
+
+                                                                            <div
+                                                                                className={
+                                                                                    style.produtoRodape
+                                                                                }
+                                                                            >
+
+                                                                                <div
+                                                                                    className={
+                                                                                        style.precoBox
+                                                                                    }
+                                                                                >
+
+                                                                                    <span>
+                                                                                        A partir de
+                                                                                    </span>
+
+
+                                                                                    <strong>
+
+                                                                                        {
+                                                                                            formatarPreco(
+                                                                                                produto.preco
+                                                                                            )
+                                                                                        }
+
+                                                                                    </strong>
+
+                                                                                </div>
+
+
+                                                                                <button
+                                                                                    type="button"
+                                                                                    className={
+                                                                                        style.carrinho
+                                                                                    }
+                                                                                    onClick={() =>
+                                                                                        adicionarCarrinho(
+                                                                                            produto
+                                                                                        )
+                                                                                    }
+                                                                                    aria-label={
+                                                                                        `Adicionar ${
+                                                                                            produto.nome ||
+                                                                                            "produto"
+                                                                                        } ao carrinho`
+                                                                                    }
+                                                                                >
+
+                                                                                    <FaShoppingCart />
+
+                                                                                </button>
+
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                    </article>
+
+                                                                );
+
+                                                            }
                                                         )
 
                                                     )
@@ -1036,168 +2030,165 @@ export default function Produtos() {
                                     }
 
                                 </section>
+
                             );
+
                         }
                     )}
 
+
                     {/* =================================================
-                        NENHUM PRODUTO ATIVO
+                        NENHUM PRODUTO
                     ================================================= */}
 
-                    {produtos.length === 0 && (
+                    {
+                        produtos.length ===
+                        0 && (
 
-                        <div
-                            className={
-                                style.semProdutos
-                            }
-                        >
-                            Nenhum produto disponível no momento.
-                        </div>
+                            <div
+                                className={
+                                    style.semProdutosGeral
+                                }
+                            >
 
-                    )}
+                                <div>
+                                    <FaPaintRoller />
+                                </div>
+
+
+                                <span>
+                                    CATÁLOGO
+                                </span>
+
+
+                                <h2>
+                                    Nenhum produto disponível.
+                                </h2>
+
+
+                                <p>
+
+                                    No momento não temos
+                                    produtos ativos com
+                                    estoque disponível.
+
+                                </p>
+
+                            </div>
+
+                        )
+                    }
 
                 </section>
 
             </main>
 
-            {/* =================================================
+
+            {/* =====================================================
                 BENEFÍCIOS
-            ================================================= */}
+            ===================================================== */}
 
             <section
-                className={style.beneficios}
+                className={
+                    style.beneficios
+                }
             >
 
                 <div
-                    className={style.beneficio}
-                >
-                    <FaShieldAlt />
-
-                    <div>
-                        <strong>
-                            Pagamento seguro
-                        </strong>
-
-                        <span>
-                            Ambiente 100% seguro
-                        </span>
-                    </div>
-                </div>
-
-                <div
-                    className={style.beneficio}
-                >
-                    <FaCreditCard />
-
-                    <div>
-                        <strong>
-                            Parcela em até 12x
-                        </strong>
-
-                        <span>
-                            No cartão de crédito
-                        </span>
-                    </div>
-                </div>
-
-                <div
-                    className={style.beneficio}
-                >
-                    <FaGem />
-
-                    <div>
-                        <strong>
-                            5% de desconto no PIX
-                        </strong>
-
-                        <span>
-                            Aproveite!
-                        </span>
-                    </div>
-                </div>
-
-                <div
-                    className={style.beneficio}
-                >
-                    <FaShieldAlt />
-
-                    <div>
-                        <strong>
-                            Compra garantida
-                        </strong>
-
-                        <span>
-                            Receba ou devolvemos seu dinheiro!
-                        </span>
-                    </div>
-                </div>
-
-            </section>
-
-            {/* =================================================
-                MODAL DO CARRINHO
-            ================================================= */}
-
-            {modalCarrinho && (
-
-                <div
-                    className={style.overlay}
-                    onClick={() =>
-                        setModalCarrinho(false)
+                    className={
+                        style.beneficiosConteudo
                     }
                 >
 
                     <div
                         className={
-                            style.modalCarrinho
-                        }
-                        onClick={(e) =>
-                            e.stopPropagation()
+                            style.beneficio
                         }
                     >
 
-                        <div
-                            className={
-                                style.icone
-                            }
-                        >
-                            <FaShoppingCart />
+                        <FaShieldAlt />
+
+                        <div>
+
+                            <strong>
+                                Pagamento seguro
+                            </strong>
+
+                            <span>
+                                Ambiente protegido
+                                para suas compras
+                            </span>
+
                         </div>
 
-                        <h2>
-                            Produto adicionado!
-                        </h2>
+                    </div>
 
-                        <p>
-                            O produto foi colocado
-                            no seu carrinho.
-                        </p>
 
-                        <div
-                            className={
-                                style.botoesModal
-                            }
-                        >
+                    <div
+                        className={
+                            style.beneficio
+                        }
+                    >
 
-                            <button
-                                onClick={() =>
-                                    setModalCarrinho(
-                                        false
-                                    )
-                                }
-                            >
-                                Continuar comprando
-                            </button>
+                        <FaCreditCard />
 
-                            <button
-                                onClick={() =>
-                                    navigate(
-                                        "/cliente/carrinho"
-                                    )
-                                }
-                            >
-                                Ir para carrinho
-                            </button>
+                        <div>
+
+                            <strong>
+                                Até 12x no cartão
+                            </strong>
+
+                            <span>
+                                Mais facilidade para
+                                seu projeto
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        className={
+                            style.beneficio
+                        }
+                    >
+
+                        <FaGem />
+
+                        <div>
+
+                            <strong>
+                                5% no PIX
+                            </strong>
+
+                            <span>
+                                Economize no pagamento
+                                à vista
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        className={
+                            style.beneficio
+                        }
+                    >
+
+                        <FaShieldAlt />
+
+                        <div>
+
+                            <strong>
+                                Compra garantida
+                            </strong>
+
+                            <span>
+                                Segurança em cada pedido
+                            </span>
 
                         </div>
 
@@ -1205,8 +2196,126 @@ export default function Produtos() {
 
                 </div>
 
-            )}
+            </section>
+
+
+            {/* =====================================================
+                MODAL CARRINHO
+            ===================================================== */}
+
+            {
+                modalCarrinho && (
+
+                    <div
+                        className={
+                            style.overlay
+                        }
+                        onClick={() =>
+                            setModalCarrinho(
+                                false
+                            )
+                        }
+                    >
+
+                        <div
+                            className={
+                                style.modalCarrinho
+                            }
+                            onClick={(
+                                event
+                            ) =>
+                                event.stopPropagation()
+                            }
+                        >
+
+                            <span
+                                className={
+                                    style.modalLabel
+                                }
+                            >
+                                CARRINHO
+                            </span>
+
+
+                            <div
+                                className={
+                                    style.icone
+                                }
+                            >
+
+                                <FaShoppingCart />
+
+                            </div>
+
+
+                            <h2>
+
+                                Produto
+
+                                <br />
+
+                                <em>
+                                    adicionado.
+                                </em>
+
+                            </h2>
+
+
+                            <p>
+
+                                O item foi colocado
+                                no seu carrinho com
+                                sucesso.
+
+                            </p>
+
+
+                            <div
+                                className={
+                                    style.botoesModal
+                                }
+                            >
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setModalCarrinho(
+                                            false
+                                        )
+                                    }
+                                >
+
+                                    Continuar comprando
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        navigate(
+                                            "/cliente/carrinho"
+                                        )
+                                    }
+                                >
+
+                                    Ir para carrinho
+
+                                    <FaArrowRight />
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                )
+            }
 
         </>
+
     );
+
 }

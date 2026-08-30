@@ -1,5 +1,4 @@
-@import url(
-    "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Poppins:wght@300;400;500;600&display=swap"
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Poppins:wght@300;400;500;600&display=swap"
 );
 
 
@@ -20,10 +19,7 @@
     height: 70px;
 
     padding:
-        0
-        18px
-        0
-        25px;
+        0 18px 0 25px;
 
     display: flex;
 
@@ -38,31 +34,23 @@
     overflow: visible;
 
     background:
-        linear-gradient(
-            135deg,
+        linear-gradient(135deg,
             rgba(250, 249, 246, 0.91),
-            rgba(244, 245, 247, 0.84)
-        );
+            rgba(244, 245, 247, 0.84));
 
     backdrop-filter:
-        blur(22px)
-        saturate(135%);
+        blur(22px) saturate(135%);
 
     -webkit-backdrop-filter:
-        blur(22px)
-        saturate(135%);
+        blur(22px) saturate(135%);
 
     border:
-        1px solid
-        rgba(255, 255, 255, 0.8);
+        1px solid rgba(255, 255, 255, 0.8);
 
     box-shadow:
-        0 8px 35px
-        rgba(8, 18, 36, 0.09),
-        0 2px 8px
-        rgba(8, 18, 36, 0.035),
-        inset 0 1px
-        rgba(255, 255, 255, 0.9);
+        0 8px 35px rgba(8, 18, 36, 0.09),
+        0 2px 8px rgba(8, 18, 36, 0.035),
+        inset 0 1px rgba(255, 255, 255, 0.9);
 
     font-family:
         "Poppins",
@@ -91,13 +79,11 @@
     border-radius: inherit;
 
     background:
-        linear-gradient(
-            105deg,
+        linear-gradient(105deg,
             rgba(255, 255, 255, 0.35),
             transparent 32%,
             transparent 68%,
-            rgba(255, 255, 255, 0.18)
-        );
+            rgba(255, 255, 255, 0.18));
 
     pointer-events: none;
 
@@ -126,12 +112,10 @@
     height: 1px;
 
     background:
-        linear-gradient(
-            90deg,
+        linear-gradient(90deg,
             transparent,
             rgba(30, 59, 100, 0.13),
-            transparent
-        );
+            transparent);
 
     pointer-events: none;
 }
@@ -141,7 +125,7 @@
    LOGO / LINK
 ========================================================= */
 
-.header > a:first-child {
+.header>a:first-child {
     position: relative;
 
     z-index: 3;
@@ -157,7 +141,7 @@
 
 
 .logo {
-    width: 69px;
+    width: 55px;
 
     height: auto;
 
@@ -168,13 +152,10 @@
     cursor: pointer;
 
     transition:
-        transform 0.4s
-        cubic-bezier(
-            0.16,
+        transform 0.4s cubic-bezier(0.16,
             1,
             0.3,
-            1
-        ),
+            1),
         opacity 0.3s ease;
 }
 
@@ -205,11 +186,9 @@
 
     justify-content: center;
 
-    gap: clamp(
-        22px,
-        2.6vw,
-        42px
-    );
+    gap: clamp(22px,
+            2.6vw,
+            42px);
 
     z-index: 2;
 }
@@ -223,8 +202,7 @@
     position: relative;
 
     padding:
-        8px
-        0;
+        8px 0;
 
     color: #1d2c42;
 
@@ -276,13 +254,10 @@
         right center;
 
     transition:
-        transform 0.4s
-        cubic-bezier(
-            0.16,
+        transform 0.4s cubic-bezier(0.16,
             1,
             0.3,
-            1
-        );
+            1);
 }
 
 
@@ -329,8 +304,7 @@
         rgba(255, 255, 255, 0.46);
 
     border:
-        1px solid
-        rgba(22, 48, 83, 0.09);
+        1px solid rgba(22, 48, 83, 0.09);
 
     transition:
         transform 0.35s ease,
@@ -347,8 +321,7 @@
         rgba(23, 60, 114, 0.21);
 
     box-shadow:
-        0 8px 22px
-        rgba(20, 48, 87, 0.12);
+        0 8px 22px rgba(20, 48, 87, 0.12);
 }
 
 
@@ -382,14 +355,12 @@
     aspect-ratio: 1 / 1;
 
     border:
-        2px solid
-        rgba(255, 255, 255, 0.96);
+        2px solid rgba(255, 255, 255, 0.96);
 
     background: #173c72;
 
     box-shadow:
-        0 3px 12px
-        rgba(21, 45, 76, 0.14);
+        0 3px 12px rgba(21, 45, 76, 0.14);
 
     cursor: pointer;
 
@@ -404,8 +375,7 @@
         scale(1.04);
 
     box-shadow:
-        0 5px 16px
-        rgba(21, 45, 76, 0.18);
+        0 5px 16px rgba(21, 45, 76, 0.18);
 }
 
 
@@ -439,19 +409,15 @@
     color: #ffffff;
 
     background:
-        linear-gradient(
-            145deg,
+        linear-gradient(145deg,
             #122b4f,
-            #1e4f8e
-        );
+            #1e4f8e);
 
     border:
-        2px solid
-        rgba(255, 255, 255, 0.97);
+        2px solid rgba(255, 255, 255, 0.97);
 
     box-shadow:
-        0 4px 14px
-        rgba(20, 52, 94, 0.17);
+        0 4px 14px rgba(20, 52, 94, 0.17);
 
     font-family:
         "Cormorant Garamond",
@@ -478,8 +444,7 @@
         scale(1.04);
 
     box-shadow:
-        0 6px 18px
-        rgba(20, 52, 94, 0.23);
+        0 6px 18px rgba(20, 52, 94, 0.23);
 }
 
 
@@ -501,8 +466,7 @@
     padding: 0;
 
     border:
-        1px solid
-        rgba(21, 46, 79, 0.09);
+        1px solid rgba(21, 46, 79, 0.09);
 
     border-radius: 50%;
 
@@ -558,8 +522,7 @@
 
 .ativo span:nth-child(1) {
     transform:
-        rotate(45deg)
-        translate(4.5px, 4.5px);
+        rotate(45deg) translate(4.5px, 4.5px);
 }
 
 
@@ -570,8 +533,7 @@
 
 .ativo span:nth-child(3) {
     transform:
-        rotate(-45deg)
-        translate(4.5px, -4.5px);
+        rotate(-45deg) translate(4.5px, -4.5px);
 }
 
 
@@ -609,20 +571,17 @@
         blur(22px);
 
     border:
-        1px solid
-        rgba(255, 255, 255, 0.9);
+        1px solid rgba(255, 255, 255, 0.9);
 
     box-shadow:
-        0 20px 55px
-        rgba(9, 22, 40, 0.15);
+        0 20px 55px rgba(9, 22, 40, 0.15);
 
     opacity: 0;
 
     visibility: hidden;
 
     transform:
-        translateY(-8px)
-        scale(0.98);
+        translateY(-8px) scale(0.98);
 
     transform-origin:
         top right;
@@ -630,13 +589,10 @@
     transition:
         opacity 0.3s ease,
         visibility 0.3s ease,
-        transform 0.35s
-        cubic-bezier(
-            0.16,
+        transform 0.35s cubic-bezier(0.16,
             1,
             0.3,
-            1
-        );
+            1);
 
     z-index: 20;
 }
@@ -646,14 +602,13 @@
    LINKS MOBILE
 ========================================================= */
 
-.menuMobile > a:not(.usuarioMobile) {
+.menuMobile>a:not(.usuarioMobile) {
     position: relative;
 
     min-height: 43px;
 
     padding:
-        0
-        13px;
+        0 13px;
 
     display: flex;
 
@@ -680,7 +635,7 @@
 }
 
 
-.menuMobile > a:not(.usuarioMobile):hover {
+.menuMobile>a:not(.usuarioMobile):hover {
     padding-left: 18px;
 
     color: #173c72;
@@ -700,9 +655,7 @@
     margin-top: 10px;
 
     padding:
-        14px
-        12px
-        3px;
+        14px 12px 3px;
 
     display: flex;
 
@@ -711,8 +664,7 @@
     gap: 12px;
 
     border-top:
-        1px solid
-        rgba(25, 54, 92, 0.1);
+        1px solid rgba(25, 54, 92, 0.1);
 
     color: #26384e;
 
@@ -804,19 +756,15 @@
     color: #ffffff;
 
     background:
-        linear-gradient(
-            145deg,
+        linear-gradient(145deg,
             #122b4f,
-            #1e4f8e
-        );
+            #1e4f8e);
 
     border:
-        2px solid
-        rgba(255, 255, 255, 0.97);
+        2px solid rgba(255, 255, 255, 0.97);
 
     box-shadow:
-        0 4px 14px
-        rgba(20, 52, 94, 0.17);
+        0 4px 14px rgba(20, 52, 94, 0.17);
 
     font-family:
         "Cormorant Garamond",
@@ -832,7 +780,7 @@
    NOME MOBILE
 ========================================================= */
 
-.usuarioMobile > span {
+.usuarioMobile>span {
     color: #26384e;
 
     font-size: 12px;
@@ -851,8 +799,7 @@
     visibility: visible;
 
     transform:
-        translateY(0)
-        scale(1);
+        translateY(0) scale(1);
 }
 
 
@@ -906,10 +853,7 @@
         height: 66px;
 
         padding:
-            0
-            13px
-            0
-            20px;
+            0 13px 0 20px;
     }
 
 
@@ -934,10 +878,7 @@
         height: 62px;
 
         padding:
-            0
-            10px
-            0
-            16px;
+            0 10px 0 16px;
 
         border-radius: 14px;
     }
@@ -995,10 +936,8 @@
 
 
     .menuMobile {
-        width: min(
-            300px,
-            calc(100vw - 24px)
-        );
+        width: min(300px,
+                calc(100vw - 24px));
 
         top:
             calc(100% + 10px);

@@ -5,7 +5,7 @@ import { useAuth } from "../../contexts/authContext.jsx";
 
 import styles from "./style.module.css";
 
-import Logo from "../../assets/imagens/Logo.png";
+import Logo from "../../assets/imagens/logo.jfif";
 
 
 export default function Header() {
