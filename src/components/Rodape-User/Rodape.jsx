@@ -1,13 +1,14 @@
 import {
     ArrowUpRight,
     Mail,
-    MessageCircle,
-    PaintRoller
+    MessageCircle
 } from "lucide-react";
 
 import { Link } from "react-router-dom";
 
 import styles from "./Rodape.module.css";
+
+import logo from "../../assets/imagens/logo.jfif";
 
 
 export default function Rodape() {
@@ -35,27 +36,24 @@ export default function Rodape() {
 
                     <div className={styles.logo}>
 
-                        <div className={styles.logoIcone}>
+                        <div className={styles.logoImagemBox}>
 
-                            <PaintRoller
-                                size={27}
-                                strokeWidth={1.6}
+                            <img
+                                src={logo}
+                                alt="Pixel Color"
+                                className={styles.logoImagem}
                             />
 
                         </div>
 
+                        <div className={styles.logoLegenda}>
 
-                        <div className={styles.logoTexto}>
-
-                            <span className={styles.logoNome}>
-                                Pixel
-                                <em>
-                                    Color
-                                </em>
+                            <span>
+                                PIXEL COLOR
                             </span>
 
                             <small>
-                                TINTAS
+                                TINTAS • CORES • AMBIENTES
                             </small>
 
                         </div>

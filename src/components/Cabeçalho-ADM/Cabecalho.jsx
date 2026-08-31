@@ -10,55 +10,47 @@ import {
 } from "react-icons/fi";
 
 import { useNavigate, NavLink } from "react-router-dom";
-
 import { useAuth } from "../../contexts/authContext.jsx";
 
-import Logo from "../../assets/imagens/Logo.png";
+import Logo from "../../assets/imagens/logo.jfif";
 
 export default function Cabecalho() {
-
   const navigate = useNavigate();
 
   const { logout, usuario } = useAuth();
 
   function Sair() {
-
     logout();
-
     navigate("/login");
-
   }
 
   return (
-
     <aside className={styles.sidebar}>
+      {/* =====================================================
+          PARTE SUPERIOR
+      ===================================================== */}
 
-      {/* =========================
-          TOPO
-      ========================= */}
-
-      <div>
-
+      <div className={styles.topArea}>
         {/* LOGO */}
 
-        <div className={styles.logo}>
+        <NavLink
+          to="/admin/dashboard"
+          className={styles.logo}
+          aria-label="Ir para o dashboard"
+        >
+          <img src={Logo} alt="Logo" />
+        </NavLink>
 
-          <img
-            src={Logo}
-            alt="Logo"
-          />
+        {/* IDENTIFICAÇÃO */}
 
+        <div className={styles.adminLabel}>
+          <span>Área administrativa</span>
+          <small>Gestão Pixel Color</small>
         </div>
 
-
-        {/* =========================
-            MENU
-        ========================= */}
+        {/* MENU */}
 
         <nav className={styles.menu}>
-
-          {/* DASHBOARD */}
-
           <NavLink
             to="/admin/dashboard"
             className={({ isActive }) =>
@@ -67,17 +59,9 @@ export default function Cabecalho() {
                 : styles.menuItem
             }
           >
-
-            <FiHome size={20} />
-
-            <span>
-              Dashboard
-            </span>
-
+            <FiHome size={19} />
+            <span>Dashboard</span>
           </NavLink>
-
-
-          {/* PRODUTOS */}
 
           <NavLink
             to="/admin/produtos"
@@ -87,17 +71,9 @@ export default function Cabecalho() {
                 : styles.menuItem
             }
           >
-
-            <FiBox size={20} />
-
-            <span>
-              Produtos
-            </span>
-
+            <FiBox size={19} />
+            <span>Produtos</span>
           </NavLink>
-
-
-          {/* PEDIDOS */}
 
           <NavLink
             to="/admin/pedidos"
@@ -107,19 +83,9 @@ export default function Cabecalho() {
                 : styles.menuItem
             }
           >
-
-            <FiShoppingCart size={20} />
-
-            <span>
-              Pedidos
-            </span>
-
+            <FiShoppingCart size={19} />
+            <span>Pedidos</span>
           </NavLink>
-
-
-          {/* =========================
-              CUPONS
-          ========================= */}
 
           <NavLink
             to="/admin/Cupons"
@@ -129,19 +95,9 @@ export default function Cabecalho() {
                 : styles.menuItem
             }
           >
-
-            <FiTag size={20} />
-
-            <span>
-              Cupons
-            </span>
-
+            <FiTag size={19} />
+            <span>Cupons</span>
           </NavLink>
-
-
-          {/* =========================
-              USUÁRIOS
-          ========================= */}
 
           <NavLink
             to="/admin/usuarios"
@@ -151,75 +107,55 @@ export default function Cabecalho() {
                 : styles.menuItem
             }
           >
-
-            <FiUsers size={20} />
-
-            <span>
-              Usuários
-            </span>
-
+            <FiUsers size={19} />
+            <span>Usuários</span>
           </NavLink>
-
         </nav>
-
       </div>
 
-
-      {/* =========================
-          PARTE DE BAIXO
-      ========================= */}
+      {/* =====================================================
+          PARTE INFERIOR
+      ===================================================== */}
 
       <div className={styles.bottomArea}>
-
-
         {/* PERFIL */}
 
         <NavLink
           to="/admin/perfil"
-          className={styles.userBox}
+          className={({ isActive }) =>
+            isActive
+              ? `${styles.userBox} ${styles.userBoxActive}`
+              : styles.userBox
+          }
         >
-
           <div className={styles.avatar}>
-
             {usuario?.nome?.charAt(0).toUpperCase() || "A"}
-
           </div>
 
-
           <div className={styles.userInfo}>
+            <span className={styles.userRole}>Administrador</span>
 
             <strong>
               {usuario?.nome || "Administrador"}
             </strong>
 
-            <span>
+            <small>
               {usuario?.email || ""}
-            </span>
-
+            </small>
           </div>
-
         </NavLink>
-
 
         {/* SAIR */}
 
         <button
+          type="button"
           className={styles.logoutBtn}
           onClick={Sair}
         >
-
-          <FiLogOut size={18} />
-
-          <span>
-            Sair
-          </span>
-
+          <FiLogOut size={17} />
+          <span>Sair</span>
         </button>
-
       </div>
-
     </aside>
-
   );
-
 }

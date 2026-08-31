@@ -2563,40 +2563,292 @@
     font-size: 7px;
 }
 
-.cuponsSalvos {
+.fidelidadeCard .cuponsSalvos {
+    margin-top: 20px;
+    padding: 18px 0 0;
+
+    display: block;
+
     border: 0;
-    border-top: 1px solid rgba(255,255,255,.11);
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.11);
+
     border-radius: 0;
+
     background: transparent;
+}
+
+
+/* CABEÇALHO DOS CUPONS */
+
+.cuponsSalvosCabecalho {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    margin-bottom: 12px;
+}
+
+.cuponsSalvosCabecalho > div {
+    min-width: 0;
 }
 
 .cuponsSalvosTitulo {
-    color: rgba(255,255,255,.48);
+    display: block;
+
+    color:
+        rgba(255, 255, 255, 0.48);
+
     font-size: 7px;
+    font-weight: 600;
+
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
 }
 
+.cuponsSalvosCabecalho p {
+    max-width: 210px;
+
+    margin-top: 5px;
+
+    color:
+        rgba(255, 255, 255, 0.34);
+
+    font-size: 7px;
+
+    line-height: 1.55;
+}
+
+.cuponsSalvosContador {
+    min-width: 29px;
+    height: 29px;
+
+    padding:
+        0
+        8px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.13);
+
+    background:
+        rgba(255, 255, 255, 0.045);
+
+    color: #ffffff;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 15px;
+    font-weight: 500;
+}
+
+
+/* LISTA */
+
+.cuponsSalvosLista {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* CUPOM */
+
 .cupomSalvo {
+    min-height: 57px;
+
+    padding:
+        12px
+        0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
     border: 0;
-    border-top: 1px solid rgba(255,255,255,.08);
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
     border-radius: 0;
+
     background: transparent;
 }
 
-.cupomSalvo strong {
-    color: #fff;
-    font-size: 10px;
+.cupomSalvo:first-child {
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.08);
 }
 
-.cupomSalvo span {
-    color: rgba(255,255,255,.4);
+.cupomSalvoInfo {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.cupomSalvoInfo strong {
+    overflow: hidden;
+
+    color: #ffffff;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 17px;
+    font-weight: 500;
+
+    letter-spacing: 0.02em;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cupomSalvoInfo span {
+    color:
+        rgba(255, 255, 255, 0.4);
+
     font-size: 7px;
 }
+
+
+/* BOTÃO COPIAR */
 
 .cupomSalvo button {
-    border: 1px solid rgba(255,255,255,.14);
+    min-width: 72px;
+    min-height: 34px;
+
+    padding:
+        0
+        10px;
+
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.14);
+
     border-radius: 0;
-    background: rgba(255,255,255,.05);
+
+    background:
+        rgba(255, 255, 255, 0.05);
+
+    color:
+        rgba(255, 255, 255, 0.78);
+
     font-size: 7px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.22s ease,
+        color 0.22s ease,
+        border-color 0.22s ease,
+        transform 0.22s ease;
+}
+
+.cupomSalvo button svg {
+    width: 12px;
+    height: 12px;
+}
+
+.cupomSalvo button:hover {
+    border-color:
+        rgba(255, 255, 255, 0.28);
+
+    background: #ffffff;
+
+    color: var(--perfil-navy);
+
+    transform:
+        translateY(-1px);
+}
+
+.cupomSalvo button.cupomCopiado {
+    border-color:
+        rgba(191, 208, 241, 0.55);
+
+    background:
+        rgba(191, 208, 241, 0.16);
+
+    color: #dbe7ff;
+}
+
+
+/* SEM CUPONS */
+
+.cuponsSalvosVazio {
+    min-height: 62px;
+
+    padding:
+        12px
+        0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+}
+
+.cuponsSalvosVazio > svg {
+    width: 16px;
+    height: 16px;
+
+    flex-shrink: 0;
+
+    color:
+        rgba(191, 208, 241, 0.7);
+}
+
+.cuponsSalvosVazio > div {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.cuponsSalvosVazio strong {
+    color:
+        rgba(255, 255, 255, 0.7);
+
+    font-size: 8px;
+    font-weight: 600;
+}
+
+.cuponsSalvosVazio span {
+    color:
+        rgba(255, 255, 255, 0.32);
+
+    font-size: 7px;
+
+    line-height: 1.5;
 }
 
 .logout {
@@ -3000,4 +3252,28 @@
     .rightCard {
         padding: 22px 14px;
     }
+}
+
+
+/* =========================================================
+   CUPONS GUARDADOS — RESPONSIVO
+========================================================= */
+
+@media (max-width: 520px) {
+
+    .cuponsSalvosCabecalho {
+        gap: 10px;
+    }
+
+    .cupomSalvo {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 9px;
+    }
+
+    .cupomSalvo button {
+        width: 100%;
+    }
+
 }

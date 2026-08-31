@@ -830,7 +830,7 @@ export default function Editar() {
                     <div className={styles.titleArea}>
 
                         <span className={styles.badge}>
-                            Editar Produto
+                            Administração
                         </span>
 
 

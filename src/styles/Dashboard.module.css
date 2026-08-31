@@ -1,614 +1,785 @@
-/* =========================
-   GLOBAL
-========================= */
+@import url(
+  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap"
+);
+
+/* =========================================================
+   RESET
+========================================================= */
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+button {
+  font-family: "Poppins", sans-serif;
+}
+
+
+/* =========================================================
+   BASE / PÁGINA
+========================================================= */
+
+.container {
+  --sidebar-width: 290px;
+
+  --navy: #172033;
+  --navy-2: #21304d;
+  --blue: #3264c8;
+  --blue-soft: #7fa3e8;
+
+  --ivory: #f4f1e9;
+  --ivory-2: #ebe6da;
+  --paper: #fbfaf6;
+
+  --text: #182235;
+  --muted: #707b8b;
+
+  --line: rgba(24, 34, 53, 0.13);
+  --line-soft: rgba(24, 34, 53, 0.07);
+
+  min-height: 100vh;
+
+  background:
+    radial-gradient(
+      circle at 92% 8%,
+      rgba(50, 100, 200, 0.06),
+      transparent 28%
+    ),
+    linear-gradient(
+      180deg,
+      #f6f3ec 0%,
+      var(--ivory) 55%,
+      #f0ece3 100%
+    );
+
+  color: var(--text);
 
   font-family: "Poppins", sans-serif;
 }
 
-/* =========================
-   LAYOUT
-========================= */
 
-.container {
+/* =========================================================
+   ÁREA À DIREITA DA SIDEBAR
+========================================================= */
+
+.rightArea {
+  width: 100%;
   min-height: 100vh;
-
-  background:
-    linear-gradient(
-      180deg,
-      #f8fbff 0%,
-      #eef4ff 100%
-    );
 }
-
-/* =========================
-   CONTENT
-========================= */
 
 .content {
-  margin-left: 290px;
-
-  padding: 34px;
-
-  transition: 0.3s;
-}
-
-/* =========================
-   HERO
-========================= */
-
-.hero {
-  background:
-    linear-gradient(
-      135deg,
-      #2563eb,
-      #1d4ed8
+  width:
+    calc(
+      100% -
+      var(--sidebar-width)
     );
 
-  border-radius: 28px;
+  max-width: 1700px;
 
-  padding: 36px;
+  min-height: 100vh;
 
-  color: white;
+  margin-left:
+    var(--sidebar-width);
 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  gap: 20px;
-
-  margin-bottom: 28px;
-
-  box-shadow:
-    0 20px 40px rgba(37,99,235,0.25);
+  padding:
+    55px
+    clamp(32px, 4vw, 70px)
+    85px;
 }
 
-.badge {
-  background:
-    rgba(255,255,255,0.14);
 
-  border:
-    1px solid rgba(255,255,255,0.18);
+/* =========================================================
+   LOADING
+========================================================= */
 
-  padding: 8px 14px;
-
-  border-radius: 999px;
-
-  font-size: 13px;
-  font-weight: 600;
-
-  display: inline-flex;
-  align-items: center;
-}
-
-.hero h1 {
-  margin-top: 18px;
-
-  font-size: 42px;
-  font-weight: 800;
-
-  line-height: 1.1;
-}
-
-.hero p {
-  margin-top: 10px;
-
-  max-width: 620px;
-
-  color:
-    rgba(255,255,255,0.82);
-
-  line-height: 1.6;
-}
-
-/* =========================
-   BOTÃO SAIR
-========================= */
-
-/* =========================
-   CHART
-========================= */
-
-.chartSection {
-  background: white;
-
-  border-radius: 28px;
-
-  padding: 28px;
-
-  margin-bottom: 28px;
-
-  border:
-    1px solid #e5edf8;
-
-  box-shadow:
-    0 10px 24px rgba(15,23,42,0.04);
-}
-
-.chartHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  margin-bottom: 30px;
-}
-
-.chartHeader h3 {
-  font-size: 24px;
-  font-weight: 800;
-
-  color: #0f172a;
-
-  margin-bottom: 6px;
-}
-
-.chartHeader p {
-  color: #64748b;
-
-  font-size: 14px;
-}
-
-.chartBadge {
-  background:
-    rgba(37,99,235,0.12);
-
-  color: #2563eb;
-
-  padding: 10px 16px;
-
-  border-radius: 999px;
-
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.chart {
-  height: 280px;
-
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-
-  gap: 18px;
-}
-
-.barGroup {
-  flex: 1;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-
-  gap: 12px;
-}
-
-.bar {
-  width: 100%;
-
-  max-width: 54px;
-
-  border-radius: 18px 18px 8px 8px;
-
-  background:
-    linear-gradient(
-      180deg,
-      #60a5fa,
-      #2563eb
-    );
-
-  box-shadow:
-    0 12px 20px rgba(37,99,235,0.2);
-
-  transition: 0.25s;
-}
-
-.bar:hover {
-  transform:
-    translateY(-6px);
-
-  filter: brightness(1.05);
-}
-
-.day {
-  font-size: 14px;
-  font-weight: 700;
-
-  color: #64748b;
-}
-
-.barGroup strong {
-  font-size: 14px;
-
-  color: #0f172a;
-}/* =========================
-   CHART
-========================= */
-
-.chartSection {
-  background: white;
-
-  border-radius: 28px;
-
-  padding: 28px;
-
-  margin-bottom: 28px;
-
-  border:
-    1px solid #e5edf8;
-
-  box-shadow:
-    0 10px 24px rgba(15,23,42,0.04);
-}
-
-.chartHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  margin-bottom: 30px;
-}
-
-.chartHeader h3 {
-  font-size: 24px;
-  font-weight: 800;
-
-  color: #0f172a;
-
-  margin-bottom: 6px;
-}
-
-.chartHeader p {
-  color: #64748b;
-
-  font-size: 14px;
-}
-
-.chartBadge {
-  background:
-    rgba(37,99,235,0.12);
-
-  color: #2563eb;
-
-  padding: 10px 16px;
-
-  border-radius: 999px;
-
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.chart {
-  height: 280px;
-
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-
-  gap: 18px;
-}
-
-.barGroup {
-  flex: 1;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-
-  gap: 12px;
-}
-
-.bar {
-  width: 100%;
-
-  max-width: 54px;
-
-  border-radius: 18px 18px 8px 8px;
-
-  background:
-    linear-gradient(
-      180deg,
-      #60a5fa,
-      #2563eb
-    );
-
-  box-shadow:
-    0 12px 20px rgba(37,99,235,0.2);
-
-  transition: 0.25s;
-}
-
-.bar:hover {
-  transform:
-    translateY(-6px);
-
-  filter: brightness(1.05);
-}
-
-.day {
-  font-size: 14px;
-  font-weight: 700;
-
-  color: #64748b;
-}
-
-.barGroup strong {
-  font-size: 14px;
-
-  color: #0f172a;
-}
-
-.logoutBtn {
-  height: 68px;
-
-  border: none;
-
-  border-radius: 20px;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,0.08),
-      rgba(255,255,255,0.04)
-    );
-
-  color: white;
+.loading {
+  min-height: 70vh;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  gap: 8px;
+  color: var(--muted);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 30px;
+  font-weight: 500;
+
+  letter-spacing: -0.02em;
+}
+
+
+/* =========================================================
+   HERO / TOPO EDITORIAL
+========================================================= */
+
+.hero {
+  position: relative;
+
+  min-height: 230px;
+
+  margin-bottom: 42px;
+  padding: 16px 0 34px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 35px;
+
+  border-bottom:
+    1px solid
+    var(--line);
+
+  background: transparent;
+
+  color: var(--text);
+}
+
+.hero::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 72px;
+  height: 2px;
+
+  background: var(--blue);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+
+  margin-bottom: 18px;
+  padding: 0;
+
+  border: none;
+  border-radius: 0;
+
+  background: transparent;
+
+  color: #87909c;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 920px;
+
+  margin: 0;
+
+  color: var(--text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:
+    clamp(
+      58px,
+      5.4vw,
+      86px
+    );
+
+  font-weight: 400;
+
+  line-height: 0.9;
+  letter-spacing: -0.052em;
+}
+
+.hero p {
+  max-width: 650px;
+
+  margin-top: 20px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+  font-weight: 300;
+
+  line-height: 1.8;
+}
+
+.logoutBtn {
+  flex-shrink: 0;
+
+  min-width: 118px;
+  min-height: 46px;
+
+  padding: 0 18px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  border:
+    1px solid
+    rgba(183, 76, 76, 0.24);
+
+  border-radius: 0;
+
+  background:
+    rgba(183, 76, 76, 0.03);
+
+  color: #a84646;
+
+  font-size: 10px;
+  font-weight: 600;
 
   cursor: pointer;
 
-  font-size: 18px;
-  font-weight: 800;
-
-  transition: 0.25s;
-  width: 120px;
+  transition:
+    background 0.22s ease,
+    color 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease;
 }
 
 .logoutBtn svg {
-  font-size: 22px;
+  font-size: 16px;
 }
 
 .logoutBtn:hover {
-  background:
-    linear-gradient(
-      135deg,
-      #ef4444,
-      #dc2626
-    );
+  border-color: #b74c4c;
 
-  transform:
-    translateY(-3px);
+  background: #b74c4c;
+  color: #ffffff;
 
-  box-shadow:
-    0 14px 28px rgba(239,68,68,0.35);
+  transform: translateY(-2px);
 }
 
-/* =========================
-   CARDS
-========================= */
+
+/* =========================================================
+   CARDS DE RESUMO
+========================================================= */
 
 .cards {
   display: grid;
 
   grid-template-columns:
-    repeat(auto-fit, minmax(240px, 1fr));
+    repeat(4, minmax(0, 1fr));
 
-  gap: 18px;
+  margin-bottom: 32px;
 
-  margin-bottom: 28px;
+  border-top:
+    1px solid
+    var(--line);
+
+  border-left:
+    1px solid
+    var(--line);
 }
 
 .card {
-  background: white;
+  position: relative;
 
-  border-radius: 24px;
+  min-height: 188px;
 
-  padding: 24px;
+  padding:
+    24px
+    24px
+    22px;
 
-  border:
-    1px solid #e5edf8;
+  border-right:
+    1px solid
+    var(--line);
 
-  box-shadow:
-    0 10px 24px rgba(15,23,42,0.04);
+  border-bottom:
+    1px solid
+    var(--line);
 
-  transition: 0.25s;
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.42
+    );
+
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
 }
 
 .card:hover {
-  transform:
-    translateY(-4px);
+  z-index: 2;
 
-  box-shadow:
-    0 14px 30px rgba(15,23,42,0.08);
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.78
+    );
+
+  transform:
+    translateY(-3px);
 }
 
 .cardTop {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 
-  color: #64748b;
+  gap: 18px;
+
+  color: #87919e;
+}
+
+.cardTop span {
+  font-size: 9px;
+  font-weight: 600;
+
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .cardTop svg {
-  font-size: 24px;
+  width: 18px;
+  height: 18px;
 
-  color: #2563eb;
+  color: var(--blue);
 }
 
 .card h2 {
-  margin-top: 18px;
+  margin-top: 30px;
 
-  font-size: 36px;
-  font-weight: 800;
+  color: var(--text);
 
-  color: #0f172a;
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:
+    clamp(
+      36px,
+      3.2vw,
+      52px
+    );
+
+  font-weight: 500;
+
+  line-height: 0.95;
+  letter-spacing: -0.035em;
 }
 
 .card p {
-  margin-top: 10px;
+  margin-top: 13px;
 
-  color: #64748b;
+  color: #7f8997;
 
-  font-size: 14px;
+  font-size: 9px;
+
+  line-height: 1.6;
 }
 
-/* =========================
-   GRID
-========================= */
+
+/* =========================================================
+   GRÁFICO
+========================================================= */
+
+.chartSection {
+  margin-bottom: 32px;
+  padding: 30px;
+
+  border:
+    1px solid
+    var(--line);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.52
+    );
+}
+
+.chartHeader {
+  margin-bottom: 32px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 24px;
+}
+
+.chartHeader h3 {
+  color: var(--text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 31px;
+  font-weight: 600;
+
+  line-height: 1;
+}
+
+.chartHeader p {
+  margin-top: 7px;
+
+  color: #87919e;
+
+  font-size: 9px;
+
+  line-height: 1.6;
+}
+
+.chartBadge {
+  flex-shrink: 0;
+
+  padding:
+    7px
+    10px;
+
+  border:
+    1px solid
+    rgba(50, 100, 200, 0.16);
+
+  background:
+    rgba(50, 100, 200, 0.055);
+
+  color: var(--blue);
+
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.05em;
+}
+
+.chart {
+  min-height: 300px;
+
+  padding:
+    18px
+    12px
+    0;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  border-top:
+    1px solid
+    var(--line-soft);
+}
+
+.barGroup {
+  flex: 1;
+
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 11px;
+}
+
+.day {
+  color: #87919e;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+}
+
+.bar {
+  width: min(42px, 80%);
+
+  min-height: 5px;
+
+  border-radius:
+    999px
+    999px
+    1px
+    1px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #7e9fdc,
+      #315eb6
+    );
+
+  box-shadow:
+    0 10px 22px
+    rgba(50, 100, 200, 0.14);
+
+  transform-origin: bottom;
+
+  transition:
+    transform 0.22s ease,
+    filter 0.22s ease;
+}
+
+.bar:hover {
+  transform:
+    scaleY(1.035);
+
+  filter: brightness(1.06);
+}
+
+.barGroup strong {
+  max-width: 100%;
+
+  overflow: hidden;
+
+  color: var(--text);
+
+  font-size: 8px;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   GRID: VENDAS + ESTOQUE
+========================================================= */
 
 .grid {
   display: grid;
 
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns:
+    minmax(0, 1.55fr)
+    minmax(320px, 0.75fr);
 
-  gap: 20px;
+  gap: 24px;
 
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 
 .panel {
-  background: white;
+  min-width: 0;
 
-  border-radius: 24px;
-
-  padding: 24px;
+  padding: 28px;
 
   border:
-    1px solid #e5edf8;
+    1px solid
+    var(--line);
 
-  box-shadow:
-    0 10px 24px rgba(15,23,42,0.04);
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.5
+    );
 }
 
 .panelHeader {
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 
-  gap: 12px;
+  gap: 14px;
 
-  margin-bottom: 22px;
+  border-bottom:
+    1px solid
+    var(--line-soft);
 }
 
 .panelHeader h3 {
-  font-size: 22px;
-  font-weight: 700;
+  color: var(--text);
 
-  color: #0f172a;
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 27px;
+  font-weight: 600;
 }
 
 .panelHeader button {
+  padding: 0 0 5px;
+
   border: none;
+  border-bottom:
+    1px solid
+    var(--navy);
 
-  background: #eff6ff;
+  background: transparent;
 
-  color: #2563eb;
+  color: var(--navy);
 
-  padding: 10px 16px;
-
-  border-radius: 12px;
-
-  font-weight: 700;
+  font-size: 9px;
+  font-weight: 600;
 
   cursor: pointer;
 
-  transition: 0.25s;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .panelHeader button:hover {
-  background: #dbeafe;
+  border-color: var(--blue);
+  color: var(--blue);
 }
 
-/* =========================
-   SALES
-========================= */
+
+/* =========================================================
+   VENDAS RECENTES
+========================================================= */
 
 .sales {
   display: flex;
   flex-direction: column;
-
-  gap: 16px;
 }
 
 .saleItem {
+  min-height: 70px;
+
+  padding:
+    15px
+    3px;
+
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 
-  gap: 12px;
+  gap: 18px;
 
-  padding: 18px;
+  border-bottom:
+    1px solid
+    var(--line-soft);
 
-  border-radius: 18px;
+  background: transparent;
 
-  background: #f8fbff;
+  transition:
+    padding-left 0.22s ease,
+    background 0.22s ease;
+}
 
-  transition: 0.25s;
+.saleItem:last-child {
+  border-bottom: none;
 }
 
 .saleItem:hover {
-  transform: translateX(4px);
+  padding-left: 10px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.44
+    );
 }
 
 .saleItem strong {
   display: block;
 
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 
-  color: #0f172a;
+  color: var(--text);
+
+  font-size: 10px;
+  font-weight: 600;
 }
 
 .saleItem span {
-  color: #64748b;
+  color: #858f9d;
 
-  font-size: 14px;
+  font-size: 8px;
 }
 
-/* =========================
-   ACTIVITY
-========================= */
+.saleItem b {
+  flex-shrink: 0;
+
+  color: var(--text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 19px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   ESTOQUE / ATIVIDADE
+========================================================= */
 
 .activity {
   display: flex;
   flex-direction: column;
-
-  gap: 16px;
 }
 
 .activityItem {
+  min-height: 72px;
+
+  padding:
+    15px
+    3px;
+
   display: flex;
   align-items: center;
 
-  gap: 14px;
+  gap: 13px;
 
-  padding: 16px;
+  border-bottom:
+    1px solid
+    var(--line-soft);
 
-  border-radius: 18px;
+  background: transparent;
 
-  background: #f8fbff;
+  transition:
+    padding-left 0.22s ease,
+    background 0.22s ease;
+}
 
-  transition: 0.25s;
+.activityItem:last-child {
+  border-bottom: none;
 }
 
 .activityItem:hover {
-  transform: translateX(4px);
+  padding-left: 10px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.44
+    );
 }
 
 .activityItem svg {
-  font-size: 20px;
+  width: 17px;
+  height: 17px;
 
-  color: #2563eb;
+  flex-shrink: 0;
+
+  color: var(--blue);
 }
 
 .activityItem strong {
@@ -616,350 +787,678 @@
 
   margin-bottom: 4px;
 
-  color: #0f172a;
+  color: var(--text);
+
+  font-size: 10px;
+  font-weight: 600;
 }
 
 .activityItem span {
-  color: #64748b;
+  color: #858f9d;
 
-  font-size: 14px;
+  font-size: 8px;
+
+  line-height: 1.5;
 }
 
-/* =========================
-   QUICK
-========================= */
+
+/* =========================================================
+   ESTADO VAZIO
+========================================================= */
+
+.empty {
+  min-height: 120px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #8a94a1;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 20px;
+}
+
+
+/* =========================================================
+   AÇÕES RÁPIDAS
+========================================================= */
 
 .quick {
   display: grid;
 
   grid-template-columns:
-    repeat(auto-fit, minmax(240px, 1fr));
+    repeat(3, minmax(0, 1fr));
 
-  gap: 18px;
+  border-top:
+    1px solid
+    var(--line);
+
+  border-left:
+    1px solid
+    var(--line);
 }
 
 .quickCard {
-  background:
-    linear-gradient(
-      135deg,
-      #ffffff,
-      #f8fbff
-    );
+  position: relative;
 
-  border-radius: 24px;
+  min-height: 150px;
 
   padding: 24px;
 
-  border:
-    1px solid #e5edf8;
-
   display: flex;
+  align-items: flex-end;
   justify-content: space-between;
-  align-items: center;
 
-  gap: 16px;
+  gap: 22px;
+
+  border-right:
+    1px solid
+    var(--line);
+
+  border-bottom:
+    1px solid
+    var(--line);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.38
+    );
 
   cursor: pointer;
 
-  transition: 0.25s;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
 }
 
 .quickCard:hover {
-  transform:
-    translateY(-4px);
+  z-index: 2;
 
-  box-shadow:
-    0 12px 28px rgba(15,23,42,0.06);
+  background: var(--navy);
+
+  transform:
+    translateY(-3px);
 }
 
 .quickCard h3 {
-  margin-bottom: 8px;
+  margin-bottom: 7px;
 
-  color: #0f172a;
+  color: var(--text);
 
-  font-size: 18px;
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 24px;
+  font-weight: 600;
+
+  line-height: 1;
 }
 
 .quickCard p {
-  color: #64748b;
+  max-width: 250px;
 
-  font-size: 14px;
+  color: #7b8695;
 
-  line-height: 1.5;
+  font-size: 9px;
+
+  line-height: 1.6;
 }
 
-.quickCard svg {
-  font-size: 26px;
+.quickCard > svg {
+  width: 20px;
+  height: 20px;
 
-  color: #2563eb;
+  flex-shrink: 0;
 
-  min-width: 26px;
+  color: var(--blue);
+
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
 }
 
-/* =========================
-   RESPONSIVO
-========================= */
-
-@media (max-width: 1100px) {
-
-  .content {
-    margin-left: 92px;
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
+.quickCard:hover h3,
+.quickCard:hover p,
+.quickCard:hover > svg {
+  color: #ffffff;
 }
 
-@media (max-width: 768px) {
-
-  .content {
-    margin-left: 0;
-
-    padding: 18px;
-  }
-
-  .hero {
-    flex-direction: column;
-    align-items: flex-start;
-
-    gap: 20px;
-  }
-
-  .hero h1 {
-    font-size: 32px;
-  }
-
-  .cards,
-  .quick {
-    grid-template-columns: 1fr;
-  }
-
+.quickCard:hover p {
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.57
+    );
 }
 
-@media (max-width: 500px) {
-
-  .hero {
-    padding: 24px;
-  }
-
-  .hero h1 {
-    font-size: 28px;
-  }
-
-  .card,
-  .panel,
-  .quickCard {
-    padding: 18px;
-  }
-
-  .panelHeader {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
+.quickCard:hover > svg {
+  transform:
+    translate(
+      3px,
+      -3px
+    );
 }
 
-/* =========================
+
+/* =========================================================
    MODAL
-========================= */
+========================================================= */
 
 .modalOverlay {
   position: fixed;
-
   inset: 0;
 
-  background: rgba(15, 23, 42, 0.55);
+  z-index: 99999;
 
-  backdrop-filter: blur(6px);
+  padding: 24px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  z-index: 999;
+  background:
+    rgba(
+      8,
+      14,
+      25,
+      0.78
+    );
+
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
+
+  animation:
+    modalFade
+    0.2s
+    ease;
 }
 
 .modal {
-  width: 100%;
-  max-width: 760px;
+  width:
+    min(
+      780px,
+      100%
+    );
 
-  background: white;
+  max-height:
+    calc(
+      100vh -
+      48px
+    );
 
-  border-radius: 28px;
+  overflow: hidden;
 
-  padding: 28px;
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.12
+    );
 
-  animation: modalAnimation 0.25s ease;
+  background: var(--paper);
 
   box-shadow:
-    0 20px 60px rgba(0,0,0,0.2);
-}
+    0 32px 100px
+    rgba(
+      0,
+      0,
+      0,
+      0.34
+    );
 
-@keyframes modalAnimation {
-
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.96);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-
+  animation:
+    modalIn
+    0.26s
+    ease;
 }
 
 .modalHeader {
+  min-height: 100px;
+
+  padding:
+    24px
+    28px;
+
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-start;
 
   gap: 20px;
 
-  margin-bottom: 24px;
+  border-bottom:
+    1px solid
+    var(--line);
 }
 
 .modalHeader h2 {
-  font-size: 30px;
-  font-weight: 800;
+  color: var(--text);
 
-  color: #0f172a;
+  font-family:
+    "Cormorant Garamond",
+    serif;
 
-  margin-bottom: 6px;
+  font-size: 34px;
+  font-weight: 600;
+
+  line-height: 1;
 }
 
 .modalHeader p {
-  color: #64748b;
+  margin-top: 7px;
 
-  font-size: 14px;
+  color: #89929f;
+
+  font-size: 9px;
 }
 
 .closeBtn {
-  width: 52px;
-  height: 52px;
+  width: 43px;
+  height: 43px;
 
-  border: none;
-
-  border-radius: 16px;
-
-  background: #f1f5f9;
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  border:
+    1px solid
+    var(--line);
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: #75808e;
+
   cursor: pointer;
 
-  transition: 0.25s;
+  transition:
+    background 0.22s ease,
+    color 0.22s ease,
+    transform 0.22s ease;
 }
 
 .closeBtn svg {
-  font-size: 22px;
-
-  color: #0f172a;
+  font-size: 17px;
 }
 
 .closeBtn:hover {
-  background: #e2e8f0;
+  background: var(--navy);
+  color: #ffffff;
 
   transform: rotate(90deg);
 }
 
 .modalContent {
-  display: flex;
-  flex-direction: column;
-
-  gap: 16px;
-
-  max-height: 500px;
+  max-height:
+    min(
+      520px,
+      calc(
+        100vh -
+        190px
+      )
+    );
 
   overflow-y: auto;
 
-  padding-right: 4px;
+  padding:
+    10px
+    28px
+    28px;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .purchaseItem {
-  background: #f8fbff;
+  min-height: 76px;
 
-  border: 1px solid #e5edf8;
-
-  border-radius: 20px;
-
-  padding: 20px;
+  padding:
+    17px
+    2px;
 
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 
   gap: 20px;
 
-  transition: 0.25s;
+  border-bottom:
+    1px solid
+    var(--line-soft);
+
+  background: transparent;
+
+  transition:
+    padding-left 0.22s ease,
+    background 0.22s ease;
 }
 
 .purchaseItem:hover {
-  transform: translateX(4px);
+  padding-left: 9px;
 
-  background: #f1f7ff;
+  background:
+    rgba(
+      235,
+      232,
+      224,
+      0.42
+    );
 }
 
 .purchaseItem strong {
   display: block;
 
-  font-size: 17px;
-  font-weight: 700;
+  margin-bottom: 5px;
 
-  color: #0f172a;
+  color: var(--text);
 
-  margin-bottom: 6px;
+  font-size: 10px;
+  font-weight: 600;
 }
 
 .purchaseItem span {
-  color: #64748b;
+  color: #89929f;
 
-  font-size: 14px;
+  font-size: 8px;
 }
 
 .purchaseRight {
+  flex-shrink: 0;
+
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 
-  gap: 4px;
+  gap: 5px;
 }
 
 .purchaseRight b {
-  font-size: 18px;
+  color: var(--text);
 
-  color: #2563eb;
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .purchaseRight small {
-  color: #64748b;
+  color: #8c95a1;
 
-  font-size: 13px;
+  font-size: 8px;
 }
 
-/* =========================
-   RESPONSIVO MODAL
-========================= */
+
+/* =========================================================
+   SCROLL MODAL
+========================================================= */
+
+.modalContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modalContent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modalContent::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+
+  background:
+    rgba(
+      24,
+      34,
+      53,
+      0.18
+    );
+}
+
+
+/* =========================================================
+   ANIMAÇÕES
+========================================================= */
+
+@keyframes modalFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(20px)
+      scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVO — 1250PX
+========================================================= */
+
+@media (max-width: 1250px) {
+  .content {
+    padding-left: 34px;
+    padding-right: 34px;
+  }
+
+  .cards {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVO — 1100PX
+========================================================= */
+
+@media (max-width: 1100px) {
+  .container {
+    --sidebar-width: 92px;
+  }
+
+  .content {
+    width:
+      calc(
+        100% -
+        var(--sidebar-width)
+      );
+
+    margin-left:
+      var(--sidebar-width);
+  }
+
+  .hero h1 {
+    font-size: 58px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVO — 768PX
+========================================================= */
 
 @media (max-width: 768px) {
+  .container {
+    --sidebar-width: 0px;
+  }
+
+  .content {
+    width: 100%;
+
+    margin-left: 0;
+
+    padding:
+      30px
+      20px
+      65px;
+  }
+
+  .hero {
+    min-height: auto;
+
+    padding-top: 28px;
+
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero h1 {
+    font-size: 52px;
+  }
+
+  .logoutBtn {
+    width: 100%;
+  }
+
+  .chart {
+    gap: 10px;
+  }
+
+  .bar {
+    width: min(30px, 78%);
+  }
+
+  .quick {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVO — 560PX
+========================================================= */
+
+@media (max-width: 560px) {
+  .content {
+    padding:
+      25px
+      14px
+      55px;
+  }
+
+  .hero {
+    margin-bottom: 30px;
+  }
+
+  .hero h1 {
+    font-size: 46px;
+  }
+
+  .hero p {
+    font-size: 10px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    min-height: 155px;
+  }
+
+  .chartSection,
+  .panel {
+    padding:
+      22px
+      17px;
+  }
+
+  .chartHeader {
+    flex-direction: column;
+  }
+
+  .chart {
+    overflow-x: auto;
+
+    justify-content: flex-start;
+  }
+
+  .barGroup {
+    min-width: 46px;
+  }
+
+  .modalOverlay {
+    padding: 8px;
+  }
 
   .modal {
-    width: calc(100% - 24px);
+    max-height:
+      calc(
+        100vh -
+        16px
+      );
+  }
 
-    padding: 22px;
+  .modalHeader {
+    padding:
+      20px
+      18px;
+  }
+
+  .modalContent {
+    padding:
+      8px
+      18px
+      20px;
   }
 
   .purchaseItem {
-    flex-direction: column;
     align-items: flex-start;
+    flex-direction: column;
   }
 
   .purchaseRight {
     align-items: flex-start;
   }
+}
 
+
+/* =========================================================
+   ACESSIBILIDADE
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
 }

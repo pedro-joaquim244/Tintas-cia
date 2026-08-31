@@ -1,421 +1,972 @@
-/* GOOGLE FONT */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
+@import url(
+  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap"
+);
 
-/* ========================= */
-/* GERAL */
-/* ========================= */
+/* =========================================================
+   RESET
+========================================================= */
+
 * {
-  cursor: default;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
+html {
+  background: #f4f1e9;
+}
+
+body {
+  margin: 0;
+
+  background: #f4f1e9;
+
+  color: #182235;
+
+  font-family:
+    "Poppins",
+    sans-serif;
+}
+
+button,
+input,
+a {
+  font-family:
+    "Poppins",
+    sans-serif;
+}
+
+
+/* =========================================================
+   BASE
+========================================================= */
 
 .container {
+  --navy: #172033;
+  --navy-2: #24324f;
+
+  --blue: #3264c8;
+  --blue-soft: #89abe8;
+
+  --ivory: #f4f1e9;
+  --ivory-2: #ebe6da;
+  --paper: #fbfaf6;
+
+  --text: #182235;
+  --muted: #747f8e;
+
+  --line: rgba(24, 34, 53, 0.13);
+  --line-soft: rgba(24, 34, 53, 0.075);
+
+  width: 100%;
   min-height: 100vh;
-  display: flex;
 
-  background: #eef3fa;
+  display: grid;
 
-
-  font-family: "Poppins", sans-serif;
-}
-
-/* ========================= */
-/* LADO ESQUERDO */
-/* ========================= */
-
-.left {
-  flex: 1;
+  grid-template-columns:
+    minmax(420px, 0.96fr)
+    minmax(470px, 1.04fr);
 
   background:
-    linear-gradient(135deg,
-      rgba(2, 20, 47, 0.95),
-      rgba(4, 45, 102, 0.88)),
-    url("https://images.unsplash.com/photo-1562259949-e8e7689d7828?q=80&w=1600&auto=format&fit=crop");
-
-  background-size: cover;
-  background-position: center;
-
-  position: relative;
-  overflow: hidden;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    linear-gradient(
+      90deg,
+      var(--navy) 0%,
+      var(--navy) 48%,
+      var(--paper) 48%,
+      var(--paper) 100%
+    );
 }
 
-/* ========================= */
-/* EFEITOS */
-/* ========================= */
+
+/* =========================================================
+   LADO ESQUERDO
+========================================================= */
+
+.left {
+  position: relative;
+
+  min-height: 100vh;
+
+  padding:
+    clamp(44px, 5vw, 76px);
+
+  display: flex;
+  align-items: flex-end;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 18% 14%,
+      rgba(137, 171, 232, 0.13),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 84% 78%,
+      rgba(50, 100, 200, 0.16),
+      transparent 32%
+    ),
+    linear-gradient(
+      155deg,
+      #111827 0%,
+      var(--navy) 48%,
+      #1d2a44 100%
+    );
+
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   DETALHES DE FUNDO
+========================================================= */
+
+.left::before {
+  content: "";
+
+  position: absolute;
+
+  top: 44px;
+  left: 44px;
+
+  width: 72px;
+  height: 2px;
+
+  background: var(--blue-soft);
+}
+
+.left::after {
+  content: "PIXEL COLOR";
+
+  position: absolute;
+
+  top: 64px;
+  left: 44px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.42
+    );
+
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.25em;
+}
+
+
+/* =========================================================
+   ELEMENTOS DECORATIVOS
+========================================================= */
 
 .paint1,
 .paint2,
 .paint3,
 .paint4 {
   position: absolute;
+
   border-radius: 50%;
-  filter: blur(18px);
+
+  pointer-events: none;
+
+  filter: blur(1px);
 }
 
 .paint1 {
-  width: 280px;
-  height: 280px;
-  background: #0b63f6;
-  top: -90px;
-  right: -90px;
-  opacity: 0.35;
+  width: 340px;
+  height: 340px;
+
+  top: -210px;
+  right: -160px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.07);
 }
 
 .paint2 {
-  width: 220px;
-  height: 220px;
-  background: #38bdf8;
-  bottom: -70px;
-  left: -70px;
-  opacity: 0.28;
+  width: 520px;
+  height: 520px;
+
+  right: -300px;
+  bottom: -280px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.05);
 }
 
 .paint3 {
-  width: 120px;
-  height: 120px;
-  background: white;
-  top: 120px;
-  left: 100px;
-  opacity: 0.08;
+  width: 9px;
+  height: 9px;
+
+  top: 30%;
+  left: 18%;
+
+  background: var(--blue-soft);
+
+  opacity: 0.55;
+
+  box-shadow:
+    0 0 0 7px
+    rgba(137, 171, 232, 0.06);
 }
 
 .paint4 {
-  width: 180px;
-  height: 180px;
-  background: #2563eb;
-  bottom: 100px;
-  right: 120px;
-  opacity: 0.16;
+  width: 5px;
+  height: 5px;
+
+  right: 18%;
+  bottom: 28%;
+
+  background: #ffffff;
+
+  opacity: 0.42;
+
+  box-shadow:
+    0 0 0 9px
+    rgba(255, 255, 255, 0.035);
 }
 
-/* ========================= */
-/* CONTEÚDO ESQUERDO */
-/* ========================= */
+
+/* =========================================================
+   CONTEÚDO ESQUERDO
+========================================================= */
 
 .overlay {
-  width: 85%;
-  max-width: 760px;
-
-  color: white;
+  position: relative;
 
   z-index: 2;
 
+  width: 100%;
+  max-width: 720px;
+
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: flex-start;
 
-  text-align: left;
+  color: #ffffff;
 }
 
-/* ========================= */
-/* LOGO */
-/* ========================= */
 
-/* ========================= */
-/* LOGO */
-/* ========================= */
+/* =========================================================
+   LOGO
+========================================================= */
 
 .brand {
+  width: 100%;
+
+  margin-bottom: 20px;
+
   display: flex;
   align-items: center;
   justify-content: flex-start;
-
-  margin-bottom: 25px;
 }
 
 .logo {
-  width: 500px;
-  max-width: 100%;
+  width:
+    clamp(
+      180px,
+      23vw,
+      330px
+    );
 
+  max-width: 75%;
   height: auto;
-
-  object-fit: contain;
 
   display: block;
 
-  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.2));
+  object-fit: contain;
 
-  animation: floatLogo 4s ease-in-out infinite;
+  filter:
+    drop-shadow(
+      0 14px 28px
+      rgba(0, 0, 0, 0.16)
+    );
+
+  animation:
+    floatLogo
+    5s
+    ease-in-out
+    infinite;
 }
 
 @keyframes floatLogo {
-  0% {
-    transform: translateY(0);
+  0%,
+  100% {
+    transform:
+      translateY(0);
   }
 
   50% {
-    transform: translateY(-8px);
-  }
-
-  100% {
-    transform: translateY(0);
+    transform:
+      translateY(-5px);
   }
 }
 
-/* ========================= */
-/* TEXTO QUE MUDA */
-/* ========================= */
+
+/* =========================================================
+   LINHA EDITORIAL
+========================================================= */
+
+.editorialLine {
+  width: 100%;
+  max-width: 470px;
+  height: 1px;
+
+  margin:
+    6px
+    0
+    30px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.42),
+      rgba(255, 255, 255, 0.04)
+    );
+}
+
+
+/* =========================================================
+   FRASE ROTATIVA
+========================================================= */
 
 .changingText {
-  font-size: 4rem;
-  line-height: 1.05;
+  max-width: 690px;
+  min-height: 145px;
 
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin: 0;
 
-  font-weight: 800;
+  color: #ffffff;
 
-  letter-spacing: -2px;
+  font-family:
+    "Cormorant Garamond",
+    serif;
 
-  max-width: 800px;
-  min-height: 80px;
+  font-size:
+    clamp(
+      60px,
+      6.2vw,
+      98px
+    );
 
-  text-transform: uppercase;
+  font-weight: 400;
 
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+
+  text-transform: none;
+
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease,
+    filter 0.5s ease;
 }
 
 .fadeOut {
-  opacity: 0.15;
-  transform: translateY(-10px);
+  opacity: 0;
+
+  transform:
+    translateY(-10px);
+
+  filter:
+    blur(2px);
 }
 
-/* ========================= */
-/* TEXTO ABAIXO */
-/* ========================= */
+
+/* =========================================================
+   TEXTO ESQUERDO
+========================================================= */
 
 .overlay p {
-  font-size: 1.15rem;
+  max-width: 470px;
+
+  margin-top: 25px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.56
+    );
+
+  font-size: 10px;
+  font-weight: 300;
+
   line-height: 1.9;
-  opacity: 0.78;
-  max-width: 620px;
 }
 
-/* ========================= */
-/* LADO DIREITO */
-/* ========================= */
+
+/* =========================================================
+   LADO DIREITO
+========================================================= */
 
 .right {
-  width: 500px;
-  background: white;
+  min-height: 100vh;
+
+  padding:
+    58px
+    clamp(42px, 5vw, 82px);
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding: 45px;
-
-  position: relative;
+  background:
+    radial-gradient(
+      circle at 92% 6%,
+      rgba(50, 100, 200, 0.045),
+      transparent 25%
+    ),
+    var(--paper);
 }
 
-/* ========================= */
-/* CARD */
-/* ========================= */
+
+/* =========================================================
+   CARD / ÁREA DO LOGIN
+========================================================= */
 
 .card {
+  position: relative;
+
   width: 100%;
-  max-width: 380px;
+  max-width: 500px;
+
+  padding-top: 36px;
 }
 
+.card::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 72px;
+  height: 2px;
+
+  background: var(--blue);
+}
+
+
+/* =========================================================
+   TOPO DO FORMULÁRIO
+========================================================= */
+
 .top {
-  margin-bottom: 38px;
+  margin-bottom: 32px;
+}
+
+.eyebrow {
+  display: block;
+
+  margin-bottom: 14px;
+
+  color: #8b94a0;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .top h1 {
-  font-size: 2.5rem;
-  color: #02142f;
-  margin-bottom: 12px;
-  font-weight: 800;
+  margin: 0;
+
+  color: var(--text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:
+    clamp(
+      58px,
+      5vw,
+      76px
+    );
+
+  font-weight: 400;
+
+  line-height: 0.88;
+  letter-spacing: -0.052em;
 }
 
 .top p {
-  color: #6b7280;
-  line-height: 1.7;
-  font-size: 1rem;
+  max-width: 430px;
+
+  margin-top: 14px;
+
+  color: var(--muted);
+
+  font-size: 10px;
+  font-weight: 300;
+
+  line-height: 1.8;
 }
 
-/* ========================= */
-/* FORM */
-/* ========================= */
+
+/* =========================================================
+   ERRO
+========================================================= */
+
+.erro {
+  width: 100%;
+
+  margin-bottom: 18px;
+
+  padding:
+    11px
+    13px;
+
+  border:
+    1px solid
+    rgba(183, 76, 76, 0.22);
+
+  border-radius: 0;
+
+  background:
+    rgba(183, 76, 76, 0.045);
+
+  color: #a74747;
+
+  font-size: 8px;
+  font-weight: 500;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-}
 
-/* INPUTS */
+  gap: 17px;
+}
 
 .inputGroup {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+
+  gap: 8px;
 }
 
 .inputGroup label {
-  font-size: 0.95rem;
+  color: #596575;
+
+  font-size: 8px;
   font-weight: 600;
-  color: #02142f;
+
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .inputGroup input {
-  height: 60px;
+  width: 100%;
+  height: 49px;
 
-  border-radius: 18px;
-  border: 2px solid transparent;
+  padding:
+    0
+    13px;
 
-  background: #f4f7fb;
+  border:
+    1px solid
+    var(--line);
 
-  padding: 0 18px;
+  border-radius: 0;
 
-  font-size: 1rem;
+  outline: none;
 
-  font-family: "Poppins", sans-serif;
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.58
+    );
 
-  color: #02142f;
+  color: var(--text);
 
-  transition: 0.25s ease;
+  font-size: 9px;
+  font-weight: 500;
+
+  cursor: text;
+
+  transition:
+    border-color 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.inputGroup input::placeholder {
+  color: #a1a8b1;
+}
+
+.inputGroup input:hover {
+  border-color:
+    rgba(24, 34, 53, 0.22);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.78
+    );
 }
 
 .inputGroup input:focus {
-  outline: none;
-  border-color: #0b63f6;
-  background: white;
-  transform: translateY(-1px);
+  border-color:
+    rgba(50, 100, 200, 0.5);
 
-  box-shadow: 0 10px 30px rgba(11, 99, 246, 0.12);
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(50, 100, 200, 0.06);
 }
 
-/* ========================= */
-/* BOTÃO */
-/* ========================= */
+
+/* =========================================================
+   BOTÃO
+========================================================= */
 
 .button {
-  height: 60px;
+  width: 100%;
+  min-height: 50px;
 
-  border: none;
-  border-radius: 18px;
+  margin-top: 4px;
 
-  background: linear-gradient(135deg, #0b63f6, #0047c7);
+  border:
+    1px solid
+    var(--navy);
 
-  color: white;
+  border-radius: 0;
 
-  font-size: 1rem;
-  font-weight: 700;
+  background: var(--navy);
 
-  font-family: "Poppins", sans-serif;
+  color: #ffffff;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  letter-spacing: 0.02em;
 
   cursor: pointer;
 
-  transition: 0.25s ease;
-
-  margin-top: 6px;
+  transition:
+    background 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease;
 }
 
 .button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 35px rgba(11, 99, 246, 0.28);
+  border-color: var(--blue);
+
+  background: var(--blue);
+
+  transform:
+    translateY(-1px);
 }
 
-/* ========================= */
-/* ERRO */
-/* ========================= */
-
-.erro {
-  background: #fee2e2;
-  color: #b91c1c;
-
-  padding: 14px;
-
-  border-radius: 14px;
-
-  font-size: 0.92rem;
-
-  text-align: center;
-
-  margin-bottom: 18px;
+.button:active {
+  transform:
+    translateY(0);
 }
 
-/* ========================= */
-/* FOOTER */
-/* ========================= */
+
+/* =========================================================
+   CADASTRO
+========================================================= */
+
+.cadastro {
+  margin-top: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  color: #87919e;
+
+  font-size: 8px;
+}
+
+.link {
+  padding-bottom: 2px;
+
+  border-bottom:
+    1px solid
+    var(--navy);
+
+  color: var(--navy);
+
+  text-decoration: none;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.link:hover {
+  border-color: var(--blue);
+
+  color: var(--blue);
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
 
 .footer {
-  margin-top: 30px;
+  margin-top: 34px;
+  padding-top: 17px;
+
+  border-top:
+    1px solid
+    var(--line-soft);
 
   text-align: center;
 
-  color: #9ca3af;
+  color: #9aa2ac;
 
-  font-size: 0.92rem;
+  font-size: 7px;
+
+  letter-spacing: 0.05em;
 }
 
-/* ========================= */
-/* RESPONSIVO */
-/* ========================= */
 
-@media (max-width: 1200px) {
-  .brand {
-    font-size: 4.5rem;
+/* =========================================================
+   RESPONSIVO — 1100PX
+========================================================= */
+
+@media (max-width: 1100px) {
+  .container {
+    grid-template-columns:
+      minmax(340px, 0.8fr)
+      minmax(470px, 1.2fr);
+  }
+
+  .left {
+    padding:
+      48px
+      38px;
   }
 
   .changingText {
-    font-size: 3rem;
+    font-size: 66px;
   }
 
-  .overlay p {
-    font-size: 1.05rem;
+  .right {
+    padding:
+      50px
+      34px;
   }
 }
 
-@media (max-width: 980px) {
+
+/* =========================================================
+   RESPONSIVO — 850PX
+========================================================= */
+
+@media (max-width: 850px) {
+  .container {
+    display: block;
+
+    min-height: 100vh;
+
+    background: var(--paper);
+  }
+
   .left {
-    display: none;
+    width: 100%;
+    min-height: 330px;
+
+    padding:
+      46px
+      28px;
+
+    align-items: flex-end;
+  }
+
+  .left::before {
+    top: 30px;
+    left: 28px;
+  }
+
+  .left::after {
+    top: 48px;
+    left: 28px;
+  }
+
+  .brand {
+    margin-bottom: 12px;
+  }
+
+  .logo {
+    width: 190px;
+
+    max-width: 58%;
+  }
+
+  .editorialLine {
+    margin-bottom: 20px;
+  }
+
+  .changingText {
+    min-height: auto;
+
+    font-size: 55px;
+  }
+
+  .overlay p {
+    max-width: 430px;
+
+    margin-top: 16px;
+
+    font-size: 9px;
   }
 
   .right {
     width: 100%;
-    padding: 25px;
+    min-height: auto;
+
+    padding:
+      42px
+      24px
+      55px;
   }
 
   .card {
-    max-width: 430px;
+    max-width: 620px;
   }
 }
 
-@media (max-width: 500px) {
+
+/* =========================================================
+   RESPONSIVO — 600PX
+========================================================= */
+
+@media (max-width: 600px) {
+  .left {
+    min-height: 290px;
+
+    padding:
+      42px
+      20px
+      30px;
+  }
+
+  .left::before {
+    left: 20px;
+  }
+
+  .left::after {
+    left: 20px;
+  }
+
+  .logo {
+    width: 160px;
+  }
+
+  .changingText {
+    font-size: 48px;
+  }
+
+  .right {
+    padding:
+      34px
+      16px
+      48px;
+  }
+
   .top h1 {
-    font-size: 2rem;
+    font-size: 54px;
   }
 
-  .inputGroup input {
-    height: 56px;
-  }
-
+  .inputGroup input,
   .button {
-    height: 56px;
+    min-height: 48px;
   }
 }
 
-.link {
 
-  text-decoration: none;
-  color: #9ca3af;
-  text-align: center;
-  display: flex;
-  font-size: 14px;
-  margin-top: 6px;
-  justify-content: center;
+/* =========================================================
+   RESPONSIVO — 430PX
+========================================================= */
 
+@media (max-width: 430px) {
+  .left {
+    min-height: 255px;
 
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .left::before,
+  .left::after {
+    left: 15px;
+  }
+
+  .logo {
+    width: 145px;
+  }
+
+  .changingText {
+    font-size: 42px;
+  }
+
+  .overlay p {
+    font-size: 8px;
+  }
+
+  .right {
+    padding:
+      30px
+      12px
+      42px;
+  }
+
+  .top h1 {
+    font-size: 48px;
+  }
+
+  .cadastro {
+    flex-direction: column;
+
+    gap: 4px;
+  }
 }
 
-.link:hover {
-  color: #02142f;
-  transition: 0.3s;
-  cursor: pointer;
+
+/* =========================================================
+   ACESSIBILIDADE
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
 }

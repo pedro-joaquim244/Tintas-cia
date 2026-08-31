@@ -328,27 +328,107 @@ export default function Perfil() {
     }
 
     async function buscarCuponsSalvos() {
-        if (!usuario?.id) return;
+
+        if (!usuario?.id) {
+            return;
+        }
 
         try {
+
             const resposta = await api.get(
                 `/fidelidade/${usuario.id}/cupons`
             );
-            setCuponsSalvos(resposta.data || []);
+
+            const lista =
+                Array.isArray(resposta.data)
+                    ? resposta.data
+                    : Array.isArray(resposta.data?.cupons)
+                        ? resposta.data.cupons
+                        : [];
+
+            setCuponsSalvos(lista);
+
         } catch (error) {
-            console.error("Erro ao buscar cupons salvos:", error);
+
+            console.error(
+                "Erro ao buscar cupons salvos:",
+                error
+            );
+
             setCuponsSalvos([]);
+
         }
+
     }
 
+
     async function copiarCupom(codigo) {
-        try {
-            await navigator.clipboard.writeText(codigo);
-            setCupomCopiado(codigo);
-            window.setTimeout(() => setCupomCopiado(""), 1800);
-        } catch (error) {
-            console.error("Erro ao copiar cupom:", error);
+
+        if (!codigo) {
+            return;
         }
+
+        try {
+
+            if (
+                navigator.clipboard &&
+                typeof navigator.clipboard.writeText === "function"
+            ) {
+
+                await navigator.clipboard.writeText(
+                    codigo
+                );
+
+            } else {
+
+                const campoTemporario =
+                    document.createElement("textarea");
+
+                campoTemporario.value = codigo;
+
+                campoTemporario.setAttribute(
+                    "readonly",
+                    ""
+                );
+
+                campoTemporario.style.position =
+                    "fixed";
+
+                campoTemporario.style.opacity =
+                    "0";
+
+                document.body.appendChild(
+                    campoTemporario
+                );
+
+                campoTemporario.select();
+
+                document.execCommand(
+                    "copy"
+                );
+
+                document.body.removeChild(
+                    campoTemporario
+                );
+
+            }
+
+            setCupomCopiado(codigo);
+
+            window.setTimeout(
+                () => setCupomCopiado(""),
+                1800
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao copiar cupom:",
+                error
+            );
+
+        }
+
     }
 
 
@@ -1555,45 +1635,177 @@ export default function Perfil() {
 
                                 )}
 
+
+                                {/* =============================================
+                                    CUPONS GUARDADOS
+                                ============================================= */}
+
+                                <div className={styles.cuponsSalvos}>
+
+                                    <div
+                                        className={
+                                            styles.cuponsSalvosCabecalho
+                                        }
+                                    >
+
+                                        <div>
+
+                                            <span
+                                                className={
+                                                    styles.cuponsSalvosTitulo
+                                                }
+                                            >
+                                                Cupons guardados
+                                            </span>
+
+                                            <p>
+                                                Seus benefícios disponíveis
+                                                ficam salvos aqui.
+                                            </p>
+
+                                        </div>
+
+
+                                        <span
+                                            className={
+                                                styles.cuponsSalvosContador
+                                            }
+                                        >
+                                            {cuponsSalvos.length}
+                                        </span>
+
+                                    </div>
+
+
+                                    {cuponsSalvos.length > 0 ? (
+
+                                        <div
+                                            className={
+                                                styles.cuponsSalvosLista
+                                            }
+                                        >
+
+                                            {cuponsSalvos.map(
+                                                (cupomSalvo) => (
+
+                                                    <div
+                                                        className={
+                                                            styles.cupomSalvo
+                                                        }
+                                                        key={
+                                                            cupomSalvo.id ||
+                                                            cupomSalvo.codigo
+                                                        }
+                                                    >
+
+                                                        <div
+                                                            className={
+                                                                styles.cupomSalvoInfo
+                                                            }
+                                                        >
+
+                                                            <strong>
+                                                                {
+                                                                    cupomSalvo.codigo
+                                                                }
+                                                            </strong>
+
+                                                            <span>
+
+                                                                {String(
+                                                                    cupomSalvo.tipo ||
+                                                                    ""
+                                                                ).toLowerCase() ===
+                                                                "valor"
+                                                                    ? `${formatarPreco(
+                                                                        cupomSalvo.desconto ??
+                                                                        cupomSalvo.valor
+                                                                    )} de desconto`
+                                                                    : `${Number(
+                                                                        cupomSalvo.desconto ??
+                                                                        cupomSalvo.valor ??
+                                                                        0
+                                                                    )}% de desconto`
+                                                                }
+
+                                                            </span>
+
+                                                        </div>
+
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                copiarCupom(
+                                                                    cupomSalvo.codigo
+                                                                )
+                                                            }
+                                                            title="Copiar cupom"
+                                                            aria-label={
+                                                                `Copiar cupom ${cupomSalvo.codigo}`
+                                                            }
+                                                            className={
+                                                                cupomCopiado ===
+                                                                cupomSalvo.codigo
+                                                                    ? styles.cupomCopiado
+                                                                    : ""
+                                                            }
+                                                        >
+
+                                                            <FiCopy />
+
+                                                            <span>
+                                                                {cupomCopiado ===
+                                                                cupomSalvo.codigo
+                                                                    ? "Copiado"
+                                                                    : "Copiar"}
+                                                            </span>
+
+                                                        </button>
+
+                                                    </div>
+
+                                                )
+                                            )}
+
+                                        </div>
+
+                                    ) : (
+
+                                        <div
+                                            className={
+                                                styles.cuponsSalvosVazio
+                                            }
+                                        >
+
+                                            <FiCopy />
+
+                                            <div>
+
+                                                <strong>
+                                                    Nenhum cupom guardado
+                                                </strong>
+
+                                                <span>
+                                                    Quando você receber um
+                                                    benefício de fidelidade,
+                                                    ele aparecerá aqui.
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                    )}
+
+                                </div>
+
                             </div>
 
                         )}
 
 
                         {/* HISTÓRICO */}
-
-                        {cuponsSalvos.length > 0 && (
-                            <div className={styles.cuponsSalvos}>
-                                <span className={styles.cuponsSalvosTitulo}>
-                                    Cupons guardados
-                                </span>
-
-                                {cuponsSalvos.map((cupomSalvo) => (
-                                    <div
-                                        className={styles.cupomSalvo}
-                                        key={cupomSalvo.id}
-                                    >
-                                        <div>
-                                            <strong>{cupomSalvo.codigo}</strong>
-                                            <span>
-                                                {Number(cupomSalvo.desconto)}% de desconto
-                                            </span>
-                                        </div>
-
-                                        <button
-                                            type="button"
-                                            onClick={() => copiarCupom(cupomSalvo.codigo)}
-                                            title="Copiar cupom"
-                                        >
-                                            <FiCopy />
-                                            {cupomCopiado === cupomSalvo.codigo
-                                                ? "Copiado"
-                                                : "Copiar"}
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
 
                         <button
                             className={

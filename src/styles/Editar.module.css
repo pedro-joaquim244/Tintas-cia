@@ -1,305 +1,368 @@
-/* ======================================================
+@import url(
+  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap"
+);
+
+/* =========================================================
    RESET
-====================================================== */
+========================================================= */
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
   font-family: "Poppins", sans-serif;
 }
 
-
 body {
-  background: #f4f7fb;
-  color: #111827;
+  margin: 0;
+
+  background: #f4f1e9;
+
+  color: #182235;
+
+  font-family:
+    "Poppins",
+    sans-serif;
+}
+
+img {
+  user-select: none;
+
+  -webkit-user-drag: none;
 }
 
 
-/* ======================================================
-   LAYOUT
-====================================================== */
+/* =========================================================
+   BASE
+========================================================= */
 
 .container {
-  display: flex;
+  --sidebar-width: 290px;
 
-  min-height: 100vh;
+  --navy: #172033;
+  --navy-2: #22304b;
+
+  --blue: #3264c8;
+  --blue-soft: #88aae8;
+
+  --ivory: #f4f1e9;
+  --ivory-2: #ebe6da;
+  --paper: #fbfaf6;
+
+  --text: #182235;
+  --muted: #747f8e;
+
+  --line: rgba(24, 34, 53, 0.13);
+  --line-soft: rgba(24, 34, 53, 0.075);
 
   width: 100%;
+  min-height: 100vh;
 
-  background:
-    linear-gradient(
-      180deg,
-      #f7f9fc 0%,
-      #f3f6fb 100%
-    );
-}
-
-
-.main {
-  flex: 1;
-
-  margin-left: 290px;
-
-  padding:
-    42px
-    44px
-    55px;
-
-  min-width: 0;
-}
-
-
-/* ======================================================
-   TOPO
-====================================================== */
-
-.top {
   display: flex;
 
-  justify-content: space-between;
+  background:
+    radial-gradient(
+      circle at 92% 7%,
+      rgba(50, 100, 200, 0.055),
+      transparent 27%
+    ),
+    linear-gradient(
+      180deg,
+      #f6f3ec 0%,
+      var(--ivory) 55%,
+      #f0ece3 100%
+    );
 
+  color: var(--text);
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.main {
+  width:
+    calc(
+      100% -
+      var(--sidebar-width)
+    );
+
+  max-width: 1700px;
+
+  min-width: 0;
+  min-height: 100vh;
+
+  margin-left:
+    var(--sidebar-width);
+
+  padding:
+    55px
+    clamp(32px, 4vw, 70px)
+    85px;
+}
+
+
+/* =========================================================
+   TOPO EDITORIAL
+========================================================= */
+
+.top {
+  position: relative;
+
+  min-height: 215px;
+
+  margin-bottom: 38px;
+  padding:
+    16px
+    0
+    32px;
+
+  display: flex;
   align-items: flex-end;
+  justify-content: space-between;
 
   gap: 30px;
 
-  margin-bottom: 34px;
+  border-bottom:
+    1px solid
+    var(--line);
 }
 
+.top::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 72px;
+  height: 2px;
+
+  background: var(--blue);
+}
 
 .titleArea {
+  min-width: 0;
+
   display: flex;
-
   flex-direction: column;
-
   align-items: flex-start;
 }
 
-
 .badge {
-  width: max-content;
+  width: fit-content;
+
+  margin-bottom: 17px;
+  padding: 0;
 
   display: inline-flex;
-
   align-items: center;
 
-  justify-content: center;
+  border: none;
+  border-radius: 0;
 
-  padding:
-    7px
-    13px;
+  background: transparent;
 
-  margin-bottom: 14px;
+  color: #8b94a0;
 
-  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 600;
 
-  background:
-    rgba(37, 99, 235, 0.08);
-
-  border:
-    1px solid
-    rgba(37, 99, 235, 0.10);
-
-  color: #2563eb;
-
-  font-size: 11px;
-
-  font-weight: 700;
-
-  letter-spacing: 0.04em;
-
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
-
 .titleArea h1 {
-  margin-bottom: 8px;
+  margin:
+    0
+    0
+    13px;
 
-  color: #101827;
+  color: var(--text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
 
   font-size:
     clamp(
-      38px,
-      4vw,
-      52px
+      60px,
+      5.6vw,
+      88px
     );
 
-  font-weight: 700;
+  font-weight: 400;
 
-  line-height: 1.05;
-
-  letter-spacing: -0.045em;
+  line-height: 0.88;
+  letter-spacing: -0.052em;
 }
-
 
 .titleArea p {
-  max-width: 600px;
+  max-width: 650px;
 
-  color: #7a8494;
+  color: var(--muted);
 
-  font-size: 14px;
+  font-size: 11px;
+  font-weight: 300;
 
-  line-height: 1.7;
+  line-height: 1.8;
 }
 
 
-/* ======================================================
-   AÇÕES
-====================================================== */
+/* =========================================================
+   AÇÕES DO TOPO
+========================================================= */
 
 .actions {
-  display: flex;
+  flex-shrink: 0;
 
+  display: flex;
   align-items: center;
 
-  gap: 12px;
+  gap: 9px;
 }
 
 
-/* ======================================================
-   BOTÕES
-====================================================== */
+/* =========================================================
+   BOTÕES GERAIS
+========================================================= */
 
 .btn {
-  height: 52px;
+  min-height: 48px;
 
   padding:
     0
-    21px;
+    17px;
 
-  display: flex;
-
+  display: inline-flex;
   align-items: center;
-
   justify-content: center;
 
-  gap: 9px;
+  gap: 8px;
 
-  border: none;
+  border-radius: 0;
 
-  border-radius: 13px;
-
-  font-size: 13px;
-
+  font-size: 8px;
   font-weight: 600;
+
+  letter-spacing: 0.01em;
 
   cursor: pointer;
 
   transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    background 0.25s ease,
-    border-color 0.25s ease;
+    background 0.22s ease,
+    color 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease,
+    opacity 0.22s ease;
 }
-
 
 .btn svg {
-  font-size: 18px;
+  font-size: 14px;
 }
-
 
 .btn:active {
   transform:
-    scale(0.98);
+    translateY(0);
 }
 
 
-/* ======================================================
-   CANCELAR
-====================================================== */
+/* =========================================================
+   VOLTAR
+========================================================= */
 
 .btnCancel {
-  background: #ffffff;
-
-  color: #344054;
-
   border:
     1px solid
-    #e3e8ef;
-
-  box-shadow:
-    0 4px 12px
-    rgba(15, 23, 42, 0.03);
-}
-
-
-.btnCancel:hover {
-  background: #f9fafb;
-
-  border-color: #d4dce7;
-
-  transform:
-    translateY(-2px);
-
-  box-shadow:
-    0 8px 18px
-    rgba(15, 23, 42, 0.06);
-}
-
-
-/* ======================================================
-   SALVAR
-====================================================== */
-
-.btnSave {
-  color: #ffffff;
+    var(--line);
 
   background:
-    linear-gradient(
-      135deg,
-      #1d4ed8,
-      #2563eb 55%,
-      #3b82f6
+    rgba(
+      255,
+      255,
+      255,
+      0.32
     );
 
-  box-shadow:
-    0 10px 24px
-    rgba(37, 99, 235, 0.20);
+  color: var(--text);
 }
 
+.btnCancel:hover {
+  border-color: var(--navy);
+
+  background: var(--navy);
+
+  color: #ffffff;
+
+  transform:
+    translateY(-1px);
+}
+
+
+/* =========================================================
+   SALVAR
+========================================================= */
+
+.btnSave {
+  border:
+    1px solid
+    var(--navy);
+
+  background: var(--navy);
+
+  color: #ffffff;
+}
 
 .btnSave:hover {
-  transform:
-    translateY(-2px);
+  border-color: var(--blue);
 
-  box-shadow:
-    0 15px 30px
-    rgba(37, 99, 235, 0.27);
+  background: var(--blue);
+
+  transform:
+    translateY(-1px);
 }
 
 
-/* ======================================================
+/* =========================================================
    ERRO
-====================================================== */
+========================================================= */
 
 .error {
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 
   padding:
-    14px
-    17px;
+    12px
+    14px;
 
   border:
     1px solid
-    rgba(220, 38, 38, 0.10);
+    rgba(183, 76, 76, 0.22);
 
-  border-radius: 12px;
+  border-radius: 0;
 
   background:
-    #fff1f2;
+    rgba(183, 76, 76, 0.045);
 
-  color:
-    #be123c;
+  color: #a74747;
 
-  font-size: 13px;
+  font-size: 9px;
+  font-weight: 500;
 
-  font-weight: 600;
+  line-height: 1.5;
 }
 
 
-/* ======================================================
-   CARD
-====================================================== */
+/* =========================================================
+   CARD PRINCIPAL
+========================================================= */
 
 .card {
   position: relative;
@@ -310,18 +373,18 @@ body {
 
   border:
     1px solid
-    #e6ebf1;
+    var(--line);
 
-  border-radius: 22px;
+  border-radius: 0;
 
   background:
-    rgba(255, 255, 255, 0.94);
-
-  box-shadow:
-    0 16px 45px
-    rgba(15, 23, 42, 0.055);
+    rgba(
+      255,
+      255,
+      255,
+      0.48
+    );
 }
-
 
 .card::before {
   content: "";
@@ -329,231 +392,237 @@ body {
   position: absolute;
 
   top: 0;
-  left: 30px;
-  right: 30px;
+  left: 0;
 
-  height: 1px;
+  width: 72px;
+  height: 2px;
 
   background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(37, 99, 235, 0.14),
-      transparent
-    );
+    rgba(50, 100, 200, 0.65);
 }
 
 
-/* ======================================================
+/* =========================================================
    GRID PRINCIPAL
-====================================================== */
+========================================================= */
 
 .grid {
   display: grid;
 
   grid-template-columns:
-    390px
-    minmax(0, 1fr);
+    minmax(310px, 0.72fr)
+    minmax(0, 1.55fr);
 
-  gap: 38px;
+  gap: 34px;
+
+  align-items: start;
 }
 
 
-/* ======================================================
+/* =========================================================
    HEADER DAS SEÇÕES
-====================================================== */
+========================================================= */
 
 .sectionHeader {
   margin-bottom: 20px;
-}
+  padding-bottom: 17px;
 
+  border-bottom:
+    1px solid
+    var(--line-soft);
+}
 
 .sectionHeader h2 {
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 
-  color: #111827;
+  color: var(--text);
 
-  font-size: 24px;
+  font-family:
+    "Cormorant Garamond",
+    serif;
 
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 600;
 
-  letter-spacing: -0.025em;
+  line-height: 1;
 }
 
-
 .sectionHeader span {
-  color: #98a2b3;
+  color: #8d96a2;
 
-  font-size: 12px;
+  font-size: 8px;
 
   line-height: 1.6;
 }
 
 
-/* ======================================================
+/* =========================================================
    ÁREA DA IMAGEM
-====================================================== */
+========================================================= */
 
 .imageArea {
-  display: flex;
-
-  flex-direction: column;
-
   min-width: 0;
-}
 
+  display: flex;
+  flex-direction: column;
+}
 
 .preview {
   position: relative;
 
   width: 100%;
-
-  height: 400px;
+  height: 390px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   overflow: hidden;
 
   border:
     1px dashed
-    #ccd7e6;
+    rgba(24, 34, 53, 0.25);
 
-  border-radius: 18px;
+  border-radius: 0;
 
   background:
     linear-gradient(
-      145deg,
-      #fbfcfe,
-      #f6f9fc
+      180deg,
+      rgba(255, 255, 255, 0.58),
+      rgba(235, 232, 224, 0.34)
     );
 
   cursor: pointer;
 
   transition:
-    border-color 0.3s ease,
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+    border-color 0.25s ease,
+    background 0.25s ease,
+    transform 0.25s ease;
 }
 
-
-.preview::after {
+.preview::before {
   content: "";
 
   position: absolute;
 
-  inset: 0;
-
-  border-radius: inherit;
-
-  background:
-    linear-gradient(
-      180deg,
-      transparent 70%,
-      rgba(15, 23, 42, 0.025)
-    );
+  inset: 12px;
 
   pointer-events: none;
-}
 
+  border:
+    1px solid
+    rgba(24, 34, 53, 0.045);
+}
 
 .preview:hover {
   border-color:
-    #7ca5f7;
+    rgba(50, 100, 200, 0.48);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.73
+    );
 
   transform:
     translateY(-2px);
-
-  box-shadow:
-    0 16px 36px
-    rgba(37, 99, 235, 0.09);
 }
 
-
 .preview img {
-  width: 100%;
+  position: relative;
 
+  z-index: 2;
+
+  width: 100%;
   height: 100%;
 
   object-fit: contain;
 
-  padding: 16px;
+  padding: 18px;
 
   transition:
-    transform 0.35s ease;
+    transform 0.3s ease;
 }
-
 
 .preview:hover img {
   transform:
-    scale(1.025);
+    scale(1.018);
 }
 
 
-/* ======================================================
+/* =========================================================
    SEM IMAGEM
-====================================================== */
+========================================================= */
 
 .semImagem {
+  position: relative;
+
+  z-index: 2;
+
+  padding: 25px;
+
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
 
   gap: 12px;
 
-  padding: 25px;
-
-  color: #9aa4b2;
+  color: #8f99a5;
 
   text-align: center;
 }
 
-
 .semImagem svg {
-  color: #5687e8;
+  color: var(--blue);
 }
-
 
 .semImagem p {
-  max-width: 220px;
+  max-width: 230px;
 
-  font-size: 13px;
+  color: var(--text);
 
-  font-weight: 500;
+  font-family:
+    "Cormorant Garamond",
+    serif;
 
-  line-height: 1.6;
+  font-size: 20px;
+  font-weight: 600;
+
+  line-height: 1.15;
 }
 
 
-/* ======================================================
+/* =========================================================
    ARQUIVO
-====================================================== */
+========================================================= */
 
 .fileInfo {
-  margin-top: 12px;
+  margin-top: 10px;
 
   padding:
-    10px
-    12px;
+    9px
+    11px;
 
   overflow: hidden;
 
   border:
     1px solid
-    #e7ebf0;
+    var(--line);
 
-  border-radius: 10px;
+  border-radius: 0;
 
-  background: #fafbfc;
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.38
+    );
 
-  color: #667085;
+  color: #7e8996;
 
   text-align: center;
 
@@ -561,88 +630,78 @@ body {
 
   text-overflow: ellipsis;
 
-  font-size: 11px;
-
-  font-weight: 500;
+  font-size: 8px;
 }
 
 
-/* ======================================================
-   BOTÃO UPLOAD
-====================================================== */
+/* =========================================================
+   BOTÃO DE UPLOAD
+========================================================= */
 
 .uploadBtn {
   width: 100%;
+  min-height: 47px;
 
-  height: 52px;
-
-  margin-top: 14px;
+  margin-top: 10px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
-  gap: 9px;
+  gap: 8px;
 
   border:
     1px solid
-    rgba(37, 99, 235, 0.12);
+    var(--navy);
 
-  border-radius: 13px;
+  border-radius: 0;
 
-  background:
-    rgba(37, 99, 235, 0.065);
+  background: transparent;
 
-  color: #2563eb;
+  color: var(--navy);
 
   cursor: pointer;
 
-  font-size: 12px;
-
+  font-size: 8px;
   font-weight: 600;
 
   transition:
-    transform 0.25s ease,
-    background 0.25s ease,
-    border-color 0.25s ease;
+    background 0.22s ease,
+    color 0.22s ease,
+    transform 0.22s ease;
 }
-
 
 .uploadBtn:hover {
+  background: var(--navy);
+
+  color: #ffffff;
+
   transform:
-    translateY(-2px);
-
-  background:
-    rgba(37, 99, 235, 0.10);
-
-  border-color:
-    rgba(37, 99, 235, 0.20);
+    translateY(-1px);
 }
-
 
 .uploadBtn input {
   display: none;
 }
 
 
-/* ======================================================
+/* =========================================================
    ÁREA DO FORMULÁRIO
-====================================================== */
+========================================================= */
 
 .formArea {
-  display: flex;
+  min-width: 0;
 
+  display: flex;
   flex-direction: column;
 
-  min-width: 0;
+  padding-left: 3px;
 }
 
 
-/* ======================================================
-   GRID FORMULÁRIO
-====================================================== */
+/* =========================================================
+   GRID DO FORMULÁRIO
+========================================================= */
 
 .formGrid {
   display: grid;
@@ -654,40 +713,38 @@ body {
     );
 
   gap:
-    20px
-    18px;
+    18px
+    14px;
 }
 
 
-/* ======================================================
+/* =========================================================
    INPUT GROUP
-====================================================== */
+========================================================= */
 
 .inputGroup {
-  display: flex;
-
-  flex-direction: column;
-
   min-width: 0;
-}
 
+  display: flex;
+  flex-direction: column;
+}
 
 .inputGroup label {
   margin-bottom: 8px;
 
-  color: #364152;
+  color: #596575;
 
-  font-size: 12px;
-
+  font-size: 8px;
   font-weight: 600;
 
-  letter-spacing: 0.005em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 
-/* ======================================================
+/* =========================================================
    INPUTS / TEXTAREA / SELECTS
-====================================================== */
+========================================================= */
 
 .inputGroup input,
 .inputGroup textarea,
@@ -698,91 +755,84 @@ body {
 
   border:
     1px solid
-    #e0e6ed;
+    var(--line);
+
+  border-radius: 0;
 
   outline: none;
 
-  border-radius: 12px;
-
   background:
-    #fbfcfd;
+    rgba(
+      255,
+      255,
+      255,
+      0.58
+    );
 
-  color: #172033;
+  color: var(--text);
 
-  font-family:
-    "Poppins",
-    sans-serif;
-
-  font-size: 13px;
+  font-size: 9px;
+  font-weight: 500;
 
   transition:
     border-color 0.22s ease,
     background 0.22s ease,
-    box-shadow 0.22s ease,
-    transform 0.22s ease;
+    box-shadow 0.22s ease;
 }
 
-
-/* ======================================================
-   INPUT
-====================================================== */
-
 .inputGroup input {
-  height: 52px;
+  height: 48px;
 
   padding:
     0
-    15px;
+    13px;
 }
-
-
-/* ======================================================
-   SELECT
-====================================================== */
 
 .inputGroup select,
 .selectStatus,
 .selectCategoria {
-  height: 52px;
+  height: 48px;
 
   padding:
     0
-    42px
+    38px
     0
-    15px;
+    13px;
 
   cursor: pointer;
 
   appearance: none;
-
   -webkit-appearance: none;
 
   background-color:
-    #fbfcfd;
+    rgba(
+      255,
+      255,
+      255,
+      0.58
+    );
 
   background-image:
     linear-gradient(
       45deg,
       transparent 50%,
-      #7b8798 50%
+      #7f8996 50%
     ),
     linear-gradient(
       135deg,
-      #7b8798 50%,
+      #7f8996 50%,
       transparent 50%
     );
 
   background-position:
-    calc(100% - 18px)
-    22px,
-
-    calc(100% - 13px)
-    22px;
+    calc(100% - 17px)
+    20px,
+    calc(100% - 12px)
+    20px;
 
   background-size:
     5px
     5px,
-
     5px
     5px;
 
@@ -790,27 +840,16 @@ body {
     no-repeat;
 }
 
-
-/* ======================================================
-   TEXTAREA
-====================================================== */
-
 .inputGroup textarea {
-  min-height: 155px;
+  min-height: 165px;
 
   padding:
-    14px
-    15px;
+    13px;
 
   resize: vertical;
 
-  line-height: 1.65;
+  line-height: 1.7;
 }
-
-
-/* ======================================================
-   HOVER CAMPOS
-====================================================== */
 
 .inputGroup input:hover,
 .inputGroup textarea:hover,
@@ -818,16 +857,16 @@ body {
 .selectStatus:hover,
 .selectCategoria:hover {
   border-color:
-    #cbd5e1;
+    rgba(24, 34, 53, 0.22);
 
   background-color:
-    #ffffff;
+    rgba(
+      255,
+      255,
+      255,
+      0.82
+    );
 }
-
-
-/* ======================================================
-   FOCO CAMPOS
-====================================================== */
 
 .inputGroup input:focus,
 .inputGroup textarea:focus,
@@ -835,30 +874,20 @@ body {
 .selectStatus:focus,
 .selectCategoria:focus {
   border-color:
-    #6c95e8;
+    rgba(50, 100, 200, 0.5);
 
   background-color:
     #ffffff;
 
   box-shadow:
-    0 0 0 4px
-    rgba(37, 99, 235, 0.07);
+    0 0 0 3px
+    rgba(50, 100, 200, 0.06);
 }
-
-
-/* ======================================================
-   PLACEHOLDER
-====================================================== */
 
 .inputGroup input::placeholder,
 .inputGroup textarea::placeholder {
-  color: #a3acb9;
+  color: #a1a8b1;
 }
-
-
-/* ======================================================
-   OPÇÕES DOS SELECTS
-====================================================== */
 
 .inputGroup select option {
   color: #1f2937;
@@ -866,9 +895,8 @@ body {
   background: #ffffff;
 }
 
-
 .inputGroup select optgroup {
-  color: #2563eb;
+  color: var(--blue);
 
   font-weight: 700;
 
@@ -876,39 +904,38 @@ body {
 }
 
 
-/* ======================================================
+/* =========================================================
    STATUS
-====================================================== */
+========================================================= */
 
 .selectStatus {
   font-weight: 500;
 }
 
 
-/* ======================================================
+/* =========================================================
    CATEGORIA
-====================================================== */
+========================================================= */
 
 .categoriaGroup {
   grid-column:
     span 2;
 }
 
-
 .categoriaGroup small {
   margin-top: 7px;
 
-  color: #98a2b3;
+  color: #909aa6;
 
-  font-size: 10px;
+  font-size: 7px;
 
   line-height: 1.5;
 }
 
 
-/* ======================================================
-   CAMPO GRANDE
-====================================================== */
+/* =========================================================
+   CAMPO LARGO
+========================================================= */
 
 .fullWidth {
   grid-column:
@@ -916,112 +943,114 @@ body {
 }
 
 
-/* ======================================================
+/* =========================================================
    PRÉVIA DA COR
-====================================================== */
+========================================================= */
 
 .fullWidth > div {
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    border-color 0.25s ease;
-}
+  border-color:
+    var(--line) !important;
 
+  border-radius:
+    0 !important;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.42
+    ) !important;
+
+  box-shadow:
+    none !important;
+
+  transition:
+    border-color 0.22s ease,
+    background 0.22s ease !important;
+}
 
 .fullWidth > div:hover {
   border-color:
-    #d4dce7 !important;
+    rgba(50, 100, 200, 0.28) !important;
 
-  transform:
-    translateY(-1px);
-
-  box-shadow:
-    0 7px 20px
-    rgba(15, 23, 42, 0.045);
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.68
+    ) !important;
 }
 
 
-/* ======================================================
-   EXCLUIR
-====================================================== */
+/* =========================================================
+   ÁREA DE EXCLUSÃO
+========================================================= */
 
 .deleteArea {
   margin-top: 30px;
-
-  padding-top: 24px;
+  padding-top: 22px;
 
   display: flex;
-
   justify-content: flex-end;
 
   border-top:
     1px solid
-    #e9edf2;
+    var(--line);
 }
 
-
 .btnDanger {
-  height: 50px;
+  min-height: 46px;
 
   padding:
     0
-    20px;
+    16px;
 
-  display: flex;
-
+  display: inline-flex;
   align-items: center;
-
   justify-content: center;
 
-  gap: 9px;
+  gap: 8px;
 
   border:
     1px solid
-    rgba(220, 38, 38, 0.12);
+    rgba(183, 76, 76, 0.24);
 
-  border-radius: 12px;
+  border-radius: 0;
 
   background:
-    #fff5f5;
+    rgba(183, 76, 76, 0.03);
 
-  color:
-    #dc2626;
+  color: #a74747;
 
   cursor: pointer;
 
-  font-size: 12px;
-
+  font-size: 8px;
   font-weight: 600;
 
-  box-shadow: none;
-
   transition:
-    background 0.25s ease,
-    color 0.25s ease,
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+    background 0.22s ease,
+    color 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease;
 }
-
 
 .btnDanger:hover {
+  border-color: #b74c4c;
+
+  background: #b74c4c;
+
+  color: #ffffff;
+
   transform:
-    translateY(-2px);
-
-  background:
-    #dc2626;
-
-  color:
-    #ffffff;
-
-  box-shadow:
-    0 10px 24px
-    rgba(220, 38, 38, 0.18);
+    translateY(-1px);
 }
 
 
-/* ======================================================
+/* =========================================================
    NUMBER
-====================================================== */
+========================================================= */
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
@@ -1030,485 +1059,479 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-
 input[type="number"] {
   appearance: textfield;
 }
 
 
-/* ======================================================
+/* =========================================================
    MODAL OVERLAY
-====================================================== */
+========================================================= */
 
 .modalOverlay {
   position: fixed;
-
   inset: 0;
 
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
+  z-index: 99999;
 
   padding: 20px;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   background:
-    rgba(15, 23, 42, 0.38);
+    rgba(
+      8,
+      14,
+      25,
+      0.78
+    );
 
-  backdrop-filter:
-    blur(10px);
-
-  -webkit-backdrop-filter:
-    blur(10px);
-
-  z-index: 9999;
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
 
   animation:
     fade
-    0.25s
+    0.22s
     ease;
 }
 
 
-/* ======================================================
+/* =========================================================
    MODAL
-====================================================== */
+========================================================= */
 
 .modal {
   position: relative;
 
-  width: 430px;
-
-  max-width: 100%;
+  width:
+    min(
+      450px,
+      100%
+    );
 
   padding:
-    38px
-    34px
+    42px
+    36px
     32px;
 
   overflow: hidden;
 
   border:
     1px solid
-    rgba(255, 255, 255, 0.8);
+    rgba(
+      255,
+      255,
+      255,
+      0.12
+    );
 
-  border-radius: 22px;
+  border-radius: 0;
 
-  background:
-    #ffffff;
+  background: var(--paper);
 
   text-align: center;
 
   box-shadow:
-    0 30px 70px
-    rgba(15, 23, 42, 0.20);
+    0 32px 100px
+    rgba(
+      0,
+      0,
+      0,
+      0.35
+    );
 
   animation:
     modal
-    0.35s
+    0.26s
     ease;
 }
 
 
-.modal::before {
-  content: "";
-
-  position: absolute;
-
-  top: 0;
-  left: 15%;
-  right: 15%;
-
-  height: 1px;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(37, 99, 235, 0.25),
-      transparent
-    );
-}
-
-
-/* ======================================================
+/* =========================================================
    FECHAR MODAL
-====================================================== */
+========================================================= */
 
 .closeModal {
   position: absolute;
 
-  top: 14px;
+  top: 16px;
+  right: 16px;
 
-  right: 14px;
-
-  width: 34px;
-
-  height: 34px;
+  width: 40px;
+  height: 40px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
-  border: none;
+  border:
+    1px solid
+    var(--line);
 
   border-radius: 50%;
 
-  background: #f5f7fa;
+  background: transparent;
 
-  color: #788394;
+  color: #7d8794;
 
   cursor: pointer;
 
   transition:
-    background 0.25s ease,
-    color 0.25s ease,
-    transform 0.25s ease;
+    background 0.22s ease,
+    color 0.22s ease,
+    transform 0.22s ease;
 }
-
 
 .closeModal:hover {
-  background:
-    #edf1f5;
+  background: var(--navy);
 
-  color:
-    #172033;
+  color: #ffffff;
 
   transform:
-    rotate(4deg);
+    rotate(90deg);
 }
-
 
 .closeModal svg {
-  font-size: 17px;
+  font-size: 16px;
 }
 
 
-/* ======================================================
-   ÍCONES MODAL
-====================================================== */
+/* =========================================================
+   ÍCONES DO MODAL
+========================================================= */
 
 .modalIcon,
 .modalDelete {
-  width: 62px;
+  width: 60px;
+  height: 60px;
 
-  height: 62px;
-
+  margin-bottom: 18px;
   padding: 14px;
 
   border-radius: 50%;
-
-  margin-bottom: 16px;
 }
-
 
 .modalIcon {
-  color: #16a34a;
+  border:
+    1px solid
+    rgba(62, 129, 82, 0.18);
 
   background:
-    rgba(34, 197, 94, 0.09);
-}
+    rgba(62, 129, 82, 0.05);
 
+  color: #5c8e69;
+}
 
 .modalDelete {
-  color: #dc2626;
+  border:
+    1px solid
+    rgba(183, 76, 76, 0.18);
 
   background:
-    rgba(220, 38, 38, 0.08);
+    rgba(183, 76, 76, 0.05);
+
+  color: #b74c4c;
 }
 
 
-/* ======================================================
-   TEXTO MODAL
-====================================================== */
+/* =========================================================
+   TEXTO DO MODAL
+========================================================= */
 
 .modal h2 {
-  margin-top: 4px;
+  margin-top: 2px;
 
-  color: #172033;
+  color: var(--text);
 
-  font-size: 23px;
+  font-family:
+    "Cormorant Garamond",
+    serif;
 
-  font-weight: 700;
+  font-size: 34px;
+  font-weight: 600;
 
-  letter-spacing: -0.02em;
+  line-height: 1;
 }
-
 
 .modal p {
-  margin-top: 10px;
-
+  margin-top: 11px;
   margin-bottom: 25px;
 
-  color: #7a8494;
+  color: #7c8794;
 
-  font-size: 13px;
+  font-size: 9px;
 
-  line-height: 1.65;
+  line-height: 1.8;
 }
 
 
-/* ======================================================
-   BOTÕES MODAL
-====================================================== */
+/* =========================================================
+   BOTÕES DO MODAL
+========================================================= */
 
 .modalButtons {
-  display: flex;
+  margin-top: 20px;
 
+  display: flex;
   flex-direction: column;
 
-  gap: 10px;
-
-  margin-top: 20px;
+  gap: 8px;
 }
-
 
 .modalButtons button {
   width: 100%;
 }
 
-
 .btnModal,
 .btnModalPrimary {
   width: 100%;
+  min-height: 46px;
 
-  height: 46px;
+  border-radius: 0;
 
-  border-radius: 12px;
-
-  font-size: 12px;
-
+  font-size: 8px;
   font-weight: 600;
 
   cursor: pointer;
 
   transition:
-    transform 0.25s ease,
-    background 0.25s ease,
-    box-shadow 0.25s ease,
-    border-color 0.25s ease;
+    background 0.22s ease,
+    color 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease;
 }
-
 
 .btnModal {
   border:
     1px solid
-    #e1e7ee;
+    var(--line);
 
-  background:
-    #ffffff;
+  background: transparent;
 
-  color:
-    #445064;
+  color: var(--text);
 }
-
 
 .btnModal:hover {
-  background:
-    #f8fafc;
+  border-color: var(--navy);
 
-  border-color:
-    #d3dae4;
-}
-
-
-.btnModalPrimary {
-  border: none;
-
-  background:
-    linear-gradient(
-      135deg,
-      #1d4ed8,
-      #2563eb,
-      #3b82f6
-    );
+  background: var(--navy);
 
   color: #ffffff;
-
-  box-shadow:
-    0 9px 20px
-    rgba(37, 99, 235, 0.18);
 }
 
+.btnModalPrimary {
+  border:
+    1px solid
+    var(--navy);
+
+  background: var(--navy);
+
+  color: #ffffff;
+}
 
 .btnModalPrimary:hover {
-  transform:
-    translateY(-2px);
+  border-color: var(--blue);
 
-  box-shadow:
-    0 13px 26px
-    rgba(37, 99, 235, 0.25);
+  background: var(--blue);
+
+  transform:
+    translateY(-1px);
 }
 
 
-/* ======================================================
+/* =========================================================
+   SCROLL
+========================================================= */
+
+.modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+
+  background:
+    rgba(
+      24,
+      34,
+      53,
+      0.16
+    );
+}
+
+
+/* =========================================================
+   SELEÇÃO
+========================================================= */
+
+::selection {
+  background: var(--navy);
+
+  color: #ffffff;
+}
+
+input,
+textarea {
+  caret-color: var(--blue);
+}
+
+
+/* =========================================================
    ANIMAÇÕES
-====================================================== */
+========================================================= */
 
 @keyframes modal {
-
   from {
-
     opacity: 0;
 
     transform:
       translateY(18px)
-      scale(0.97);
-
+      scale(0.985);
   }
 
-
   to {
-
     opacity: 1;
 
     transform:
       translateY(0)
       scale(1);
-
   }
-
 }
-
 
 @keyframes fade {
-
   from {
-
     opacity: 0;
-
   }
-
 
   to {
-
     opacity: 1;
-
   }
-
 }
 
 
-/* ======================================================
-   GERAL
-====================================================== */
+/* =========================================================
+   RESPONSIVO — 1250PX
+========================================================= */
 
-button,
-input,
-textarea,
-select {
-  font-family:
-    "Poppins",
-    sans-serif;
-}
-
-
-button:focus,
-input:focus,
-textarea:focus,
-select:focus {
-  outline: none;
-}
-
-
-img {
-  user-select: none;
-
-  -webkit-user-drag: none;
-}
-
-
-::selection {
-  background:
-    #2563eb;
-
-  color:
-    #ffffff;
-}
-
-
-input,
-textarea {
-  caret-color:
-    #2563eb;
-}
-
-
-/* ======================================================
-   RESPONSIVO - 1200px
-====================================================== */
-
-@media (max-width: 1200px) {
+@media (max-width: 1250px) {
+  .main {
+    padding-left: 34px;
+    padding-right: 34px;
+  }
 
   .grid {
     grid-template-columns:
-      1fr;
+      minmax(280px, 0.65fr)
+      minmax(0, 1.35fr);
+
+    gap: 26px;
   }
 
+  .preview {
+    height: 350px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVO — 1100PX
+========================================================= */
+
+@media (max-width: 1100px) {
+  .container {
+    --sidebar-width: 92px;
+  }
+
+  .main {
+    width:
+      calc(
+        100% -
+        var(--sidebar-width)
+      );
+
+    margin-left:
+      var(--sidebar-width);
+  }
+
+  .titleArea h1 {
+    font-size: 60px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
 
   .imageArea {
-    max-width: 600px;
+    max-width: 620px;
   }
-
 
   .preview {
     height: 380px;
   }
-
 }
 
 
-/* ======================================================
-   RESPONSIVO - 1100px
-====================================================== */
-
-@media (max-width: 1100px) {
-
-  .main {
-    margin-left: 90px;
-
-    padding:
-      35px
-      30px
-      45px;
-  }
-
-}
-
-
-/* ======================================================
-   RESPONSIVO - 900px
-====================================================== */
+/* =========================================================
+   RESPONSIVO — 900PX
+========================================================= */
 
 @media (max-width: 900px) {
-
   .top {
-    flex-direction:
-      column;
+    min-height: auto;
 
-    align-items:
-      flex-start;
+    padding-top: 28px;
+
+    flex-direction: column;
+    align-items: flex-start;
   }
-
 
   .actions {
     width: 100%;
   }
 
-
   .actions .btn {
     flex: 1;
   }
+}
 
 
-  .formGrid {
-    grid-template-columns:
-      1fr;
+/* =========================================================
+   RESPONSIVO — 800PX
+========================================================= */
+
+@media (max-width: 800px) {
+  .container {
+    --sidebar-width: 0px;
   }
 
+  .main {
+    width: 100%;
+
+    margin-left: 0;
+
+    padding:
+      31px
+      20px
+      62px;
+  }
+
+  .titleArea h1 {
+    font-size: 54px;
+  }
+
+  .card {
+    padding: 24px;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
 
   .categoriaGroup,
   .fullWidth {
@@ -1516,128 +1539,115 @@ textarea {
       span 1;
   }
 
+  .imageArea {
+    max-width: none;
+  }
+
+  .preview {
+    height: 320px;
+  }
 }
 
 
-/* ======================================================
-   RESPONSIVO - 768px
-====================================================== */
+/* =========================================================
+   RESPONSIVO — 600PX
+========================================================= */
 
-@media (max-width: 768px) {
-
+@media (max-width: 600px) {
   .main {
-    margin-left: 0;
-
     padding:
-      22px
-      18px
-      35px;
+      26px
+      14px
+      55px;
   }
 
+  .top {
+    margin-bottom: 29px;
+  }
 
   .titleArea h1 {
-    font-size: 34px;
+    font-size: 48px;
   }
-
 
   .titleArea p {
-    font-size: 13px;
+    font-size: 9px;
   }
-
 
   .actions {
-    flex-direction:
-      column;
+    flex-direction: column;
   }
-
 
   .actions .btn {
     width: 100%;
   }
 
-
   .card {
-    padding: 20px;
-
-    border-radius: 18px;
+    padding:
+      22px
+      17px;
   }
 
+  .sectionHeader h2 {
+    font-size: 25px;
+  }
 
   .preview {
-    height: 310px;
+    height: 270px;
   }
-
 
   .deleteArea {
-    justify-content:
-      stretch;
+    justify-content: stretch;
   }
-
 
   .btnDanger {
     width: 100%;
   }
 
-
   .modal {
     padding:
-      34px
-      25px
-      26px;
+      40px
+      21px
+      27px;
   }
-
 }
 
 
-/* ======================================================
-   RESPONSIVO - 480px
-====================================================== */
+/* =========================================================
+   RESPONSIVO — 430PX
+========================================================= */
 
-@media (max-width: 480px) {
-
+@media (max-width: 430px) {
   .main {
-    padding:
-      15px;
+    padding-left: 11px;
+    padding-right: 11px;
   }
-
-
-  .badge {
-    font-size: 9px;
-  }
-
 
   .titleArea h1 {
-    font-size: 29px;
+    font-size: 43px;
   }
-
 
   .card {
-    padding: 15px;
-
-    border-radius: 16px;
+    padding:
+      19px
+      13px;
   }
-
-
-  .sectionHeader h2 {
-    font-size: 21px;
-  }
-
 
   .preview {
-    height: 260px;
+    height: 235px;
   }
+}
 
 
-  .inputGroup input,
-  .inputGroup select,
-  .selectStatus,
-  .selectCategoria {
-    height: 49px;
+/* =========================================================
+   ACESSIBILIDADE
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
   }
-
-
-  .inputGroup textarea {
-    min-height: 140px;
-  }
-
 }
