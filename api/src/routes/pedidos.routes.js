@@ -1,5 +1,10 @@
 import express from "express";
 import pool from "../database.js";
+import { registrarAtividade } from "../services/historico.service.js";
+import {
+    autenticarToken,
+    autorizarTipos
+} from "../middlewares/autenticacao.js";
 
 const router = express.Router();
 
@@ -35,7 +40,8 @@ router.post("/", async (req, res) => {
         const {
             usuario_id,
             metodo_pagamento,
-            cupom_id
+            cupom_id,
+            orcamento_id
         } = req.body;
 
 
@@ -296,6 +302,8 @@ router.post("/", async (req, res) => {
         const pedidoId =
             resultadoPedido.insertId;
 
+        let orcamentoConvertido = null;
+
 
         // =================================================
         // INSERIR ITENS DO PEDIDO
@@ -321,6 +329,29 @@ router.post("/", async (req, res) => {
                 ]
             );
 
+        }
+
+
+        // =================================================
+        // CONVERTER ORCAMENTO VINCULADO
+        // =================================================
+
+        if (orcamento_id) {
+            const [resultadoConversao] = await connection.query(
+                `
+                UPDATE orcamentos
+                SET status = 'convertido'
+                WHERE id = ?
+                  AND usuario_id = ?
+                  AND status IN ('aberto', 'aprovado')
+                  AND (validade IS NULL OR validade >= CURDATE())
+                `,
+                [orcamento_id, usuario_id]
+            );
+
+            if (resultadoConversao.affectedRows > 0) {
+                orcamentoConvertido = Number(orcamento_id);
+            }
         }
 
 
@@ -432,6 +463,33 @@ router.post("/", async (req, res) => {
             [usuario_id]
         );
 
+        await registrarAtividade(connection, {
+            usuario_id: Number(usuario_id),
+            tipo: "pedido",
+            acao: "criar",
+            titulo: `Novo pedido #${pedidoId}`,
+            descricao: `Pedido realizado no valor de R$ ${Number(total).toFixed(2)}.`,
+            referencia_id: pedidoId,
+            valor_novo: {
+                status: "pendente",
+                total: Number(total),
+                metodo_pagamento
+            }
+        });
+
+        if (orcamentoConvertido) {
+            await registrarAtividade(connection, {
+                usuario_id: Number(usuario_id),
+                tipo: "orcamento",
+                acao: "converter",
+                titulo: `Orcamento #${orcamentoConvertido} convertido`,
+                descricao: `O orcamento originou o pedido #${pedidoId}.`,
+                referencia_id: orcamentoConvertido,
+                valor_anterior: "aberto",
+                valor_novo: "convertido"
+            });
+        }
+
 
         // =================================================
         // FINALIZAR TRANSAÇÃO
@@ -492,6 +550,11 @@ router.post("/", async (req, res) => {
                 rank_atual: rankAtual.nome,
                 subiu_de_rank: subiuDeRank,
                 cupom: cupomFidelidade
+            },
+
+            orcamento: {
+                id: orcamentoConvertido,
+                convertido: Boolean(orcamentoConvertido)
             }
 
         });
@@ -648,7 +711,11 @@ router.get("/", async (req, res) => {
 // PUT /pedidos/:id/status
 // =====================================================
 
-router.put("/:id/status", async (req, res) => {
+router.put(
+    "/:id/status",
+    autenticarToken,
+    autorizarTipos("admin"),
+    async (req, res) => {
 
     let connection;
 
@@ -721,6 +788,28 @@ router.put("/:id/status", async (req, res) => {
 
         }
 
+        // Garante compatibilidade com bancos criados antes da central de
+        // notificacoes. O DDL precisa acontecer antes de abrir a transacao.
+        await connection.query(
+            `
+            CREATE TABLE IF NOT EXISTS notificacoes (
+                id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                usuario_id INT UNSIGNED NOT NULL,
+                titulo VARCHAR(150) NOT NULL,
+                mensagem VARCHAR(500) NOT NULL,
+                tipo VARCHAR(30) NOT NULL DEFAULT 'sistema',
+                referencia_id INT UNSIGNED NULL,
+                lida TINYINT(1) NOT NULL DEFAULT 0,
+                criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY idx_notificacoes_usuario_lida (usuario_id, lida),
+                CONSTRAINT fk_notificacoes_usuario
+                    FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+                    ON DELETE CASCADE ON UPDATE CASCADE
+            )
+            `
+        );
+
 
         // =================================================
         // VERIFICAR PEDIDO
@@ -733,6 +822,7 @@ router.put("/:id/status", async (req, res) => {
                 `
                 SELECT
                     id,
+                    usuario_id,
                     status
 
                 FROM pedidos
@@ -761,8 +851,11 @@ router.put("/:id/status", async (req, res) => {
         }
 
         const pedidoAtual = pedidoExistente[0];
+        const statusAnterior = String(pedidoAtual.status || "")
+            .trim()
+            .toLowerCase();
         const deveBaixarEstoque =
-            pedidoAtual.status === "pendente" &&
+            statusAnterior === "pendente" &&
             ["processando", "em transporte", "entregue"].includes(statusNormalizado);
 
         if (deveBaixarEstoque) {
@@ -789,6 +882,8 @@ router.put("/:id/status", async (req, res) => {
                         erro: `Estoque insuficiente para ${item.nome}.`
                     });
                 }
+
+                item.estoque_anterior = Number(estoque[0].quantidade);
             }
 
             for (const item of itensPedido) {
@@ -805,6 +900,18 @@ router.put("/:id/status", async (req, res) => {
                     `,
                     [item.quantidade, item.quantidade, item.produto_id]
                 );
+
+                await registrarAtividade(connection, {
+                    usuario_id: req.usuario?.id || null,
+                    tipo: "estoque",
+                    acao: "saida_pedido",
+                    titulo: `Estoque de "${item.nome}" atualizado`,
+                    descricao: `Baixa de ${item.quantidade} unidade(s) pelo pedido #${id}.`,
+                    referencia_id: item.produto_id,
+                    valor_anterior: item.estoque_anterior,
+                    valor_novo:
+                        item.estoque_anterior - Number(item.quantidade)
+                });
             }
 
         }
@@ -827,6 +934,43 @@ router.put("/:id/status", async (req, res) => {
                 id
             ]
         );
+
+        // A notificacao faz parte da mesma transacao do pedido: ou ambos sao
+        // gravados, ou nenhum deles e gravado.
+        if (statusAnterior !== statusNormalizado) {
+            const mensagensPorStatus = {
+                pendente: "Seu pedido esta pendente e aguardando processamento.",
+                processando: "Seu pedido esta sendo preparado.",
+                "em transporte": "Seu pedido saiu para transporte.",
+                entregue: "Seu pedido foi entregue.",
+                cancelado: "Seu pedido foi cancelado."
+            };
+
+            await connection.query(
+                `
+                INSERT INTO notificacoes
+                    (usuario_id, titulo, mensagem, tipo, referencia_id, lida)
+                VALUES (?, ?, ?, 'pedido', ?, FALSE)
+                `,
+                [
+                    pedidoAtual.usuario_id,
+                    `Status do pedido #${id} atualizado`,
+                    mensagensPorStatus[statusNormalizado],
+                    id
+                ]
+            );
+
+            await registrarAtividade(connection, {
+                usuario_id: req.usuario?.id || null,
+                tipo: "pedido",
+                acao: "alterar_status",
+                titulo: `Status do pedido #${id} alterado`,
+                descricao: `O pedido passou de "${statusAnterior}" para "${statusNormalizado}".`,
+                referencia_id: Number(id),
+                valor_anterior: statusAnterior,
+                valor_novo: statusNormalizado
+            });
+        }
 
 
         // =================================================
@@ -923,7 +1067,8 @@ router.put("/:id/status", async (req, res) => {
         }
     }
 
-});
+    }
+);
 
 
 // =====================================================

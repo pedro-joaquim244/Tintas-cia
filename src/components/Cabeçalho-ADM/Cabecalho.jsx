@@ -7,6 +7,7 @@ import {
   FiLogOut,
   FiTag,
   FiUsers,
+  FiClock,
 } from "react-icons/fi";
 
 import { useNavigate, NavLink } from "react-router-dom";
@@ -109,6 +110,19 @@ export default function Cabecalho() {
           >
             <FiUsers size={19} />
             <span>Usuários</span>
+          </NavLink>
+          <NavLink
+            to="/admin/historico"
+            title="Histórico"
+            aria-label="Abrir histórico administrativo"
+            className={({ isActive }) =>
+              isActive
+                ? `${styles.menuItem} ${styles.active}`
+                : styles.menuItem
+            }
+          >
+            <FiClock size={19} />
+            <span>Histórico</span>
           </NavLink>
         </nav>
       </div>

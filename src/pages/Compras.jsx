@@ -483,10 +483,20 @@ export default function Compra() {
                 cartaoUsadoId = salvo?.id || null;
             }
 
+            const chaveOrcamento =
+                `orcamento_pendente_${usuario.id}`;
+            const orcamentoPendente =
+                Number(localStorage.getItem(chaveOrcamento));
+
             const resposta = await api.post("/pedidos", {
                 usuario_id: usuario.id,
                 metodo_pagamento: pagamento,
                 cupom_id: cupom ? cupom.id : null,
+                orcamento_id:
+                    Number.isInteger(orcamentoPendente) &&
+                    orcamentoPendente > 0
+                        ? orcamentoPendente
+                        : null,
 
                 // Estes campos são opcionais para o seu backend atual.
                 // Podem ser usados quando você integrar o gateway real.
@@ -503,6 +513,10 @@ export default function Compra() {
             setFidelidadeCompra(
                 resposta.data?.fidelidade || null
             );
+
+            if (resposta.data?.orcamento?.convertido) {
+                localStorage.removeItem(chaveOrcamento);
+            }
 
             setModal(false);
             setModalSucesso(true);

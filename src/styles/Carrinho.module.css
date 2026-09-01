@@ -1661,6 +1661,659 @@
 
 
 /* =========================================================
+   GERAR ORÇAMENTO
+========================================================= */
+
+.orcamentoBtn {
+
+    width: 100%;
+    min-height: 50px;
+
+    margin-top: 9px;
+
+    padding:
+        0
+        17px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.22
+        );
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.035
+        );
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.82
+        );
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background
+        0.25s
+        ease,
+        color
+        0.25s
+        ease,
+        border-color
+        0.25s
+        ease,
+        transform
+        0.25s
+        ease;
+
+}
+
+
+.orcamentoBtn > span {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.orcamentoBtn svg {
+
+    flex-shrink: 0;
+
+    font-size: 14px;
+
+}
+
+
+.orcamentoBtn:hover:not(:disabled) {
+
+    border-color:
+        #9eb9ee;
+
+    background:
+        #9eb9ee;
+
+    color:
+        var(--azul);
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+.orcamentoBtn:disabled {
+
+    opacity: 0.35;
+
+    cursor: not-allowed;
+
+}
+
+
+/* =========================================================
+   MODAL DO ORÇAMENTO
+========================================================= */
+
+.orcamentoOverlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 99999;
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        rgba(
+            8,
+            14,
+            25,
+            0.8
+        );
+
+    backdrop-filter:
+        blur(11px);
+
+    -webkit-backdrop-filter:
+        blur(11px);
+
+}
+
+
+.orcamentoModal {
+
+    position: relative;
+
+    width:
+        min(
+            540px,
+            100%
+        );
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.1
+        );
+
+    background:
+        var(--marfim);
+
+    box-shadow:
+        0
+        34px
+        100px
+        rgba(
+            0,
+            0,
+            0,
+            0.38
+        );
+
+    animation:
+        orcamentoModalEntrada
+        0.28s
+        cubic-bezier(
+            0.22,
+            1,
+            0.36,
+            1
+        );
+
+}
+
+
+.orcamentoFechar {
+
+    position: absolute;
+
+    top: 16px;
+    right: 16px;
+
+    z-index: 4;
+
+    width: 39px;
+    height: 39px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.14
+        );
+
+    border-radius: 50%;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.05
+        );
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    transition:
+        background
+        0.22s
+        ease,
+        transform
+        0.22s
+        ease;
+
+}
+
+
+.orcamentoFechar:hover {
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.13
+        );
+
+    transform:
+        rotate(90deg);
+
+}
+
+
+.orcamentoModalTopo {
+
+    padding:
+        42px
+        38px
+        34px;
+
+    background:
+        #172033;
+
+    color: #ffffff;
+
+}
+
+
+.orcamentoModalTopo > span {
+
+    display: block;
+
+    margin-bottom: 20px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.4
+        );
+
+    font-size: 7px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.19em;
+
+}
+
+
+.orcamentoSucessoIcone {
+
+    width: 46px;
+    height: 46px;
+
+    margin-bottom: 23px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(
+            158,
+            185,
+            238,
+            0.3
+        );
+
+    border-radius: 50%;
+
+    background:
+        rgba(
+            158,
+            185,
+            238,
+            0.08
+        );
+
+    color:
+        #b7ccf6;
+
+}
+
+
+.orcamentoModalTopo h2 {
+
+    margin: 0;
+
+    color: #ffffff;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 43px;
+
+    font-weight: 400;
+
+    line-height: 0.9;
+
+    letter-spacing:
+        -0.04em;
+
+}
+
+
+.orcamentoModalTopo h2 em {
+
+    color:
+        #9eb9ee;
+
+    font-weight: 400;
+
+}
+
+
+.orcamentoModalTopo p {
+
+    max-width: 390px;
+
+    margin-top: 18px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.48
+        );
+
+    font-size: 8px;
+
+    line-height: 1.7;
+
+}
+
+
+.orcamentoModalDados {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(
+                0,
+                1fr
+            )
+        );
+
+    border-left:
+        1px solid
+        var(--borda);
+
+    border-top:
+        1px solid
+        var(--borda);
+
+}
+
+
+.orcamentoModalDados > div {
+
+    min-height: 88px;
+
+    padding:
+        17px
+        15px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    border-right:
+        1px solid
+        var(--borda);
+
+    border-bottom:
+        1px solid
+        var(--borda);
+
+}
+
+
+.orcamentoModalDados span {
+
+    margin-bottom: 7px;
+
+    color: #8b94a1;
+
+    font-size: 6px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.12em;
+
+}
+
+
+.orcamentoModalDados strong {
+
+    color:
+        var(--texto);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 19px;
+
+    font-weight: 600;
+
+}
+
+
+.orcamentoModalAcoes {
+
+    padding:
+        22px
+        38px
+        28px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+}
+
+
+.orcamentoModalAcoes button {
+
+    width: 100%;
+
+    min-height: 47px;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background
+        0.22s
+        ease,
+        color
+        0.22s
+        ease,
+        border-color
+        0.22s
+        ease,
+        transform
+        0.22s
+        ease;
+
+}
+
+
+.orcamentoBaixarNovamente {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    border:
+        1px solid
+        var(--azul);
+
+    background:
+        var(--azul);
+
+    color: #ffffff;
+
+}
+
+
+.orcamentoBaixarNovamente:hover {
+
+    border-color:
+        var(--azul-claro);
+
+    background:
+        var(--azul-claro);
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.orcamentoContinuar {
+
+    border:
+        1px solid
+        var(--borda);
+
+    background: transparent;
+
+    color:
+        var(--texto);
+
+}
+
+
+.orcamentoContinuar:hover {
+
+    border-color:
+        var(--azul);
+
+    background:
+        var(--azul);
+
+    color: #ffffff;
+
+}
+
+
+@keyframes orcamentoModalEntrada {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(18px)
+            scale(0.985);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+
+@media (max-width: 520px) {
+
+    .orcamentoModalTopo {
+
+        padding:
+            37px
+            22px
+            28px;
+
+    }
+
+
+    .orcamentoModalTopo h2 {
+
+        font-size: 37px;
+
+    }
+
+
+    .orcamentoModalDados {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .orcamentoModalDados > div {
+
+        min-height: 67px;
+
+    }
+
+
+    .orcamentoModalAcoes {
+
+        padding:
+            18px
+            22px
+            23px;
+
+    }
+
+}
+
+
+/* =========================================================
    CARRINHO VAZIO
 ========================================================= */
 

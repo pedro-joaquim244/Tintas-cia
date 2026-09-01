@@ -10,6 +10,9 @@ import dashboardRoutes from "./dashboard.routes.js";
 import feedbacksRoutes from "./feedbacks.routes.js";
 import fidelidadeRoutes from "./fidelidade.routes.js";
 import cartoesRoutes from "./cartoes.routes.js";
+import notificacoesRoutes from "./notificacoes.routes.js";
+import orcamentoRoutes from "./orcamento.routes.js";
+import historicoRoutes from "./hsitorico.routes.js";
 
 const routes = express.Router();
 
@@ -33,13 +36,26 @@ routes.use(
 );
 
 routes.use(
+    "/historico",
+    historicoRoutes
+);
+
+routes.use(
     "/usuarios",
     usuariosRoutes
+);
+routes.use(
+    "/notificacoes",
+    notificacoesRoutes
 );
 
 routes.use(
     "/carrinho",
     carrinhoRoutes
+);
+routes.use(
+    "/orcamento",
+    orcamentoRoutes
 );
 
 routes.use(

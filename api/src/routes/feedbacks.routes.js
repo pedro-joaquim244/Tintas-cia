@@ -1,5 +1,6 @@
 import express from "express";
 import db from "../database.js";
+import { registrarAtividade } from "../services/historico.service.js";
 
 const router = express.Router();
 
@@ -218,6 +219,16 @@ router.post("/", async (req, res) => {
             `,
             [resultado.insertId]
         );
+
+        await registrarAtividade(db, {
+            usuario_id: Number(usuario_id),
+            tipo: "feedback",
+            acao: "criar",
+            titulo: `Novo feedback de ${usuario.nome}`,
+            descricao: `Avaliacao enviada com ${notaFinal} estrela(s).`,
+            referencia_id: resultado.insertId,
+            valor_novo: { nota: notaFinal }
+        });
 
 
         // =================================================

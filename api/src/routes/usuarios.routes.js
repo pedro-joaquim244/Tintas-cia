@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 
 import pool from "../database.js";
 import { config } from "../config.js";
+import { registrarAtividade } from "../services/historico.service.js";
 
 import {
     autenticarToken,
@@ -467,6 +468,20 @@ router.post(
                     `,
                     [resultado.insertId]
                 );
+
+            await registrarAtividade(pool, {
+                usuario_id: resultado.insertId,
+                tipo: "usuario",
+                acao: "criar",
+                titulo: "Novo cliente cadastrado",
+                descricao: `${String(nome).trim()} criou uma conta no site.`,
+                referencia_id: resultado.insertId,
+                valor_novo: {
+                    nome: String(nome).trim(),
+                    email: emailNormalizado,
+                    tipo: "cliente"
+                }
+            });
 
             return res.status(201).json(
                 montarUsuario(criados[0])

@@ -1,5 +1,6 @@
 import express from "express";
 import pool from "../database.js";
+import { registrarAtividade } from "../services/historico.service.js";
 
 const router = express.Router();
 
@@ -211,6 +212,20 @@ router.post("/", async (req, res) => {
                     : "Ativo"
             ]
         );
+
+        await registrarAtividade(pool, {
+            tipo: "cupom",
+            acao: "criar",
+            titulo: `Cupom ${codigo.trim().toUpperCase()} criado`,
+            descricao: `Novo cupom de desconto cadastrado.`,
+            referencia_id: resultado.insertId,
+            valor_novo: {
+                codigo: codigo.trim().toUpperCase(),
+                tipo,
+                desconto: Number(desconto),
+                status: status === "Inativo" ? "Inativo" : "Ativo"
+            }
+        });
 
 
         res.status(201).json({
@@ -431,6 +446,11 @@ router.patch(
                 ? "Ativo"
                 : "Inativo";
 
+            const [cupomAtual] = await pool.query(
+                `SELECT codigo, status FROM cupons WHERE id = ? LIMIT 1`,
+                [id]
+            );
+
 
             await pool.query(
                 `
@@ -443,6 +463,17 @@ router.patch(
                     id
                 ]
             );
+
+            if (cupomAtual.length > 0 && cupomAtual[0].status !== status) {
+                await registrarAtividade(pool, {
+                    tipo: "cupom",
+                    acao: "alterar_status",
+                    titulo: `Status do cupom ${cupomAtual[0].codigo} alterado`,
+                    referencia_id: Number(id),
+                    valor_anterior: cupomAtual[0].status,
+                    valor_novo: status
+                });
+            }
 
 
             res.json({
@@ -472,12 +503,28 @@ router.put(
     async (req, res) => {
         try {
             const { id } = req.params;
+
+            const [cupomAtual] = await pool.query(
+                `SELECT codigo, status FROM cupons WHERE id = ? LIMIT 1`,
+                [id]
+            );
             const status = req.body.ativo ? "Ativo" : "Inativo";
 
             await pool.query(
                 `UPDATE cupons SET status = ? WHERE id = ?`,
                 [status, id]
             );
+
+            if (cupomAtual.length > 0 && cupomAtual[0].status !== status) {
+                await registrarAtividade(pool, {
+                    tipo: "cupom",
+                    acao: "alterar_status",
+                    titulo: `Status do cupom ${cupomAtual[0].codigo} alterado`,
+                    referencia_id: Number(id),
+                    valor_anterior: cupomAtual[0].status,
+                    valor_novo: status
+                });
+            }
 
             return res.json({
                 mensagem: "Status do cupom atualizado."
@@ -505,6 +552,11 @@ router.delete(
 
             const { id } = req.params;
 
+            const [cupomAtual] = await pool.query(
+                `SELECT codigo, status FROM cupons WHERE id = ? LIMIT 1`,
+                [id]
+            );
+
 
             await pool.query(
                 `
@@ -513,6 +565,16 @@ router.delete(
                 `,
                 [id]
             );
+
+            if (cupomAtual.length > 0) {
+                await registrarAtividade(pool, {
+                    tipo: "cupom",
+                    acao: "excluir",
+                    titulo: `Cupom ${cupomAtual[0].codigo} excluido`,
+                    referencia_id: Number(id),
+                    valor_anterior: cupomAtual[0]
+                });
+            }
 
 
             res.json({

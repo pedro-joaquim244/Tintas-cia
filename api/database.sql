@@ -93,3 +93,55 @@ CREATE TABLE IF NOT EXISTS cupons_usuarios (
         FOREIGN KEY (cupom_id) REFERENCES cupons(id)
         ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS notificacoes (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    usuario_id INT UNSIGNED NOT NULL,
+    titulo VARCHAR(150) NOT NULL,
+    mensagem VARCHAR(500) NOT NULL,
+    tipo VARCHAR(30) NOT NULL DEFAULT 'sistema',
+    referencia_id INT UNSIGNED NULL,
+    lida TINYINT(1) NOT NULL DEFAULT 0,
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_notificacoes_usuario_lida (usuario_id, lida),
+    CONSTRAINT fk_notificacoes_usuario
+        FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS visualizacoes_produtos (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    produto_id INT UNSIGNED NOT NULL,
+    usuario_id INT UNSIGNED NULL,
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_visualizacoes_produto (produto_id),
+    KEY idx_visualizacoes_usuario (usuario_id),
+    KEY idx_visualizacoes_criado_em (criado_em),
+    CONSTRAINT fk_visualizacoes_produto
+        FOREIGN KEY (produto_id) REFERENCES itens (id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_visualizacoes_usuario
+        FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+        ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS historico_sistema (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    usuario_id INT UNSIGNED NULL,
+    tipo VARCHAR(30) NOT NULL DEFAULT 'sistema',
+    acao VARCHAR(50) NOT NULL,
+    titulo VARCHAR(180) NOT NULL,
+    descricao TEXT NULL,
+    referencia_id INT UNSIGNED NULL,
+    valor_anterior TEXT NULL,
+    valor_novo TEXT NULL,
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_historico_tipo_data (tipo, criado_em),
+    KEY idx_historico_usuario (usuario_id),
+    CONSTRAINT fk_historico_usuario
+        FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+        ON DELETE SET NULL ON UPDATE CASCADE
+);

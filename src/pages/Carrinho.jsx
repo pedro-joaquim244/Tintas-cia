@@ -16,7 +16,10 @@ import {
     FiCreditCard,
     FiPackage,
     FiCheck,
-    FiAlertCircle
+    FiAlertCircle,
+    FiFileText,
+    FiDownload,
+    FiX
 } from "react-icons/fi";
 
 import style from "../styles/carrinho.module.css";
@@ -28,6 +31,10 @@ import { useAuth } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
 
 import Cabecalho from "../components/Cabeçalho-Users/index.jsx";
+
+import { jsPDF } from "jspdf";
+
+import logoPdf from "../assets/imagens/logodois.png";
 
 
 export default function Carrinho() {
@@ -62,6 +69,21 @@ export default function Carrinho() {
     const [
         removendoId,
         setRemovendoId
+    ] = useState(null);
+
+
+    // =====================================================
+    // ORÇAMENTO
+    // =====================================================
+
+    const [
+        gerandoOrcamento,
+        setGerandoOrcamento
+    ] = useState(false);
+
+    const [
+        orcamentoGerado,
+        setOrcamentoGerado
     ] = useState(null);
 
 
@@ -399,6 +421,1168 @@ export default function Carrinho() {
 
 
         return `http://localhost:3333/${item.foto}`;
+
+    }
+
+
+    // =====================================================
+    // ID REAL DO PRODUTO
+    // =====================================================
+
+    function obterProdutoId(
+        item
+    ) {
+
+        return Number(
+            item?.produto_id ||
+            item?.produtoId ||
+            item?.produto?.id ||
+            item?.item_id ||
+            0
+        );
+
+    }
+
+
+    // =====================================================
+    // CONVERTER LOGO PARA DATA URL
+    // =====================================================
+
+    async function carregarLogoPdf() {
+
+        try {
+
+            const resposta =
+                await fetch(
+                    logoPdf
+                );
+
+            const blob =
+                await resposta.blob();
+
+            return await new Promise(
+                (resolve, reject) => {
+
+                    const leitor =
+                        new FileReader();
+
+                    leitor.onloadend = () =>
+                        resolve(
+                            leitor.result
+                        );
+
+                    leitor.onerror = reject;
+
+                    leitor.readAsDataURL(
+                        blob
+                    );
+
+                }
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao carregar logo no PDF:",
+                error
+            );
+
+            return null;
+
+        }
+
+    }
+
+
+    // =====================================================
+    // FORMATAR DATA DO ORÇAMENTO
+    // =====================================================
+
+    function formatarDataOrcamento(
+        valor
+    ) {
+
+        if (!valor) {
+            return "-";
+        }
+
+        const texto =
+            String(valor);
+
+        const data =
+            texto.length === 10
+                ? new Date(
+                    `${texto}T12:00:00`
+                )
+                : new Date(
+                    valor
+                );
+
+        if (
+            Number.isNaN(
+                data.getTime()
+            )
+        ) {
+            return "-";
+        }
+
+        return data.toLocaleDateString(
+            "pt-BR"
+        );
+
+    }
+
+
+    // =====================================================
+    // DESENHAR CABEÇALHO DO PDF
+    // =====================================================
+
+    async function desenharCabecalhoPdf(
+        doc,
+        orcamento
+    ) {
+
+        const larguraPagina =
+            doc.internal.pageSize.getWidth();
+
+        const logoDataUrl =
+            await carregarLogoPdf();
+
+
+        // Fundo navy
+        doc.setFillColor(
+            23,
+            32,
+            51
+        );
+
+        doc.rect(
+            0,
+            0,
+            larguraPagina,
+            42,
+            "F"
+        );
+
+
+        // Detalhe azul
+        doc.setFillColor(
+            50,
+            100,
+            200
+        );
+
+        doc.rect(
+            0,
+            42,
+            larguraPagina,
+            2,
+            "F"
+        );
+
+
+        // Logo
+        if (logoDataUrl) {
+
+            doc.setFillColor(
+                255,
+                255,
+                255
+            );
+
+            doc.roundedRect(
+                14,
+                8,
+                36,
+                26,
+                2,
+                2,
+                "F"
+            );
+
+            doc.addImage(
+                logoDataUrl,
+                "JPEG",
+                17,
+                10,
+                30,
+                22
+            );
+
+        }
+
+
+        doc.setTextColor(
+            255,
+            255,
+            255
+        );
+
+        doc.setFont(
+            "times",
+            "normal"
+        );
+
+        doc.setFontSize(20);
+
+        doc.text(
+            "Orçamento",
+            58,
+            18
+        );
+
+
+        doc.setFont(
+            "helvetica",
+            "normal"
+        );
+
+        doc.setFontSize(7);
+
+        doc.setTextColor(
+            183,
+            194,
+            215
+        );
+
+        doc.text(
+            "PIXEL COLOR • TINTAS, CORES E AMBIENTES",
+            58,
+            25
+        );
+
+
+        doc.setFontSize(8);
+
+        doc.setTextColor(
+            255,
+            255,
+            255
+        );
+
+        doc.text(
+            `Nº ${String(orcamento?.id || "-").padStart(4, "0")}`,
+            larguraPagina - 14,
+            17,
+            {
+                align: "right"
+            }
+        );
+
+        doc.setTextColor(
+            183,
+            194,
+            215
+        );
+
+        doc.text(
+            `Validade: ${formatarDataOrcamento(orcamento?.validade)}`,
+            larguraPagina - 14,
+            25,
+            {
+                align: "right"
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // GERAR E BAIXAR PDF
+    // =====================================================
+
+    async function baixarPdfOrcamento(
+        orcamento
+    ) {
+
+        if (!orcamento) {
+            return;
+        }
+
+        const doc =
+            new jsPDF({
+                orientation: "portrait",
+                unit: "mm",
+                format: "a4"
+            });
+
+        const larguraPagina =
+            doc.internal.pageSize.getWidth();
+
+        const alturaPagina =
+            doc.internal.pageSize.getHeight();
+
+        const margem = 14;
+
+        const larguraConteudo =
+            larguraPagina -
+            margem * 2;
+
+
+        await desenharCabecalhoPdf(
+            doc,
+            orcamento
+        );
+
+
+        let y = 55;
+
+
+        // =================================================
+        // IDENTIFICAÇÃO DO CLIENTE
+        // =================================================
+
+        doc.setTextColor(
+            116,
+            127,
+            142
+        );
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setFontSize(7);
+
+        doc.text(
+            "CLIENTE",
+            margem,
+            y
+        );
+
+        doc.text(
+            "EMISSÃO",
+            larguraPagina - 62,
+            y
+        );
+
+
+        y += 6;
+
+
+        doc.setFont(
+            "times",
+            "normal"
+        );
+
+        doc.setTextColor(
+            24,
+            34,
+            53
+        );
+
+        doc.setFontSize(13);
+
+        doc.text(
+            usuario?.nome ||
+            "Cliente Pixel Color",
+            margem,
+            y
+        );
+
+
+        doc.setFont(
+            "helvetica",
+            "normal"
+        );
+
+        doc.setFontSize(8);
+
+        doc.text(
+            new Date().toLocaleDateString(
+                "pt-BR"
+            ),
+            larguraPagina - 62,
+            y
+        );
+
+
+        if (usuario?.email) {
+
+            y += 5;
+
+            doc.setTextColor(
+                112,
+                123,
+                139
+            );
+
+            doc.setFontSize(7.5);
+
+            doc.text(
+                usuario.email,
+                margem,
+                y
+            );
+
+        }
+
+
+        y += 11;
+
+
+        // =================================================
+        // INTRO
+        // =================================================
+
+        doc.setDrawColor(
+            220,
+            216,
+            205
+        );
+
+        doc.line(
+            margem,
+            y,
+            larguraPagina - margem,
+            y
+        );
+
+        y += 9;
+
+
+        doc.setFont(
+            "times",
+            "normal"
+        );
+
+        doc.setFontSize(16);
+
+        doc.setTextColor(
+            24,
+            34,
+            53
+        );
+
+        doc.text(
+            "Produtos selecionados",
+            margem,
+            y
+        );
+
+        y += 8;
+
+
+        // =================================================
+        // CABEÇALHO DA TABELA
+        // =================================================
+
+        const colProduto = margem;
+        const colQtd = 126;
+        const colUnit = 143;
+        const colSubtotal = 172;
+
+
+        function desenharCabecalhoTabela() {
+
+            doc.setFillColor(
+                235,
+                231,
+                220
+            );
+
+            doc.rect(
+                margem,
+                y,
+                larguraConteudo,
+                9,
+                "F"
+            );
+
+            doc.setFont(
+                "helvetica",
+                "bold"
+            );
+
+            doc.setFontSize(6.5);
+
+            doc.setTextColor(
+                94,
+                105,
+                120
+            );
+
+            doc.text(
+                "PRODUTO",
+                colProduto + 3,
+                y + 5.8
+            );
+
+            doc.text(
+                "QTD.",
+                colQtd,
+                y + 5.8,
+                {
+                    align: "center"
+                }
+            );
+
+            doc.text(
+                "UNITÁRIO",
+                colUnit,
+                y + 5.8
+            );
+
+            doc.text(
+                "SUBTOTAL",
+                larguraPagina - margem - 3,
+                y + 5.8,
+                {
+                    align: "right"
+                }
+            );
+
+            y += 9;
+
+        }
+
+
+        desenharCabecalhoTabela();
+
+
+        const itensPdf =
+            produtos.map(
+                item => ({
+                    ...item,
+                    quantidadePdf:
+                        Number(
+                            item.quantidade ||
+                            0
+                        ),
+                    precoPdf:
+                        Number(
+                            item.preco ||
+                            0
+                        )
+                })
+            );
+
+
+        for (
+            let indice = 0;
+            indice < itensPdf.length;
+            indice += 1
+        ) {
+
+            const item =
+                itensPdf[indice];
+
+            const nome =
+                item.nome ||
+                "Produto";
+
+            const linhaExtra =
+                [
+                    item.marca,
+                    item.cor
+                ]
+                    .filter(Boolean)
+                    .join(" • ");
+
+            const nomeQuebrado =
+                doc.splitTextToSize(
+                    nome,
+                    90
+                );
+
+            const alturaLinha =
+                Math.max(
+                    15,
+                    7 +
+                    nomeQuebrado.length *
+                    4.3
+                );
+
+
+            if (
+                y + alturaLinha >
+                alturaPagina - 35
+            ) {
+
+                doc.addPage();
+
+                await desenharCabecalhoPdf(
+                    doc,
+                    orcamento
+                );
+
+                y = 54;
+
+                desenharCabecalhoTabela();
+
+            }
+
+
+            if (
+                indice % 2 === 0
+            ) {
+
+                doc.setFillColor(
+                    249,
+                    247,
+                    241
+                );
+
+                doc.rect(
+                    margem,
+                    y,
+                    larguraConteudo,
+                    alturaLinha,
+                    "F"
+                );
+
+            }
+
+
+            doc.setFont(
+                "helvetica",
+                "bold"
+            );
+
+            doc.setFontSize(8);
+
+            doc.setTextColor(
+                24,
+                34,
+                53
+            );
+
+            doc.text(
+                nomeQuebrado,
+                colProduto + 3,
+                y + 5.5
+            );
+
+
+            if (linhaExtra) {
+
+                doc.setFont(
+                    "helvetica",
+                    "normal"
+                );
+
+                doc.setFontSize(6.5);
+
+                doc.setTextColor(
+                    125,
+                    135,
+                    148
+                );
+
+                doc.text(
+                    linhaExtra,
+                    colProduto + 3,
+                    y + alturaLinha - 3.5
+                );
+
+            }
+
+
+            doc.setFont(
+                "helvetica",
+                "normal"
+            );
+
+            doc.setFontSize(7.5);
+
+            doc.setTextColor(
+                70,
+                80,
+                94
+            );
+
+            doc.text(
+                String(
+                    item.quantidadePdf
+                ),
+                colQtd,
+                y + 7,
+                {
+                    align: "center"
+                }
+            );
+
+            doc.text(
+                formatarPreco(
+                    item.precoPdf
+                ),
+                colUnit,
+                y + 7
+            );
+
+            doc.setFont(
+                "helvetica",
+                "bold"
+            );
+
+            doc.text(
+                formatarPreco(
+                    item.precoPdf *
+                    item.quantidadePdf
+                ),
+                larguraPagina - margem - 3,
+                y + 7,
+                {
+                    align: "right"
+                }
+            );
+
+
+            doc.setDrawColor(
+                229,
+                225,
+                216
+            );
+
+            doc.line(
+                margem,
+                y + alturaLinha,
+                larguraPagina - margem,
+                y + alturaLinha
+            );
+
+            y += alturaLinha;
+
+        }
+
+
+        // =================================================
+        // RESUMO FINANCEIRO
+        // =================================================
+
+        if (
+            y > alturaPagina - 82
+        ) {
+
+            doc.addPage();
+
+            await desenharCabecalhoPdf(
+                doc,
+                orcamento
+            );
+
+            y = 55;
+
+        } else {
+
+            y += 10;
+
+        }
+
+
+        const caixaX = 105;
+        const caixaLargura =
+            larguraPagina -
+            margem -
+            caixaX;
+
+
+        doc.setFillColor(
+            23,
+            32,
+            51
+        );
+
+        doc.rect(
+            caixaX,
+            y,
+            caixaLargura,
+            44,
+            "F"
+        );
+
+
+        doc.setFont(
+            "helvetica",
+            "normal"
+        );
+
+        doc.setFontSize(7);
+
+        doc.setTextColor(
+            178,
+            190,
+            211
+        );
+
+        doc.text(
+            "SUBTOTAL DOS PRODUTOS",
+            caixaX + 8,
+            y + 10
+        );
+
+        doc.setTextColor(
+            255,
+            255,
+            255
+        );
+
+        doc.text(
+            formatarPreco(
+                subtotal
+            ),
+            larguraPagina - margem - 8,
+            y + 10,
+            {
+                align: "right"
+            }
+        );
+
+
+        doc.setTextColor(
+            178,
+            190,
+            211
+        );
+
+        doc.text(
+            "FRETE",
+            caixaX + 8,
+            y + 19
+        );
+
+        doc.text(
+            "Calculado na finalização da compra",
+            larguraPagina - margem - 8,
+            y + 19,
+            {
+                align: "right"
+            }
+        );
+
+
+        doc.setDrawColor(
+            61,
+            74,
+            98
+        );
+
+        doc.line(
+            caixaX + 8,
+            y + 25,
+            larguraPagina - margem - 8,
+            y + 25
+        );
+
+
+        doc.setFont(
+            "times",
+            "normal"
+        );
+
+        doc.setFontSize(13);
+
+        doc.setTextColor(
+            255,
+            255,
+            255
+        );
+
+        doc.text(
+            "Valor do orçamento",
+            caixaX + 8,
+            y + 36
+        );
+
+        doc.setFont(
+            "times",
+            "bold"
+        );
+
+        doc.setFontSize(16);
+
+        doc.text(
+            formatarPreco(
+                Number(
+                    orcamento?.total ??
+                    subtotal
+                )
+            ),
+            larguraPagina - margem - 8,
+            y + 36,
+            {
+                align: "right"
+            }
+        );
+
+
+        y += 55;
+
+
+        // =================================================
+        // OBSERVAÇÕES
+        // =================================================
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setFontSize(7);
+
+        doc.setTextColor(
+            78,
+            89,
+            104
+        );
+
+        doc.text(
+            "OBSERVAÇÕES",
+            margem,
+            y
+        );
+
+        y += 6;
+
+
+        doc.setFont(
+            "helvetica",
+            "normal"
+        );
+
+        doc.setFontSize(7);
+
+        doc.setTextColor(
+            112,
+            123,
+            139
+        );
+
+        const observacoes = [
+            `Este orçamento é válido até ${formatarDataOrcamento(orcamento?.validade)}.`,
+            "Os preços apresentados correspondem aos valores registrados no momento da geração.",
+            "O frete não está incluído neste orçamento e será calculado conforme o endereço de entrega.",
+            "A disponibilidade dos produtos está sujeita ao estoque no momento da compra."
+        ];
+
+        observacoes.forEach(
+            texto => {
+
+                const linhas =
+                    doc.splitTextToSize(
+                        `• ${texto}`,
+                        larguraConteudo
+                    );
+
+                doc.text(
+                    linhas,
+                    margem,
+                    y
+                );
+
+                y +=
+                    linhas.length *
+                    4.2 +
+                    1.5;
+
+            }
+        );
+
+
+        // =================================================
+        // RODAPÉ EM TODAS AS PÁGINAS
+        // =================================================
+
+        const totalPaginas =
+            doc.getNumberOfPages();
+
+        for (
+            let pagina = 1;
+            pagina <= totalPaginas;
+            pagina += 1
+        ) {
+
+            doc.setPage(
+                pagina
+            );
+
+            doc.setDrawColor(
+                223,
+                219,
+                209
+            );
+
+            doc.line(
+                margem,
+                alturaPagina - 15,
+                larguraPagina - margem,
+                alturaPagina - 15
+            );
+
+            doc.setFont(
+                "helvetica",
+                "normal"
+            );
+
+            doc.setFontSize(6.5);
+
+            doc.setTextColor(
+                132,
+                141,
+                153
+            );
+
+            doc.text(
+                "Pixel Color • Seu projeto começa pela cor certa.",
+                margem,
+                alturaPagina - 9
+            );
+
+            doc.text(
+                `Página ${pagina} de ${totalPaginas}`,
+                larguraPagina - margem,
+                alturaPagina - 9,
+                {
+                    align: "right"
+                }
+            );
+
+        }
+
+
+        doc.save(
+            `orcamento-pixel-color-${orcamento?.id || "novo"}.pdf`
+        );
+
+    }
+
+
+    // =====================================================
+    // GERAR ORÇAMENTO NA API + PDF
+    // =====================================================
+
+    async function gerarOrcamento() {
+
+        if (
+            !usuario?.id ||
+            produtos.length === 0 ||
+            gerandoOrcamento
+        ) {
+            return;
+        }
+
+        try {
+
+            setGerandoOrcamento(
+                true
+            );
+
+
+            const itens =
+                produtos.map(
+                    item => ({
+                        produto_id:
+                            obterProdutoId(
+                                item
+                            ),
+                        quantidade:
+                            Number(
+                                item.quantidade ||
+                                0
+                            )
+                    })
+                );
+
+
+            const itemInvalido =
+                itens.find(
+                    item =>
+                        !item.produto_id ||
+                        item.quantidade <= 0
+                );
+
+
+            if (itemInvalido) {
+
+                throw new Error(
+                    "O carrinho não retornou corretamente o produto_id de um dos itens. Verifique a rota GET /carrinho/:usuario_id."
+                );
+
+            }
+
+
+            const resposta =
+                await api.post(
+                    "/orcamento",
+                    {
+                        usuario_id:
+                            usuario.id,
+                        itens
+                    }
+                );
+
+
+            const orcamento =
+                resposta.data?.orcamento ||
+                resposta.data;
+
+
+            if (!orcamento?.id) {
+
+                throw new Error(
+                    "A API criou o orçamento, mas não retornou o ID do orçamento."
+                );
+
+            }
+
+
+            setOrcamentoGerado(
+                orcamento
+            );
+
+            localStorage.setItem(
+                `orcamento_pendente_${usuario.id}`,
+                String(orcamento.id)
+            );
+
+
+            await baixarPdfOrcamento(
+                orcamento
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao gerar orçamento:",
+                error.response?.data ||
+                error
+            );
+
+
+            // =================================================
+            // ROTA DE ORÇAMENTOS NÃO REGISTRADA NO BACKEND
+            // =================================================
+
+            if (
+                error.response?.status === 404
+            ) {
+
+                alert(
+                    "A rota /orcamento não foi encontrada no backend. " +
+                    "O Carrinho está chamando a rota correta, mas o servidor precisa ter " +
+                    'app.use("/orcamento", orcamentosRoutes) registrado antes da rota 404.'
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                error.response?.data?.erro ||
+                error.response?.data?.mensagem ||
+                error.message ||
+                "Não foi possível gerar o orçamento."
+            );
+
+        } finally {
+
+            setGerandoOrcamento(
+                false
+            );
+
+        }
 
     }
 
@@ -1414,6 +2598,37 @@ export default function Carrinho() {
                         <button
                             type="button"
                             className={
+                                style.orcamentoBtn
+                            }
+                            disabled={
+                                produtos.length === 0 ||
+                                carregando ||
+                                gerandoOrcamento
+                            }
+                            onClick={
+                                gerarOrcamento
+                            }
+                        >
+
+                            <span>
+
+                                <FiFileText />
+
+                                {gerandoOrcamento
+                                    ? "Gerando orçamento..."
+                                    : "Gerar orçamento em PDF"
+                                }
+
+                            </span>
+
+                            <FiDownload />
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            className={
                                 style.continuar
                             }
                             onClick={() =>
@@ -1454,6 +2669,186 @@ export default function Carrinho() {
                     </aside>
 
                 </div>
+
+
+                {/* =================================================
+                    MODAL — ORÇAMENTO GERADO
+                ================================================= */}
+
+                {orcamentoGerado && (
+
+                    <div
+                        className={
+                            style.orcamentoOverlay
+                        }
+                        onClick={() =>
+                            setOrcamentoGerado(
+                                null
+                            )
+                        }
+                    >
+
+                        <section
+                            className={
+                                style.orcamentoModal
+                            }
+                            onClick={
+                                event =>
+                                    event.stopPropagation()
+                            }
+                        >
+
+                            <button
+                                type="button"
+                                className={
+                                    style.orcamentoFechar
+                                }
+                                onClick={() =>
+                                    setOrcamentoGerado(
+                                        null
+                                    )
+                                }
+                                aria-label="Fechar"
+                            >
+                                <FiX />
+                            </button>
+
+
+                            <div
+                                className={
+                                    style.orcamentoModalTopo
+                                }
+                            >
+
+                                <span>
+                                    ORÇAMENTO PIXEL COLOR
+                                </span>
+
+                                <div
+                                    className={
+                                        style.orcamentoSucessoIcone
+                                    }
+                                >
+                                    <FiCheck />
+                                </div>
+
+                                <h2>
+                                    Orçamento
+                                    <br />
+                                    <em>
+                                        criado com sucesso.
+                                    </em>
+                                </h2>
+
+                                <p>
+                                    O orçamento foi salvo no sistema
+                                    e o PDF foi baixado automaticamente.
+                                </p>
+
+                            </div>
+
+
+                            <div
+                                className={
+                                    style.orcamentoModalDados
+                                }
+                            >
+
+                                <div>
+
+                                    <span>
+                                        Nº DO ORÇAMENTO
+                                    </span>
+
+                                    <strong>
+                                        #{String(
+                                            orcamentoGerado.id
+                                        ).padStart(
+                                            4,
+                                            "0"
+                                        )}
+                                    </strong>
+
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        VALOR
+                                    </span>
+
+                                    <strong>
+                                        {formatarPreco(
+                                            orcamentoGerado.total ??
+                                            subtotal
+                                        )}
+                                    </strong>
+
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        VALIDADE
+                                    </span>
+
+                                    <strong>
+                                        {formatarDataOrcamento(
+                                            orcamentoGerado.validade
+                                        )}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                className={
+                                    style.orcamentoModalAcoes
+                                }
+                            >
+
+                                <button
+                                    type="button"
+                                    className={
+                                        style.orcamentoBaixarNovamente
+                                    }
+                                    onClick={() =>
+                                        baixarPdfOrcamento(
+                                            orcamentoGerado
+                                        )
+                                    }
+                                >
+
+                                    <FiDownload />
+
+                                    Baixar PDF novamente
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    className={
+                                        style.orcamentoContinuar
+                                    }
+                                    onClick={() =>
+                                        setOrcamentoGerado(
+                                            null
+                                        )
+                                    }
+                                >
+                                    Continuar no carrinho
+                                </button>
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+                )}
 
 
                 {/* =================================================

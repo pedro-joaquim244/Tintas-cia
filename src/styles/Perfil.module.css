@@ -3277,3 +3277,829 @@
     }
 
 }
+
+
+/* =========================================================
+   NOTIFICAÇÕES — PERFIL
+========================================================= */
+
+.notificacoesCard {
+    margin-top: 14px;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        var(--perfil-line);
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.38
+        );
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+.notificacoesHeader {
+    min-height: 70px;
+
+    padding:
+        15px
+        15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    border-bottom:
+        1px solid
+        var(--perfil-line);
+}
+
+
+.notificacoesTituloArea {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+}
+
+
+.notificacoesIcone {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(
+            50,
+            100,
+            200,
+            0.15
+        );
+
+    background:
+        rgba(
+            50,
+            100,
+            200,
+            0.045
+        );
+
+    color:
+        var(--perfil-blue);
+}
+
+
+.notificacoesIcone svg {
+    width: 14px;
+    height: 14px;
+}
+
+
+.notificacoesLabel {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #919aa6;
+
+    font-size: 6px;
+    font-weight: 600;
+
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+
+.notificacoesTituloArea h3 {
+    color:
+        var(--perfil-text);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 19px;
+    font-weight: 600;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   CABEÇALHO — AÇÕES
+========================================================= */
+
+.notificacoesHeaderAcoes {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+.notificacoesContador {
+    min-width: 27px;
+    height: 27px;
+
+    padding:
+        0
+        8px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        var(--perfil-navy);
+
+    color: #ffffff;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+.notificacoesAtualizar {
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        var(--perfil-line);
+
+    background: transparent;
+
+    color: #7d8794;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.notificacoesAtualizar:hover:not(:disabled) {
+    border-color:
+        var(--perfil-navy);
+
+    background:
+        var(--perfil-navy);
+
+    color: #ffffff;
+
+    transform:
+        translateY(-1px);
+}
+
+
+.notificacoesAtualizar:disabled {
+    opacity: 0.45;
+
+    cursor: not-allowed;
+}
+
+
+.notificacoesAtualizar:disabled svg {
+    animation:
+        notificacaoGirar
+        0.8s
+        linear
+        infinite;
+}
+
+
+/* =========================================================
+   BARRA DE AÇÕES
+========================================================= */
+
+.notificacoesBarraAcoes {
+    min-height: 39px;
+
+    padding:
+        8px
+        12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+
+    border-bottom:
+        1px solid
+        var(--perfil-line);
+
+    background:
+        rgba(
+            50,
+            100,
+            200,
+            0.025
+        );
+}
+
+
+.notificacoesBarraAcoes > span {
+    color: #8993a0;
+
+    font-size: 7px;
+}
+
+
+.notificacoesBarraAcoes button {
+    padding: 0;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    border: none;
+
+    background: transparent;
+
+    color:
+        var(--perfil-blue);
+
+    font-size: 7px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.notificacoesBarraAcoes button:hover {
+    color:
+        var(--perfil-navy);
+}
+
+
+/* =========================================================
+   LISTA
+========================================================= */
+
+.notificacoesLista {
+    display: flex;
+    flex-direction: column;
+
+    max-height: 390px;
+
+    overflow-y: auto;
+}
+
+
+.notificacaoItem {
+    position: relative;
+
+    min-height: 92px;
+
+    padding:
+        14px
+        39px
+        14px
+        17px;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 9px;
+
+    border-bottom:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.07
+        );
+
+    background: transparent;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        padding-left 0.2s ease;
+}
+
+
+.notificacaoItem:last-child {
+    border-bottom: none;
+}
+
+
+.notificacaoItem:hover {
+    padding-left: 20px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.6
+        );
+}
+
+
+.notificacaoNaoLida {
+    background:
+        rgba(
+            50,
+            100,
+            200,
+            0.045
+        );
+}
+
+
+.notificacaoNaoLida:hover {
+    background:
+        rgba(
+            50,
+            100,
+            200,
+            0.07
+        );
+}
+
+
+/* =========================================================
+   MARCADOR
+========================================================= */
+
+.notificacaoMarcador {
+    width: 6px;
+    height: 6px;
+
+    flex-shrink: 0;
+
+    margin-top: 22px;
+
+    border:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.18
+        );
+
+    border-radius: 50%;
+
+    background: transparent;
+}
+
+
+.notificacaoNaoLida
+.notificacaoMarcador {
+    border-color:
+        var(--perfil-blue);
+
+    background:
+        var(--perfil-blue);
+
+    box-shadow:
+        0
+        0
+        0
+        4px
+        rgba(
+            50,
+            100,
+            200,
+            0.07
+        );
+}
+
+
+/* =========================================================
+   CONTEÚDO
+========================================================= */
+
+.notificacaoConteudo {
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.notificacaoTopo {
+    margin-bottom: 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+}
+
+
+.notificacaoTipo {
+    color:
+        var(--perfil-blue);
+
+    font-size: 6px;
+    font-weight: 600;
+
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+
+.notificacaoTopo time {
+    flex-shrink: 0;
+
+    color: #a0a8b2;
+
+    font-size: 6px;
+}
+
+
+.notificacaoConteudo > strong {
+    display: block;
+
+    overflow: hidden;
+
+    color:
+        var(--perfil-text);
+
+    font-size: 9px;
+    font-weight: 600;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.notificacaoConteudo > p {
+    margin-top: 4px;
+
+    color: #7d8794;
+
+    font-size: 7px;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   EXCLUIR
+========================================================= */
+
+.notificacaoExcluir {
+    position: absolute;
+
+    top: 50%;
+    right: 9px;
+
+    width: 27px;
+    height: 27px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        transparent;
+
+    background: transparent;
+
+    color: #a3aab3;
+
+    cursor: pointer;
+
+    transform:
+        translateY(-50%);
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.notificacaoExcluir svg {
+    width: 12px;
+    height: 12px;
+}
+
+
+.notificacaoExcluir:hover {
+    border-color:
+        rgba(
+            183,
+            76,
+            76,
+            0.17
+        );
+
+    background:
+        rgba(
+            183,
+            76,
+            76,
+            0.045
+        );
+
+    color: #a74747;
+}
+
+
+/* =========================================================
+   VER TODAS
+========================================================= */
+
+.notificacoesVerTodas {
+    width: 100%;
+    min-height: 40px;
+
+    border: none;
+    border-top:
+        1px solid
+        var(--perfil-line);
+
+    background: transparent;
+
+    color:
+        var(--perfil-navy);
+
+    font-size: 7px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.notificacoesVerTodas:hover {
+    background:
+        var(--perfil-navy);
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   ESTADOS
+========================================================= */
+
+.notificacoesEstado,
+.notificacoesVazio,
+.notificacoesErro {
+    min-height: 96px;
+
+    padding:
+        17px
+        15px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+}
+
+
+.notificacoesEstado {
+    justify-content: center;
+
+    color: #8b95a1;
+
+    font-size: 7px;
+}
+
+
+.notificacoesSpinner {
+    width: 17px;
+    height: 17px;
+
+    flex-shrink: 0;
+
+    border:
+        1px solid
+        rgba(
+            50,
+            100,
+            200,
+            0.16
+        );
+
+    border-top-color:
+        var(--perfil-blue);
+
+    border-radius: 50%;
+
+    animation:
+        notificacaoGirar
+        0.8s
+        linear
+        infinite;
+}
+
+
+.notificacoesVazio > svg,
+.notificacoesErro > svg {
+    width: 18px;
+    height: 18px;
+
+    flex-shrink: 0;
+
+    color:
+        var(--perfil-blue);
+}
+
+
+.notificacoesVazio > div,
+.notificacoesErro > div {
+    min-width: 0;
+
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.notificacoesVazio strong,
+.notificacoesErro strong {
+    color:
+        var(--perfil-text);
+
+    font-size: 8px;
+    font-weight: 600;
+}
+
+
+.notificacoesVazio span,
+.notificacoesErro span {
+    color: #8b95a1;
+
+    font-size: 7px;
+
+    line-height: 1.55;
+}
+
+
+.notificacoesErro > svg {
+    color: #a74747;
+}
+
+
+.notificacoesErro button {
+    flex-shrink: 0;
+
+    min-height: 30px;
+
+    padding:
+        0
+        8px;
+
+    border:
+        1px solid
+        var(--perfil-line);
+
+    background: transparent;
+
+    color:
+        var(--perfil-navy);
+
+    font-size: 6px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.notificacoesErro button:hover {
+    border-color:
+        var(--perfil-navy);
+
+    background:
+        var(--perfil-navy);
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   SCROLL
+========================================================= */
+
+.notificacoesLista::-webkit-scrollbar {
+    width: 4px;
+}
+
+
+.notificacoesLista::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.notificacoesLista::-webkit-scrollbar-thumb {
+    background:
+        rgba(
+            24,
+            34,
+            53,
+            0.15
+        );
+
+    border-radius: 999px;
+}
+
+
+/* =========================================================
+   ANIMAÇÃO
+========================================================= */
+
+@keyframes notificacaoGirar {
+    to {
+        transform:
+            rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVO — NOTIFICAÇÕES
+========================================================= */
+
+@media (max-width: 520px) {
+
+    .notificacoesHeader {
+        padding:
+            14px
+            12px;
+    }
+
+
+    .notificacoesBarraAcoes {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .notificacaoItem {
+        padding:
+            13px
+            38px
+            13px
+            13px;
+    }
+
+
+    .notificacaoTopo {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 3px;
+    }
+
+
+    .notificacoesErro {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+
+    .notificacoesErro button {
+        width: 100%;
+    }
+
+}

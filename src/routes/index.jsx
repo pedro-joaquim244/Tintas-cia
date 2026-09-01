@@ -17,6 +17,7 @@ import Produtos from "../pages/Produtos.jsx";
 import Compra from "../pages/Compras.jsx";
 import Cupons from "../pages/CriaCupons.jsx";
 import Usuarios from "../pages/Usuarios.jsx";
+import Historico from "../pages/Historico.jsx";
 
 import RotasAdmin from "./RotasAdmin";
 import RotasCliente from "./RotasCliente";
@@ -56,6 +57,7 @@ export function AppRoutes() {
         <Route path="/admin/perfil" element={<Perfil />} />
         <Route path="/admin/Cupons" element={<Cupons />} />
         <Route path="/admin/Usuarios" element={<Usuarios />} />
+        <Route path="/admin/historico" element={<Historico />} />
         
 
         <Route path="/dashboard" element={<Navigate to="/admin/dashboard" replace />} />

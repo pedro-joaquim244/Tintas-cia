@@ -20,7 +20,11 @@ import {
     FiHash,
     FiMap,
     FiStar,
-    FiCopy
+    FiCopy,
+    FiBell,
+    FiCheck,
+    FiTrash2,
+    FiRefreshCw
 } from "react-icons/fi";
 
 import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
@@ -117,6 +121,23 @@ export default function Perfil() {
 
     const [cuponsSalvos, setCuponsSalvos] = useState([]);
     const [cupomCopiado, setCupomCopiado] = useState("");
+
+
+    // =====================================================
+    // NOTIFICAÇÕES
+    // =====================================================
+
+    const [notificacoes, setNotificacoes] =
+        useState([]);
+
+    const [carregandoNotificacoes, setCarregandoNotificacoes] =
+        useState(false);
+
+    const [erroNotificacoes, setErroNotificacoes] =
+        useState("");
+
+    const [mostrarTodasNotificacoes, setMostrarTodasNotificacoes] =
+        useState(false);
 
 
     // =====================================================
@@ -430,6 +451,248 @@ export default function Perfil() {
         }
 
     }
+
+
+    // =====================================================
+    // BUSCAR NOTIFICAÇÕES
+    // =====================================================
+
+    async function buscarNotificacoes(
+        mostrarCarregamento = true
+    ) {
+
+        if (!usuario?.id) {
+            return;
+        }
+
+        try {
+
+            if (mostrarCarregamento) {
+                setCarregandoNotificacoes(true);
+            }
+
+            setErroNotificacoes("");
+
+            const resposta = await api.get(
+                `/notificacoes/usuario/${usuario.id}`
+            );
+
+            const lista =
+                Array.isArray(resposta.data)
+                    ? resposta.data
+                    : Array.isArray(resposta.data?.notificacoes)
+                        ? resposta.data.notificacoes
+                        : [];
+
+            setNotificacoes(
+                lista.map(
+                    notificacao => ({
+                        ...notificacao,
+                        lida: Boolean(notificacao.lida)
+                    })
+                )
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao buscar notificações:",
+                error
+            );
+
+            setErroNotificacoes(
+                error.response?.data?.erro ||
+                error.response?.data?.message ||
+                "Não foi possível carregar suas notificações."
+            );
+
+        } finally {
+
+            if (mostrarCarregamento) {
+                setCarregandoNotificacoes(false);
+            }
+
+        }
+
+    }
+
+
+    // =====================================================
+    // MARCAR UMA NOTIFICAÇÃO COMO LIDA
+    // =====================================================
+
+    async function marcarNotificacaoComoLida(
+        notificacao
+    ) {
+
+        if (
+            !notificacao?.id ||
+            notificacao.lida
+        ) {
+            return;
+        }
+
+        // Atualização visual imediata
+        setNotificacoes(prev =>
+            prev.map(item =>
+                item.id === notificacao.id
+                    ? {
+                        ...item,
+                        lida: true
+                    }
+                    : item
+            )
+        );
+
+        try {
+
+            await api.patch(
+                `/notificacoes/${notificacao.id}/lida`
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao marcar notificação como lida:",
+                error
+            );
+
+            // Desfaz caso a API falhe
+            setNotificacoes(prev =>
+                prev.map(item =>
+                    item.id === notificacao.id
+                        ? {
+                            ...item,
+                            lida: false
+                        }
+                        : item
+                )
+            );
+
+        }
+
+    }
+
+
+    // =====================================================
+    // MARCAR TODAS COMO LIDAS
+    // =====================================================
+
+    async function marcarTodasNotificacoesComoLidas() {
+
+        if (
+            !usuario?.id ||
+            notificacoes.length === 0
+        ) {
+            return;
+        }
+
+        const estadoAnterior =
+            notificacoes;
+
+        setNotificacoes(prev =>
+            prev.map(item => ({
+                ...item,
+                lida: true
+            }))
+        );
+
+        try {
+
+            await api.patch(
+                `/notificacoes/usuario/${usuario.id}/ler-todas`
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao marcar todas as notificações como lidas:",
+                error
+            );
+
+            setNotificacoes(
+                estadoAnterior
+            );
+
+        }
+
+    }
+
+
+    // =====================================================
+    // EXCLUIR NOTIFICAÇÃO
+    // =====================================================
+
+    async function excluirNotificacao(
+        notificacaoId
+    ) {
+
+        if (!notificacaoId) {
+            return;
+        }
+
+        const estadoAnterior =
+            notificacoes;
+
+        setNotificacoes(prev =>
+            prev.filter(
+                item =>
+                    item.id !== notificacaoId
+            )
+        );
+
+        try {
+
+            await api.delete(
+                `/notificacoes/${notificacaoId}`
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao excluir notificação:",
+                error
+            );
+
+            setNotificacoes(
+                estadoAnterior
+            );
+
+        }
+
+    }
+
+
+    // =====================================================
+    // BUSCAR NOTIFICAÇÕES AUTOMATICAMENTE
+    // =====================================================
+
+    useEffect(() => {
+
+        if (!usuario?.id) {
+            return;
+        }
+
+        buscarNotificacoes();
+
+
+        // Mantém a caixa atualizada enquanto o perfil estiver aberto.
+        const intervalo =
+            window.setInterval(
+                () => {
+                    buscarNotificacoes(false);
+                },
+                30000
+            );
+
+
+        return () => {
+            window.clearInterval(
+                intervalo
+            );
+        };
+
+    }, [usuario?.id]);
 
 
     // =====================================================
@@ -1193,6 +1456,25 @@ export default function Perfil() {
 
 
     // =====================================================
+    // NOTIFICAÇÕES — DADOS PARA O LAYOUT
+    // =====================================================
+
+    const notificacoesNaoLidas =
+        notificacoes.filter(
+            notificacao =>
+                !notificacao.lida
+        ).length;
+
+    const notificacoesVisiveis =
+        mostrarTodasNotificacoes
+            ? notificacoes
+            : notificacoes.slice(
+                0,
+                4
+            );
+
+
+    // =====================================================
     // RENDER
     // =====================================================
 
@@ -1803,6 +2085,361 @@ export default function Perfil() {
                             </div>
 
                         )}
+
+
+                        {/* =================================================
+                            NOTIFICAÇÕES
+                        ================================================= */}
+
+                        <section
+                            className={
+                                styles.notificacoesCard
+                            }
+                        >
+
+                            <div
+                                className={
+                                    styles.notificacoesHeader
+                                }
+                            >
+
+                                <div
+                                    className={
+                                        styles.notificacoesTituloArea
+                                    }
+                                >
+
+                                    <div
+                                        className={
+                                            styles.notificacoesIcone
+                                        }
+                                    >
+                                        <FiBell />
+                                    </div>
+
+
+                                    <div>
+
+                                        <span
+                                            className={
+                                                styles.notificacoesLabel
+                                            }
+                                        >
+                                            Central de notificações
+                                        </span>
+
+                                        <h3>
+                                            Notificações
+                                        </h3>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    className={
+                                        styles.notificacoesHeaderAcoes
+                                    }
+                                >
+
+                                    {notificacoesNaoLidas > 0 && (
+
+                                        <span
+                                            className={
+                                                styles.notificacoesContador
+                                            }
+                                            title={
+                                                `${notificacoesNaoLidas} notificações não lidas`
+                                            }
+                                        >
+                                            {
+                                                notificacoesNaoLidas
+                                            }
+                                        </span>
+
+                                    )}
+
+
+                                    <button
+                                        type="button"
+                                        className={
+                                            styles.notificacoesAtualizar
+                                        }
+                                        onClick={() =>
+                                            buscarNotificacoes()
+                                        }
+                                        disabled={
+                                            carregandoNotificacoes
+                                        }
+                                        title="Atualizar notificações"
+                                        aria-label="Atualizar notificações"
+                                    >
+                                        <FiRefreshCw />
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            {carregandoNotificacoes ? (
+
+                                <div
+                                    className={
+                                        styles.notificacoesEstado
+                                    }
+                                >
+
+                                    <div
+                                        className={
+                                            styles.notificacoesSpinner
+                                        }
+                                    />
+
+                                    <span>
+                                        Carregando notificações...
+                                    </span>
+
+                                </div>
+
+                            ) : erroNotificacoes ? (
+
+                                <div
+                                    className={
+                                        styles.notificacoesErro
+                                    }
+                                >
+
+                                    <FiBell />
+
+                                    <div>
+
+                                        <strong>
+                                            Não foi possível carregar
+                                        </strong>
+
+                                        <span>
+                                            {
+                                                erroNotificacoes
+                                            }
+                                        </span>
+
+                                    </div>
+
+
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            buscarNotificacoes()
+                                        }
+                                    >
+                                        Tentar novamente
+                                    </button>
+
+                                </div>
+
+                            ) : notificacoes.length === 0 ? (
+
+                                <div
+                                    className={
+                                        styles.notificacoesVazio
+                                    }
+                                >
+
+                                    <FiBell />
+
+                                    <div>
+
+                                        <strong>
+                                            Tudo tranquilo por aqui
+                                        </strong>
+
+                                        <span>
+                                            Quando houver novidades sobre
+                                            pedidos, cupons ou fidelidade,
+                                            elas aparecerão aqui.
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            ) : (
+
+                                <>
+
+                                    {notificacoesNaoLidas > 0 && (
+
+                                        <div
+                                            className={
+                                                styles.notificacoesBarraAcoes
+                                            }
+                                        >
+
+                                            <span>
+                                                {notificacoesNaoLidas}{" "}
+                                                {notificacoesNaoLidas === 1
+                                                    ? "não lida"
+                                                    : "não lidas"}
+                                            </span>
+
+
+                                            <button
+                                                type="button"
+                                                onClick={
+                                                    marcarTodasNotificacoesComoLidas
+                                                }
+                                            >
+                                                <FiCheck />
+
+                                                Marcar todas como lidas
+                                            </button>
+
+                                        </div>
+
+                                    )}
+
+
+                                    <div
+                                        className={
+                                            styles.notificacoesLista
+                                        }
+                                    >
+
+                                        {notificacoesVisiveis.map(
+                                            notificacao => (
+
+                                                <article
+                                                    key={
+                                                        notificacao.id
+                                                    }
+                                                    className={`${styles.notificacaoItem} ${
+                                                        !notificacao.lida
+                                                            ? styles.notificacaoNaoLida
+                                                            : ""
+                                                    }`}
+                                                    onClick={() =>
+                                                        marcarNotificacaoComoLida(
+                                                            notificacao
+                                                        )
+                                                    }
+                                                >
+
+                                                    <div
+                                                        className={
+                                                            styles.notificacaoMarcador
+                                                        }
+                                                    />
+
+
+                                                    <div
+                                                        className={
+                                                            styles.notificacaoConteudo
+                                                        }
+                                                    >
+
+                                                        <div
+                                                            className={
+                                                                styles.notificacaoTopo
+                                                            }
+                                                        >
+
+                                                            <span
+                                                                className={
+                                                                    styles.notificacaoTipo
+                                                                }
+                                                            >
+                                                                {
+                                                                    notificacao.tipo ||
+                                                                    "sistema"
+                                                                }
+                                                            </span>
+
+                                                            <time>
+                                                                {
+                                                                    formatarDataHora(
+                                                                        notificacao.criado_em
+                                                                    )
+                                                                }
+                                                            </time>
+
+                                                        </div>
+
+
+                                                        <strong>
+                                                            {
+                                                                notificacao.titulo
+                                                            }
+                                                        </strong>
+
+
+                                                        <p>
+                                                            {
+                                                                notificacao.mensagem
+                                                            }
+                                                        </p>
+
+                                                    </div>
+
+
+                                                    <button
+                                                        type="button"
+                                                        className={
+                                                            styles.notificacaoExcluir
+                                                        }
+                                                        onClick={
+                                                            event => {
+
+                                                                event.stopPropagation();
+
+                                                                excluirNotificacao(
+                                                                    notificacao.id
+                                                                );
+
+                                                            }
+                                                        }
+                                                        title="Excluir notificação"
+                                                        aria-label={
+                                                            `Excluir notificação ${notificacao.titulo}`
+                                                        }
+                                                    >
+                                                        <FiTrash2 />
+                                                    </button>
+
+                                                </article>
+
+                                            )
+                                        )}
+
+                                    </div>
+
+
+                                    {notificacoes.length > 4 && (
+
+                                        <button
+                                            type="button"
+                                            className={
+                                                styles.notificacoesVerTodas
+                                            }
+                                            onClick={() =>
+                                                setMostrarTodasNotificacoes(
+                                                    prev => !prev
+                                                )
+                                            }
+                                        >
+                                            {mostrarTodasNotificacoes
+                                                ? "Mostrar menos"
+                                                : `Ver todas (${notificacoes.length})`}
+                                        </button>
+
+                                    )}
+
+                                </>
+
+                            )}
+
+                        </section>
 
 
                         {/* HISTÓRICO */}

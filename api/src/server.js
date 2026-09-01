@@ -14,6 +14,10 @@ import dashboardRoutes from "./routes/dashboard.routes.js";
 import feedbacksRoutes from "./routes/feedbacks.routes.js";
 import fidelidadeRoutes from "./routes/fidelidade.routes.js";
 import cartoesRoutes from "./routes/cartoes.routes.js";
+import notificacoesRoutes from "./routes/notificacoes.routes.js";
+import orcamentoRoutes from "./routes/orcamento.routes.js";
+import historicoRoutes from "./routes/hsitorico.routes.js";
+import { garantirTabelaHistorico } from "./services/historico.service.js";
 
 import { config } from "./config.js";
 
@@ -100,6 +104,10 @@ app.use(
     "/usuarios",
     usuariosRoutes
 );
+app.use(
+    "/historico",
+    historicoRoutes
+);
 
 // =====================================================
 // ROTAS - DASHBOARD
@@ -108,6 +116,15 @@ app.use(
 app.use(
     "/dashboard",
     dashboardRoutes
+);
+
+app.use(
+    "/notificacoes",
+    notificacoesRoutes
+);
+app.use(
+    "/orcamento",
+    orcamentoRoutes
 );
 
 // =====================================================
@@ -203,9 +220,10 @@ app.use(
 // SERVIDOR
 // =====================================================
 
-app.listen(
-    config.port,
-    () => {
+garantirTabelaHistorico()
+    .then(() => app.listen(
+        config.port,
+        () => {
 
         console.log(
             "======================================"
@@ -234,5 +252,9 @@ app.listen(
         console.log(
             "======================================"
         );
-    }
-);
+        }
+    ))
+    .catch((error) => {
+        console.error("Erro ao preparar o historico do sistema:", error);
+        process.exitCode = 1;
+    });

@@ -49,8 +49,7 @@
 
     overflow-x: hidden;
 
-    background:
-        var(--marfim);
+    background: #e7e3d8;
 
     color:
         var(--texto);
@@ -1130,10 +1129,10 @@
 
     border:
         1px solid
-        var(--azul);
+        #172033;
 
     background:
-        var(--azul);
+        #172033;
 
     color:
         #ffffff;
@@ -2224,6 +2223,1414 @@
 
 }
 
+.produto[role="button"] {
+    cursor: pointer;
+}
+
+.produto[role="button"]:focus-visible {
+    outline: 2px solid var(--azul-claro);
+    outline-offset: 4px;
+}
+
+
+/* =========================================================
+   MODAL DE DETALHES DO PRODUTO
+========================================================= */
+
+.modalProduto {
+    position: relative;
+
+    width:
+        min(
+            1120px,
+            100%
+        );
+
+    max-height:
+        min(
+            790px,
+            calc(100vh - 40px)
+        );
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(360px, 0.9fr)
+        minmax(470px, 1.1fr);
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
+
+    background:
+        var(--marfim);
+
+    box-shadow:
+        0
+        42px
+        120px
+        rgba(
+            0,
+            0,
+            0,
+            0.38
+        );
+
+    animation:
+        abrirModal
+        0.32s
+        cubic-bezier(
+            0.22,
+            1,
+            0.36,
+            1
+        );
+}
+
+
+/* =========================================================
+   FECHAR
+========================================================= */
+
+.modalProdutoFechar {
+    position: absolute;
+
+    z-index: 12;
+
+    top: 19px;
+    right: 19px;
+
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+
+    place-items: center;
+
+    border:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.12
+        );
+
+    border-radius: 50%;
+
+    background:
+        rgba(
+            244,
+            241,
+            233,
+            0.92
+        );
+
+    color:
+        var(--texto);
+
+    cursor: pointer;
+
+    backdrop-filter:
+        blur(10px);
+
+    transition:
+        border-color
+        0.25s
+        ease,
+        background
+        0.25s
+        ease,
+        color
+        0.25s
+        ease,
+        transform
+        0.25s
+        ease;
+}
+
+
+.modalProdutoFechar:hover {
+    border-color:
+        var(--azul);
+
+    background:
+        var(--azul);
+
+    color:
+        #ffffff;
+
+    transform:
+        rotate(90deg);
+}
+
+
+/* =========================================================
+   ÁREA DA IMAGEM
+========================================================= */
+
+.modalProdutoImagem {
+    position: relative;
+
+    min-height: 650px;
+
+    padding:
+        78px
+        48px
+        74px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: #e7e3d8;
+}
+
+
+.modalProdutoImagem::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 18px;
+
+    border:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.055
+        );
+
+    pointer-events: none;
+}
+
+
+.modalProdutoImagem::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 78px;
+
+    width: 58%;
+    height: 25px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(
+            14,
+            22,
+            36,
+            0.12
+        );
+
+    filter:
+        blur(14px);
+
+    transform:
+        translateX(-50%);
+}
+
+
+.modalProdutoImagem img {
+    position: relative;
+
+    z-index: 3;
+
+    width: 100%;
+    max-width: 410px;
+    max-height: 445px;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0
+            22px
+            24px
+            rgba(
+                19,
+                29,
+                45,
+                0.08
+            )
+        );
+
+    transition:
+        transform
+        0.45s
+        cubic-bezier(
+            0.22,
+            1,
+            0.36,
+            1
+        );
+}
+
+
+.modalProdutoImagem:hover img {
+    transform:
+        translateY(-5px)
+        scale(1.025);
+}
+
+
+/* =========================================================
+   TOPO DA IMAGEM
+========================================================= */
+
+.modalProdutoImagemTopo {
+    position: absolute;
+
+    z-index: 5;
+
+    top: 30px;
+    left: 31px;
+    right: 31px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+.modalProdutoEtiqueta {
+    color:
+        var(--azul);
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    letter-spacing:
+        0.18em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.modalProdutoStatusImagem {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color:
+        #4d7458;
+
+    font-size: 7px;
+
+    font-weight: 600;
+
+    letter-spacing:
+        0.08em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.modalProdutoStatusImagem i {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background:
+        #5f956e;
+
+    box-shadow:
+        0
+        0
+        0
+        5px
+        rgba(
+            95,
+            149,
+            110,
+            0.08
+        );
+}
+
+
+/* =========================================================
+   RODAPÉ DA IMAGEM
+========================================================= */
+
+.modalProdutoImagemRodape {
+    position: absolute;
+
+    z-index: 5;
+
+    left: 31px;
+    right: 31px;
+    bottom: 30px;
+
+    padding-top: 14px;
+
+    display: flex;
+
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    border-top:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.09
+        );
+}
+
+
+.modalProdutoImagemRodape span {
+    color:
+        #939ba5;
+
+    font-size: 7px;
+
+    letter-spacing:
+        0.08em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.modalProdutoImagemRodape strong {
+    max-width: 230px;
+
+    color:
+        var(--texto);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    text-align: right;
+}
+
+
+/* =========================================================
+   CONTEÚDO
+========================================================= */
+
+.modalProdutoConteudo {
+    min-height: 650px;
+
+    padding:
+        58px
+        55px
+        38px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow-y: auto;
+
+    background: #e7e3d8;
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+.modalProdutoCabecalho {
+    padding-right: 25px;
+}
+
+
+.modalProdutoCategoria {
+    display: block;
+
+    margin-bottom: 14px;
+
+    color:
+        var(--azul-claro);
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    letter-spacing:
+        0.2em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.modalProdutoConteudo h2 {
+    max-width: 470px;
+
+    margin: 0;
+
+    color:
+        var(--texto);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        clamp(
+            42px,
+            4.2vw,
+            64px
+        );
+
+    font-weight: 500;
+
+    line-height: 0.88;
+
+    letter-spacing:
+        -0.048em;
+}
+
+
+.modalProdutoResumo {
+    margin-top: 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    color:
+        #697486;
+
+    font-size: 8px;
+
+    font-weight: 500;
+}
+
+
+.modalProdutoResumo i {
+    width: 3px;
+    height: 3px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background:
+        #a3aab3;
+}
+
+
+/* =========================================================
+   DESCRIÇÃO
+========================================================= */
+
+.modalProdutoDescricaoBloco {
+    margin-top: 27px;
+
+    padding:
+        18px
+        0
+        20px;
+
+    border-top:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.09
+        );
+
+    border-bottom:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.09
+        );
+}
+
+
+.modalProdutoDescricaoBloco > span {
+    color:
+        #929aa5;
+
+    font-size: 7px;
+
+    font-weight: 600;
+
+    letter-spacing:
+        0.13em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.modalProdutoDescricao {
+    max-width: 510px;
+
+    margin:
+        9px
+        0
+        0;
+
+    color:
+        var(--cinza);
+
+    font-size: 9px;
+
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   TÍTULO DOS DETALHES
+========================================================= */
+
+.modalProdutoSecaoTitulo {
+    margin:
+        22px
+        0
+        11px;
+
+    display: flex;
+
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+.modalProdutoSecaoTitulo > span {
+    color:
+        #929aa5;
+
+    font-size: 7px;
+
+    font-weight: 600;
+
+    letter-spacing:
+        0.13em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.modalProdutoSecaoTitulo > strong {
+    color:
+        var(--texto);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 16px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   DETALHES
+========================================================= */
+
+.modalProdutoDetalhes {
+    margin: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(
+                0,
+                1fr
+            )
+        );
+
+    border-top:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.11
+        );
+
+    border-left:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.11
+        );
+}
+
+
+.modalProdutoDetalhes > div {
+    min-width: 0;
+
+    min-height: 74px;
+
+    padding:
+        13px
+        14px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    border-right:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.11
+        );
+
+    border-bottom:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.11
+        );
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.25
+        );
+}
+
+
+.modalProdutoDetalhes dt {
+    margin-bottom: 5px;
+
+    color:
+        #9299a3;
+
+    font-size: 6px;
+
+    font-weight: 600;
+
+    letter-spacing:
+        0.12em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.modalProdutoDetalhes dd {
+    margin: 0;
+
+    overflow: hidden;
+
+    color:
+        var(--texto);
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
+}
+
+
+/* =========================================================
+   COR
+========================================================= */
+
+.modalProdutoCor {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+.modalProdutoCor > span {
+    width: 8px;
+    height: 8px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #3264c8,
+            #91ade3
+        );
+
+    box-shadow:
+        0
+        0
+        0
+        3px
+        rgba(
+            50,
+            100,
+            200,
+            0.055
+        );
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.modalProdutoStatus {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    color:
+        #4d7458;
+
+    text-transform:
+        capitalize;
+}
+
+
+.modalProdutoStatus i {
+    width: 5px;
+    height: 5px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background:
+        #5f956e;
+}
+
+
+/* =========================================================
+   DISPONIBILIDADE
+========================================================= */
+
+.modalProdutoDisponibilidade {
+    margin-top: 15px;
+
+    padding:
+        13px
+        14px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    border:
+        1px solid
+        rgba(
+            66,
+            126,
+            82,
+            0.14
+        );
+
+    background:
+        rgba(
+            66,
+            126,
+            82,
+            0.035
+        );
+}
+
+
+.modalProdutoDisponibilidadeIcone {
+    width: 32px;
+    height: 32px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(
+            66,
+            126,
+            82,
+            0.13
+        );
+
+    border-radius: 50%;
+
+    color:
+        #4f815d;
+}
+
+
+.modalProdutoDisponibilidadeIcone svg {
+    width: 13px;
+    height: 13px;
+}
+
+
+.modalProdutoDisponibilidade > div:last-child {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.modalProdutoDisponibilidade strong {
+    color:
+        #3e694a;
+
+    font-size: 8px;
+
+    font-weight: 600;
+}
+
+
+.modalProdutoDisponibilidade span {
+    color:
+        #718078;
+
+    font-size: 7px;
+}
+
+
+/* =========================================================
+   PREÇO + CARRINHO
+========================================================= */
+
+.modalProdutoRodape {
+    margin-top: 19px;
+
+    padding-top: 19px;
+
+    display: grid;
+
+    grid-template-columns:
+        auto
+        minmax(
+            230px,
+            1fr
+        );
+
+    align-items: end;
+
+    gap: 20px;
+
+    border-top:
+        1px solid
+        rgba(
+            24,
+            34,
+            53,
+            0.1
+        );
+}
+
+
+.modalProdutoPreco {
+    min-width: 128px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+}
+
+
+.modalProdutoPreco > span {
+    margin-bottom: 1px;
+
+    color:
+        #8d95a1;
+
+    font-size: 7px;
+
+    letter-spacing:
+        0.08em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.modalProdutoPreco > strong {
+    color:
+        var(--texto);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 32px;
+
+    font-weight: 600;
+
+    line-height: 1;
+}
+
+
+.modalProdutoPreco > small {
+    margin-top: 4px;
+
+    color:
+        #9aA1aa;
+
+    font-size: 6px;
+}
+
+
+/* =========================================================
+   BOTÃO CARRINHO
+========================================================= */
+
+.modalProdutoCarrinho {
+    width: 100%;
+    min-height: 54px;
+
+    padding:
+        0
+        20px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    border:
+        1px solid
+        var(--azul);
+
+    background:
+        #172033;
+
+    color:
+        #ffffff;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background
+        0.25s
+        ease,
+        border-color
+        0.25s
+        ease,
+        transform
+        0.25s
+        ease,
+        box-shadow
+        0.25s
+        ease;
+}
+
+
+.modalProdutoCarrinho svg:first-child {
+    width: 13px;
+    height: 13px;
+}
+
+
+.modalProdutoCarrinho svg:last-child {
+    width: 10px;
+    height: 10px;
+
+    margin-left: auto;
+
+    transition:
+        transform
+        0.25s
+        ease;
+}
+
+
+.modalProdutoCarrinho:hover {
+    border-color:
+        var(--azul-claro);
+
+    background:
+        #172033;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0
+        12px
+        26px
+        rgba(
+            50,
+            100,
+            200,
+            0.15
+        );
+}
+
+
+.modalProdutoCarrinho:hover svg:last-child {
+    transform:
+        translateX(3px);
+}
+
+
+/* =========================================================
+   SEGURANÇA
+========================================================= */
+
+.modalProdutoSeguranca {
+    margin-top: 10px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 6px;
+
+    color:
+        #8c949f;
+
+    font-size: 6px;
+}
+
+
+.modalProdutoSeguranca svg {
+    width: 10px;
+    height: 10px;
+
+    color:
+        #688673;
+}
+
+
+/* =========================================================
+   SCROLL DO CONTEÚDO
+========================================================= */
+
+.modalProdutoConteudo::-webkit-scrollbar {
+    width: 5px;
+}
+
+
+.modalProdutoConteudo::-webkit-scrollbar-track {
+    background:
+        transparent;
+}
+
+
+.modalProdutoConteudo::-webkit-scrollbar-thumb {
+    border-radius:
+        999px;
+
+    background:
+        rgba(
+            24,
+            34,
+            53,
+            0.16
+        );
+}
+
+
+/* =========================================================
+   MODAL PRODUTO — RESPONSIVO
+========================================================= */
+
+@media (max-width: 930px) {
+
+    .modalProduto {
+        max-height:
+            calc(
+                100vh - 24px
+            );
+
+        grid-template-columns:
+            minmax(
+                285px,
+                0.78fr
+            )
+            minmax(
+                390px,
+                1.22fr
+            );
+    }
+
+
+    .modalProdutoImagem {
+        min-height: 610px;
+
+        padding:
+            70px
+            30px
+            70px;
+    }
+
+
+    .modalProdutoConteudo {
+        min-height: 610px;
+
+        padding:
+            52px
+            35px
+            32px;
+    }
+
+
+    .modalProdutoDetalhes {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(
+                    0,
+                    1fr
+                )
+            );
+    }
+
+}
+
+
+@media (max-width: 760px) {
+
+    .modalProduto {
+        display: block;
+
+        max-height:
+            calc(
+                100vh - 24px
+            );
+
+        overflow-y:
+            auto;
+    }
+
+
+    .modalProdutoImagem {
+        min-height: 320px;
+
+        padding:
+            58px
+            30px
+            60px;
+    }
+
+
+    .modalProdutoImagem img {
+        max-width: 280px;
+        max-height: 245px;
+    }
+
+
+    .modalProdutoImagem::after {
+        bottom: 56px;
+
+        width: 45%;
+    }
+
+
+    .modalProdutoImagemRodape {
+        bottom: 21px;
+    }
+
+
+    .modalProdutoConteudo {
+        min-height: 0;
+
+        overflow:
+            visible;
+
+        padding:
+            38px
+            30px
+            32px;
+    }
+
+
+    .modalProdutoConteudo h2 {
+        padding-right: 28px;
+
+        font-size: 46px;
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .overlay {
+        padding:
+            10px;
+    }
+
+
+    .modalProdutoFechar {
+        top: 13px;
+        right: 13px;
+
+        width: 38px;
+        height: 38px;
+    }
+
+
+    .modalProdutoImagem {
+        min-height: 275px;
+
+        padding:
+            54px
+            21px
+            57px;
+    }
+
+
+    .modalProdutoImagemTopo {
+        top: 20px;
+        left: 20px;
+        right: 62px;
+    }
+
+
+    .modalProdutoImagem img {
+        max-width: 220px;
+        max-height: 200px;
+    }
+
+
+    .modalProdutoImagemRodape {
+        left: 20px;
+        right: 20px;
+        bottom: 18px;
+    }
+
+
+    .modalProdutoImagemRodape strong {
+        max-width: 160px;
+
+        font-size: 13px;
+    }
+
+
+    .modalProdutoConteudo {
+        padding:
+            31px
+            20px
+            24px;
+    }
+
+
+    .modalProdutoConteudo h2 {
+        font-size: 39px;
+    }
+
+
+    .modalProdutoDetalhes {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(
+                    0,
+                    1fr
+                )
+            );
+    }
+
+
+    .modalProdutoDetalhes > div {
+        min-height: 67px;
+
+        padding:
+            11px;
+    }
+
+
+    .modalProdutoRodape {
+        grid-template-columns:
+            1fr;
+
+        gap: 15px;
+    }
+
+
+    .modalProdutoCarrinho {
+        width: 100%;
+    }
+
+
+    .modalProdutoSeguranca {
+        justify-content:
+            flex-start;
+    }
+
+}
 
 /* =========================================================
    MODAL
@@ -3525,4 +4932,5 @@
     }
 
 }
+
 

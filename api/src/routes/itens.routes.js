@@ -7,6 +7,7 @@ import {
 } from "../middlewares/autenticacao.js";
 
 import upload from "../middlewares/upload.js";
+import { registrarAtividade } from "../services/historico.service.js";
 
 
 const router = express.Router();
@@ -495,6 +496,21 @@ router.post(
                     ]
                 );
 
+            await registrarAtividade(pool, {
+                usuario_id: req.usuario?.id || null,
+                tipo: "produto",
+                acao: "criar",
+                titulo: `Produto "${nome.trim()}" cadastrado`,
+                descricao: `Produto #${resultado.insertId} adicionado ao catalogo.`,
+                referencia_id: resultado.insertId,
+                valor_novo: {
+                    nome: nome.trim(),
+                    status,
+                    quantidade: quantidadeNumero,
+                    preco: precoNumero
+                }
+            });
+
 
             return res.status(201).json({
 
@@ -721,7 +737,11 @@ router.put(
                     `
                         SELECT
                             id,
-                            foto
+                            nome,
+                            foto,
+                            preco,
+                            quantidade,
+                            status
 
                         FROM itens
 
@@ -892,6 +912,35 @@ router.put(
                     ]
                 );
 
+            const produtoAnterior = itemAtual[0];
+
+            await registrarAtividade(pool, {
+                usuario_id: req.usuario?.id || null,
+                tipo:
+                    Number(produtoAnterior.quantidade) !== quantidadeNumero
+                        ? "estoque"
+                        : "produto",
+                acao: "atualizar",
+                titulo: `Produto "${nome.trim()}" atualizado`,
+                descricao:
+                    produtoAnterior.status !== status
+                        ? `Status alterado de "${produtoAnterior.status}" para "${status}".`
+                        : "Informacoes do produto foram alteradas.",
+                referencia_id: Number(id),
+                valor_anterior: {
+                    nome: produtoAnterior.nome,
+                    preco: Number(produtoAnterior.preco),
+                    quantidade: Number(produtoAnterior.quantidade),
+                    status: produtoAnterior.status
+                },
+                valor_novo: {
+                    nome: nome.trim(),
+                    preco: precoNumero,
+                    quantidade: quantidadeNumero,
+                    status
+                }
+            });
+
 
             return res.status(200).json({
 
@@ -974,7 +1023,7 @@ router.delete(
             const [item] =
                 await pool.query(
                     `
-                        SELECT id
+                        SELECT id, nome, preco, quantidade, status
 
                         FROM itens
 
@@ -1016,6 +1065,16 @@ router.delete(
                     id
                 ]
             );
+
+            await registrarAtividade(pool, {
+                usuario_id: req.usuario?.id || null,
+                tipo: "produto",
+                acao: "excluir",
+                titulo: `Produto "${item[0].nome}" excluido`,
+                descricao: `O produto #${id} foi removido do catalogo.`,
+                referencia_id: Number(id),
+                valor_anterior: item[0]
+            });
 
 
             return res.status(200).json({

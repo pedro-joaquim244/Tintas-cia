@@ -19,7 +19,8 @@ import {
     FaGem,
     FaArrowRight,
     FaPaintRoller,
-    FaBoxOpen
+    FaBoxOpen,
+    FaTimes
 } from "react-icons/fa";
 
 import {
@@ -79,9 +80,35 @@ export default function Produtos() {
     ] = useState(false);
 
     const [
+        produtoSelecionado,
+        setProdutoSelecionado
+    ] = useState(null);
+
+    const [
         slideAtual,
         setSlideAtual
     ] = useState(0);
+
+    useEffect(() => {
+        if (!produtoSelecionado) {
+            return undefined;
+        }
+
+        const fecharComEscape = (event) => {
+            if (event.key === "Escape") {
+                setProdutoSelecionado(null);
+            }
+        };
+
+        const overflowAnterior = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        window.addEventListener("keydown", fecharComEscape);
+
+        return () => {
+            document.body.style.overflow = overflowAnterior;
+            window.removeEventListener("keydown", fecharComEscape);
+        };
+    }, [produtoSelecionado]);
 
 
     const [
@@ -1007,6 +1034,41 @@ export default function Produtos() {
 
 
     // =====================================================
+    // DATA DO PRODUTO
+    // =====================================================
+
+    function formatarDataProduto(
+        data
+    ) {
+
+        if (!data) {
+            return "Não informada";
+        }
+
+        const dataFormatada =
+            new Date(data);
+
+        if (
+            Number.isNaN(
+                dataFormatada.getTime()
+            )
+        ) {
+            return "Não informada";
+        }
+
+        return dataFormatada.toLocaleDateString(
+            "pt-BR",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }
+        );
+
+    }
+
+
+    // =====================================================
     // COR
     // =====================================================
 
@@ -1037,6 +1099,34 @@ export default function Produtos() {
             ""
         );
 
+    }
+
+
+    // =====================================================
+    // ABRIR DETALHES E REGISTRAR VISUALIZACAO
+    // =====================================================
+
+    function abrirDetalhesProduto(produto) {
+        if (!produto?.id) {
+            return;
+        }
+
+        setProdutoSelecionado(produto);
+
+        // O registro nao bloqueia a abertura do modal. Caso a API esteja
+        // indisponivel, o cliente ainda consegue consultar o produto.
+        api.post(
+            "/historico/visualizacoes",
+            {
+                produto_id: produto.id,
+                usuario_id: usuario?.id || null
+            }
+        ).catch((error) => {
+            console.error(
+                "Erro ao registrar visualizacao do produto:",
+                error.response?.data || error
+            );
+        });
     }
 
 
@@ -1820,6 +1910,18 @@ export default function Produtos() {
                                                                         key={
                                                                             produto.id
                                                                         }
+                                                                        role="button"
+                                                                        tabIndex={0}
+                                                                        aria-label={`Ver detalhes de ${produto.nome || "produto"}`}
+                                                                        onClick={() =>
+                                                                            abrirDetalhesProduto(produto)
+                                                                        }
+                                                                        onKeyDown={(event) => {
+                                                                            if (event.key === "Enter" || event.key === " ") {
+                                                                                event.preventDefault();
+                                                                                abrirDetalhesProduto(produto);
+                                                                            }
+                                                                        }}
                                                                     >
 
                                                                         {/* IMAGEM */}
@@ -1993,10 +2095,12 @@ export default function Produtos() {
                                                                                     className={
                                                                                         style.carrinho
                                                                                     }
-                                                                                    onClick={() =>
-                                                                                        adicionarCarrinho(
-                                                                                            produto
-                                                                                        )
+                                                                                    onClick={(event) => {
+                                                                                        event.stopPropagation();
+                                                                                        adicionarCarrinho(produto);
+                                                                                    }}
+                                                                                    onKeyDown={(event) =>
+                                                                                        event.stopPropagation()
                                                                                     }
                                                                                     aria-label={
                                                                                         `Adicionar ${
@@ -2197,6 +2301,498 @@ export default function Produtos() {
                 </div>
 
             </section>
+
+
+            {/* =====================================================
+                MODAL DE DETALHES DO PRODUTO
+            ===================================================== */}
+
+            {produtoSelecionado && (
+                <div
+                    className={style.overlay}
+                    onClick={() =>
+                        setProdutoSelecionado(
+                            null
+                        )
+                    }
+                    role="presentation"
+                >
+
+                    <section
+                        className={
+                            style.modalProduto
+                        }
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="modal-produto-titulo"
+                        onClick={(event) =>
+                            event.stopPropagation()
+                        }
+                    >
+
+                        {/* =============================================
+                            FECHAR
+                        ============================================= */}
+
+                        <button
+                            type="button"
+                            className={
+                                style.modalProdutoFechar
+                            }
+                            onClick={() =>
+                                setProdutoSelecionado(
+                                    null
+                                )
+                            }
+                            aria-label="Fechar detalhes do produto"
+                        >
+                            <FaTimes />
+                        </button>
+
+
+                        {/* =============================================
+                            IMAGEM
+                        ============================================= */}
+
+                        <div
+                            className={
+                                style.modalProdutoImagem
+                            }
+                        >
+
+                            <div
+                                className={
+                                    style.modalProdutoImagemTopo
+                                }
+                            >
+
+                                <span
+                                    className={
+                                        style.modalProdutoEtiqueta
+                                    }
+                                >
+                                    {obterMarcaProduto(
+                                        produtoSelecionado
+                                    ) || "PIXEL COLOR"}
+                                </span>
+
+
+                                <span
+                                    className={
+                                        style.modalProdutoStatusImagem
+                                    }
+                                >
+                                    <i />
+
+                                    Disponível
+                                </span>
+
+                            </div>
+
+
+                            <img
+                                src={
+                                    imagemProduto(
+                                        produtoSelecionado
+                                    )
+                                }
+                                alt={
+                                    produtoSelecionado.nome ||
+                                    "Produto"
+                                }
+                                onError={(event) => {
+
+                                    event.currentTarget.src =
+                                        "/img/tinta.png";
+
+                                }}
+                            />
+
+
+                            <div
+                                className={
+                                    style.modalProdutoImagemRodape
+                                }
+                            >
+
+                                <span>
+                                    Produto selecionado
+                                </span>
+
+                                <strong>
+                                    {
+                                        descobrirCategoria(
+                                            produtoSelecionado
+                                        )
+                                    }
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        {/* =============================================
+                            CONTEÚDO
+                        ============================================= */}
+
+                        <div
+                            className={
+                                style.modalProdutoConteudo
+                            }
+                        >
+
+                            <div
+                                className={
+                                    style.modalProdutoCabecalho
+                                }
+                            >
+
+                                <span
+                                    className={
+                                        style.modalProdutoCategoria
+                                    }
+                                >
+                                    {
+                                        descobrirCategoria(
+                                            produtoSelecionado
+                                        )
+                                    }
+                                </span>
+
+
+                                <h2
+                                    id="modal-produto-titulo"
+                                >
+                                    {
+                                        produtoSelecionado.nome ||
+                                        "Produto sem nome"
+                                    }
+                                </h2>
+
+
+                                <div
+                                    className={
+                                        style.modalProdutoResumo
+                                    }
+                                >
+
+                                    <span>
+                                        {obterMarcaProduto(
+                                            produtoSelecionado
+                                        ) || "Marca não informada"}
+                                    </span>
+
+                                    <i />
+
+                                    <span>
+                                        {obterCorProduto(
+                                            produtoSelecionado
+                                        ) || "Cor não informada"}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                className={
+                                    style.modalProdutoDescricaoBloco
+                                }
+                            >
+
+                                <span>
+                                    Sobre o produto
+                                </span>
+
+                                <p
+                                    className={
+                                        style.modalProdutoDescricao
+                                    }
+                                >
+                                    {
+                                        produtoSelecionado.descricao ||
+                                        "Produto selecionado para transformar seu projeto com qualidade e excelente acabamento."
+                                    }
+                                </p>
+
+                            </div>
+
+
+                            {/* =============================================
+                                INFORMAÇÕES
+                            ============================================= */}
+
+                            <div
+                                className={
+                                    style.modalProdutoSecaoTitulo
+                                }
+                            >
+
+                                <span>
+                                    Informações do produto
+                                </span>
+
+                                <strong>
+                                    Detalhes
+                                </strong>
+
+                            </div>
+
+
+                            <dl
+                                className={
+                                    style.modalProdutoDetalhes
+                                }
+                            >
+
+                                <div>
+                                    <dt>
+                                        Categoria
+                                    </dt>
+
+                                    <dd>
+                                        {
+                                            descobrirCategoria(
+                                                produtoSelecionado
+                                            )
+                                        }
+                                    </dd>
+                                </div>
+
+
+                                <div>
+                                    <dt>
+                                        Marca
+                                    </dt>
+
+                                    <dd>
+                                        {
+                                            obterMarcaProduto(
+                                                produtoSelecionado
+                                            ) ||
+                                            "Não informada"
+                                        }
+                                    </dd>
+                                </div>
+
+
+                                <div>
+                                    <dt>
+                                        Cor
+                                    </dt>
+
+                                    <dd
+                                        className={
+                                            style.modalProdutoCor
+                                        }
+                                    >
+                                        <span />
+
+                                        {
+                                            obterCorProduto(
+                                                produtoSelecionado
+                                            ) ||
+                                            "Não informada"
+                                        }
+                                    </dd>
+                                </div>
+
+
+                                <div>
+                                    <dt>
+                                        Estoque
+                                    </dt>
+
+                                    <dd>
+                                        {
+                                            Number(
+                                                produtoSelecionado.quantidade ||
+                                                0
+                                            )
+                                        }{" "}
+                                        {
+                                            Number(
+                                                produtoSelecionado.quantidade ||
+                                                0
+                                            ) === 1
+                                                ? "unidade"
+                                                : "unidades"
+                                        }
+                                    </dd>
+                                </div>
+
+
+                                <div>
+                                    <dt>
+                                        Status
+                                    </dt>
+
+                                    <dd>
+                                        <span
+                                            className={
+                                                style.modalProdutoStatus
+                                            }
+                                        >
+                                            <i />
+
+                                            {
+                                                produtoSelecionado.status ||
+                                                "Ativo"
+                                            }
+                                        </span>
+                                    </dd>
+                                </div>
+
+
+                                <div>
+                                    <dt>
+                                        Atualizado em
+                                    </dt>
+
+                                    <dd>
+                                        {
+                                            formatarDataProduto(
+                                                produtoSelecionado.atualizado_em ||
+                                                produtoSelecionado.criado_em
+                                            )
+                                        }
+                                    </dd>
+                                </div>
+
+                            </dl>
+
+
+                            {/* =============================================
+                                DISPONIBILIDADE
+                            ============================================= */}
+
+                            <div
+                                className={
+                                    style.modalProdutoDisponibilidade
+                                }
+                            >
+
+                                <div
+                                    className={
+                                        style.modalProdutoDisponibilidadeIcone
+                                    }
+                                >
+                                    <FaBoxOpen />
+                                </div>
+
+
+                                <div>
+
+                                    <strong>
+                                        Pronta entrega
+                                    </strong>
+
+                                    <span>
+                                        {
+                                            Number(
+                                                produtoSelecionado.quantidade ||
+                                                0
+                                            )
+                                        }{" "}
+                                        unidade(s) disponíveis no estoque.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            {/* =============================================
+                                PREÇO + CARRINHO
+                            ============================================= */}
+
+                            <div
+                                className={
+                                    style.modalProdutoRodape
+                                }
+                            >
+
+                                <div
+                                    className={
+                                        style.modalProdutoPreco
+                                    }
+                                >
+
+                                    <span>
+                                        Preço
+                                    </span>
+
+                                    <strong>
+                                        {
+                                            formatarPreco(
+                                                produtoSelecionado.preco
+                                            )
+                                        }
+                                    </strong>
+
+                                    <small>
+                                        por unidade
+                                    </small>
+
+                                </div>
+
+
+                                <button
+                                    type="button"
+                                    className={
+                                        style.modalProdutoCarrinho
+                                    }
+                                    onClick={() => {
+
+                                        const produto =
+                                            produtoSelecionado;
+
+                                        setProdutoSelecionado(
+                                            null
+                                        );
+
+                                        adicionarCarrinho(
+                                            produto
+                                        );
+
+                                    }}
+                                >
+
+                                    <FaShoppingCart />
+
+                                    <span>
+                                        Adicionar ao carrinho
+                                    </span>
+
+                                    <FaArrowRight />
+
+                                </button>
+
+                            </div>
+
+
+                            <div
+                                className={
+                                    style.modalProdutoSeguranca
+                                }
+                            >
+
+                                <FaShieldAlt />
+
+                                <span>
+                                    Compra segura • Produto disponível em estoque
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+            )}
 
 
             {/* =====================================================
