@@ -157,7 +157,7 @@ body {
 
   color: #8b94a0;
 
-  font-size: 9px;
+  font-size: 16px;
   font-weight: 600;
 
   letter-spacing: 0.2em;
@@ -194,7 +194,7 @@ body {
 
   color: var(--muted);
 
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 300;
 
   line-height: 1.8;
@@ -209,7 +209,7 @@ body {
   flex-shrink: 0;
 
   min-width: 164px;
-  min-height: 50px;
+  min-height: 60px;
 
   padding:
     0
@@ -231,7 +231,7 @@ body {
 
   color: #ffffff;
 
-  font-size: 9px;
+  font-size: 16px;
   font-weight: 600;
 
   letter-spacing: 0.02em;
@@ -281,12 +281,12 @@ body {
 .success {
   margin-bottom: 22px;
   padding:
-    12px
-    14px;
+    15px
+    18px;
 
   border-radius: 0;
 
-  font-size: 9px;
+  font-size: 15px;
   font-weight: 500;
 
   line-height: 1.6;
@@ -342,11 +342,11 @@ body {
 .card {
   position: relative;
 
-  min-height: 158px;
+  min-height: 190px;
 
   padding:
-    22px
-    23px;
+    28px
+    28px;
 
   display: flex;
   align-items: flex-end;
@@ -598,7 +598,7 @@ body {
 
 .table th {
   padding:
-    14px
+    18px
     19px;
 
   text-align: left;
@@ -609,7 +609,7 @@ body {
 
   color: #828c99;
 
-  font-size: 7px;
+  font-size: 14px;
   font-weight: 600;
 
   letter-spacing: 0.13em;
@@ -620,7 +620,7 @@ body {
 
 .table td {
   padding:
-    17px
+    20px
     19px;
 
   border-bottom:
@@ -629,7 +629,7 @@ body {
 
   color: #526071;
 
-  font-size: 9px;
+  font-size: 18px;
   font-weight: 400;
 
   white-space: nowrap;
@@ -673,10 +673,10 @@ body {
   min-width: 0;
 
   padding:
-    6px
     8px
-    6px
-    18px;
+    10px
+    8px
+    20px;
 
   display: inline-flex;
   align-items: center;
@@ -684,7 +684,7 @@ body {
 
   border-radius: 0;
 
-  font-size: 7px;
+  font-size: 13px;
   font-weight: 600;
 
   white-space: nowrap;

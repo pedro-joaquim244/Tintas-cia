@@ -179,7 +179,7 @@ body {
 
   color: var(--muted);
 
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 300;
 
   line-height: 1.8;
@@ -401,7 +401,7 @@ body {
     "Cormorant Garamond",
     serif;
 
-  font-size: 29px;
+  font-size: 36px;
   font-weight: 600;
 
   line-height: 1;
@@ -599,7 +599,7 @@ thead {
 
 th {
   padding:
-    14px
+    18px
     18px;
 
   text-align: left;
@@ -610,7 +610,7 @@ th {
 
   color: #828c99;
 
-  font-size: 7px;
+  font-size: 16px;
   font-weight: 600;
 
   letter-spacing: 0.13em;
@@ -621,7 +621,7 @@ th {
 
 td {
   padding:
-    16px
+    20px
     18px;
 
   border-bottom:
@@ -632,7 +632,7 @@ td {
 
   color: #526071;
 
-  font-size: 9px;
+  font-size: 18px;
 }
 
 tbody tr {
@@ -669,8 +669,8 @@ tbody tr:last-child td {
 }
 
 .avatar {
-  width: 46px;
-  height: 46px;
+  width: 100px;
+  height: 100px;
 
   flex-shrink: 0;
 
@@ -696,7 +696,7 @@ tbody tr:last-child td {
 
   color: var(--blue);
 
-  font-size: 17px;
+  font-size: 28px;
 }
 
 .avatar img,
@@ -726,7 +726,7 @@ tbody tr:last-child td {
 
   color: var(--text);
 
-  font-size: 9px;
+  font-size: 16px;
   font-weight: 600;
 
   text-overflow: ellipsis;
@@ -987,7 +987,7 @@ tbody tr:last-child td {
     "Cormorant Garamond",
     serif;
 
-  font-size: 19px;
+  font-size: 24px;
 }
 
 .spinner {
@@ -1266,7 +1266,7 @@ tbody tr:last-child td {
 
   color: var(--blue);
 
-  font-size: 20px;
+  font-size: 25px;
 }
 
 .modalHeader h2 {

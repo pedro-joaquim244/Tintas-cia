@@ -1245,7 +1245,7 @@ export default function Perfil() {
         try {
             setEnviandoFeedback(true);
 
-            await api.post("/feedbacks", {
+            const resposta = await api.post("/feedbacks", {
                 usuario_id: usuario.id,
                 comentario,
                 nota: notaFeedback
@@ -1253,12 +1253,17 @@ export default function Perfil() {
 
             setComentarioFeedback("");
             setNotaFeedback(0);
+            setTipoMensagemFeedback("sucesso");
+            setMensagemFeedback(
+                resposta.data?.mensagem ||
+                "Feedback enviado com sucesso!"
+            );
             setModalFeedback(true);
         } catch (error) {
             setTipoMensagemFeedback("erro");
             setMensagemFeedback(
                 error.response?.data?.erro ||
-                error.response?.data?.mensagem ||
+                error.response?.data?.message ||
                 "Não foi possível enviar seu feedback."
             );
         } finally {
@@ -3092,7 +3097,7 @@ export default function Perfil() {
                                 </button>
                             </div>
 
-                            {mensagemFeedback && tipoMensagemFeedback === "erro" && (
+                            {mensagemFeedback && (
                                 <p className={`${styles.feedbackMessage} ${styles[tipoMensagemFeedback]}`}>
                                     {mensagemFeedback}
                                 </p>

@@ -15,6 +15,8 @@ import {
 } from "react-icons/fi";
 
 import Header from "../components/Cabeçalho-Users";
+import CarrosselComentarios from "../components/CarrosselComentarios";
+import LojadeTinta from "../assets/imagens/casadeTinta.png";
 import styles from "../styles/Inicial.module.css";
 import { api } from "../services/api";
 
@@ -859,6 +861,22 @@ export default function Inicial() {
 
 
             {/* =====================================================
+                FACHADA DA LOJA
+            ===================================================== */}
+
+            <section className={styles.fachadaLoja}>
+
+                <img
+                    src={LojadeTinta}
+                    alt="Fachada da nossa loja Pixel Color"
+                    className={styles.fachadaImagem}
+                />
+
+            </section>
+
+
+
+            {/* =====================================================
                 CATEGORIAS
             ===================================================== */}
 
@@ -1289,6 +1307,13 @@ export default function Inicial() {
 
             </section>
 
+
+
+            {/* =====================================================
+                CARROSSEL DE COMENTÁRIOS
+            ===================================================== */}
+
+            <CarrosselComentarios />
 
 
         </div>

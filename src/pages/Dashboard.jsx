@@ -217,15 +217,15 @@ export default function Dashboard() {
         faturamento:
           venda
             ? Number(
-                venda.faturamento
-              )
+              venda.faturamento
+            )
             : 0,
 
         pedidos:
           venda
             ? Number(
-                venda.pedidos
-              )
+              venda.pedidos
+            )
             : 0
 
       };
@@ -509,17 +509,17 @@ export default function Dashboard() {
               GRÁFICO
           ================================================= */}
 
-          <section className={styles.chartSection}>
 
+          <section className={styles.chartSection}>
 
             <div className={styles.chartHeader}>
 
+              
               <div>
 
                 <h3>
                   Vendas da Semana
                 </h3>
-
 
                 <p>
                   Faturamento dos últimos 7 dias
@@ -527,112 +527,355 @@ export default function Dashboard() {
 
               </div>
 
-
-              <span
-                className={styles.chartBadge}
-              >
+              <span className={styles.chartBadge}>
 
                 {resumo.pedidos_semana || 0}
                 {" "}
                 pedidos
 
               </span>
+              
 
             </div>
 
+            <div className={styles.waveChart}>
+
+              
+              {/* LINHAS DE FUNDO */}
+
+              <div className={styles.chartGridLines}>
+
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+
+              </div>
 
 
-            <div className={styles.chart}>
+              {/* GRÁFICO */}
 
-              {ultimos7Dias.map(
-                (item) => {
+              <svg
+                className={styles.waveSvg}
+                viewBox="0 0 700 280"
+                preserveAspectRatio="none"
+              >
 
-                  const altura =
-                    item.faturamento === 0
+                <defs>
 
-                      ? 5
+                  <linearGradient
+                    id="waveGradient"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
 
-                      : Math.max(
-                          20,
+                    <stop
+                      offset="0%"
+                      stopColor="#3264c8"
+                      stopOpacity="0.28"
+                    />
+
+                    <stop
+                      offset="100%"
+                      stopColor="#3264c8"
+                      stopOpacity="0.02"
+                    />
+
+                  </linearGradient>
+
+                </defs>
+
+
+                {/* ÁREA PREENCHIDA */}
+
+                <path
+                  className={styles.waveArea}
+                  d={(() => {
+
+                    const largura = 700;
+                    const altura = 220;
+                    const topo = 20;
+
+                    const pontos = ultimos7Dias.map(
+                      (item, index) => {
+
+                        const x =
+                          (index / 6) *
+                          largura;
+
+                        const porcentagem =
+                          item.faturamento /
+                          maiorVenda;
+
+                        const y =
+                          topo +
+                          altura -
                           (
-                            item.faturamento /
-                            maiorVenda
-                          ) * 200
-                        );
+                            porcentagem *
+                            altura
+                          );
+
+                        return {
+                          x,
+                          y
+                        };
+
+                      }
+                    );
 
 
-                  return (
+                    const curva = pontos
+                      .map((ponto, index) => {
+
+                        if (index === 0) {
+
+                          return `M ${ponto.x} ${ponto.y}`;
+
+                        }
+
+                        const anterior =
+                          pontos[index - 1];
+
+                        const meioX =
+                          (
+                            anterior.x +
+                            ponto.x
+                          ) / 2;
+
+                        return `
+            C
+            ${meioX} ${anterior.y},
+            ${meioX} ${ponto.y},
+            ${ponto.x} ${ponto.y}
+          `;
+
+                      })
+                      .join(" ");
+
+
+                    return `
+        ${curva}
+        L ${largura} 260
+        L 0 260
+        Z
+      `;
+
+                  })()}
+                  fill="url(#waveGradient)"
+                />
+
+
+                {/* LINHA DA ONDA */}
+
+                <path
+                  className={styles.waveLine}
+                  d={(() => {
+
+                    const largura = 700;
+                    const altura = 220;
+                    const topo = 20;
+
+                    const pontos = ultimos7Dias.map(
+                      (item, index) => {
+
+                        const x =
+                          (index / 6) *
+                          largura;
+
+                        const porcentagem =
+                          item.faturamento /
+                          maiorVenda;
+
+                        const y =
+                          topo +
+                          altura -
+                          (
+                            porcentagem *
+                            altura
+                          );
+
+                        return {
+                          x,
+                          y
+                        };
+
+                      }
+                    );
+
+
+                    return pontos
+                      .map((ponto, index) => {
+
+                        if (index === 0) {
+
+                          return `M ${ponto.x} ${ponto.y}`;
+
+                        }
+
+                        const anterior =
+                          pontos[index - 1];
+
+                        const meioX =
+                          (
+                            anterior.x +
+                            ponto.x
+                          ) / 2;
+
+                        return `
+            C
+            ${meioX} ${anterior.y},
+            ${meioX} ${ponto.y},
+            ${ponto.x} ${ponto.y}
+          `;
+
+                      })
+                      .join(" ");
+
+                  })()}
+                  fill="none"
+                  stroke="#3264c8"
+                  strokeWidth="3"
+                  vectorEffect="non-scaling-stroke"
+                />
+
+
+                {/* PONTOS */}
+
+                {ultimos7Dias.map(
+                  (item, index) => {
+
+                    const x =
+                      (index / 6) * 700;
+
+                    const porcentagem =
+                      item.faturamento /
+                      maiorVenda;
+
+                    const y =
+                      20 +
+                      220 -
+                      (
+                        porcentagem *
+                        220
+                      );
+
+                    return (
+
+                      <g
+                        key={item.data}
+                        className={styles.wavePoint}
+                      >
+
+                        <circle
+                          cx={x}
+                          cy={y}
+                          r="6"
+                        />
+
+                        <circle
+                          cx={x}
+                          cy={y}
+                          r="11"
+                          className={
+                            styles.pointGlow
+                          }
+                        />
+
+                      </g>
+
+                    );
+
+                  }
+                )}
+
+              </svg>
+
+
+              {/* INFORMAÇÕES DOS DIAS */}
+
+              <div className={styles.waveDays}>
+
+                {ultimos7Dias.map(
+                  (item) => (
 
                     <div
-                      className={
-                        styles.barGroup
-                      }
+                      className={styles.waveDay}
                       key={item.data}
                     >
 
-                      <span
-                        className={
-                          styles.day
-                        }
-                      >
-
+                      <span>
                         {item.dia}
-
                       </span>
 
-
-                      <div
-                        className={
-                          styles.bar
-                        }
-                        style={{
-                          height:
-                            `${altura}px`
-                        }}
-                        title={
-                          `${formatarMoeda(
-                            item.faturamento
-                          )} — ${
-                            item.pedidos
-                          } pedido(s)`
-                        }
-                      />
-
-
                       <strong>
-
                         {item.faturamento > 0
 
                           ? item.faturamento
-                              .toLocaleString(
-                                "pt-BR",
-                                {
-                                  style:
-                                    "currency",
-                                  currency:
-                                    "BRL",
-                                  maximumFractionDigits:
-                                    0
-                                }
-                              )
+                            .toLocaleString(
+                              "pt-BR",
+                              {
+                                style:
+                                  "currency",
+                                currency:
+                                  "BRL",
+                                maximumFractionDigits:
+                                  0
+                              }
+                            )
 
                           : "R$ 0"
 
                         }
-
                       </strong>
+
+                      <small>
+
+                        {item.pedidos}
+                        {" "}
+                        {item.pedidos === 1
+                          ? "pedido"
+                          : "pedidos"}
+
+                      </small>
 
                     </div>
 
-                  );
+                  )
+                )}
 
-                }
-              )}
+              </div>
+
+
+              {/* TOOLTIP NATIVO */}
+
+              <div className={styles.waveTooltips}>
+
+                {ultimos7Dias.map(
+                  (item) => (
+
+                    <div
+                      key={item.data}
+                      title={
+                        `${item.dia} — ${formatarMoeda(
+                          item.faturamento
+                        )
+                        } — ${item.pedidos
+                        } pedido(s)`
+                      }
+                    />
+
+                  )
+                )}
+
+              </div>
+              ```
 
             </div>
 
           </section>
-
 
 
           {/* =================================================

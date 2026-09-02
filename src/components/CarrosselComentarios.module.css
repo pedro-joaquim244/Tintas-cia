@@ -1,0 +1,283 @@
+.carrossel {
+  width: 100%;
+  padding: 60px 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+  margin: 40px 0;
+}
+
+
+.header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+
+.header h2 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 45px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 15px;
+}
+
+
+.header p {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+
+.carregando,
+.erro {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 16px;
+  color: var(--muted);
+}
+
+
+.erro {
+  color: #e74c3c;
+}
+
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+
+.btnVoltar,
+.btnAvancar {
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--line);
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  font-size: 24px;
+  color: var(--navy);
+}
+
+
+.btnVoltar:hover:not(:disabled),
+.btnAvancar:hover:not(:disabled) {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+  transform: scale(1.1);
+}
+
+
+.btnVoltar:disabled,
+.btnAvancar:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  flex: 1;
+  width: 100%;
+}
+
+
+.cartao {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+.cartao:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+
+.estrelas {
+  display: flex;
+  gap: 5px;
+}
+
+
+.estrelas svg {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+
+.estrelaPreenchida {
+  color: #ffc107;
+  fill: #ffc107;
+}
+
+
+.estrelaVazia {
+  color: #ddd;
+}
+
+
+.comentario {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  font-style: italic;
+  margin: 10px 0 0 0;
+  flex-grow: 1;
+}
+
+
+.usuario {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
+.avatarVazio {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+
+.usuario strong {
+  font-family: "Poppins", sans-serif;
+  display: block;
+  font-size: 14px;
+  color: var(--navy);
+}
+
+
+.usuario small {
+  font-family: "Poppins", sans-serif;
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+
+.indicadores {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+
+.indicador,
+.indicadorAtivo {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--navy);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+
+.indicadorAtivo {
+  background: var(--navy);
+}
+
+
+.indicador:hover {
+  transform: scale(1.2);
+}
+
+
+/* =====================================================
+   RESPONSIVO
+   ===================================================== */
+
+@media (max-width: 1200px) {
+
+  .grade {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .header h2 {
+    font-size: 35px;
+  }
+
+}
+
+
+@media (max-width: 768px) {
+
+  .carrossel {
+    padding: 40px 15px;
+    margin: 30px 0;
+  }
+
+  .header h2 {
+    font-size: 28px;
+  }
+
+  .header p {
+    font-size: 14px;
+  }
+
+  .container {
+    gap: 10px;
+  }
+
+  .btnVoltar,
+  .btnAvancar {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .grade {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .cartao {
+    padding: 20px;
+  }
+
+}

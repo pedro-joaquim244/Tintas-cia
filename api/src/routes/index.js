@@ -14,20 +14,28 @@ import notificacoesRoutes from "./notificacoes.routes.js";
 import orcamentoRoutes from "./orcamento.routes.js";
 import historicoRoutes from "./hsitorico.routes.js";
 
-const routes = express.Router();
+import mercadoPagoRoutes from "./mercadoPago.routes.js";
+
+
+const routes =
+    express.Router();
+
 
 // =====================================================
-// TESTE DA API
+// TESTE API
 // =====================================================
 
 routes.get("/", (req, res) => {
-    return res.json({
+
+    return res.status(200).json({
         mensagem: "API funcionando!"
     });
+
 });
 
+
 // =====================================================
-// ROTAS
+// ITENS
 // =====================================================
 
 routes.use(
@@ -35,55 +43,46 @@ routes.use(
     itensRoutes
 );
 
-routes.use(
-    "/historico",
-    historicoRoutes
-);
+
+// =====================================================
+// USUÁRIOS
+// =====================================================
 
 routes.use(
     "/usuarios",
     usuariosRoutes
 );
-routes.use(
-    "/notificacoes",
-    notificacoesRoutes
-);
+
+
+// =====================================================
+// CARRINHO
+// =====================================================
 
 routes.use(
     "/carrinho",
     carrinhoRoutes
 );
-routes.use(
-    "/orcamento",
-    orcamentoRoutes
-);
+
+
+// =====================================================
+// PEDIDOS
+// =====================================================
 
 routes.use(
     "/pedidos",
     pedidosRoutes
 );
 
-routes.use(
-    "/feedbacks",
-    feedbacksRoutes
-);
 
-routes.use(
-    "/fidelidade",
-    fidelidadeRoutes
-);
-routes.use(
-    "/cartoes",
-    cartoesRoutes
-);
+// =====================================================
+// ITENS PEDIDOS
+// =====================================================
+
 routes.use(
     "/itens_pedidos",
     itens_pedidosRoutes
 );
-routes.use(
-    "/dashboard",
-    dashboardRoutes
-);
+
 
 // =====================================================
 // CUPONS
@@ -93,5 +92,89 @@ routes.use(
     "/cupons",
     cuponsRoutes
 );
+
+
+// =====================================================
+// DASHBOARD
+// =====================================================
+
+routes.use(
+    "/dashboard",
+    dashboardRoutes
+);
+
+
+// =====================================================
+// FEEDBACKS
+// =====================================================
+
+routes.use(
+    "/feedbacks",
+    feedbacksRoutes
+);
+
+
+// =====================================================
+// FIDELIDADE
+// =====================================================
+
+routes.use(
+    "/fidelidade",
+    fidelidadeRoutes
+);
+
+
+// =====================================================
+// CARTÕES
+// =====================================================
+
+routes.use(
+    "/cartoes",
+    cartoesRoutes
+);
+
+
+// =====================================================
+// NOTIFICAÇÕES
+// =====================================================
+
+routes.use(
+    "/notificacoes",
+    notificacoesRoutes
+);
+
+
+// =====================================================
+// ORÇAMENTO
+// =====================================================
+
+routes.use(
+    "/orcamento",
+    orcamentoRoutes
+);
+
+
+// =====================================================
+// HISTÓRICO
+// =====================================================
+
+routes.use(
+    "/historico",
+    historicoRoutes
+);
+
+
+// =====================================================
+// MERCADO PAGO
+//
+// URL FINAL:
+// /api/mercado-pago/...
+// =====================================================
+
+routes.use(
+    "/api/mercado-pago",
+    mercadoPagoRoutes
+);
+
 
 export default routes;

@@ -379,21 +379,7 @@ export default function Rodape() {
 
 
 
-            {/* =====================================================
-                ASSINATURA GRANDE
-            ===================================================== */}
-
-            <div className={styles.assinatura}>
-
-                <span>
-                    PIXEL
-                </span>
-
-                <em>
-                    COLOR
-                </em>
-
-            </div>
+           
 
 
 

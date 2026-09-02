@@ -632,6 +632,12 @@ export default function Livro() {
         </main>
       )}
 
+      {/* =====================================================
+          NOVA SEÇÃO - ENCONTRE SUA COR IDEAL
+          ADIÇÃO SEM ALTERAR A LÓGICA ORIGINAL DO LIVRO
+      ====================================================== */}
+      <SeletorCores />
+
       {modalCorAberto && corSelecionada && (
         <div
           className={style.modalOverlay}
@@ -906,6 +912,249 @@ export default function Livro() {
         </div>
       )}
     </>
+  );
+}
+
+
+
+
+/* =========================================================
+   NOVA PARTE - SELETOR DE CORES
+   ========================================================= */
+
+const gruposCores = {
+  coloridos: [
+    {
+      nome: "VERMELHOS",
+      corPrincipal: "#D71920",
+      cores: ["#7A0C12", "#A9161E", "#D71920", "#F05A5A", "#FF9999"],
+      titulo: "Vermelhos",
+      descricao:
+        "Os vermelhos remetem à energia, paixão, coragem e personalidade. São ótimos para ambientes marcantes e cheios de presença.",
+    },
+    {
+      nome: "LARANJAS",
+      corPrincipal: "#F47B20",
+      cores: ["#9C360A", "#C85012", "#F47B20", "#FF9B55", "#FFD0AD"],
+      titulo: "Laranjas",
+      descricao:
+        "Os laranjas remetem à criatividade, entusiasmo, calor e alegria. Trazem sensação de movimento e descontração ao ambiente.",
+    },
+    {
+      nome: "AMARELOS",
+      corPrincipal: "#E6C900",
+      cores: ["#A08300", "#C2A800", "#E6C900", "#F5DD4D", "#FFF0A3"],
+      titulo: "Amarelos",
+      descricao:
+        "Os amarelos remetem à luz, otimismo, alegria e criatividade. São ideais para espaços que precisam transmitir energia e leveza.",
+    },
+    {
+      nome: "VERDES",
+      corPrincipal: "#55A866",
+      cores: ["#245B36", "#3F824B", "#55A866", "#8BCB96", "#C2E6C8"],
+      titulo: "Verdes",
+      descricao:
+        "Os verdes remetem à natureza, equilíbrio, renovação e tranquilidade. Criam uma sensação de frescor e conexão com o natural.",
+    },
+    {
+      nome: "TURQUESA",
+      corPrincipal: "#22B7B0",
+      cores: ["#126B68", "#198F8B", "#22B7B0", "#63D0CB", "#A9E8E4"],
+      titulo: "Turquesas",
+      descricao:
+        "Os tons turquesa remetem à frescura, liberdade, tranquilidade e modernidade. Funcionam muito bem em ambientes leves e descontraídos.",
+    },
+    {
+      nome: "AZUIS",
+      corPrincipal: "#3970CF",
+      cores: ["#122B59", "#244C9B", "#3970CF", "#70A1E4", "#B4D2F4"],
+      titulo: "Azuis",
+      descricao:
+        "Os azuis remetem à tranquilidade, confiança, segurança e sofisticação. São excelentes para criar ambientes serenos e acolhedores.",
+    },
+    {
+      nome: "ROXOS",
+      corPrincipal: "#8255B8",
+      cores: ["#43235F", "#623989", "#8255B8", "#A67BD0", "#D7C0EB"],
+      titulo: "Roxos",
+      descricao:
+        "Os roxos remetem à criatividade, imaginação, sofisticação e mistério. Podem dar personalidade sem perder a elegância.",
+    },
+    {
+      nome: "ROSAS",
+      corPrincipal: "#D86B91",
+      cores: ["#87334F", "#B44B6C", "#D86B91", "#E99AB3", "#F5C8D5"],
+      titulo: "Rosas",
+      descricao:
+        "Os rosas remetem ao acolhimento, delicadeza, afeto e criatividade. Podem deixar o ambiente mais leve e aconchegante.",
+    },
+  ],
+
+  neutros: [
+    {
+      nome: "BRANCOS",
+      corPrincipal: "#EDEAE1",
+      cores: ["#FFFFFF", "#F8F6F0", "#EDEAE1", "#DDD9CC", "#C9C3B3"],
+      titulo: "Brancos",
+      descricao:
+        "Os brancos remetem à leveza, limpeza, amplitude e simplicidade. São versáteis e ajudam a valorizar outros elementos do ambiente.",
+    },
+    {
+      nome: "BEGES",
+      corPrincipal: "#C9B18E",
+      cores: ["#8D7658", "#A9906D", "#C9B18E", "#DDC9AA", "#EFE2C9"],
+      titulo: "Beges",
+      descricao:
+        "Os beges remetem ao conforto, naturalidade, acolhimento e elegância. Criam ambientes suaves e atemporais.",
+    },
+    {
+      nome: "CINZAS",
+      corPrincipal: "#888B8D",
+      cores: ["#3D4145", "#606468", "#888B8D", "#B8B9B7", "#D9D9D5"],
+      titulo: "Cinzas",
+      descricao:
+        "Os cinzas remetem à modernidade, equilíbrio e sofisticação. São neutros e combinam facilmente com diferentes estilos.",
+    },
+    {
+      nome: "MARRONS",
+      corPrincipal: "#795548",
+      cores: ["#38231C", "#51352B", "#795548", "#9C7563", "#C5A898"],
+      titulo: "Marrons",
+      descricao:
+        "Os marrons remetem à terra, estabilidade, conforto e aconchego. São ótimos para criar espaços mais acolhedores.",
+    },
+  ],
+};
+
+function SeletorCores() {
+  const [tipo, setTipo] = useState("coloridos");
+  const [indice, setIndice] = useState(0);
+
+  const grupos = gruposCores[tipo];
+  const grupoAtual = grupos[indice];
+
+  const tamanhoFatia = 360 / grupos.length;
+  const rotacao = -(indice * tamanhoFatia);
+  const anguloInicial = -(tamanhoFatia / 2);
+
+  const gradiente = grupos
+    .map((grupo, index) => {
+      const inicio = index * tamanhoFatia;
+      const fim = (index + 1) * tamanhoFatia;
+      return `${grupo.corPrincipal} ${inicio}deg ${fim}deg`;
+    })
+    .join(", ");
+
+  function trocarTipo(novoTipo) {
+    setTipo(novoTipo);
+    setIndice(0);
+  }
+
+  function proximaCor() {
+    setIndice((atual) => (atual + 1) % grupos.length);
+  }
+
+  function corAnterior() {
+    setIndice((atual) => (atual - 1 + grupos.length) % grupos.length);
+  }
+
+  return (
+    <section className={style.seletorCores}>
+      <div className={style.seletorCabecalho}>
+        <span className={style.seletorLabel}>
+          PIXEL COLOR • GUIA DE CORES
+        </span>
+
+        <h2>
+          Vamos achar sua <em>cor ideal</em>
+        </h2>
+
+        <p>
+          Escolha um grupo de cores para começar. Use as setas para navegar.
+        </p>
+      </div>
+
+      <div className={style.tipoCores}>
+        <button
+          type="button"
+          className={tipo === "coloridos" ? style.tipoAtivo : ""}
+          onClick={() => trocarTipo("coloridos")}
+        >
+          Coloridos
+        </button>
+
+        <button
+          type="button"
+          className={tipo === "neutros" ? style.tipoAtivo : ""}
+          onClick={() => trocarTipo("neutros")}
+        >
+          Neutros
+        </button>
+      </div>
+
+      <div className={style.nomeGrupo}>
+        <button
+          type="button"
+          className={style.setaCores}
+          onClick={corAnterior}
+          aria-label="Cor anterior"
+        >
+          ←
+        </button>
+
+        <span>{grupoAtual.nome}</span>
+
+        <button
+          type="button"
+          className={style.setaCores}
+          onClick={proximaCor}
+          aria-label="Próxima cor"
+        >
+          →
+        </button>
+      </div>
+
+      <div className={style.arcoArea}>
+        <div className={style.ponteiro}></div>
+
+        <div
+          className={style.arcoCores}
+          style={{
+            background: `conic-gradient(from ${anguloInicial}deg, ${gradiente})`,
+            transform: `translateX(-50%) rotate(${rotacao}deg)`,
+          }}
+        >
+          <div className={style.arcoBrancoUm}></div>
+          <div className={style.arcoBrancoDois}></div>
+          <div className={style.arcoBrancoTres}></div>
+        </div>
+
+        <div className={style.botaoExplorar}>
+          EXPLORAR
+        </div>
+      </div>
+
+      <div className={style.infoCor}>
+        <span className={style.infoLinha}></span>
+
+        <span className={style.infoLabel}>
+          ESTA COR REMETE A
+        </span>
+
+        <h3>{grupoAtual.titulo}</h3>
+
+        <p>{grupoAtual.descricao}</p>
+
+        <div className={style.miniPaleta}>
+          {grupoAtual.cores.map((cor, index) => (
+            <span
+              key={`${grupoAtual.nome}-${index}`}
+              style={{ backgroundColor: cor }}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 

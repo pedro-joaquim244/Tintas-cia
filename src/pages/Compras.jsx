@@ -16,7 +16,12 @@ import {
     FiPlus,
     FiZap,
     FiFileText,
-    FiChevronDown
+    FiChevronDown,
+    FiCopy,
+    FiRefreshCw,
+    FiClock,
+    FiExternalLink,
+    FiX
 } from "react-icons/fi";
 import Cabecalho from "../components/Cabeçalho-Users/index.jsx";
 
@@ -42,6 +47,15 @@ export default function Compra() {
     const [salvandoCupom, setSalvandoCupom] = useState(false);
     const [cupomGuardado, setCupomGuardado] = useState(false);
     const [finalizando, setFinalizando] = useState(false);
+
+    // =====================================================
+    // PIX / MERCADO PAGO
+    // =====================================================
+
+    const [pix, setPix] = useState(null);
+    const [modalPix, setModalPix] = useState(false);
+    const [copiadoPix, setCopiadoPix] = useState(false);
+    const [verificandoPix, setVerificandoPix] = useState(false);
 
     // =====================================================
     // CUPOM
@@ -123,6 +137,22 @@ export default function Compra() {
         buscarCarrinho();
         buscarCartoesSalvos();
     }, [usuario?.id]);
+
+    // =====================================================
+    // VERIFICAR PIX AUTOMATICAMENTE
+    // =====================================================
+
+    useEffect(() => {
+        if (!modalPix || !pix?.order_id) return;
+
+        const intervalo = window.setInterval(() => {
+            verificarPagamentoPix(false);
+        }, 7000);
+
+        return () => {
+            window.clearInterval(intervalo);
+        };
+    }, [modalPix, pix?.order_id]);
 
     // =====================================================
     // CÁLCULOS
@@ -454,6 +484,116 @@ export default function Compra() {
     }
 
     // =====================================================
+    // PIX - COPIAR CÓDIGO
+    // =====================================================
+
+    async function copiarCodigoPix() {
+        if (!pix?.qr_code) return;
+
+        try {
+            await navigator.clipboard.writeText(pix.qr_code);
+
+            setCopiadoPix(true);
+
+            window.setTimeout(() => {
+                setCopiadoPix(false);
+            }, 2500);
+        } catch (error) {
+            console.error("Erro ao copiar PIX:", error);
+
+            const campoTemporario = document.createElement("textarea");
+            campoTemporario.value = pix.qr_code;
+            document.body.appendChild(campoTemporario);
+            campoTemporario.select();
+            document.execCommand("copy");
+            document.body.removeChild(campoTemporario);
+
+            setCopiadoPix(true);
+
+            window.setTimeout(() => {
+                setCopiadoPix(false);
+            }, 2500);
+        }
+    }
+
+    // =====================================================
+    // PIX - VERIFICAR PAGAMENTO
+    // =====================================================
+
+    async function verificarPagamentoPix(mostrarErro = true) {
+        if (!pix?.order_id || verificandoPix) return;
+
+        try {
+            setVerificandoPix(true);
+
+            const resposta = await api.get(
+                `/api/mercado-pago/order/${pix.order_id}`
+            );
+
+            const dadosAtualizados = resposta.data || {};
+
+            setPix((anterior) => ({
+                ...anterior,
+                ...dadosAtualizados
+            }));
+
+            const statusOrder = String(
+                dadosAtualizados.status || ""
+            ).toLowerCase();
+
+            const detalheOrder = String(
+                dadosAtualizados.status_detail || ""
+            ).toLowerCase();
+
+            const pagamentoAtualizado =
+                dadosAtualizados?.dados?.transactions?.payments?.[0] || {};
+
+            const statusPagamento = String(
+                pagamentoAtualizado.status || ""
+            ).toLowerCase();
+
+            const detalhePagamento = String(
+                pagamentoAtualizado.status_detail || ""
+            ).toLowerCase();
+
+            // Só considera pago quando o Mercado Pago informa que o valor
+            // foi realmente processado e creditado.
+            const pagamentoConfirmado =
+                (statusOrder === "processed" && detalheOrder === "accredited") ||
+                (statusPagamento === "processed" &&
+                    detalhePagamento === "accredited");
+
+            // Orders de teste do Mercado Pago podem ser aprovadas
+            // automaticamente pelo sandbox. Elas não devem fechar o modal
+            // sozinhas, pois não houve um PIX real.
+            const orderDeTeste = String(
+                dadosAtualizados.order_id ||
+                    dadosAtualizados.id ||
+                    pix?.order_id ||
+                    ""
+            )
+                .toUpperCase()
+                .includes("TST");
+
+            if (pagamentoConfirmado && !orderDeTeste) {
+                setModalPix(false);
+                setModalSucesso(true);
+            }
+        } catch (error) {
+            console.error("Erro ao verificar PIX:", error);
+
+            if (mostrarErro) {
+                alert(
+                    error.response?.data?.erro ||
+                        "Não foi possível verificar o pagamento agora."
+                );
+            }
+        } finally {
+            setVerificandoPix(false);
+        }
+    }
+
+    // =====================================================
     // FINALIZAR COMPRA
     // =====================================================
 
@@ -518,6 +658,46 @@ export default function Compra() {
                 localStorage.removeItem(chaveOrcamento);
             }
 
+            // =================================================
+            // PIX REAL - MERCADO PAGO
+            // =================================================
+
+            if (pagamento === "PIX") {
+                const pedidoId =
+                    resposta.data?.pedido?.id ||
+                    resposta.data?.pedido_id ||
+                    resposta.data?.id;
+
+                if (!pedidoId) {
+                    throw new Error(
+                        "O pedido foi criado, mas o backend não retornou o ID do pedido."
+                    );
+                }
+
+                const respostaPix = await api.post(
+                    "/api/mercado-pago/pix",
+                    {
+                        valor: Number(total.toFixed(2)),
+
+                        // Credenciais de teste: usamos somente o e-mail
+                        // de teste. Não enviamos nome "APRO", pois esse
+                        // cenário é aprovado automaticamente pelo sandbox.
+                        email:
+                            "test_user_br@testuser.com",
+
+                        pedido_id:
+                            pedidoId
+                    }
+                );
+
+                setPix(respostaPix.data);
+                setCopiadoPix(false);
+                setModal(false);
+                setModalPix(true);
+
+                return;
+            }
+
             setModal(false);
             setModalSucesso(true);
         } catch (error) {
@@ -526,6 +706,7 @@ export default function Compra() {
             alert(
                 error.response?.data?.mensagem ||
                     error.response?.data?.erro ||
+                    error.message ||
                     "Erro ao finalizar compra."
             );
         } finally {
@@ -1300,6 +1481,147 @@ export default function Compra() {
                                         : "Confirmar compra"}
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* MODAL PIX */}
+                {modalPix && pix && (
+                    <div className={style.modalPixOverlay}>
+                        <div className={style.modalPix}>
+                            <div className={style.pixModalHeader}>
+                                <button
+                                    type="button"
+                                    className={style.pixCloseButton}
+                                    onClick={() => setModalPix(false)}
+                                    aria-label="Fechar tela do PIX"
+                                    title="Fechar"
+                                >
+                                    <FiX />
+                                </button>
+
+                                <div className={style.pixModalIcon}>
+                                    <FiZap />
+                                </div>
+
+                                <span className={style.pixStatusBadge}>
+                                    Aguardando pagamento
+                                </span>
+
+                                <h2>Finalize o pagamento com PIX</h2>
+
+                                <p>
+                                    Escaneie o QR Code pelo aplicativo do seu banco
+                                    ou use o código copia e cola.
+                                </p>
+                            </div>
+
+                            <div className={style.pixModalContent}>
+                                <div className={style.pixQrColumn}>
+                                    <div className={style.pixQrBox}>
+                                        {pix.qr_code_base64 ? (
+                                            <img
+                                                src={`data:image/png;base64,${pix.qr_code_base64}`}
+                                                alt="QR Code PIX"
+                                            />
+                                        ) : (
+                                            <div className={style.pixQrFallback}>
+                                                QR Code indisponível
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <span className={style.pixQrHint}>
+                                        Aponte a câmera do seu banco para o QR Code
+                                    </span>
+                                </div>
+
+                                <div className={style.pixInfoColumn}>
+                                    <div className={style.pixOrderInfo}>
+                                        <div>
+                                            <span>Total do pedido</span>
+                                            <strong>
+                                                {formatarMoeda(
+                                                    Number(pix.valor || total)
+                                                )}
+                                            </strong>
+                                        </div>
+
+                                        <div>
+                                            <span>Status</span>
+                                            <strong>Aguardando PIX</strong>
+                                        </div>
+                                    </div>
+
+                                    <div className={style.pixCodeArea}>
+                                        <label htmlFor="codigo-pix">
+                                            PIX copia e cola
+                                        </label>
+
+                                        <div className={style.pixCopyBox}>
+                                            <input
+                                                id="codigo-pix"
+                                                type="text"
+                                                readOnly
+                                                value={pix.qr_code || ""}
+                                            />
+
+                                            <button
+                                                type="button"
+                                                onClick={copiarCodigoPix}
+                                                disabled={!pix.qr_code}
+                                            >
+                                                <FiCopy />
+                                                {copiadoPix
+                                                    ? "Copiado"
+                                                    : "Copiar"}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        className={style.pixVerifyButton}
+                                        onClick={() =>
+                                            verificarPagamentoPix(true)
+                                        }
+                                        disabled={verificandoPix}
+                                    >
+                                        <FiRefreshCw
+                                            className={
+                                                verificandoPix
+                                                    ? style.pixSpin
+                                                    : ""
+                                            }
+                                        />
+
+                                        {verificandoPix
+                                            ? "Verificando..."
+                                            : "Já paguei — verificar pagamento"}
+                                    </button>
+
+                                    {pix.ticket_url && (
+                                        <a
+                                            className={style.pixTicketLink}
+                                            href={pix.ticket_url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            <FiExternalLink />
+                                            Abrir página do pagamento
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className={style.pixWaitingNotice}>
+                                <FiClock />
+                                <span>
+                                    Assim que o Mercado Pago confirmar o pagamento,
+                                    esta tela será atualizada automaticamente.
+                                </span>
+                            </div>
+
                         </div>
                     </div>
                 )}
