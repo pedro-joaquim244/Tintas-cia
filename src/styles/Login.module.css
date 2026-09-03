@@ -1,5 +1,5 @@
 @import url(
-  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap"
+  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap"
 );
 
 /* =========================================================
@@ -24,7 +24,7 @@ body {
   color: #182235;
 
   font-family:
-    "Poppins",
+    "Quicksand",
     sans-serif;
 }
 
@@ -32,7 +32,7 @@ button,
 input,
 a {
   font-family:
-    "Poppins",
+    "Quicksand",
     sans-serif;
 }
 
@@ -151,7 +151,7 @@ a {
       0.42
     );
 
-  font-size: 8px;
+  font-size: 10.8px;
   font-weight: 600;
 
   letter-spacing: 0.25em;
@@ -349,9 +349,9 @@ a {
 
   font-size:
     clamp(
-      60px,
+      81px,
       6.2vw,
-      98px
+      132.3px
     );
 
   font-weight: 400;
@@ -395,7 +395,7 @@ a {
       0.56
     );
 
-  font-size: 10px;
+  font-size: 13.5px;
   font-weight: 300;
 
   line-height: 1.9;
@@ -470,7 +470,7 @@ a {
 
   color: #8b94a0;
 
-  font-size: 8px;
+  font-size: 10.8px;
   font-weight: 600;
 
   letter-spacing: 0.18em;
@@ -488,9 +488,9 @@ a {
 
   font-size:
     clamp(
-      58px,
+      78.3px,
       5vw,
-      76px
+      102.6px
     );
 
   font-weight: 400;
@@ -506,7 +506,7 @@ a {
 
   color: var(--muted);
 
-  font-size: 10px;
+  font-size: 13.5px;
   font-weight: 300;
 
   line-height: 1.8;
@@ -537,7 +537,7 @@ a {
 
   color: #a74747;
 
-  font-size: 8px;
+  font-size: 10.8px;
   font-weight: 500;
 
   line-height: 1.6;
@@ -565,7 +565,7 @@ a {
 .inputGroup label {
   color: #596575;
 
-  font-size: 8px;
+  font-size: 10.8px;
   font-weight: 600;
 
   letter-spacing: 0.05em;
@@ -598,7 +598,7 @@ a {
 
   color: var(--text);
 
-  font-size: 9px;
+  font-size: 12.2px;
   font-weight: 500;
 
   cursor: text;
@@ -658,7 +658,7 @@ a {
 
   color: #ffffff;
 
-  font-size: 9px;
+  font-size: 12.2px;
   font-weight: 600;
 
   letter-spacing: 0.02em;
@@ -701,7 +701,7 @@ a {
 
   color: #87919e;
 
-  font-size: 8px;
+  font-size: 10.8px;
 }
 
 .link {
@@ -715,7 +715,7 @@ a {
 
   text-decoration: none;
 
-  font-size: 8px;
+  font-size: 10.8px;
   font-weight: 600;
 
   cursor: pointer;
@@ -748,7 +748,7 @@ a {
 
   color: #9aa2ac;
 
-  font-size: 7px;
+  font-size: 9.5px;
 
   letter-spacing: 0.05em;
 }
@@ -772,7 +772,7 @@ a {
   }
 
   .changingText {
-    font-size: 66px;
+    font-size: 89.1px;
   }
 
   .right {
@@ -834,7 +834,7 @@ a {
   .changingText {
     min-height: auto;
 
-    font-size: 55px;
+    font-size: 74.2px;
   }
 
   .overlay p {
@@ -842,7 +842,7 @@ a {
 
     margin-top: 16px;
 
-    font-size: 9px;
+    font-size: 12.2px;
   }
 
   .right {
@@ -888,7 +888,7 @@ a {
   }
 
   .changingText {
-    font-size: 48px;
+    font-size: 64.8px;
   }
 
   .right {
@@ -899,7 +899,7 @@ a {
   }
 
   .top h1 {
-    font-size: 54px;
+    font-size: 72.9px;
   }
 
   .inputGroup input,
@@ -931,11 +931,11 @@ a {
   }
 
   .changingText {
-    font-size: 42px;
+    font-size: 56.7px;
   }
 
   .overlay p {
-    font-size: 8px;
+    font-size: 10.8px;
   }
 
   .right {
@@ -946,7 +946,7 @@ a {
   }
 
   .top h1 {
-    font-size: 48px;
+    font-size: 64.8px;
   }
 
   .cadastro {

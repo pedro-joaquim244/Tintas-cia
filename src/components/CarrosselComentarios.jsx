@@ -1,181 +1,209 @@
 import { useEffect, useState } from "react";
 import { FiChevronLeft, FiChevronRight, FiStar } from "react-icons/fi";
 import { api } from "../services/api.js";
+import {
+    formatarDataFeedback,
+    normalizarFeedbacks,
+    obterComentariosVisiveis,
+    obterUrlFotoUsuario
+} from "../utils/feedbacks.js";
 import styles from "./CarrosselComentarios.module.css";
 
-export default function CarrosselComentarios() {
+function obterLimitePorTela() {
+    if (typeof window === "undefined") {
+        return 3;
+    }
 
+    if (window.innerWidth <= 768) {
+        return 1;
+    }
+
+    if (window.innerWidth <= 1200) {
+        return 2;
+    }
+
+    return 3;
+}
+
+function AvatarUsuario({ foto, nome }) {
+    const [fotoComErro, setFotoComErro] = useState(false);
+    const urlFoto = obterUrlFotoUsuario(
+        foto,
+        api.defaults.baseURL
+    );
+    const inicial = nome.trim().charAt(0).toUpperCase() || "?";
+
+    if (!urlFoto || fotoComErro) {
+        return (
+            <div className={styles.avatarVazio} aria-hidden="true">
+                {inicial}
+            </div>
+        );
+    }
+
+    return (
+        <img
+            src={urlFoto}
+            alt={`Foto de ${nome}`}
+            className={styles.avatar}
+            loading="lazy"
+            onError={() => setFotoComErro(true)}
+        />
+    );
+}
+
+export default function CarrosselComentarios() {
     const [comentarios, setComentarios] = useState([]);
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState("");
     const [indiceAtual, setIndiceAtual] = useState(0);
-    const comentariosPorVez = 3;
-
-
-    // =====================================================
-    // BUSCAR COMENTÁRIOS
-    // =====================================================
+    const [limitePorTela, setLimitePorTela] = useState(
+        obterLimitePorTela
+    );
 
     useEffect(() => {
+        function atualizarLimite() {
+            setLimitePorTela(obterLimitePorTela());
+        }
+
+        window.addEventListener("resize", atualizarLimite);
+
+        return () => {
+            window.removeEventListener("resize", atualizarLimite);
+        };
+    }, []);
+
+    useEffect(() => {
+        let componenteAtivo = true;
 
         async function buscarComentarios() {
-
             try {
-
-                setCarregando(true);
-                setErro("");
-
                 const resposta = await api.get("/feedbacks");
 
-                const lista = Array.isArray(resposta.data)
-                    ? resposta.data
-                    : Array.isArray(resposta.data?.feedbacks)
-                        ? resposta.data.feedbacks
-                        : [];
+                if (!componenteAtivo) {
+                    return;
+                }
 
-                // Embaralha e limita a 20 comentários
-                const embaralhados = lista
-                    .sort(() => Math.random() - 0.5)
-                    .slice(0, 20);
-
-                setComentarios(embaralhados);
-
+                setComentarios(normalizarFeedbacks(resposta.data));
+                setIndiceAtual(0);
+                setErro("");
             } catch (error) {
+                console.error("Erro ao buscar comentários:", error);
 
-                console.error(
-                    "Erro ao buscar comentários:",
-                    error
-                );
-
-                setErro(
-                    "Não foi possível carregar os comentários"
-                );
-
+                if (componenteAtivo) {
+                    setErro("Não foi possível carregar os comentários.");
+                }
             } finally {
-
-                setCarregando(false);
-
+                if (componenteAtivo) {
+                    setCarregando(false);
+                }
             }
-
         }
 
         buscarComentarios();
 
+        return () => {
+            componenteAtivo = false;
+        };
     }, []);
 
+    const podeNavegar = comentarios.length > 1;
 
-    // =====================================================
-    // AVANÇAR CARROSSEL
-    // =====================================================
+    // Mantém um item fora da janela para que a navegação tenha efeito
+    // mesmo quando existem apenas dois ou três feedbacks cadastrados.
+    const quantidadeVisivel = comentarios.length > 1
+        ? Math.min(limitePorTela, comentarios.length - 1)
+        : comentarios.length;
 
-    function avancar() {
-
-        const proximoIndice = indiceAtual + 1;
-        const maxIndice = Math.ceil(
-            comentarios.length / comentariosPorVez
-        ) - 1;
-
-        if (proximoIndice <= maxIndice) {
-            setIndiceAtual(proximoIndice);
-        }
-
-    }
-
-
-    // =====================================================
-    // VOLTAR CARROSSEL
-    // =====================================================
-
-    function voltar() {
-
-        if (indiceAtual > 0) {
-            setIndiceAtual(indiceAtual - 1);
-        }
-
-    }
-
-
-    // =====================================================
-    // OBTER COMENTÁRIOS ATUAIS
-    // =====================================================
-
-    const inicio = indiceAtual * comentariosPorVez;
-    const comentariosAtuais = comentarios.slice(
-        inicio,
-        inicio + comentariosPorVez
+    const comentariosAtuais = obterComentariosVisiveis(
+        comentarios,
+        indiceAtual,
+        quantidadeVisivel
     );
 
-    const podeVoltar = indiceAtual > 0;
-    const podeAvancar =
-        indiceAtual <
-        Math.ceil(comentarios.length / comentariosPorVez) - 1;
+    function avancar() {
+        if (!podeNavegar) {
+            return;
+        }
 
-
-    // =====================================================
-    // SEM COMENTÁRIOS
-    // =====================================================
-
-    if (!carregando && comentarios.length === 0) {
-        return null;
+        setIndiceAtual(
+            (indice) => (indice + 1) % comentarios.length
+        );
     }
 
+    function voltar() {
+        if (!podeNavegar) {
+            return;
+        }
 
-    // =====================================================
-    // RENDERIZAR
-    // =====================================================
+        setIndiceAtual(
+            (indice) =>
+                (indice - 1 + comentarios.length) % comentarios.length
+        );
+    }
 
     return (
         <section className={styles.carrossel}>
-
             <div className={styles.header}>
                 <h2>O que nossos clientes dizem</h2>
                 <p>Avaliações e comentários dos nossos clientes satisfeitos</p>
             </div>
 
             {carregando ? (
-
-                <div className={styles.carregando}>
+                <div className={styles.carregando} role="status">
                     <p>Carregando comentários...</p>
                 </div>
-
             ) : erro ? (
-
-                <div className={styles.erro}>
+                <div className={styles.erro} role="alert">
                     <p>{erro}</p>
                 </div>
-
+            ) : comentarios.length === 0 ? (
+                <div className={styles.vazio}>
+                    <p>Ainda não há comentários publicados.</p>
+                </div>
             ) : (
-
                 <>
-
                     <div className={styles.container}>
-
                         <button
+                            type="button"
                             onClick={voltar}
-                            disabled={!podeVoltar}
+                            disabled={!podeNavegar}
                             className={styles.btnVoltar}
                             aria-label="Comentários anteriores"
                         >
                             <FiChevronLeft />
                         </button>
 
-                        <div className={styles.grade}>
-                            {comentariosAtuais.map(
-                                (comentario) => (
+                        <div
+                            className={styles.grade}
+                            style={{
+                                "--comentarios-visiveis": quantidadeVisivel
+                            }}
+                            aria-live="polite"
+                            aria-atomic="true"
+                        >
+                            {comentariosAtuais.map((comentario) => {
+                                const data = formatarDataFeedback(
+                                    comentario.criado_em
+                                );
 
-                                    <div
+                                return (
+                                    <article
                                         key={comentario.id}
                                         className={styles.cartao}
                                     >
-
-                                        <div className={styles.estrelas}>
+                                        <div
+                                            className={styles.estrelas}
+                                            aria-label={`${comentario.nota} de 5 estrelas`}
+                                        >
                                             {Array.from(
                                                 { length: 5 },
-                                                (_, i) => (
+                                                (_, indiceEstrela) => (
                                                     <FiStar
-                                                        key={i}
+                                                        key={indiceEstrela}
+                                                        aria-hidden="true"
                                                         className={
-                                                            i < comentario.nota
+                                                            indiceEstrela < comentario.nota
                                                                 ? styles.estrelaPreenchida
                                                                 : styles.estrelaVazia
                                                         }
@@ -185,92 +213,62 @@ export default function CarrosselComentarios() {
                                         </div>
 
                                         <p className={styles.comentario}>
-                                            "{comentario.comentario}"
+                                            “{comentario.comentario}”
                                         </p>
 
                                         <div className={styles.usuario}>
-                                            {comentario.usuario_foto ? (
-                                                <img
-                                                    src={
-                                                        comentario.usuario_foto.startsWith("http")
-                                                            ? comentario.usuario_foto
-                                                            : `http://localhost:3333/${comentario.usuario_foto}`
-                                                    }
-                                                    alt={comentario.usuario_nome}
-                                                    className={styles.avatar}
-                                                />
-                                            ) : (
-                                                <div className={styles.avatarVazio}>
-                                                    {comentario.usuario_nome
-                                                        .charAt(0)
-                                                        .toUpperCase()}
-                                                </div>
-                                            )}
+                                            <AvatarUsuario
+                                                foto={comentario.usuario_foto}
+                                                nome={comentario.usuario_nome}
+                                            />
 
                                             <div>
-                                                <strong>{comentario.usuario_nome}</strong>
-                                                <small>
-                                                    {new Date(
-                                                        comentario.criado_em
-                                                    ).toLocaleDateString(
-                                                        "pt-BR",
-                                                        {
-                                                            day: "2-digit",
-                                                            month: "long",
-                                                            year: "numeric"
-                                                        }
-                                                    )}
-                                                </small>
+                                                <strong>
+                                                    {comentario.usuario_nome}
+                                                </strong>
+                                                {data && <small>{data}</small>}
                                             </div>
                                         </div>
-
-                                    </div>
-
-                                )
-                            )}
+                                    </article>
+                                );
+                            })}
                         </div>
 
                         <button
+                            type="button"
                             onClick={avancar}
-                            disabled={!podeAvancar}
+                            disabled={!podeNavegar}
                             className={styles.btnAvancar}
                             aria-label="Próximos comentários"
                         >
                             <FiChevronRight />
                         </button>
-
                     </div>
 
-                    <div className={styles.indicadores}>
-                        {Array.from(
-                            {
-                                length: Math.ceil(
-                                    comentarios.length /
-                                    comentariosPorVez
-                                )
-                            },
-                            (_, i) => (
-
+                    {podeNavegar && (
+                        <div className={styles.indicadores}>
+                            {comentarios.map((comentario, indice) => (
                                 <button
-                                    key={i}
+                                    type="button"
+                                    key={comentario.id}
                                     className={
-                                        i === indiceAtual
+                                        indice === indiceAtual
                                             ? styles.indicadorAtivo
                                             : styles.indicador
                                     }
-                                    onClick={() => setIndiceAtual(i)}
-                                    aria-label={`Ir para slide ${i + 1}`}
+                                    onClick={() => setIndiceAtual(indice)}
+                                    aria-label={`Exibir comentário ${indice + 1}`}
+                                    aria-current={
+                                        indice === indiceAtual
+                                            ? "true"
+                                            : undefined
+                                    }
                                 />
-
-                            )
-                        )}
-                    </div>
-
+                            ))}
+                        </div>
+                    )}
                 </>
-
             )}
-
         </section>
     );
-
 }

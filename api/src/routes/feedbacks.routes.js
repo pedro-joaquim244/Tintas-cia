@@ -1,265 +1,184 @@
 import express from "express";
 import db from "../database.js";
+import { autenticarToken } from "../middlewares/autenticacao.js";
 import { registrarAtividade } from "../services/historico.service.js";
 
 const router = express.Router();
 
+const CAMPOS_FEEDBACK = `
+    SELECT
+        f.id,
+        f.usuario_id,
+        f.nota,
+        f.comentario,
+        f.criado_em,
+        f.atualizado_em,
+        u.nome AS usuario_nome,
+        u.foto AS usuario_foto
+    FROM feedbacks f
+    INNER JOIN usuarios u ON u.id = f.usuario_id
+`;
 
 // =====================================================
 // LISTAR FEEDBACKS
 // =====================================================
 
-router.get("/", async (req, res) => {
-
+router.get("/", async (_req, res) => {
     try {
-
         const [feedbacks] = await db.query(`
-            SELECT
-                f.id,
-                f.usuario_id,
-                f.nota,
-                f.comentario,
-                f.criado_em,
-                f.atualizado_em,
-
-                u.nome AS usuario_nome,
-                u.foto AS usuario_foto
-
-            FROM feedbacks f
-
-            INNER JOIN usuarios u
-                ON u.id = f.usuario_id
-
-            ORDER BY f.id DESC
+            ${CAMPOS_FEEDBACK}
+            ORDER BY f.criado_em DESC, f.id DESC
         `);
 
-
-        res.status(200).json(feedbacks);
-
+        return res.status(200).json(feedbacks);
     } catch (error) {
+        console.error("Erro ao buscar feedbacks:", error);
 
-        console.error(
-            "Erro ao buscar feedbacks:",
-            error
-        );
-
-        res.status(500).json({
+        return res.status(500).json({
             erro: "Erro ao buscar feedbacks",
             detalhe: error.message
         });
-
     }
-
 });
-
 
 // =====================================================
 // CADASTRAR FEEDBACK
 // =====================================================
 
-router.post("/", async (req, res) => {
+router.post("/", autenticarToken, async (req, res) => {
+    let connection = null;
+    let transacaoIniciada = false;
 
     try {
+        const usuarioId = Number(req.usuario?.id);
+        const { comentario, nota } = req.body || {};
 
-        const {
-            usuario_id,
-            comentario,
-            nota
-        } = req.body;
-
-
-        // =================================================
-        // VALIDAR USUÁRIO
-        // =================================================
-
-        if (!usuario_id) {
-
-            return res.status(400).json({
-                erro: "Usuário não informado"
+        if (!Number.isInteger(usuarioId) || usuarioId <= 0) {
+            return res.status(401).json({
+                erro: "Usuário não autenticado"
             });
-
         }
 
-
-        // =================================================
-        // VALIDAR COMENTÁRIO
-        // =================================================
-
-        if (
-            !comentario ||
-            typeof comentario !== "string" ||
-            !comentario.trim()
-        ) {
-
+        if (typeof comentario !== "string" || !comentario.trim()) {
             return res.status(400).json({
                 erro: "O comentário é obrigatório"
             });
-
         }
 
+        const comentarioFinal = comentario.trim();
 
-        if (comentario.trim().length < 5) {
-
+        if (comentarioFinal.length < 5) {
             return res.status(400).json({
-                erro:
-                    "O comentário deve possuir pelo menos 5 caracteres"
+                erro: "O comentário deve possuir pelo menos 5 caracteres"
             });
-
         }
 
-
-        if (comentario.trim().length > 500) {
-
+        if (comentarioFinal.length > 500) {
             return res.status(400).json({
-                erro:
-                    "O comentário deve possuir no máximo 500 caracteres"
+                erro: "O comentário deve possuir no máximo 500 caracteres"
             });
-
         }
-
-
-        // =================================================
-        // VALIDAR ESTRELAS
-        // =================================================
 
         const notaFinal = Number(nota);
-
-
-        // Não permite nota vazia, NaN ou fora de 1 a 5
 
         if (
             !Number.isInteger(notaFinal) ||
             notaFinal < 1 ||
             notaFinal > 5
         ) {
-
             return res.status(400).json({
-                erro:
-                    "A avaliação deve possuir entre 1 e 5 estrelas"
+                erro: "A avaliação deve possuir entre 1 e 5 estrelas"
             });
-
         }
 
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+        transacaoIniciada = true;
 
-        // =================================================
-        // VERIFICAR USUÁRIO
-        // =================================================
-
-        const [usuarios] = await db.query(
+        const [usuarios] = await connection.query(
             `
-                SELECT
-                    id,
-                    nome,
-                    foto
+                SELECT id, nome
                 FROM usuarios
                 WHERE id = ?
+                LIMIT 1
             `,
-            [usuario_id]
+            [usuarioId]
         );
-
 
         if (usuarios.length === 0) {
+            await connection.rollback();
+            transacaoIniciada = false;
 
-            return res.status(400).json({
+            return res.status(404).json({
                 erro: "Usuário não encontrado"
             });
-
         }
 
-
         const usuario = usuarios[0];
-
-
-        // =================================================
-        // CADASTRAR FEEDBACK
-        // =================================================
-
-        const [resultado] = await db.query(
+        const [resultado] = await connection.query(
             `
-                INSERT INTO feedbacks
-                (
-                    usuario_id,
-                    nota,
-                    comentario
-                )
-                VALUES
-                (?, ?, ?)
+                INSERT INTO feedbacks (usuario_id, nota, comentario)
+                VALUES (?, ?, ?)
             `,
-            [
-                usuario_id,
-                notaFinal,
-                comentario.trim()
-            ]
+            [usuarioId, notaFinal, comentarioFinal]
         );
 
-
-        // =================================================
-        // BUSCAR FEEDBACK COMPLETO
-        // =================================================
-
-        const [feedbackCadastrado] = await db.query(
+        const [feedbacksCadastrados] = await connection.query(
             `
-                SELECT
-                    f.id,
-                    f.usuario_id,
-                    f.nota,
-                    f.comentario,
-                    f.criado_em,
-                    f.atualizado_em,
-
-                    u.nome AS usuario_nome,
-                    u.foto AS usuario_foto
-
-                FROM feedbacks f
-
-                INNER JOIN usuarios u
-                    ON u.id = f.usuario_id
-
+                ${CAMPOS_FEEDBACK}
                 WHERE f.id = ?
+                LIMIT 1
             `,
             [resultado.insertId]
         );
 
-        await registrarAtividade(db, {
-            usuario_id: Number(usuario_id),
+        const feedbackCadastrado = feedbacksCadastrados[0];
+
+        if (!feedbackCadastrado) {
+            throw new Error("O feedback criado não foi encontrado");
+        }
+
+        await registrarAtividade(connection, {
+            usuario_id: usuarioId,
             tipo: "feedback",
             acao: "criar",
             titulo: `Novo feedback de ${usuario.nome}`,
-            descricao: `Avaliacao enviada com ${notaFinal} estrela(s).`,
+            descricao: `Avaliação enviada com ${notaFinal} estrela(s).`,
             referencia_id: resultado.insertId,
-            valor_novo: { nota: notaFinal }
+            valor_novo: {
+                nota: notaFinal,
+                comentario: comentarioFinal
+            }
         });
 
+        await connection.commit();
+        transacaoIniciada = false;
 
-        // =================================================
-        // RESPOSTA
-        // =================================================
-
-        res.status(201).json({
-
-            mensagem:
-                "Feedback cadastrado com sucesso",
-
-            feedback:
-                feedbackCadastrado[0]
-
+        return res.status(201).json({
+            mensagem: "Feedback cadastrado com sucesso",
+            feedback: feedbackCadastrado
         });
-
     } catch (error) {
+        if (connection && transacaoIniciada) {
+            try {
+                await connection.rollback();
+            } catch (rollbackError) {
+                console.error(
+                    "Erro ao desfazer cadastro de feedback:",
+                    rollbackError
+                );
+            }
+        }
 
-        console.error(
-            "Erro ao cadastrar feedback:",
-            error
-        );
+        console.error("Erro ao cadastrar feedback:", error);
 
-        res.status(500).json({
+        return res.status(500).json({
             erro: "Erro ao cadastrar feedback",
             detalhe: error.message
         });
-
+    } finally {
+        connection?.release();
     }
-
 });
-
 
 export default router;

@@ -322,7 +322,7 @@ body {
 
   color: #87919e;
 
-  font-size: 8px;
+  font-size: 16px;
   font-weight: 600;
 
   letter-spacing: 0.12em;
@@ -2095,4 +2095,94 @@ tbody tr:last-child td {
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
   }
+}
+
+
+/* =========================================================
+   AJUSTE DE TIPOGRAFIA — USUÁRIOS
+========================================================= */
+
+body,
+.container {
+  font-size: 16px;
+}
+
+.badge {
+  font-size: 13px;
+}
+
+.topbar p {
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.card span {
+  font-size: 13px;
+}
+
+.card p {
+  font-size: 14px;
+}
+
+.search input {
+  font-size: 15px;
+}
+
+.filters select {
+  font-size: 14px;
+}
+
+th {
+  font-size: 14px;
+}
+
+td {
+  font-size: 16px;
+}
+
+td strong {
+  font-size: 16px;
+}
+
+.ativo,
+.statusInativo {
+  font-size: 12px;
+}
+
+.statusButton,
+.deleteButton {
+  font-size: 13px;
+}
+
+.confirmModal h2 {
+  font-size: 36px;
+}
+
+.confirmModal p {
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.confirmActions button {
+  font-size: 14px;
+}
+
+.detailItem span {
+  font-size: 12px;
+}
+
+.detailItem strong {
+  font-size: 14px;
+}
+
+.detailItem small {
+  font-size: 12px;
+}
+
+.accountInfo span {
+  font-size: 12px;
+}
+
+.accountInfo strong {
+  font-size: 14px;
 }

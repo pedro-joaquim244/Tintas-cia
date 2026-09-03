@@ -1671,3 +1671,92 @@ transition-duration: 1ms !important;
 }
 
 }
+
+
+/* =========================================================
+   AJUSTE DE TIPOGRAFIA — DASHBOARD
+========================================================= */
+
+body,
+.container {
+  font-size: 16px;
+}
+
+.badge {
+  font-size: 15px;
+}
+
+.topbar p {
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.cardTop span {
+  font-size: 14px;
+}
+
+.card p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.chartHeader p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.chartBadge {
+  font-size: 13px;
+}
+
+.waveDay > span {
+  font-size: 13px;
+}
+
+.waveDay strong {
+  font-size: 15px;
+}
+
+.waveDay small {
+  font-size: 12px;
+}
+
+.panelHeader h3 {
+  font-size: 29px;
+}
+
+.panelHeader button {
+  font-size: 15px;
+}
+
+.saleItem strong {
+  font-size: 17px;
+}
+
+.saleItem span {
+  font-size: 14px;
+}
+
+.saleItem b {
+  font-size: 20px;
+}
+
+.activityItem strong {
+  font-size: 17px;
+}
+
+.activityItem span {
+  font-size: 14px;
+}
+
+.quickCard span {
+  font-size: 14px;
+}
+
+.quickCard p {
+  font-size: 14px;
+}
+
+.empty {
+  font-size: 16px;
+}

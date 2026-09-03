@@ -399,7 +399,7 @@ body {
 
   color: #87919e;
 
-  font-size: 8px;
+  font-size: 16px;
   font-weight: 600;
 
   letter-spacing: 0.12em;
@@ -1934,4 +1934,113 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
   }
+}
+
+
+/* =========================================================
+   TIPOGRAFIA — PEDIDOS | TAMANHO MAIOR
+========================================================= */
+
+body,
+.container {
+  font-size: 17px;
+}
+
+.eyebrow {
+  font-size: 15px;
+  letter-spacing: 0.08em;
+}
+
+.hero p {
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.periodoBotao,
+.periodoAtivo {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.atualizarBtn {
+  font-size: 16px;
+}
+
+.erro {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* CARDS */
+.cardTopo span {
+  font-size: 15px;
+}
+
+.cardRodape h3 {
+  font-size: 15px;
+}
+
+.cardRodape p {
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* PESQUISA */
+.search input {
+  font-size: 17px;
+}
+
+.filters select {
+  font-size: 16px;
+}
+
+/* TABELA */
+.table th {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.table td {
+  font-size: 17px;
+}
+
+.table td > strong {
+  font-size: 18px;
+}
+
+.table td small {
+  font-size: 14px;
+}
+
+/* STATUS */
+.status {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.statusBtn {
+  font-size: 15px;
+}
+
+/* VAZIO */
+.empty p {
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+/* DETALHES */
+.infoGrid span {
+  font-size: 14px;
+}
+
+.infoGrid strong {
+  font-size: 16px;
+}
+
+.statusControl > div > span {
+  font-size: 14px;
+}
+
+.statusControl select {
+  font-size: 16px;
 }

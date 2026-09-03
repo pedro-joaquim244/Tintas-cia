@@ -1,4 +1,9 @@
 .carrossel {
+  --feedback-cor-principal: var(--client-primary, #1554c7);
+  --feedback-cor-texto: var(--client-text, #172033);
+  --feedback-cor-secundaria: var(--client-muted, #64748b);
+  --feedback-cor-borda: var(--client-border, #e2e8f0);
+
   width: 100%;
   padding: 60px 20px;
   background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
@@ -16,7 +21,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 45px;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--feedback-cor-texto);
   margin-bottom: 15px;
 }
 
@@ -24,17 +29,18 @@
 .header p {
   font-family: "Poppins", sans-serif;
   font-size: 16px;
-  color: var(--muted);
+  color: var(--feedback-cor-secundaria);
   font-weight: 300;
 }
 
 
 .carregando,
-.erro {
+.erro,
+.vazio {
   text-align: center;
   padding: 40px 20px;
   font-size: 16px;
-  color: var(--muted);
+  color: var(--feedback-cor-secundaria);
 }
 
 
@@ -57,7 +63,7 @@
 .btnAvancar {
   width: 50px;
   height: 50px;
-  border: 2px solid var(--line);
+  border: 2px solid var(--feedback-cor-borda);
   background: white;
   border-radius: 50%;
   display: flex;
@@ -67,15 +73,15 @@
   transition: all 0.3s ease;
   flex-shrink: 0;
   font-size: 24px;
-  color: var(--navy);
+  color: var(--feedback-cor-texto);
 }
 
 
 .btnVoltar:hover:not(:disabled),
 .btnAvancar:hover:not(:disabled) {
-  background: var(--navy);
+  background: var(--feedback-cor-principal);
   color: white;
-  border-color: var(--navy);
+  border-color: var(--feedback-cor-principal);
   transform: scale(1.1);
 }
 
@@ -89,7 +95,10 @@
 
 .grade {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(
+    var(--comentarios-visiveis, 3),
+    minmax(0, 1fr)
+  );
   gap: 25px;
   flex: 1;
   width: 100%;
@@ -97,6 +106,7 @@
 
 
 .cartao {
+  min-width: 0;
   background: white;
   padding: 30px;
   border-radius: 12px;
@@ -123,7 +133,6 @@
 .estrelas svg {
   width: 20px;
   height: 20px;
-  cursor: pointer;
 }
 
 
@@ -141,7 +150,7 @@
 .comentario {
   font-family: "Poppins", sans-serif;
   font-size: 14px;
-  color: var(--text);
+  color: var(--feedback-cor-texto);
   line-height: 1.6;
   font-style: italic;
   margin: 10px 0 0 0;
@@ -164,6 +173,7 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+  flex: 0 0 40px;
 }
 
 
@@ -171,13 +181,14 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--navy);
+  background: var(--feedback-cor-principal);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   font-size: 18px;
+  flex: 0 0 40px;
 }
 
 
@@ -185,7 +196,7 @@
   font-family: "Poppins", sans-serif;
   display: block;
   font-size: 14px;
-  color: var(--navy);
+  color: var(--feedback-cor-texto);
 }
 
 
@@ -193,12 +204,13 @@
   font-family: "Poppins", sans-serif;
   display: block;
   font-size: 12px;
-  color: var(--muted);
+  color: var(--feedback-cor-secundaria);
 }
 
 
 .indicadores {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
   margin-top: 40px;
@@ -210,7 +222,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 2px solid var(--navy);
+  border: 2px solid var(--feedback-cor-principal);
   background: transparent;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -218,12 +230,21 @@
 
 
 .indicadorAtivo {
-  background: var(--navy);
+  background: var(--feedback-cor-principal);
 }
 
 
 .indicador:hover {
   transform: scale(1.2);
+}
+
+
+.btnVoltar:focus-visible,
+.btnAvancar:focus-visible,
+.indicador:focus-visible,
+.indicadorAtivo:focus-visible {
+  outline: 3px solid rgba(21, 84, 199, 0.3);
+  outline-offset: 3px;
 }
 
 
@@ -234,7 +255,6 @@
 @media (max-width: 1200px) {
 
   .grade {
-    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
 
@@ -272,7 +292,6 @@
   }
 
   .grade {
-    grid-template-columns: 1fr;
     gap: 15px;
   }
 

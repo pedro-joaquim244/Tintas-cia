@@ -15,7 +15,7 @@ import {
 } from "react-icons/fi";
 
 import Header from "../components/Cabeçalho-Users";
-import CarrosselComentarios from "../components/CarrosselComentarios";
+import CarrosselComentarios from "../components/CarrosselComentarios.jsx";
 import LojadeTinta from "../assets/imagens/casadeTinta.png";
 import styles from "../styles/Inicial.module.css";
 import { api } from "../services/api";

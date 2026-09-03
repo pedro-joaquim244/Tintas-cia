@@ -4103,3 +4103,463 @@
     }
 
 }
+
+
+
+/* =========================================================
+   PERFIL — AUMENTO GERAL DAS FONTES
+   Deixa toda a página mais legível e confortável
+========================================================= */
+
+/* TOPO */
+.topoTag {
+    font-size: 13px;
+}
+
+.topo h1 {
+    font-size: clamp(68px, 6vw, 96px);
+}
+
+.topo p {
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+/* USUÁRIO */
+.avatar {
+    font-size: 56px;
+}
+
+.nomeUsuario {
+    font-size: 34px;
+}
+
+.emailUsuario {
+    font-size: 13px;
+}
+
+.photoBtn,
+.historyBtn,
+.logout {
+    font-size: 13px;
+}
+
+.leftCard small {
+    font-size: 11px;
+}
+
+/* CONTA */
+.account h3,
+.systemInfo h3,
+.feedbackHeader h3 {
+    font-size: 24px;
+}
+
+.row span {
+    font-size: 11px;
+}
+
+.row strong {
+    font-size: 14px;
+}
+
+.badge {
+    font-size: 11px !important;
+}
+
+/* FIDELIDADE */
+.fidelidadeLabel {
+    font-size: 11px;
+}
+
+.fidelidadeHeader h3 {
+    font-size: 25px;
+}
+
+.fidelidadeNivel {
+    font-size: 11px;
+}
+
+.fidelidadePontos strong {
+    font-size: 44px;
+}
+
+.fidelidadePontos span {
+    font-size: 13px;
+}
+
+.fidelidadeRodape span {
+    font-size: 11px;
+}
+
+.fidelidadeRodape strong {
+    font-size: 11px;
+}
+
+/* CUPONS */
+.cuponsSalvosTitulo {
+    font-size: 11px;
+}
+
+.cuponsSalvosCabecalho p {
+    font-size: 11px;
+}
+
+.cuponsSalvosContador {
+    font-size: 17px;
+}
+
+.cupomSalvoInfo strong {
+    font-size: 19px;
+}
+
+.cupomSalvoInfo span {
+    font-size: 11px;
+}
+
+.cupomSalvo button {
+    font-size: 11px;
+}
+
+.cuponsSalvosVazio strong {
+    font-size: 11px;
+}
+
+.cuponsSalvosVazio span {
+    font-size: 10px;
+}
+
+/* FORMULÁRIO */
+.titleEdit h3 {
+    font-size: 34px;
+}
+
+.titleEdit p {
+    font-size: 13px;
+}
+
+.titleEdit button {
+    font-size: 13px;
+}
+
+.rightCard label {
+    font-size: 13px;
+}
+
+.rightCard input {
+    font-size: 14px;
+}
+
+.inputBox > svg {
+    font-size: 17px;
+}
+
+/* SISTEMA */
+.systemGrid span {
+    font-size: 11px;
+}
+
+.systemGrid strong {
+    font-size: 13px;
+}
+
+/* FEEDBACK */
+.feedbackHeader p {
+    font-size: 12px;
+}
+
+.feedbackBox textarea {
+    font-size: 14px;
+}
+
+.feedbackFooter > span {
+    font-size: 10px;
+}
+
+.feedbackFooter button {
+    font-size: 13px;
+}
+
+.feedbackMessage {
+    font-size: 11px;
+}
+
+/* MODAL */
+.modalHeader h2 {
+    font-size: 36px;
+}
+
+.modalHeader p {
+    font-size: 12px;
+}
+
+/* PEDIDOS */
+.pedidoNumero strong {
+    font-size: 21px;
+}
+
+.dataPedido {
+    font-size: 11px;
+}
+
+.status {
+    font-size: 11px;
+}
+
+.produtoInfo strong {
+    font-size: 13px;
+}
+
+.produtoInfo span {
+    font-size: 11px;
+}
+
+.subtotal {
+    font-size: 21px;
+}
+
+.totalPedido span {
+    font-size: 11px;
+}
+
+.totalPedido strong {
+    font-size: 27px;
+}
+
+/* ESTADOS */
+.semPedidos h3,
+.erroPedidos h3 {
+    font-size: 19px;
+}
+
+.semPedidos p,
+.erroPedidos p {
+    font-size: 13px;
+}
+
+.semPedidos button,
+.erroPedidos button {
+    font-size: 13px;
+}
+
+.estadoPedidos p {
+    font-size: 13px;
+}
+
+/* MODAL DE FEEDBACK */
+.feedbackModal p {
+    font-size: 31px;
+}
+
+.feedbackModal button {
+    font-size: 13px;}
+
+/* =========================================================
+   NOTIFICAÇÕES
+========================================================= */
+
+.notificacoesLabel {
+    font-size: 10px;
+}
+
+.notificacoesTituloArea h3 {
+    font-size: 24px;
+}
+
+.notificacoesContador {
+    font-size: 16px;
+}
+
+.notificacoesBarraAcoes > span {
+    font-size: 10px;
+}
+
+.notificacoesBarraAcoes button {
+    font-size: 10px;
+}
+
+.notificacaoTipo {
+    font-size: 9px;
+}
+
+.notificacaoTopo time {
+    font-size: 9px;
+}
+
+.notificacaoConteudo > strong {
+    font-size: 13px;
+}
+
+.notificacaoConteudo > p {
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.notificacoesVerTodas {
+    font-size: 10px;
+}
+
+.notificacoesEstado {
+    font-size: 11px;
+}
+
+.notificacoesVazio strong,
+.notificacoesErro strong {
+    font-size: 12px;
+}
+
+.notificacoesVazio span,
+.notificacoesErro span {
+    font-size: 10px;
+}
+
+.notificacoesErro button {
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   MOBILE — MANTER FONTES GRANDES
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .topoTag {
+        font-size: 11px;
+    }
+
+    .topo h1 {
+        font-size: 54px;
+    }
+
+    .topo p {
+        font-size: 13px;
+    }
+
+    .nomeUsuario {
+        font-size: 30px;
+    }
+
+    .emailUsuario {
+        font-size: 12px;
+    }
+
+    .account h3,
+    .systemInfo h3,
+    .feedbackHeader h3 {
+        font-size: 22px;
+    }
+
+    .row span {
+        font-size: 10px;
+    }
+
+    .row strong {
+        font-size: 13px;
+    }
+
+    .fidelidadeHeader h3 {
+        font-size: 23px;
+    }
+
+    .fidelidadePontos strong {
+        font-size: 40px;
+    }
+
+    .fidelidadePontos span {
+        font-size: 12px;
+    }
+
+    .cuponsSalvosTitulo {
+        font-size: 10px;
+    }
+
+    .cuponsSalvosCabecalho p {
+        font-size: 10px;
+    }
+
+    .cupomSalvoInfo strong {
+        font-size: 18px;
+    }
+
+    .cupomSalvoInfo span {
+        font-size: 10px;
+    }
+
+    .titleEdit h3 {
+        font-size: 29px;
+    }
+
+    .titleEdit p {
+        font-size: 12px;
+    }
+
+    .rightCard label {
+        font-size: 12px;
+    }
+
+    .rightCard input {
+        font-size: 14px;
+    }
+
+    .systemGrid span {
+        font-size: 10px;
+    }
+
+    .systemGrid strong {
+        font-size: 13px;
+    }
+
+    .feedbackHeader p {
+        font-size: 11px;
+    }
+
+    .feedbackBox textarea {
+        font-size: 14px;
+    }
+
+    .modalHeader h2 {
+        font-size: 30px;
+    }
+
+    .modalHeader p {
+        font-size: 11px;
+    }
+
+    .pedidoNumero strong {
+        font-size: 19px;
+    }
+
+    .dataPedido {
+        font-size: 10px;
+    }
+
+    .status {
+        font-size: 10px;
+    }
+
+    .produtoInfo strong {
+        font-size: 13px;
+    }
+
+    .produtoInfo span {
+        font-size: 11px;
+    }
+
+    .subtotal {
+        font-size: 19px;
+    }
+
+    .notificacoesTituloArea h3 {
+        font-size: 22px;
+    }
+
+    .notificacaoConteudo > strong {
+        font-size: 13px;
+    }
+
+    .notificacaoConteudo > p {
+        font-size: 11px;
+    }
+}
+

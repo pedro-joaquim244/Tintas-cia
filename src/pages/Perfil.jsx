@@ -47,6 +47,7 @@ export default function Perfil() {
     } = useAuth();
 
     const inputFotoRef = useRef(null);
+    const envioFeedbackRef = useRef(false);
 
 
     // =====================================================
@@ -1219,6 +1220,10 @@ export default function Perfil() {
 
         event.preventDefault();
 
+        if (envioFeedbackRef.current) {
+            return;
+        }
+
         setMensagemFeedback("");
         setTipoMensagemFeedback("");
 
@@ -1243,10 +1248,10 @@ export default function Perfil() {
         }
 
         try {
+            envioFeedbackRef.current = true;
             setEnviandoFeedback(true);
 
             const resposta = await api.post("/feedbacks", {
-                usuario_id: usuario.id,
                 comentario,
                 nota: notaFeedback
             });
@@ -1267,6 +1272,7 @@ export default function Perfil() {
                 "Não foi possível enviar seu feedback."
             );
         } finally {
+            envioFeedbackRef.current = false;
             setEnviandoFeedback(false);
         }
     }

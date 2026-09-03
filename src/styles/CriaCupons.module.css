@@ -1693,3 +1693,110 @@ body {
     transition-duration: 1ms !important;
   }
 }
+
+/* =========================================================
+   AJUSTE DE TIPOGRAFIA — CUPONS
+========================================================= */
+
+body,
+.container {
+  font-size: 16px;
+}
+
+.badge {
+  font-size: 16px;
+}
+
+.topbar p {
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.cardHeader h2,
+.cardHeader2 h2 {
+  font-size: 31px;
+}
+
+.cardHeader p,
+.cardHeader2 p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.field label {
+  font-size: 15px;
+}
+
+.field small {
+  font-size: 12px;
+}
+
+.field input,
+.field select {
+  font-size: 16px;
+}
+
+.switchTitle span {
+  font-size: 15px;
+}
+
+.switchTitle b {
+  font-size: 11px;
+}
+
+.switchContent small {
+  font-size: 12px;
+}
+
+.submit {
+  font-size: 16px;
+}
+
+.cupomInfo {
+  font-size: 15px;
+}
+
+.cupomInfo strong,
+.cupomInfo h3 {
+  font-size: 18px;
+}
+
+.cupomInfo span {
+  font-size: 14px;
+}
+
+.cupomInfo small {
+  font-size: 13px;
+}
+
+.ativo,
+.statusInativo {
+  font-size: 12px;
+}
+
+.actions button {
+  font-size: 13px;
+}
+
+.success,
+.error {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.empty h3 {
+  font-size: 28px;
+}
+
+.empty p {
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.confirmModal p {
+  font-size: 14px;
+}
+
+.confirmActions button {
+  font-size: 14px;
+}

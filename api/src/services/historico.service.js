@@ -21,6 +21,17 @@ export async function garantirTabelaHistorico() {
                 ON DELETE SET NULL ON UPDATE CASCADE
         )
     `);
+
+    // Bancos criados por versões anteriores usavam ENUM sem o tipo
+    // "feedback" e colunas curtas. CREATE TABLE IF NOT EXISTS não altera
+    // uma tabela existente, portanto mantemos o schema antigo compatível.
+    await db.query(`
+        ALTER TABLE historico_sistema
+            MODIFY COLUMN tipo VARCHAR(30) NOT NULL DEFAULT 'sistema',
+            MODIFY COLUMN descricao TEXT NULL,
+            MODIFY COLUMN valor_anterior TEXT NULL,
+            MODIFY COLUMN valor_novo TEXT NULL
+    `);
 }
 
 function serializar(valor) {

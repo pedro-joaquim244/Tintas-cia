@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 import { useAuth } from "../../contexts/authContext.jsx";
 
@@ -139,34 +139,63 @@ export default function Header() {
                 MENU DESKTOP
             ================================================= */}
 
-            <nav className={styles.nav}>
+           <nav className={styles.nav}>
 
-                <Link to="/cliente/inicio">
-                    Início
-                </Link>
+    <NavLink
+        to="/cliente/inicio"
+        className={({ isActive }) =>
+            isActive ? styles.linkAtivo : ""
+        }
+    >
+        Início
+    </NavLink>
 
-                <Link to="/cliente/simulador">
-                    Simulador
-                </Link>
+    <NavLink
+        to="/cliente/simulador"
+        className={({ isActive }) =>
+            isActive ? styles.linkAtivo : ""
+        }
+    >
+        Simulador
+    </NavLink>
 
-                <Link to="/cliente/Livro">
-                    Livro de Cores
-                </Link>
+    <NavLink
+        to="/cliente/Livro"
+        className={({ isActive }) =>
+            isActive ? styles.linkAtivo : ""
+        }
+    >
+        Livro de Cores
+    </NavLink>
 
-                <Link to="/cliente/produtos">
-                    Produtos
-                </Link>
+    <NavLink
+        to="/cliente/produtos"
+        className={({ isActive }) =>
+            isActive ? styles.linkAtivo : ""
+        }
+    >
+        Produtos
+    </NavLink>
 
-                <Link to="/cliente/sobre-nos">
-                    Sobre nós
-                </Link>
+    <NavLink
+        to="/cliente/sobre-nos"
+        className={({ isActive }) =>
+            isActive ? styles.linkAtivo : ""
+        }
+    >
+        Sobre nós
+    </NavLink>
 
-                <Link to="/cliente/carrinho">
-                    Carrinho
-                </Link>
+    <NavLink
+        to="/cliente/carrinho"
+        className={({ isActive }) =>
+            isActive ? styles.linkAtivo : ""
+        }
+    >
+        Carrinho
+    </NavLink>
 
-            </nav>
-
+</nav>
 
             {/* =================================================
                 USUÁRIO DESKTOP

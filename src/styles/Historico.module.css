@@ -2193,3 +2193,189 @@ button {
     }
 
 }
+
+/* =========================================================
+   TIPOGRAFIA — HISTÓRICO | TAMANHO MAIOR
+========================================================= */
+
+body,
+.container {
+  font-size: 17px;
+}
+
+.eyebrow {
+  font-size: 15px;
+  letter-spacing: 0.08em;
+}
+
+.hero p {
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.periodoBotao,
+.periodoAtivo {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.atualizarBtn {
+  font-size: 16px;
+}
+
+/* PESQUISA */
+.search input {
+  font-size: 17px;
+}
+
+.filters select {
+  font-size: 16px;
+}
+
+/* TABELA */
+.table th {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.table td {
+  font-size: 17px;
+}
+
+.table td strong {
+  font-size: 18px;
+}
+
+.table td small {
+  font-size: 14px;
+}
+
+/* STATUS */
+.status {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* VAZIO */
+.empty p {
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+/* MODAL */
+.modalHeader h2 {
+  font-size: 38px;
+}
+
+.modalHeader p {
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.purchaseItem strong {
+  font-size: 18px;
+}
+
+.purchaseItem span {
+  font-size: 15px;
+}
+
+.purchaseRight b {
+  font-size: 23px;
+}
+
+.purchaseRight small {
+  font-size: 14px;
+}
+
+/* INFORMAÇÕES */
+.infoGrid span {
+  font-size: 14px;
+}
+
+.infoGrid strong {
+  font-size: 17px;
+}
+
+/* =========================================================
+   HISTÓRICO — TABELA GRANDE E MAIS LEGÍVEL
+========================================================= */
+
+/* Cabeçalho da tabela */
+.table th {
+  font-size: 17px !important;
+  font-weight: 700;
+  padding: 18px 16px;
+}
+
+/* Conteúdo das células */
+.table td {
+  font-size: 20px !important;
+  font-weight: 500;
+  padding: 20px 16px;
+  line-height: 1.5;
+}
+
+/* Nome / informação principal */
+.table td strong {
+  font-size: 20px !important;
+  font-weight: 700;
+}
+
+/* Textos menores dentro da tabela */
+.table td small {
+  font-size: 16px !important;
+  line-height: 1.5;
+}
+
+/* Status */
+.table .status,
+.status {
+  font-size: 16px !important;
+  font-weight: 700;
+  padding: 8px 13px;
+}
+
+/* Valores */
+.table td b {
+  font-size: 21px !important;
+  font-weight: 700;
+}
+
+/* Datas e informações secundárias */
+.table td span {
+  font-size: 17px !important;
+}
+
+/* Espaçamento entre as linhas */
+.table tbody tr {
+  min-height: 70px;
+}
+
+/* Hover */
+.table tbody tr:hover td {
+  font-size: 20px !important;
+}
+
+/* =========================================================
+   TABELA — RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 900px) {
+  .table th {
+    font-size: 15px !important;
+  }
+
+  .table td {
+    font-size: 18px !important;
+    padding: 17px 13px;
+  }
+
+  .table td strong {
+    font-size: 18px !important;
+  }
+
+  .table td small {
+    font-size: 14px !important;
+  }
+}

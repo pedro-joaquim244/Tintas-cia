@@ -274,6 +274,23 @@
         left center;
 }
 
+/* =========================================================
+   PÁGINA ATUAL — TRAÇO PERMANENTE
+========================================================= */
+
+.nav a.linkAtivo {
+    color: #173c72;
+}
+
+
+/* Mantém o tracinho visível na página atual */
+
+.nav a.linkAtivo::after {
+    transform: scaleX(1);
+
+    transform-origin: left center;
+}
+
 
 /* =========================================================
    USUÁRIO DESKTOP
