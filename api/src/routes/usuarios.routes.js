@@ -17,111 +17,184 @@ import {
 
 const router = express.Router();
 
+
 // =====================================================
 // CAMINHOS
 // =====================================================
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename =
+    fileURLToPath(import.meta.url);
 
-const pastaUploads = path.join(
-    __dirname,
-    "..",
-    "uploads"
-);
+const __dirname =
+    path.dirname(__filename);
 
-const pastaUsuarios = path.join(
-    pastaUploads,
-    "usuarios"
-);
 
-// Criar pastas caso não existam
+const pastaUploads =
+    path.join(
+        __dirname,
+        "..",
+        "..",
+        "uploads"
+    );
+
+
+const pastaUsuarios =
+    path.join(
+        pastaUploads,
+        "usuarios"
+    );
+
+
+// =====================================================
+// CRIAR PASTAS
+// =====================================================
+
 if (!fs.existsSync(pastaUploads)) {
-    fs.mkdirSync(pastaUploads, {
-        recursive: true
-    });
+
+    fs.mkdirSync(
+        pastaUploads,
+        {
+            recursive: true
+        }
+    );
 }
+
 
 if (!fs.existsSync(pastaUsuarios)) {
-    fs.mkdirSync(pastaUsuarios, {
-        recursive: true
-    });
+
+    fs.mkdirSync(
+        pastaUsuarios,
+        {
+            recursive: true
+        }
+    );
 }
+
 
 console.log(
     "Pasta de fotos dos usuários:",
     pastaUsuarios
 );
 
+
 // =====================================================
 // MULTER
 // =====================================================
 
-const storage = multer.diskStorage({
+const storage =
+    multer.diskStorage({
 
-    destination: (_req, _file, cb) => {
-        cb(null, pastaUsuarios);
-    },
+        destination:
+            (_req, _file, cb) => {
 
-    filename: (_req, file, cb) => {
+                cb(
+                    null,
+                    pastaUsuarios
+                );
 
-        const extensao = path
-            .extname(file.originalname)
-            .toLowerCase();
+            },
 
-        const nomeArquivo =
-            `usuario-${Date.now()}-${Math.round(
-                Math.random() * 1E9
-            )}${extensao}`;
 
-        cb(null, nomeArquivo);
-    }
+        filename:
+            (_req, file, cb) => {
 
-});
+                const extensao =
+                    path
+                        .extname(
+                            file.originalname
+                        )
+                        .toLowerCase();
+
+
+                const nomeArquivo =
+                    `usuario-${Date.now()}-${Math.round(
+                        Math.random() * 1E9
+                    )}${extensao}`;
+
+
+                cb(
+                    null,
+                    nomeArquivo
+                );
+
+            }
+
+    });
+
 
 // =====================================================
 // FILTRO DE IMAGEM
 // =====================================================
 
-const fileFilter = (_req, file, cb) => {
+const fileFilter =
+    (_req, file, cb) => {
 
-    const tiposPermitidos = [
-        "image/jpeg",
-        "image/jpg",
-        "image/png",
-        "image/webp"
-    ];
+        const tiposPermitidos = [
 
-    if (tiposPermitidos.includes(file.mimetype)) {
-        cb(null, true);
-        return;
-    }
+            "image/jpeg",
+            "image/jpg",
+            "image/png",
+            "image/webp"
 
-    cb(
-        new Error(
-            "Formato de imagem inválido. Use JPG, JPEG, PNG ou WEBP."
-        ),
-        false
-    );
-};
+        ];
 
-const upload = multer({
 
-    storage,
+        if (
+            tiposPermitidos.includes(
+                file.mimetype
+            )
+        ) {
 
-    fileFilter,
+            cb(
+                null,
+                true
+            );
 
-    limits: {
-        fileSize: 2 * 1024 * 1024
-    }
+            return;
 
-});
+        }
+
+
+        cb(
+
+            new Error(
+                "Formato de imagem inválido. Use JPG, JPEG, PNG ou WEBP."
+            ),
+
+            false
+
+        );
+
+    };
+
+
+// =====================================================
+// CONFIGURAÇÃO DO UPLOAD
+// =====================================================
+
+const upload =
+    multer({
+
+        storage,
+
+        fileFilter,
+
+        limits: {
+
+            fileSize:
+                2 * 1024 * 1024
+
+        }
+
+    });
+
 
 // =====================================================
 // CAMPOS PÚBLICOS
 // =====================================================
 
 const camposPublicos = `
+
     id,
     nome,
     email,
@@ -138,145 +211,256 @@ const camposPublicos = `
     foto,
     criado_em,
     atualizado_em
+
 `;
 
+
 // =====================================================
-// FUNÇÃO AUXILIAR
+// MONTAR USUÁRIO
 // =====================================================
 
-function montarUsuario(usuario) {
+function montarUsuario(
+    usuario
+) {
 
     if (!usuario) {
+
         return null;
+
     }
 
-    return {
-        id: usuario.id,
-        nome: usuario.nome,
-        email: usuario.email,
-        tipo: usuario.tipo,
 
-        telefone: usuario.telefone || "",
+    return {
+
+        id:
+            usuario.id,
+
+        nome:
+            usuario.nome,
+
+        email:
+            usuario.email,
+
+        tipo:
+            usuario.tipo,
+
+
+        telefone:
+            usuario.telefone || "",
+
 
         data_nascimento:
             usuario.data_nascimento || null,
 
+
         endereco:
             usuario.endereco || "",
+
 
         numero:
             usuario.numero || "",
 
+
         complemento:
             usuario.complemento || "",
+
 
         bairro:
             usuario.bairro || "",
 
+
         cidade:
             usuario.cidade || "",
+
 
         estado:
             usuario.estado || "",
 
+
         cep:
             usuario.cep || "",
+
 
         foto:
             usuario.foto || null,
 
+
         criado_em:
             usuario.criado_em || null,
 
+
         atualizado_em:
             usuario.atualizado_em || null
+
     };
+
 }
+
 
 // =====================================================
 // LOGIN
 // =====================================================
 
 router.post(
+
     "/login",
-    async (req, res) => {
+
+    async (
+        req,
+        res
+    ) => {
 
         try {
 
             const {
+
                 email,
                 senha
+
             } = req.body;
 
-            if (!email || !senha) {
 
-                return res.status(400).json({
-                    erro: "Email e senha são obrigatórios."
-                });
+            if (
+                !email ||
+                !senha
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+
+                        erro:
+                            "Email e senha são obrigatórios."
+
+                    });
+
             }
 
-            const emailNormalizado = String(email)
-                .trim()
-                .toLowerCase();
 
-            const [resultado] = await pool.query(
-                `
-                SELECT *
-                FROM usuarios
-                WHERE email = ?
-                LIMIT 1
-                `,
-                [emailNormalizado]
-            );
+            const emailNormalizado =
+                String(email)
+                    .trim()
+                    .toLowerCase();
 
-            const usuario = resultado[0];
+
+            const [resultado] =
+                await pool.query(
+
+                    `
+                    SELECT *
+                    FROM usuarios
+                    WHERE email = ?
+                    LIMIT 1
+                    `,
+
+                    [
+                        emailNormalizado
+                    ]
+
+                );
+
+
+            const usuario =
+                resultado[0];
+
 
             if (!usuario) {
 
-                return res.status(401).json({
-                    erro: "Email ou senha inválidos."
-                });
+                return res
+                    .status(401)
+                    .json({
+
+                        erro:
+                            "Email ou senha inválidos."
+
+                    });
+
             }
+
 
             const senhaCorreta =
                 await bcrypt.compare(
+
                     senha,
+
                     usuario.senha
+
                 );
+
 
             if (!senhaCorreta) {
 
-                return res.status(401).json({
-                    erro: "Email ou senha inválidos."
-                });
+                return res
+                    .status(401)
+                    .json({
+
+                        erro:
+                            "Email ou senha inválidos."
+
+                    });
+
             }
+
 
             if (
-                !["admin", "cliente"].includes(
+
+                ![
+                    "admin",
+                    "cliente"
+                ].includes(
                     usuario.tipo
                 )
+
             ) {
 
-                return res.status(403).json({
-                    erro: "Tipo de usuário inválido."
-                });
+                return res
+                    .status(403)
+                    .json({
+
+                        erro:
+                            "Tipo de usuário inválido."
+
+                    });
+
             }
 
-            const dadosUsuario =
-                montarUsuario(usuario);
 
-            const token = jwt.sign(
-                {
-                    id: usuario.id,
-                    nome: usuario.nome,
-                    email: usuario.email,
-                    tipo: usuario.tipo
-                },
-                config.jwtSecret,
-                {
-                    expiresIn: "1d"
-                }
-            );
+            const dadosUsuario =
+                montarUsuario(
+                    usuario
+                );
+
+
+            const token =
+                jwt.sign(
+
+                    {
+
+                        id:
+                            usuario.id,
+
+                        nome:
+                            usuario.nome,
+
+                        email:
+                            usuario.email,
+
+                        tipo:
+                            usuario.tipo
+
+                    },
+
+                    config.jwtSecret,
+
+                    {
+
+                        expiresIn:
+                            "1d"
+
+                    }
+
+                );
+
 
             return res.json({
 
@@ -290,7 +474,9 @@ router.post(
 
             });
 
+
         } catch (error) {
+
 
             console.error(
                 "======================================"
@@ -300,37 +486,55 @@ router.post(
                 "ERRO AO FAZER LOGIN:"
             );
 
-            console.error(error);
+            console.error(
+                error
+            );
 
             console.error(
                 "======================================"
             );
 
-            return res.status(500).json({
 
-                erro:
-                    "Erro ao fazer login.",
+            return res
+                .status(500)
+                .json({
 
-                detalhes:
-                    error.message
+                    erro:
+                        "Erro ao fazer login.",
 
-            });
+                    detalhes:
+                        error.message
+
+                });
+
         }
+
     }
+
 );
+
 
 // =====================================================
 // CADASTRAR USUÁRIO
 // =====================================================
 
 router.post(
+
     "/",
-    upload.single("foto"),
-    async (req, res) => {
+
+    upload.single(
+        "foto"
+    ),
+
+    async (
+        req,
+        res
+    ) => {
 
         try {
 
             const {
+
                 nome,
                 email,
                 senha,
@@ -343,73 +547,128 @@ router.post(
                 cidade,
                 estado,
                 cep
+
             } = req.body;
 
-            if (!nome || !email || !senha) {
+
+            if (
+                !nome ||
+                !email ||
+                !senha
+            ) {
+
 
                 if (req.file) {
 
                     try {
+
                         fs.unlinkSync(
                             req.file.path
                         );
+
                     } catch {}
+
                 }
 
-                return res.status(400).json({
-                    erro:
-                        "Nome, email e senha são obrigatórios."
-                });
+
+                return res
+                    .status(400)
+                    .json({
+
+                        erro:
+                            "Nome, email e senha são obrigatórios."
+
+                    });
+
             }
+
 
             const emailNormalizado =
                 String(email)
                     .trim()
                     .toLowerCase();
 
+
+            const dataNascimentoNormalizada =
+                data_nascimento
+                    ? String(
+                        data_nascimento
+                    ).substring(
+                        0,
+                        10
+                    )
+                    : null;
+
+
             const [existentes] =
                 await pool.query(
+
                     `
                     SELECT id
                     FROM usuarios
                     WHERE email = ?
                     LIMIT 1
                     `,
-                    [emailNormalizado]
+
+                    [
+                        emailNormalizado
+                    ]
+
                 );
 
-            if (existentes.length > 0) {
+
+            if (
+                existentes.length > 0
+            ) {
+
 
                 if (req.file) {
 
                     try {
+
                         fs.unlinkSync(
                             req.file.path
                         );
+
                     } catch {}
+
                 }
 
-                return res.status(409).json({
-                    erro:
-                        "Este email já está cadastrado."
-                });
+
+                return res
+                    .status(409)
+                    .json({
+
+                        erro:
+                            "Este email já está cadastrado."
+
+                    });
+
             }
+
 
             const senhaCriptografada =
                 await bcrypt.hash(
+
                     senha,
+
                     10
+
                 );
+
 
             const foto =
                 req.file
                     ? `usuarios/${req.file.filename}`
                     : null;
 
+
             const [resultado] =
                 await pool.query(
+
                     `
                     INSERT INTO usuarios (
+
                         nome,
                         email,
                         senha,
@@ -424,8 +683,11 @@ router.post(
                         estado,
                         cep,
                         foto
+
                     )
+
                     VALUES (
+
                         ?,
                         ?,
                         ?,
@@ -440,69 +702,148 @@ router.post(
                         ?,
                         ?,
                         ?
+
                     )
                     `,
+
                     [
-                        String(nome).trim(),
+
+                        String(
+                            nome
+                        ).trim(),
+
                         emailNormalizado,
+
                         senhaCriptografada,
+
                         telefone || null,
-                        data_nascimento || null,
+
+                        dataNascimentoNormalizada,
+
                         endereco || null,
+
                         numero || null,
+
                         complemento || null,
+
                         bairro || null,
+
                         cidade || null,
+
                         estado || null,
+
                         cep || null,
+
                         foto
+
                     ]
+
                 );
+
 
             const [criados] =
                 await pool.query(
+
                     `
                     SELECT ${camposPublicos}
+
                     FROM usuarios
+
                     WHERE id = ?
                     `,
-                    [resultado.insertId]
+
+                    [
+                        resultado.insertId
+                    ]
+
                 );
 
-            await registrarAtividade(pool, {
-                usuario_id: resultado.insertId,
-                tipo: "usuario",
-                acao: "criar",
-                titulo: "Novo cliente cadastrado",
-                descricao: `${String(nome).trim()} criou uma conta no site.`,
-                referencia_id: resultado.insertId,
-                valor_novo: {
-                    nome: String(nome).trim(),
-                    email: emailNormalizado,
-                    tipo: "cliente"
-                }
-            });
 
-            return res.status(201).json(
-                montarUsuario(criados[0])
-            );
+            try {
+
+                await registrarAtividade(
+                    pool,
+                    {
+
+                        usuario_id:
+                            resultado.insertId,
+
+                        tipo:
+                            "usuario",
+
+                        acao:
+                            "criar",
+
+                        titulo:
+                            "Novo cliente cadastrado",
+
+                        descricao:
+                            `${String(nome).trim()} criou uma conta no site.`,
+
+                        referencia_id:
+                            resultado.insertId,
+
+                        valor_novo: {
+
+                            nome:
+                                String(nome)
+                                    .trim(),
+
+                            email:
+                                emailNormalizado,
+
+                            tipo:
+                                "cliente"
+
+                        }
+
+                    }
+                );
+
+            } catch (erroHistorico) {
+
+                console.warn(
+                    "Não foi possível registrar histórico do cadastro:",
+                    erroHistorico.message
+                );
+
+            }
+
+
+            return res
+                .status(201)
+                .json(
+
+                    montarUsuario(
+                        criados[0]
+                    )
+
+                );
+
 
         } catch (error) {
+
 
             if (req.file) {
 
                 try {
+
                     if (
                         fs.existsSync(
                             req.file.path
                         )
                     ) {
+
                         fs.unlinkSync(
                             req.file.path
                         );
+
                     }
+
                 } catch {}
+
             }
+
 
             console.error(
                 "======================================"
@@ -512,376 +853,745 @@ router.post(
                 "ERRO AO CADASTRAR USUARIO:"
             );
 
-            console.error(error);
+            console.error(
+                error
+            );
 
             console.error(
                 "======================================"
             );
 
-            return res.status(500).json({
 
-                erro:
-                    "Erro ao cadastrar usuário.",
+            return res
+                .status(500)
+                .json({
 
-                detalhes:
-                    error.message
+                    erro:
+                        "Erro ao cadastrar usuário.",
 
-            });
+                    detalhes:
+                        error.message
+
+                });
+
         }
+
     }
+
 );
+
 
 // =====================================================
 // USUÁRIO LOGADO
 // =====================================================
 
 router.get(
+
     "/me",
+
     autenticarToken,
-    async (req, res) => {
+
+    async (
+        req,
+        res
+    ) => {
 
         try {
 
-            if (!req.usuario?.id) {
 
-                return res.status(401).json({
-                    erro:
-                        "Usuário não autenticado."
-                });
+            if (
+                !req.usuario?.id
+            ) {
+
+                return res
+                    .status(401)
+                    .json({
+
+                        erro:
+                            "Usuário não autenticado."
+
+                    });
+
             }
+
 
             const id =
-                Number(req.usuario.id);
+                Number(
+                    req.usuario.id
+                );
 
-            if (!Number.isInteger(id)) {
 
-                return res.status(401).json({
-                    erro:
-                        "Token inválido."
-                });
+            if (
+                !Number.isInteger(
+                    id
+                )
+            ) {
+
+                return res
+                    .status(401)
+                    .json({
+
+                        erro:
+                            "Token inválido."
+
+                    });
+
             }
+
 
             const [resultado] =
                 await pool.query(
+
                     `
                     SELECT ${camposPublicos}
+
                     FROM usuarios
+
                     WHERE id = ?
+
                     LIMIT 1
                     `,
-                    [id]
+
+                    [
+                        id
+                    ]
+
                 );
 
-            if (resultado.length === 0) {
 
-                return res.status(404).json({
-                    erro:
-                        "Usuário não encontrado."
-                });
+            if (
+                resultado.length === 0
+            ) {
+
+                return res
+                    .status(404)
+                    .json({
+
+                        erro:
+                            "Usuário não encontrado."
+
+                    });
+
             }
 
+
             return res.json(
-                montarUsuario(resultado[0])
+
+                montarUsuario(
+                    resultado[0]
+                )
+
             );
+
 
         } catch (error) {
 
-            console.error(
-                "======================================"
-            );
 
             console.error(
-                "ERRO AO BUSCAR USUARIO LOGADO:"
+                "ERRO AO BUSCAR USUARIO LOGADO:",
+                error
             );
 
-            console.error(error);
 
-            console.error(
-                "======================================"
-            );
+            return res
+                .status(500)
+                .json({
 
-            return res.status(500).json({
+                    erro:
+                        "Erro ao restaurar sessão.",
 
-                erro:
-                    "Erro ao restaurar sessão.",
+                    detalhes:
+                        error.message
 
-                detalhes:
-                    error.message
+                });
 
-            });
         }
+
     }
+
 );
+
 
 // =====================================================
 // LISTAR TODOS OS USUÁRIOS
 // =====================================================
 
 router.get(
+
     "/",
+
     autenticarToken,
-    autorizarTipos("admin"),
-    async (_req, res) => {
+
+    autorizarTipos(
+        "admin"
+    ),
+
+    async (
+        _req,
+        res
+    ) => {
 
         try {
 
+
             const [usuarios] =
                 await pool.query(
+
                     `
                     SELECT ${camposPublicos}
+
                     FROM usuarios
+
                     ORDER BY id DESC
                     `
+
                 );
 
+
             return res.json(
+
                 usuarios.map(
-                    (usuario) =>
-                        montarUsuario(usuario)
+                    usuario =>
+                        montarUsuario(
+                            usuario
+                        )
                 )
+
             );
+
 
         } catch (error) {
 
-            console.error(
-                "======================================"
-            );
 
             console.error(
-                "ERRO AO LISTAR USUARIOS:"
+                "ERRO AO LISTAR USUARIOS:",
+                error
             );
 
-            console.error(error);
 
-            console.error(
-                "======================================"
-            );
+            return res
+                .status(500)
+                .json({
 
-            return res.status(500).json({
+                    erro:
+                        "Erro ao listar usuários.",
 
-                erro:
-                    "Erro ao listar usuários.",
+                    detalhes:
+                        error.message
 
-                detalhes:
-                    error.message
+                });
 
-            });
         }
+
     }
+
 );
+
+
+// =====================================================
+// SERVIR FOTO DO USUÁRIO
+// GET /usuarios/foto-arquivo/:arquivo
+// =====================================================
+
+router.get(
+
+    "/foto-arquivo/:arquivo",
+
+    async (
+        req,
+        res
+    ) => {
+
+        try {
+
+
+            const arquivo =
+                path.basename(
+
+                    String(
+                        req.params.arquivo || ""
+                    )
+
+                );
+
+
+            if (
+                !arquivo ||
+                !/\.(jpg|jpeg|png|webp)$/i.test(
+                    arquivo
+                )
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+
+                        erro:
+                            "Nome de arquivo de foto inválido."
+
+                    });
+
+            }
+
+
+            const caminhoFoto =
+                path.join(
+
+                    pastaUsuarios,
+
+                    arquivo
+
+                );
+
+
+            if (
+                !fs.existsSync(
+                    caminhoFoto
+                )
+            ) {
+
+                return res
+                    .status(404)
+                    .json({
+
+                        erro:
+                            "Foto do usuário não encontrada."
+
+                    });
+
+            }
+
+
+            // Evitar foto antiga em cache
+            res.setHeader(
+
+                "Cache-Control",
+
+                "no-store, no-cache, must-revalidate, proxy-revalidate"
+
+            );
+
+
+            res.setHeader(
+                "Pragma",
+                "no-cache"
+            );
+
+
+            res.setHeader(
+                "Expires",
+                "0"
+            );
+
+
+            return res.sendFile(
+                caminhoFoto
+            );
+
+
+        } catch (error) {
+
+
+            console.error(
+                "ERRO AO SERVIR FOTO DO USUÁRIO:",
+                error
+            );
+
+
+            return res
+                .status(500)
+                .json({
+
+                    erro:
+                        "Erro ao carregar foto do usuário.",
+
+                    detalhes:
+                        error.message
+
+                });
+
+        }
+
+    }
+
+);
+
 
 // =====================================================
 // BUSCAR USUÁRIO POR ID
 // =====================================================
 
 router.get(
+
     "/:id",
+
     autenticarToken,
-    async (req, res) => {
+
+    async (
+        req,
+        res
+    ) => {
 
         try {
 
+
             const id =
-                Number(req.params.id);
+                Number(
+                    req.params.id
+                );
 
-            if (!Number.isInteger(id)) {
-
-                return res.status(400).json({
-                    erro:
-                        "ID de usuário inválido."
-                });
-            }
 
             if (
-                req.usuario.tipo !== "admin" &&
-                Number(req.usuario.id) !== id
+                !Number.isInteger(
+                    id
+                )
             ) {
 
-                return res.status(403).json({
-                    erro:
-                        "Você só pode acessar seu próprio perfil."
-                });
+                return res
+                    .status(400)
+                    .json({
+
+                        erro:
+                            "ID de usuário inválido."
+
+                    });
+
             }
+
+
+            if (
+
+                req.usuario.tipo !==
+                    "admin" &&
+
+                Number(
+                    req.usuario.id
+                ) !== id
+
+            ) {
+
+                return res
+                    .status(403)
+                    .json({
+
+                        erro:
+                            "Você só pode acessar seu próprio perfil."
+
+                    });
+
+            }
+
 
             const [resultado] =
                 await pool.query(
+
                     `
                     SELECT ${camposPublicos}
+
                     FROM usuarios
+
                     WHERE id = ?
+
                     LIMIT 1
                     `,
-                    [id]
+
+                    [
+                        id
+                    ]
+
                 );
 
-            if (resultado.length === 0) {
 
-                return res.status(404).json({
-                    erro:
-                        "Usuário não encontrado."
-                });
+            if (
+                resultado.length === 0
+            ) {
+
+                return res
+                    .status(404)
+                    .json({
+
+                        erro:
+                            "Usuário não encontrado."
+
+                    });
+
             }
 
+
             return res.json(
-                montarUsuario(resultado[0])
+
+                montarUsuario(
+                    resultado[0]
+                )
+
             );
 
+
         } catch (error) {
+
 
             console.error(
                 "ERRO AO BUSCAR USUARIO:",
                 error
             );
 
-            return res.status(500).json({
 
-                erro:
-                    "Erro ao buscar usuário.",
+            return res
+                .status(500)
+                .json({
 
-                detalhes:
-                    error.message
+                    erro:
+                        "Erro ao buscar usuário.",
 
-            });
+                    detalhes:
+                        error.message
+
+                });
+
         }
+
     }
+
 );
+
 
 // =====================================================
 // ALTERAR FOTO
+// PUT /usuarios/:id/foto
 // =====================================================
 
 router.put(
-    "/:id/foto",
-    autenticarToken,
-    upload.single("foto"),
-    async (req, res) => {
 
-        let arquivoNovo = null;
+    "/:id/foto",
+
+    autenticarToken,
+
+    upload.single(
+        "foto"
+    ),
+
+    async (
+        req,
+        res
+    ) => {
+
+        let arquivoNovo =
+            null;
+
 
         try {
 
+
             const id =
-                Number(req.params.id);
+                Number(
+                    req.params.id
+                );
 
-            if (!Number.isInteger(id)) {
-
-                if (req.file) {
-
-                    try {
-                        fs.unlinkSync(
-                            req.file.path
-                        );
-                    } catch {}
-                }
-
-                return res.status(400).json({
-                    erro:
-                        "ID de usuário inválido."
-                });
-            }
 
             if (
-                req.usuario.tipo !== "admin" &&
-                Number(req.usuario.id) !== id
+                !Number.isInteger(
+                    id
+                )
             ) {
+
 
                 if (req.file) {
 
                     try {
+
                         fs.unlinkSync(
                             req.file.path
                         );
+
                     } catch {}
+
                 }
 
-                return res.status(403).json({
-                    erro:
-                        "Você só pode alterar sua própria foto."
-                });
+
+                return res
+                    .status(400)
+                    .json({
+
+                        erro:
+                            "ID de usuário inválido."
+
+                    });
+
             }
+
+
+            if (
+
+                req.usuario.tipo !==
+                    "admin" &&
+
+                Number(
+                    req.usuario.id
+                ) !== id
+
+            ) {
+
+
+                if (req.file) {
+
+                    try {
+
+                        fs.unlinkSync(
+                            req.file.path
+                        );
+
+                    } catch {}
+
+                }
+
+
+                return res
+                    .status(403)
+                    .json({
+
+                        erro:
+                            "Você só pode alterar sua própria foto."
+
+                    });
+
+            }
+
 
             if (!req.file) {
 
-                return res.status(400).json({
-                    erro:
-                        "Nenhuma foto foi enviada."
-                });
+                return res
+                    .status(400)
+                    .json({
+
+                        erro:
+                            "Nenhuma foto foi enviada."
+
+                    });
+
             }
+
 
             arquivoNovo =
                 req.file.path;
 
+
             const [usuarios] =
                 await pool.query(
+
                     `
                     SELECT
                         id,
                         foto
+
                     FROM usuarios
+
                     WHERE id = ?
+
                     LIMIT 1
                     `,
-                    [id]
+
+                    [
+                        id
+                    ]
+
                 );
 
-            if (usuarios.length === 0) {
+
+            if (
+                usuarios.length === 0
+            ) {
+
 
                 if (
                     fs.existsSync(
                         req.file.path
                     )
                 ) {
+
                     fs.unlinkSync(
                         req.file.path
                     );
+
                 }
 
-                return res.status(404).json({
-                    erro:
-                        "Usuário não encontrado."
-                });
+
+                return res
+                    .status(404)
+                    .json({
+
+                        erro:
+                            "Usuário não encontrado."
+
+                    });
+
             }
+
 
             const fotoAntiga =
                 usuarios[0].foto;
 
+
             const novaFoto =
                 `usuarios/${req.file.filename}`;
 
+
             await pool.query(
+
                 `
                 UPDATE usuarios
+
                 SET foto = ?
+
                 WHERE id = ?
                 `,
+
                 [
                     novaFoto,
                     id
                 ]
+
             );
+
 
             const [atualizado] =
                 await pool.query(
+
                     `
                     SELECT ${camposPublicos}
+
                     FROM usuarios
+
                     WHERE id = ?
+
                     LIMIT 1
                     `,
-                    [id]
+
+                    [
+                        id
+                    ]
+
                 );
 
-            // Apagar foto antiga
+
+            // =====================================================
+            // APAGAR FOTO ANTIGA
+            // =====================================================
+
             if (
                 fotoAntiga &&
                 fotoAntiga !== novaFoto
             ) {
 
+
                 const caminhoAntigo =
                     path.join(
+
                         pastaUploads,
+
                         fotoAntiga
+
                     );
+
 
                 if (
                     fs.existsSync(
@@ -889,26 +1599,55 @@ router.put(
                     )
                 ) {
 
+
                     try {
+
                         fs.unlinkSync(
                             caminhoAntigo
                         );
+
+
                     } catch (erro) {
+
 
                         console.warn(
                             "Não foi possível apagar foto antiga:",
                             erro.message
                         );
+
                     }
+
                 }
+
             }
 
-            arquivoNovo = null;
+
+            arquivoNovo =
+                null;
+
+
+            // =====================================================
+            // URL COMPLETA DA FOTO
+            // =====================================================
+
+            const baseUrl =
+                `${req.protocol}://${req.get("host")}`;
+
+
+            const fotoUrl =
+                `${baseUrl}/usuarios/foto-arquivo/` +
+                encodeURIComponent(
+                    req.file.filename
+                );
+
 
             return res.json({
 
                 mensagem:
                     "Foto atualizada com sucesso.",
+
+                foto_url:
+                    fotoUrl,
 
                 usuario:
                     montarUsuario(
@@ -917,109 +1656,191 @@ router.put(
 
             });
 
+
         } catch (error) {
+
 
             console.error(
                 "ERRO AO ALTERAR FOTO:",
                 error
             );
 
+
             if (
+
                 arquivoNovo &&
-                fs.existsSync(arquivoNovo)
+
+                fs.existsSync(
+                    arquivoNovo
+                )
+
             ) {
 
+
                 try {
+
                     fs.unlinkSync(
                         arquivoNovo
                     );
+
                 } catch {}
+
             }
 
-            return res.status(500).json({
 
-                erro:
-                    "Erro ao alterar foto.",
+            return res
+                .status(500)
+                .json({
 
-                detalhes:
-                    error.message
+                    erro:
+                        "Erro ao alterar foto.",
 
-            });
+                    detalhes:
+                        error.message
+
+                });
+
         }
+
     }
+
 );
+
 
 // =====================================================
 // REMOVER FOTO
 // =====================================================
 
 router.delete(
+
     "/:id/foto",
+
     autenticarToken,
-    async (req, res) => {
+
+    async (
+        req,
+        res
+    ) => {
 
         try {
 
+
             const id =
-                Number(req.params.id);
+                Number(
+                    req.params.id
+                );
 
-            if (!Number.isInteger(id)) {
-
-                return res.status(400).json({
-                    erro:
-                        "ID de usuário inválido."
-                });
-            }
 
             if (
-                req.usuario.tipo !== "admin" &&
-                Number(req.usuario.id) !== id
+                !Number.isInteger(
+                    id
+                )
             ) {
 
-                return res.status(403).json({
-                    erro:
-                        "Você só pode remover sua própria foto."
-                });
+                return res
+                    .status(400)
+                    .json({
+
+                        erro:
+                            "ID de usuário inválido."
+
+                    });
+
             }
+
+
+            if (
+
+                req.usuario.tipo !==
+                    "admin" &&
+
+                Number(
+                    req.usuario.id
+                ) !== id
+
+            ) {
+
+                return res
+                    .status(403)
+                    .json({
+
+                        erro:
+                            "Você só pode remover sua própria foto."
+
+                    });
+
+            }
+
 
             const [usuarios] =
                 await pool.query(
+
                     `
                     SELECT foto
+
                     FROM usuarios
+
                     WHERE id = ?
+
                     LIMIT 1
                     `,
-                    [id]
+
+                    [
+                        id
+                    ]
+
                 );
 
-            if (usuarios.length === 0) {
 
-                return res.status(404).json({
-                    erro:
-                        "Usuário não encontrado."
-                });
+            if (
+                usuarios.length === 0
+            ) {
+
+                return res
+                    .status(404)
+                    .json({
+
+                        erro:
+                            "Usuário não encontrado."
+
+                    });
+
             }
+
 
             const foto =
                 usuarios[0].foto;
 
+
             await pool.query(
+
                 `
                 UPDATE usuarios
+
                 SET foto = NULL
+
                 WHERE id = ?
                 `,
-                [id]
+
+                [
+                    id
+                ]
+
             );
+
 
             if (foto) {
 
+
                 const caminho =
                     path.join(
+
                         pastaUploads,
+
                         foto
+
                     );
+
 
                 if (
                     fs.existsSync(
@@ -1027,73 +1848,123 @@ router.delete(
                     )
                 ) {
 
+
                     try {
+
                         fs.unlinkSync(
                             caminho
                         );
+
                     } catch {}
+
                 }
+
             }
 
+
             return res.json({
+
                 mensagem:
                     "Foto removida com sucesso."
+
             });
 
+
         } catch (error) {
+
 
             console.error(
                 "ERRO AO REMOVER FOTO:",
                 error
             );
 
-            return res.status(500).json({
 
-                erro:
-                    "Erro ao remover foto.",
+            return res
+                .status(500)
+                .json({
 
-                detalhes:
-                    error.message
+                    erro:
+                        "Erro ao remover foto.",
 
-            });
+                    detalhes:
+                        error.message
+
+                });
+
         }
+
     }
+
 );
+
 
 // =====================================================
 // ATUALIZAR PERFIL
 // =====================================================
 
 router.put(
+
     "/:id",
+
     autenticarToken,
-    async (req, res) => {
+
+    async (
+        req,
+        res
+    ) => {
 
         try {
 
+
             const id =
-                Number(req.params.id);
+                Number(
+                    req.params.id
+                );
 
-            if (!Number.isInteger(id)) {
-
-                return res.status(400).json({
-                    erro:
-                        "ID de usuário inválido."
-                });
-            }
 
             if (
-                req.usuario.tipo !== "admin" &&
-                Number(req.usuario.id) !== id
+                !Number.isInteger(
+                    id
+                )
             ) {
 
-                return res.status(403).json({
-                    erro:
-                        "Você só pode atualizar o próprio perfil."
-                });
+                return res
+                    .status(400)
+                    .json({
+
+                        erro:
+                            "ID de usuário inválido."
+
+                    });
+
             }
 
+
+            if (
+
+                req.usuario.tipo !==
+                    "admin" &&
+
+                Number(
+                    req.usuario.id
+                ) !== id
+
+            ) {
+
+                return res
+                    .status(403)
+                    .json({
+
+                        erro:
+                            "Você só pode atualizar o próprio perfil."
+
+                    });
+
+            }
+
+
             const {
+
                 nome,
                 email,
                 senha,
@@ -1106,79 +1977,154 @@ router.put(
                 cidade,
                 estado,
                 cep
+
             } = req.body;
 
-            if (!nome || !email) {
 
-                return res.status(400).json({
-                    erro:
-                        "Nome e email são obrigatórios."
-                });
+            if (
+                !nome ||
+                !email
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+
+                        erro:
+                            "Nome e email são obrigatórios."
+
+                    });
+
             }
+
 
             const emailNormalizado =
                 String(email)
                     .trim()
                     .toLowerCase();
 
+
+            // =====================================================
+            // CORRIGIR DATA PARA MYSQL
+            // =====================================================
+
+            const dataNascimentoNormalizada =
+                data_nascimento
+
+                    ? String(
+                        data_nascimento
+                    ).substring(
+                        0,
+                        10
+                    )
+
+                    : null;
+
+
             const [usuarioExistente] =
                 await pool.query(
+
                     `
                     SELECT id
+
                     FROM usuarios
+
                     WHERE id = ?
+
                     LIMIT 1
                     `,
-                    [id]
+
+                    [
+                        id
+                    ]
+
                 );
+
 
             if (
                 usuarioExistente.length === 0
             ) {
 
-                return res.status(404).json({
-                    erro:
-                        "Usuário não encontrado."
-                });
+                return res
+                    .status(404)
+                    .json({
+
+                        erro:
+                            "Usuário não encontrado."
+
+                    });
+
             }
+
 
             const [emailExistente] =
                 await pool.query(
+
                     `
                     SELECT id
+
                     FROM usuarios
+
                     WHERE email = ?
+
                     AND id != ?
+
                     LIMIT 1
                     `,
+
                     [
                         emailNormalizado,
                         id
                     ]
+
                 );
+
 
             if (
                 emailExistente.length > 0
             ) {
 
-                return res.status(409).json({
-                    erro:
-                        "Este email já está sendo usado."
-                });
+                return res
+                    .status(409)
+                    .json({
+
+                        erro:
+                            "Este email já está sendo usado."
+
+                    });
+
             }
 
-            if (senha && String(senha).trim()) {
+
+            // =====================================================
+            // COM NOVA SENHA
+            // =====================================================
+
+            if (
+                senha &&
+                String(
+                    senha
+                ).trim()
+            ) {
+
 
                 const senhaCriptografada =
                     await bcrypt.hash(
+
                         senha,
+
                         10
+
                     );
 
+
                 await pool.query(
+
                     `
                     UPDATE usuarios
+
                     SET
+
                         nome = ?,
                         email = ?,
                         senha = ?,
@@ -1191,31 +2137,59 @@ router.put(
                         cidade = ?,
                         estado = ?,
                         cep = ?
+
                     WHERE id = ?
                     `,
+
                     [
-                        String(nome).trim(),
+
+                        String(
+                            nome
+                        ).trim(),
+
                         emailNormalizado,
+
                         senhaCriptografada,
+
                         telefone || null,
-                        data_nascimento || null,
+
+                        dataNascimentoNormalizada,
+
                         endereco || null,
+
                         numero || null,
+
                         complemento || null,
+
                         bairro || null,
+
                         cidade || null,
+
                         estado || null,
+
                         cep || null,
+
                         id
+
                     ]
+
                 );
+
 
             } else {
 
+
+                // =====================================================
+                // SEM ALTERAR SENHA
+                // =====================================================
+
                 await pool.query(
+
                     `
                     UPDATE usuarios
+
                     SET
+
                         nome = ?,
                         email = ?,
                         telefone = ?,
@@ -1227,178 +2201,342 @@ router.put(
                         cidade = ?,
                         estado = ?,
                         cep = ?
+
                     WHERE id = ?
                     `,
+
                     [
-                        String(nome).trim(),
+
+                        String(
+                            nome
+                        ).trim(),
+
                         emailNormalizado,
+
                         telefone || null,
-                        data_nascimento || null,
+
+                        dataNascimentoNormalizada,
+
                         endereco || null,
+
                         numero || null,
+
                         complemento || null,
+
                         bairro || null,
+
                         cidade || null,
+
                         estado || null,
+
                         cep || null,
+
                         id
+
                     ]
+
                 );
+
             }
+
 
             const [atualizados] =
                 await pool.query(
+
                     `
                     SELECT ${camposPublicos}
+
                     FROM usuarios
+
                     WHERE id = ?
+
                     LIMIT 1
                     `,
-                    [id]
+
+                    [
+                        id
+                    ]
+
                 );
 
+
             return res.json(
+
                 montarUsuario(
                     atualizados[0]
                 )
+
             );
 
+
         } catch (error) {
+
 
             console.error(
                 "ERRO AO ATUALIZAR USUARIO:",
                 error
             );
 
-            return res.status(500).json({
 
-                erro:
-                    "Erro ao atualizar usuário.",
+            return res
+                .status(500)
+                .json({
 
-                detalhes:
-                    error.message
+                    erro:
+                        "Erro ao atualizar usuário.",
 
-            });
+                    detalhes:
+                        error.message
+
+                });
+
         }
+
     }
+
 );
+
 
 // =====================================================
 // EXCLUIR USUÁRIO
 // =====================================================
 
 router.delete(
+
     "/:id",
+
     autenticarToken,
-    autorizarTipos("admin"),
-    async (req, res) => {
+
+    autorizarTipos(
+        "admin"
+    ),
+
+    async (
+        req,
+        res
+    ) => {
 
         let connection;
 
+
         try {
 
-            connection = await pool.getConnection();
+
+            connection =
+                await pool.getConnection();
+
 
             const id =
-                Number(req.params.id);
+                Number(
+                    req.params.id
+                );
 
-            if (!Number.isInteger(id)) {
-
-                return res.status(400).json({
-                    erro:
-                        "ID de usuário inválido."
-                });
-            }
 
             if (
-                id === Number(req.usuario.id)
+                !Number.isInteger(
+                    id
+                )
             ) {
 
-                return res.status(400).json({
-                    erro:
-                        "O administrador não pode excluir a própria conta."
-                });
+                return res
+                    .status(400)
+                    .json({
+
+                        erro:
+                            "ID de usuário inválido."
+
+                    });
+
             }
+
+
+            if (
+                id ===
+                Number(
+                    req.usuario.id
+                )
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+
+                        erro:
+                            "O administrador não pode excluir a própria conta."
+
+                    });
+
+            }
+
 
             const [usuarios] =
                 await connection.query(
+
                     `
                     SELECT foto
+
                     FROM usuarios
+
                     WHERE id = ?
+
                     LIMIT 1
                     `,
-                    [id]
+
+                    [
+                        id
+                    ]
+
                 );
 
-            if (usuarios.length === 0) {
 
-                return res.status(404).json({
-                    erro:
-                        "Usuário não encontrado."
-                });
+            if (
+                usuarios.length === 0
+            ) {
+
+                return res
+                    .status(404)
+                    .json({
+
+                        erro:
+                            "Usuário não encontrado."
+
+                    });
+
             }
+
 
             const foto =
                 usuarios[0].foto;
 
-            await connection.beginTransaction();
 
+            await connection
+                .beginTransaction();
+
+
+            // Apagar feedbacks
             await connection.query(
-                `DELETE FROM feedbacks WHERE usuario_id = ?`,
-                [id]
+
+                `
+                DELETE FROM feedbacks
+
+                WHERE usuario_id = ?
+                `,
+
+                [
+                    id
+                ]
+
             );
 
+
+            // Apagar carrinho
             await connection.query(
-                `DELETE FROM carrinho WHERE usuario_id = ?`,
-                [id]
+
+                `
+                DELETE FROM carrinho
+
+                WHERE usuario_id = ?
+                `,
+
+                [
+                    id
+                ]
+
             );
 
+
+            // Apagar itens dos pedidos
             await connection.query(
+
                 `
                 DELETE ip
+
                 FROM itens_pedidos ip
-                INNER JOIN pedidos p ON p.id = ip.pedido_id
+
+                INNER JOIN pedidos p
+                    ON p.id = ip.pedido_id
+
                 WHERE p.usuario_id = ?
                 `,
-                [id]
+
+                [
+                    id
+                ]
+
             );
 
+
+            // Apagar pedidos
             await connection.query(
-                `DELETE FROM pedidos WHERE usuario_id = ?`,
-                [id]
+
+                `
+                DELETE FROM pedidos
+
+                WHERE usuario_id = ?
+                `,
+
+                [
+                    id
+                ]
+
             );
 
+
+            // Apagar usuário
             const [resultado] =
                 await connection.query(
+
                     `
                     DELETE FROM usuarios
+
                     WHERE id = ?
                     `,
-                    [id]
+
+                    [
+                        id
+                    ]
+
                 );
+
 
             if (
                 resultado.affectedRows === 0
             ) {
 
-                await connection.rollback();
 
-                return res.status(404).json({
-                    erro:
-                        "Usuário não encontrado."
-                });
+                await connection
+                    .rollback();
+
+
+                return res
+                    .status(404)
+                    .json({
+
+                        erro:
+                            "Usuário não encontrado."
+
+                    });
+
             }
 
-            await connection.commit();
 
+            await connection
+                .commit();
+
+
+            // Apagar foto
             if (foto) {
+
 
                 const caminho =
                     path.join(
+
                         pastaUploads,
+
                         foto
+
                     );
+
 
                 if (
                     fs.existsSync(
@@ -1406,95 +2544,164 @@ router.delete(
                     )
                 ) {
 
+
                     try {
+
                         fs.unlinkSync(
                             caminho
                         );
+
                     } catch {}
+
                 }
+
             }
 
+
             return res.json({
+
                 mensagem:
                     "Usuário excluído com sucesso."
+
             });
+
 
         } catch (error) {
 
+
             if (connection) {
-                await connection.rollback();
+
+                try {
+
+                    await connection
+                        .rollback();
+
+                } catch {}
+
             }
+
 
             console.error(
                 "ERRO AO EXCLUIR USUARIO:",
                 error
             );
 
-            return res.status(500).json({
 
-                erro:
-                    "Erro ao excluir usuário.",
+            return res
+                .status(500)
+                .json({
 
-                detalhes:
-                    error.message
+                    erro:
+                        "Erro ao excluir usuário.",
 
-            });
+                    detalhes:
+                        error.message
+
+                });
+
+
         } finally {
+
+
             if (connection) {
+
                 connection.release();
+
             }
+
         }
+
     }
+
 );
+
 
 // =====================================================
 // ERROS DO MULTER
 // =====================================================
 
 router.use(
-    (error, _req, res, _next) => {
+
+    (
+        error,
+        _req,
+        res,
+        _next
+    ) => {
+
 
         if (
-            error instanceof multer.MulterError
+            error instanceof
+            multer.MulterError
         ) {
 
+
             if (
-                error.code === "LIMIT_FILE_SIZE"
+                error.code ===
+                "LIMIT_FILE_SIZE"
             ) {
 
-                return res.status(400).json({
-                    erro:
-                        "A imagem deve ter no máximo 2MB."
-                });
+                return res
+                    .status(400)
+                    .json({
+
+                        erro:
+                            "A imagem deve ter no máximo 2MB."
+
+                    });
+
             }
 
-            return res.status(400).json({
-                erro:
-                    "Erro ao enviar imagem.",
-                detalhes:
-                    error.message
-            });
+
+            return res
+                .status(400)
+                .json({
+
+                    erro:
+                        "Erro ao enviar imagem.",
+
+                    detalhes:
+                        error.message
+
+                });
+
         }
 
+
         if (error) {
+
 
             console.error(
                 "ERRO NO UPLOAD:",
                 error
             );
 
-            return res.status(400).json({
-                erro:
-                    error.message ||
-                    "Erro ao enviar imagem."
-            });
+
+            return res
+                .status(400)
+                .json({
+
+                    erro:
+                        error.message ||
+                        "Erro ao enviar imagem."
+
+                });
+
         }
 
-        return res.status(500).json({
-            erro:
-                "Erro interno do servidor."
-        });
+
+        return res
+            .status(500)
+            .json({
+
+                erro:
+                    "Erro interno do servidor."
+
+            });
+
     }
+
 );
+
 
 export default router;

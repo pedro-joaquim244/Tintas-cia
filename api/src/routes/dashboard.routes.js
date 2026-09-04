@@ -1,14 +1,78 @@
 import express from "express";
 import pool from "../database.js";
+import {
+    autenticarToken,
+    autorizarTipos
+} from "../middlewares/autenticacao.js";
 
 const router = express.Router();
+
+
+// =====================================================
+// RESUMO PÃšBLICO
+// =====================================================
+
+router.get("/resumo-publico", async (req, res) => {
+
+    try {
+
+        const [[resumo]] = await pool.query(`
+            SELECT
+                (SELECT COUNT(*) FROM itens) AS produtos,
+                (SELECT COUNT(*) FROM pedidos) AS pedidos,
+                (
+                    SELECT COUNT(*)
+                    FROM usuarios
+                    WHERE tipo = 'cliente'
+                ) AS clientes
+        `);
+
+
+        return res.status(200).json({
+
+            resumo: {
+
+                clientes:
+                    Number(resumo.clientes),
+
+                pedidos:
+                    Number(resumo.pedidos),
+
+                produtos:
+                    Number(resumo.produtos)
+
+            }
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "ERRO AO CARREGAR RESUMO PÃšBLICO:",
+            error
+        );
+
+        return res.status(500).json({
+
+            erro:
+                "Erro ao carregar resumo pÃºblico."
+
+        });
+
+    }
+
+});
 
 
 // =====================================================
 // DASHBOARD ADMINISTRATIVO
 // =====================================================
 
-router.get("/", async (req, res) => {
+router.get(
+    "/",
+    autenticarToken,
+    autorizarTipos("admin"),
+    async (req, res) => {
 
     try {
 
@@ -282,7 +346,8 @@ router.get("/", async (req, res) => {
 
     }
 
-});
+    }
+);
 
 
 export default router;

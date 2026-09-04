@@ -121,7 +121,7 @@
     color:
         #737e8e;
 
-    font-size: 10px;
+    font-size: 16px;
 
     font-weight: 500;
 
@@ -162,7 +162,7 @@
     color:
         #8791a0;
 
-    font-size: 9px;
+    font-size: 13px;
 
     font-weight: 600;
 
@@ -242,7 +242,7 @@
     color:
         #8b94a1;
 
-    font-size: 8px;
+    font-size: 13px;
 
     font-weight: 600;
 
@@ -359,7 +359,7 @@
     color:
         #8b94a1;
 
-    font-size: 8px;
+    font-size: 14px;
 
     font-weight: 600;
 
@@ -374,7 +374,7 @@
     color:
         #657082;
 
-    font-size: 10px;
+    font-size: 16px;
 
     font-weight: 500;
 
@@ -396,7 +396,7 @@
     color:
         var(--verde);
 
-    font-size: 9px;
+    font-size: 13px;
 
     font-weight: 600;
 
@@ -405,7 +405,7 @@
 
 .statusSeguro svg {
 
-    font-size: 11px;
+    font-size: 13px;
 
 }
 
@@ -495,7 +495,7 @@
     color:
         #9aa1ac;
 
-    font-size: 8px;
+    font-size: 16px;
 
     font-weight: 600;
 
@@ -663,7 +663,7 @@
     color:
         var(--azul-claro);
 
-    font-size: 7px;
+    font-size: 13px;
 
     font-weight: 600;
 
@@ -689,7 +689,7 @@
         "Cormorant Garamond",
         serif;
 
-    font-size: 29px;
+    font-size: 39px;
 
     font-weight: 600;
 
@@ -754,7 +754,7 @@
     color:
         #818996;
 
-    font-size: 9px;
+    font-size: 14px;
 
     font-weight: 300;
 
@@ -790,7 +790,7 @@
     color:
         #939aa5;
 
-    font-size: 7px;
+    font-size: 15px;
 
 }
 
@@ -800,7 +800,7 @@
     color:
         #536071;
 
-    font-size: 10px;
+    font-size: 16px;
 
     font-weight: 600;
 
@@ -829,7 +829,7 @@
     color:
         #939aa5;
 
-    font-size: 7px;
+    font-size: 13px;
 
     font-weight: 600;
 
@@ -896,7 +896,7 @@
     color:
         var(--texto);
 
-    font-size: 14px;
+    font-size: 22px;
 
     cursor: pointer;
 
@@ -960,7 +960,7 @@
     color:
         var(--verde);
 
-    font-size: 7px;
+    font-size: 13px;
 
 }
 
@@ -1003,7 +1003,7 @@
     color:
         #939aa5;
 
-    font-size: 7px;
+    font-size: 13px;
 
     font-weight: 600;
 
@@ -1024,7 +1024,7 @@
         "Cormorant Garamond",
         serif;
 
-    font-size: 26px;
+    font-size: 32px;
 
     font-weight: 600;
 
@@ -1174,7 +1174,7 @@
             0.42
         );
 
-    font-size: 8px;
+    font-size: 14px;
 
     font-weight: 600;
 
@@ -1274,7 +1274,7 @@
             0.5
         );
 
-    font-size: 9px;
+    font-size: 16px;
 
 }
 
@@ -1289,7 +1289,7 @@
             0.88
         );
 
-    font-size: 10px;
+    font-size: 15px;
 
     font-weight: 500;
 
@@ -1309,7 +1309,7 @@
 
     display: flex;
 
-    align-items: flex-start;
+    align-items: center;
 
     gap: 11px;
 
@@ -1337,17 +1337,17 @@
 
     flex-shrink: 0;
 
-    margin-top: 2px;
-
     color:
         #90ade6;
 
-    font-size: 15px;
+    font-size: 22px;
 
 }
 
 
 .freteInfo p {
+
+    margin: 0;
 
     color:
         rgba(
@@ -1357,9 +1357,914 @@
             0.45
         );
 
-    font-size: 8px;
+    font-size: 11px;
 
     line-height: 1.65;
+
+}
+
+
+
+/* =========================================================
+   FRETE — INTEGRAÇÃO API
+========================================================= */
+
+.freteBox {
+    margin:
+        24px
+        0
+        20px;
+
+    padding:
+        18px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.11
+        );
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.035
+        );
+}
+
+
+.freteCabecalho {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 14px;
+}
+
+
+.freteCabecalho > div {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.freteCabecalho svg {
+    flex-shrink: 0;
+
+    color:
+        #90ade6;
+
+    font-size: 20px;
+}
+
+
+.freteCabecalho > div > div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.freteCabecalho span {
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.38
+        );
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing:
+        0.16em;
+}
+
+
+.freteCabecalho strong {
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.82
+        );
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+.freteGratisBadge {
+    padding:
+        5px
+        7px;
+
+    border:
+        1px solid
+        rgba(
+            144,
+            173,
+            230,
+            0.3
+        );
+
+    background:
+        rgba(
+            144,
+            173,
+            230,
+            0.08
+        );
+
+    color:
+        #b7ccf6 !important;
+
+    font-size: 9px !important;
+
+    font-weight: 700 !important;
+
+    letter-spacing:
+        0.14em !important;
+}
+
+
+/* =========================================================
+   TIPO DE ENTREGA
+========================================================= */
+
+.tipoEntrega {
+    margin-top: 17px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(
+                0,
+                1fr
+            )
+        );
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.11
+        );
+}
+
+
+.tipoEntrega button {
+    min-height: 42px;
+
+    padding:
+        0
+        9px;
+
+    border: none;
+
+    background:
+        transparent;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.5
+        );
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background
+        0.22s
+        ease,
+        color
+        0.22s
+        ease;
+}
+
+
+.tipoEntrega button + button {
+    border-left:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.11
+        );
+}
+
+
+.tipoEntrega button:hover:not(:disabled) {
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.055
+        );
+
+    color:
+        #ffffff;
+}
+
+
+.tipoEntrega button:disabled {
+    opacity: 0.45;
+
+    cursor: wait;
+}
+
+
+.tipoEntregaAtivo {
+    background:
+        rgba(
+            158,
+            185,
+            238,
+            0.12
+        ) !important;
+
+    color:
+        #c7d8f7 !important;
+}
+
+
+/* =========================================================
+   ENDEREÇO DO FRETE
+========================================================= */
+
+.freteEndereco {
+    margin-top: 13px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(
+            0,
+            1fr
+        )
+        72px;
+
+    gap: 8px;
+}
+
+
+.freteEndereco > div {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.freteEndereco label {
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.36
+        );
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing:
+        0.14em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.freteEndereco input {
+    width: 100%;
+
+    height: 40px;
+
+    padding:
+        0
+        10px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.13
+        );
+
+    border-radius: 0;
+
+    outline: none;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.045
+        );
+
+    color:
+        #ffffff;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    transition:
+        border-color
+        0.22s
+        ease,
+        background
+        0.22s
+        ease,
+        box-shadow
+        0.22s
+        ease;
+}
+
+
+.freteEndereco input::placeholder {
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.26
+        );
+}
+
+
+.freteEndereco input:hover {
+    border-color:
+        rgba(
+            158,
+            185,
+            238,
+            0.25
+        );
+}
+
+
+.freteEndereco input:focus {
+    border-color:
+        rgba(
+            158,
+            185,
+            238,
+            0.48
+        );
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+
+    box-shadow:
+        0
+        0
+        0
+        3px
+        rgba(
+            158,
+            185,
+            238,
+            0.045
+        );
+}
+
+
+.freteUf input {
+    text-align: center;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   BOTÃO CALCULAR
+========================================================= */
+
+.calcularFrete {
+    width: 100%;
+
+    min-height: 42px;
+
+    margin-top: 9px;
+
+    padding:
+        0
+        12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    border:
+        1px solid
+        rgba(
+            158,
+            185,
+            238,
+            0.22
+        );
+
+    background:
+        rgba(
+            158,
+            185,
+            238,
+            0.06
+        );
+
+    color:
+        #c5d6f6;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background
+        0.22s
+        ease,
+        border-color
+        0.22s
+        ease,
+        color
+        0.22s
+        ease,
+        transform
+        0.22s
+        ease;
+}
+
+
+.calcularFrete svg {
+    font-size: 12px;
+
+    transition:
+        transform
+        0.22s
+        ease;
+}
+
+
+.calcularFrete:hover:not(:disabled) {
+    border-color:
+        #9eb9ee;
+
+    background:
+        #9eb9ee;
+
+    color:
+        var(--azul);
+
+    transform:
+        translateY(-1px);
+}
+
+
+.calcularFrete:hover:not(:disabled) svg {
+    transform:
+        translateX(3px);
+}
+
+
+.calcularFrete:disabled {
+    opacity: 0.4;
+
+    cursor: wait;
+}
+
+
+/* =========================================================
+   ESTADO DA RETIRADA
+========================================================= */
+
+.retiradaCarregando {
+    margin-top: 13px;
+
+    padding:
+        12px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
+}
+
+
+.retiradaCarregando svg {
+    flex-shrink: 0;
+
+    color:
+        #90ade6;
+
+    font-size: 15px;
+}
+
+
+.retiradaCarregando p {
+    margin: 0;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.4
+        );
+
+    font-size: 7px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   ERRO DO FRETE
+========================================================= */
+
+.freteErro {
+    margin-top: 11px;
+
+    padding:
+        14px
+        15px;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 11px;
+
+    border:
+        1px solid
+        rgba(
+            218,
+            121,
+            121,
+            0.22
+        );
+
+    background:
+        rgba(
+            180,
+            75,
+            75,
+            0.075
+        );
+
+    color:
+        #e2a4a4;
+}
+
+
+.freteErro svg {
+    flex-shrink: 0;
+
+    margin-top: 1px;
+
+    font-size: 18px;
+}
+
+
+.freteErro span {
+    font-size: 14px;
+
+    font-weight: 500;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   RESULTADO DO FRETE
+========================================================= */
+
+.freteResultado {
+    margin-top: 13px;
+
+    padding-top: 13px;
+
+    border-top:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.1
+        );
+}
+
+
+.freteResultadoTopo {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 14px;
+}
+
+
+.freteResultadoTopo > div {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.freteResultadoTopo > div > span {
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.34
+        );
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing:
+        0.13em;
+}
+
+
+.freteResultadoTopo > div > strong {
+    overflow: hidden;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.78
+        );
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.freteResultadoValor {
+    flex-shrink: 0;
+
+    color:
+        #c0d2f4 !important;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 18px !important;
+
+    font-weight: 600 !important;
+}
+
+
+.fretePrazo {
+    margin-top: 9px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.46
+        );
+}
+
+
+.fretePrazo svg {
+    flex-shrink: 0;
+
+    color:
+        #84bd93;
+
+    font-size: 16px;
+}
+
+
+.fretePrazo span {
+    font-size: 14px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   PROGRESSO DE FRETE GRÁTIS
+========================================================= */
+
+.freteGratisProgresso {
+    margin-top: 13px;
+}
+
+
+.freteGratisProgresso p {
+    margin:
+        0
+        0
+        7px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.38
+        );
+
+    font-size: 12px;
+
+    line-height: 1.55;
+}
+
+
+.freteGratisProgresso p strong {
+    color:
+        #c0d2f4;
+
+    font-weight: 600;
+}
+
+
+.freteGratisProgresso > div {
+    width: 100%;
+
+    height: 3px;
+
+    overflow: hidden;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
+}
+
+
+.freteGratisProgresso > div > span {
+    display: block;
+
+    height: 100%;
+
+    background:
+        #9eb9ee;
+
+    transition:
+        width
+        0.35s
+        ease;
+}
+
+
+.freteGratisMensagem {
+    margin:
+        12px
+        0
+        0;
+
+    color:
+        #a9d3b2;
+
+    font-size: 7px;
+
+    font-weight: 500;
+
+    line-height: 1.55;
+}
+
+
+.valorFreteGratis {
+    color:
+        #a9d3b2 !important;
+}
+
+
+/* =========================================================
+   FRETE — RESPONSIVO
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .freteBox {
+        padding:
+            16px;
+    }
+
+
+    .tipoEntrega {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .tipoEntrega button + button {
+        border-left: none;
+
+        border-top:
+            1px solid
+            rgba(
+                255,
+                255,
+                255,
+                0.11
+            );
+    }
+
+
+    .freteEndereco {
+        grid-template-columns:
+            minmax(
+                0,
+                1fr
+            )
+            64px;
+    }
+
+
+    .freteResultadoTopo {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 8px;
+    }
 
 }
 
@@ -1415,7 +2320,7 @@
             0.46
         );
 
-    font-size: 8px;
+    font-size: 16px;
 
     font-weight: 600;
 
@@ -1435,7 +2340,7 @@
             0.3
         );
 
-    font-size: 7px;
+    font-size: 10px;
 
 }
 
@@ -1487,7 +2392,7 @@
     color:
         var(--azul);
 
-    font-size: 10px;
+    font-size: 13px;
 
     font-weight: 600;
 
@@ -1555,7 +2460,7 @@
             0.68
         );
 
-    font-size: 9px;
+    font-size: 13px;
 
     font-weight: 500;
 
@@ -1612,7 +2517,7 @@
     color:
         #90ade6;
 
-    font-size: 17px;
+    font-size: 19px;
 
 }
 
@@ -1638,7 +2543,7 @@
             0.75
         );
 
-    font-size: 8px;
+    font-size: 13px;
 
     font-weight: 600;
 
@@ -1655,7 +2560,7 @@
             0.35
         );
 
-    font-size: 7px;
+    font-size: 12px;
 
 }
 
@@ -1707,7 +2612,7 @@
             0.82
         );
 
-    font-size: 8px;
+    font-size: 13px;
 
     font-weight: 600;
 
@@ -2375,7 +3280,7 @@
     color:
         #929aa6;
 
-    font-size: 8px;
+    font-size: 13px;
 
     font-weight: 600;
 
@@ -2424,7 +3329,7 @@
     color:
         var(--cinza);
 
-    font-size: 10px;
+    font-size: 16px;
 
     line-height: 1.8;
 
@@ -2455,7 +3360,7 @@
     color:
         #ffffff;
 
-    font-size: 9px;
+    font-size: 14px;
 
     font-weight: 600;
 
@@ -2504,7 +3409,7 @@
     color:
         #7e8794;
 
-    font-size: 9px;
+    font-size: 14px;
 
     letter-spacing:
         0.08em;
@@ -2647,7 +3552,7 @@
     color:
         #a0a7b1;
 
-    font-size: 7px;
+    font-size: 13px;
 
     font-weight: 600;
 
@@ -2684,7 +3589,7 @@
         "Cormorant Garamond",
         serif;
 
-    font-size: 22px;
+    font-size: 32px;
 
     font-weight: 600;
 
@@ -2698,7 +3603,7 @@
     color:
         var(--cinza);
 
-    font-size: 9px;
+    font-size: 16px;
 
     line-height: 1.7;
 

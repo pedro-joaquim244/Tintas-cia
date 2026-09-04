@@ -1050,6 +1050,91 @@ router.delete(
 
 
             // =================================================
+            // VERIFICAR PEDIDOS VINCULADOS
+            // =================================================
+
+            const [pedidosVinculados] =
+                await pool.query(
+                    `
+                    SELECT DISTINCT
+                        p.id,
+                        p.status
+                    FROM itens_pedidos ip
+                    LEFT JOIN pedidos p
+                        ON p.id = ip.pedido_id
+                    WHERE ip.produto_id = ?
+                    ORDER BY p.id DESC
+                    `,
+                    [id]
+                );
+
+            const pedidoEmAndamento =
+                pedidosVinculados.find((pedido) =>
+                    [
+                        "pendente",
+                        "processando",
+                        "em transporte"
+                    ].includes(
+                        String(pedido.status || "")
+                            .trim()
+                            .toLowerCase()
+                    )
+                );
+
+            if (pedidoEmAndamento) {
+                return res.status(409).json({
+                    codigo: "PRODUTO_EM_PEDIDO_ANDAMENTO",
+                    erro:
+                        `Não é possível excluir "${item[0].nome}" porque o produto está no pedido #${pedidoEmAndamento.id}, que ainda está em andamento.`,
+                    pedido: {
+                        id: Number(pedidoEmAndamento.id),
+                        status: pedidoEmAndamento.status
+                    }
+                });
+            }
+
+            if (pedidosVinculados.length > 0) {
+                await pool.query(
+                    `
+                    UPDATE itens
+                    SET status = 'Inativo'
+                    WHERE id = ?
+                    `,
+                    [id]
+                );
+
+                await pool.query(
+                    `
+                    DELETE FROM carrinho
+                    WHERE produto_id = ?
+                    `,
+                    [id]
+                );
+
+                await registrarAtividade(pool, {
+                    usuario_id: req.usuario?.id || null,
+                    tipo: "produto",
+                    acao: "desativar",
+                    titulo: `Produto "${item[0].nome}" desativado`,
+                    descricao:
+                        `O produto #${id} foi desativado porque possui pedidos registrados.`,
+                    referencia_id: Number(id),
+                    valor_anterior: item[0],
+                    valor_novo: {
+                        ...item[0],
+                        status: "Inativo"
+                    }
+                });
+
+                return res.status(200).json({
+                    codigo: "PRODUTO_DESATIVADO_POR_HISTORICO",
+                    mensagem:
+                        "Produto desativado. O histórico de pedidos foi preservado."
+                });
+            }
+
+
+            // =================================================
             // EXCLUIR
             // =================================================
 

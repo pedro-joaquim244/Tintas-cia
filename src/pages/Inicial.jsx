@@ -27,7 +27,8 @@ const marcasParceiras = [
     "CORAL",
     "SHERWIN-WILLIAMS",
     "EUCATEX",
-    "ANJO"
+    "ANJO",
+    "PIXEL COLOR"
 ];
 
 const marcasLoop = Array.from(
@@ -39,6 +40,12 @@ const marcasLoop = Array.from(
 export default function Inicial() {
 
     const navigate = useNavigate();
+
+    const abrirCategoria = (categoria) => {
+        navigate(
+            `/cliente/produtos?categoria=${encodeURIComponent(categoria)}`
+        );
+    };
 
     const heroRef = useRef(null);
     const heroImagemRef = useRef(null);
@@ -100,7 +107,7 @@ export default function Inicial() {
         async function carregarIndicadores() {
             const [dashboardResultado, feedbacksResultado] =
                 await Promise.allSettled([
-                    api.get("/dashboard"),
+                    api.get("/dashboard/resumo-publico"),
                     api.get("/feedbacks")
                 ]);
 
@@ -846,7 +853,7 @@ export default function Inicial() {
 
                     <button
                         onClick={() =>
-                            navigate("/cliente/sobre")
+                            navigate("/cliente/sobre-nos")
                         }
                     >
                         Conheça nossa história
@@ -917,7 +924,7 @@ export default function Inicial() {
                     <article
                         className={styles.categoriaCard}
                         onClick={() =>
-                            navigate("/cliente/produtos")
+                            abrirCategoria("Tintas para Parede")
                         }
                     >
 
@@ -934,9 +941,9 @@ export default function Inicial() {
                             <span>01</span>
 
                             <h3>
-                                Ambientes
+                                Tintas para
                                 <br />
-                                internos
+                                parede
                             </h3>
 
                             <p>
@@ -955,7 +962,7 @@ export default function Inicial() {
                     <article
                         className={styles.categoriaCard}
                         onClick={() =>
-                            navigate("/cliente/produtos")
+                            abrirCategoria("Tintas para Área Externa")
                         }
                     >
 
@@ -972,9 +979,9 @@ export default function Inicial() {
                             <span>02</span>
 
                             <h3>
-                                Áreas
+                                Tintas para
                                 <br />
-                                externas
+                                área externa
                             </h3>
 
                             <p>
@@ -993,7 +1000,7 @@ export default function Inicial() {
                     <article
                         className={styles.categoriaCard}
                         onClick={() =>
-                            navigate("/cliente/produtos")
+                            abrirCategoria("Efeitos e Acabamentos")
                         }
                     >
 
@@ -1010,9 +1017,9 @@ export default function Inicial() {
                             <span>03</span>
 
                             <h3>
-                                Acabamentos
+                                Efeitos e
                                 <br />
-                                especiais
+                                acabamentos
                             </h3>
 
                             <p>

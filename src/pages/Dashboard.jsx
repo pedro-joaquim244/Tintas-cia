@@ -41,6 +41,8 @@ export default function Dashboard() {
 
   const [modalOpen, setModalOpen] = useState(false);
 
+  const [pontoAtivo, setPontoAtivo] = useState(null);
+
 
   // =====================================================
   // SAIR
@@ -246,6 +248,140 @@ export default function Dashboard() {
       ),
       1
     );
+
+
+  // =====================================================
+  // DADOS VISUAIS DO GRÁFICO
+  // =====================================================
+
+  const faturamentoSemana =
+    ultimos7Dias.reduce(
+      (total, item) =>
+        total + Number(item.faturamento || 0),
+      0
+    );
+
+  const mediaDiaria =
+    faturamentoSemana / 7;
+
+  const melhorDia =
+    ultimos7Dias.reduce(
+      (melhor, item) =>
+        Number(item.faturamento || 0) >
+        Number(melhor.faturamento || 0)
+          ? item
+          : melhor,
+      ultimos7Dias[0] || {
+        dia: "-",
+        faturamento: 0,
+        pedidos: 0
+      }
+    );
+
+  /*
+   * Usamos um pequeno espaço acima da maior venda
+   * para a curva não ficar colada no topo do gráfico.
+   */
+  const limiteGrafico =
+    Math.max(
+      maiorVenda * 1.16,
+      1
+    );
+
+  const larguraGrafico = 760;
+  const topoGrafico = 18;
+  const baseGrafico = 309;
+  const alturaGrafico =
+    baseGrafico - topoGrafico;
+  const larguraColunaGrafico =
+    larguraGrafico / ultimos7Dias.length;
+
+  const pontosGrafico =
+    ultimos7Dias.map(
+      (item, index) => {
+
+        const x =
+          larguraColunaGrafico *
+          (index + 0.5);
+
+        const porcentagem =
+          Number(item.faturamento || 0) /
+          limiteGrafico;
+
+        const y =
+          topoGrafico +
+          alturaGrafico -
+          (
+            porcentagem *
+            alturaGrafico
+          );
+
+        return {
+          ...item,
+          x,
+          y
+        };
+
+      }
+    );
+
+  function criarCaminhoCurvo(pontos) {
+
+    return pontos
+      .map(
+        (ponto, index) => {
+
+          if (index === 0) {
+            return `M ${ponto.x} ${ponto.y}`;
+          }
+
+          const anterior =
+            pontos[index - 1];
+
+          const meioX =
+            (
+              anterior.x +
+              ponto.x
+            ) / 2;
+
+          return `
+            C
+            ${meioX} ${anterior.y},
+            ${meioX} ${ponto.y},
+            ${ponto.x} ${ponto.y}
+          `;
+
+        }
+      )
+      .join(" ");
+  }
+
+  const caminhoLinha =
+    criarCaminhoCurvo(
+      pontosGrafico
+    );
+
+  const caminhoArea =
+    `
+      ${caminhoLinha}
+      L ${pontosGrafico[pontosGrafico.length - 1].x} ${baseGrafico}
+      L ${pontosGrafico[0].x} ${baseGrafico}
+      Z
+    `;
+
+  const marcasEixo =
+    [
+      1,
+      0.75,
+      0.5,
+      0.25,
+      0
+    ].map(
+      porcentagem =>
+        limiteGrafico *
+        porcentagem
+    );
+
 
 
   // =====================================================
@@ -509,292 +645,435 @@ export default function Dashboard() {
               GRÁFICO
           ================================================= */}
 
-
           <section className={styles.chartSection}>
+
+            <div className={styles.chartAccent} />
 
             <div className={styles.chartHeader}>
 
-              
-              <div>
+              <div className={styles.chartTitleGroup}>
+
+                <span className={styles.chartEyebrow}>
+                  <FiTrendingUp />
+                  Performance semanal
+                </span>
 
                 <h3>
                   Vendas da Semana
                 </h3>
 
                 <p>
-                  Faturamento dos últimos 7 dias
+                  Faturamento e volume de pedidos dos últimos 7 dias
                 </p>
 
               </div>
 
               <span className={styles.chartBadge}>
-
                 {resumo.pedidos_semana || 0}
                 {" "}
                 pedidos
-
               </span>
-              
 
             </div>
 
-            <div className={styles.waveChart}>
 
-              
-              {/* LINHAS DE FUNDO */}
+            <div className={styles.chartVisual}>
 
-              <div className={styles.chartGridLines}>
+              {/* =============================================
+                  RESUMO DO GRÁFICO
+              ============================================= */}
 
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
+              <div className={styles.chartMetrics}>
+
+                <div className={styles.chartMetric}>
+
+                  <span>
+                    Faturamento semanal
+                  </span>
+
+                  <strong>
+                    {formatarMoeda(
+                      faturamentoSemana
+                    )}
+                  </strong>
+
+                  <small>
+                    acumulado nos últimos 7 dias
+                  </small>
+
+                </div>
+
+
+                <div className={styles.chartMetric}>
+
+                  <span>
+                    Média diária
+                  </span>
+
+                  <strong>
+                    {formatarMoeda(
+                      mediaDiaria
+                    )}
+                  </strong>
+
+                  <small>
+                    média de faturamento por dia
+                  </small>
+
+                </div>
+
+
+                <div
+                  className={`${styles.chartMetric} ${styles.chartMetricDestaque}`}
+                >
+
+                  <span>
+                    Melhor desempenho
+                  </span>
+
+                  <strong>
+                    {melhorDia?.dia || "-"}
+                  </strong>
+
+                  <small>
+                    {formatarMoeda(
+                      melhorDia?.faturamento || 0
+                    )}
+                    {" • "}
+                    {melhorDia?.pedidos || 0}
+                    {" "}
+                    {(melhorDia?.pedidos || 0) === 1
+                      ? "pedido"
+                      : "pedidos"}
+                  </small>
+
+                </div>
 
               </div>
 
 
-              {/* GRÁFICO */}
+              {/* =============================================
+                  ÁREA PRINCIPAL DO GRÁFICO
+              ============================================= */}
 
-              <svg
-                className={styles.waveSvg}
-                viewBox="0 0 700 280"
-                preserveAspectRatio="none"
-              >
+              <div className={styles.chartFrame}>
 
-                <defs>
+                {/* EIXO Y */}
 
-                  <linearGradient
-                    id="waveGradient"
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
+                <div
+                  className={styles.chartAxis}
+                  aria-hidden="true"
+                >
+
+                  {marcasEixo.map(
+                    (valor, index) => (
+
+                      <span key={index}>
+                        {valor > 0
+                          ? Number(valor)
+                            .toLocaleString(
+                              "pt-BR",
+                              {
+                                style: "currency",
+                                currency: "BRL",
+                                notation: "compact",
+                                maximumFractionDigits: 1
+                              }
+                            )
+                          : "R$ 0"}
+                      </span>
+
+                    )
+                  )}
+
+                </div>
+
+
+                {/* PLOT */}
+
+                <div
+                  className={styles.chartPlot}
+                  onMouseLeave={() =>
+                    setPontoAtivo(null)
+                  }
+                >
+
+                  <div className={styles.chartGridLines}>
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+
+
+                  <svg
+                    className={styles.waveSvg}
+                    viewBox="0 0 760 330"
+                    preserveAspectRatio="none"
+                    role="img"
+                    aria-label="Gráfico de faturamento dos últimos sete dias"
                   >
 
-                    <stop
-                      offset="0%"
-                      stopColor="#3264c8"
-                      stopOpacity="0.28"
-                    />
+                    <defs>
 
-                    <stop
-                      offset="100%"
-                      stopColor="#3264c8"
-                      stopOpacity="0.02"
-                    />
-
-                  </linearGradient>
-
-                </defs>
-
-
-                {/* ÁREA PREENCHIDA */}
-
-                <path
-                  className={styles.waveArea}
-                  d={(() => {
-
-                    const largura = 700;
-                    const altura = 220;
-                    const topo = 20;
-
-                    const pontos = ultimos7Dias.map(
-                      (item, index) => {
-
-                        const x =
-                          (index / 6) *
-                          largura;
-
-                        const porcentagem =
-                          item.faturamento /
-                          maiorVenda;
-
-                        const y =
-                          topo +
-                          altura -
-                          (
-                            porcentagem *
-                            altura
-                          );
-
-                        return {
-                          x,
-                          y
-                        };
-
-                      }
-                    );
-
-
-                    const curva = pontos
-                      .map((ponto, index) => {
-
-                        if (index === 0) {
-
-                          return `M ${ponto.x} ${ponto.y}`;
-
-                        }
-
-                        const anterior =
-                          pontos[index - 1];
-
-                        const meioX =
-                          (
-                            anterior.x +
-                            ponto.x
-                          ) / 2;
-
-                        return `
-            C
-            ${meioX} ${anterior.y},
-            ${meioX} ${ponto.y},
-            ${ponto.x} ${ponto.y}
-          `;
-
-                      })
-                      .join(" ");
-
-
-                    return `
-        ${curva}
-        L ${largura} 260
-        L 0 260
-        Z
-      `;
-
-                  })()}
-                  fill="url(#waveGradient)"
-                />
-
-
-                {/* LINHA DA ONDA */}
-
-                <path
-                  className={styles.waveLine}
-                  d={(() => {
-
-                    const largura = 700;
-                    const altura = 220;
-                    const topo = 20;
-
-                    const pontos = ultimos7Dias.map(
-                      (item, index) => {
-
-                        const x =
-                          (index / 6) *
-                          largura;
-
-                        const porcentagem =
-                          item.faturamento /
-                          maiorVenda;
-
-                        const y =
-                          topo +
-                          altura -
-                          (
-                            porcentagem *
-                            altura
-                          );
-
-                        return {
-                          x,
-                          y
-                        };
-
-                      }
-                    );
-
-
-                    return pontos
-                      .map((ponto, index) => {
-
-                        if (index === 0) {
-
-                          return `M ${ponto.x} ${ponto.y}`;
-
-                        }
-
-                        const anterior =
-                          pontos[index - 1];
-
-                        const meioX =
-                          (
-                            anterior.x +
-                            ponto.x
-                          ) / 2;
-
-                        return `
-            C
-            ${meioX} ${anterior.y},
-            ${meioX} ${ponto.y},
-            ${ponto.x} ${ponto.y}
-          `;
-
-                      })
-                      .join(" ");
-
-                  })()}
-                  fill="none"
-                  stroke="#3264c8"
-                  strokeWidth="3"
-                  vectorEffect="non-scaling-stroke"
-                />
-
-
-                {/* PONTOS */}
-
-                {ultimos7Dias.map(
-                  (item, index) => {
-
-                    const x =
-                      (index / 6) * 700;
-
-                    const porcentagem =
-                      item.faturamento /
-                      maiorVenda;
-
-                    const y =
-                      20 +
-                      220 -
-                      (
-                        porcentagem *
-                        220
-                      );
-
-                    return (
-
-                      <g
-                        key={item.data}
-                        className={styles.wavePoint}
+                      <linearGradient
+                        id="waveGradientPremium"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
                       >
 
-                        <circle
-                          cx={x}
-                          cy={y}
-                          r="6"
+                        <stop
+                          offset="0%"
+                          stopColor="#7fa3e8"
+                          stopOpacity="0.38"
                         />
 
-                        <circle
-                          cx={x}
-                          cy={y}
-                          r="11"
+                        <stop
+                          offset="55%"
+                          stopColor="#3264c8"
+                          stopOpacity="0.13"
+                        />
+
+                        <stop
+                          offset="100%"
+                          stopColor="#3264c8"
+                          stopOpacity="0"
+                        />
+
+                      </linearGradient>
+
+
+                      <linearGradient
+                        id="waveStrokePremium"
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="0"
+                      >
+
+                        <stop
+                          offset="0%"
+                          stopColor="#9db8ee"
+                        />
+
+                        <stop
+                          offset="52%"
+                          stopColor="#5f88dc"
+                        />
+
+                        <stop
+                          offset="100%"
+                          stopColor="#3264c8"
+                        />
+
+                      </linearGradient>
+
+
+                      <filter
+                        id="softGlow"
+                        x="-40%"
+                        y="-40%"
+                        width="180%"
+                        height="180%"
+                      >
+
+                        <feGaussianBlur
+                          stdDeviation="4"
+                          result="blur"
+                        />
+
+                        <feMerge>
+                          <feMergeNode in="blur" />
+                          <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+
+                      </filter>
+
+                    </defs>
+
+
+                    {/* GUIAS DOS DIAS */}
+
+                    {pontosGrafico.map((item) => (
+                      <line
+                        key={`guia-${item.data}`}
+                        x1={item.x}
+                        x2={item.x}
+                        y1={topoGrafico}
+                        y2={baseGrafico}
+                        className={styles.chartDayGuide}
+                      />
+                    ))}
+
+
+                    {/* LINHA GUIA DO PONTO ATIVO */}
+
+                    {pontoAtivo !== null && (
+                      <line
+                        x1={
+                          pontosGrafico[
+                            pontoAtivo
+                          ]?.x || 0
+                        }
+                        x2={
+                          pontosGrafico[
+                            pontoAtivo
+                          ]?.x || 0
+                        }
+                        y1={topoGrafico}
+                        y2={baseGrafico}
+                        className={
+                          styles.chartGuide
+                        }
+                      />
+                    )}
+
+
+                    {/* ÁREA PREENCHIDA */}
+
+                    <path
+                      className={styles.waveArea}
+                      d={caminhoArea}
+                      fill="url(#waveGradientPremium)"
+                    />
+
+
+                    {/* LINHA PRINCIPAL */}
+
+                    <path
+                      className={styles.waveLine}
+                      d={caminhoLinha}
+                      fill="none"
+                      stroke="url(#waveStrokePremium)"
+                      strokeWidth="4"
+                      vectorEffect="non-scaling-stroke"
+                    />
+
+
+                    {/* ÁREAS DE INTERAÇÃO DOS DIAS */}
+
+                    {pontosGrafico.map(
+                      (item, index) => (
+
+                        <g
+                          key={item.data}
                           className={
-                            styles.pointGlow
+                            pontoAtivo === index
+                              ? `${styles.wavePoint} ${styles.wavePointAtivo}`
+                              : styles.wavePoint
                           }
-                        />
+                          onMouseEnter={() =>
+                            setPontoAtivo(index)
+                          }
+                          onFocus={() =>
+                            setPontoAtivo(index)
+                          }
+                          onBlur={() =>
+                            setPontoAtivo(null)
+                          }
+                          tabIndex="0"
+                          role="button"
+                          aria-label={
+                            `${item.dia}: ${formatarMoeda(
+                              item.faturamento
+                            )}, ${item.pedidos} pedido(s)`
+                          }
+                        >
 
-                      </g>
+                          <rect
+                            x={
+                              item.x -
+                              larguraColunaGrafico / 2
+                            }
+                            y={topoGrafico}
+                            width={larguraColunaGrafico}
+                            height={alturaGrafico}
+                            fill="transparent"
+                          />
 
-                    );
+                        </g>
 
-                  }
-                )}
+                      )
+                    )}
 
-              </svg>
+                  </svg>
 
 
-              {/* INFORMAÇÕES DOS DIAS */}
+                  {/* TOOLTIP VISUAL */}
+
+                  {pontoAtivo !== null && (
+
+                    <div
+                      className={styles.chartTooltip}
+                      style={{
+                        "--tooltip-x":
+                          `${
+                            (
+                              pontosGrafico[
+                                pontoAtivo
+                              ].x /
+                              larguraGrafico
+                            ) * 100
+                          }%`,
+                        "--tooltip-y":
+                          `${
+                            (
+                              pontosGrafico[
+                                pontoAtivo
+                              ].y /
+                              330
+                            ) * 100
+                          }%`
+                      }}
+                    >
+
+                      <span>
+                        {
+                          pontosGrafico[
+                            pontoAtivo
+                          ].dia
+                        }
+                      </span>
+
+                      <strong>
+                        {formatarMoeda(
+                          pontosGrafico[
+                            pontoAtivo
+                          ].faturamento
+                        )}
+                      </strong>
+
+                      <small>
+                        {
+                          pontosGrafico[
+                            pontoAtivo
+                          ].pedidos
+                        }
+                        {" "}
+                        {
+                          pontosGrafico[
+                            pontoAtivo
+                          ].pedidos === 1
+                            ? "pedido"
+                            : "pedidos"
+                        }
+                      </small>
+
+                    </div>
+
+                  )}
+
+                </div>
+
+              </div>
+
+
+              {/* =============================================
+                  DIAS
+              ============================================= */}
 
               <div className={styles.waveDays}>
 
@@ -802,7 +1081,11 @@ export default function Dashboard() {
                   (item) => (
 
                     <div
-                      className={styles.waveDay}
+                      className={
+                        melhorDia?.data === item.data
+                          ? `${styles.waveDay} ${styles.waveDayDestaque}`
+                          : styles.waveDay
+                      }
                       key={item.data}
                     >
 
@@ -847,31 +1130,6 @@ export default function Dashboard() {
                 )}
 
               </div>
-
-
-              {/* TOOLTIP NATIVO */}
-
-              <div className={styles.waveTooltips}>
-
-                {ultimos7Dias.map(
-                  (item) => (
-
-                    <div
-                      key={item.data}
-                      title={
-                        `${item.dia} — ${formatarMoeda(
-                          item.faturamento
-                        )
-                        } — ${item.pedidos
-                        } pedido(s)`
-                      }
-                    />
-
-                  )
-                )}
-
-              </div>
-              ```
 
             </div>
 

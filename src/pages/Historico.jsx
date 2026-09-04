@@ -658,10 +658,7 @@ export default function Historico() {
 
 
                         <h1>
-                            Histórico
-                            <em>
-                                {" "}& desempenho.
-                            </em>
+                            Histórico & desempenho
                         </h1>
 
 

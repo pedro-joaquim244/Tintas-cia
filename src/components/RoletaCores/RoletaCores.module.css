@@ -110,7 +110,7 @@
 
   color: #8a94a1;
 
-  font-size: 8px;
+  font-size: 13px;
   font-weight: 600;
 
   letter-spacing: 0.2em;
@@ -143,12 +143,37 @@
   letter-spacing: -0.04em;
 }
 
+.cabecalho h2 span,
+.cabecalho h2 em {
+  display: block;
+}
+
+.cabecalho h2 span {
+ max-width: 610px;
+    margin: 0;
+    color: var(--livro-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(70px, 6vw, 104px);
+    font-weight: 400;
+    line-height: 0.84;
+    letter-spacing: -0.052em;
+}
+
 
 .cabecalho h2 em {
-  color:
-    var(--roleta-blue);
+    display: block;
 
-  font-weight: 400;
+    width: max-content;
+    max-width: none;
+
+    margin: 0 auto;
+
+    color: #3264c8;
+
+    font-size: clamp(28px, 6.7vw, 72px);
+    font-weight: 500;
+
+    white-space: nowrap;
 }
 
 
@@ -163,7 +188,7 @@
   color:
     var(--roleta-muted);
 
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 300;
 
   line-height: 1.85;
@@ -234,7 +259,7 @@
     "Poppins",
     sans-serif;
 
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 500;
 
   cursor: pointer;
@@ -327,7 +352,7 @@
 
   font-family: serif;
 
-  font-size: 20px;
+  font-size: 29px;
 
   line-height: 1;
 
@@ -359,7 +384,7 @@
   color:
     #626d7c;
 
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 600;
 
   letter-spacing: 0.12em;
@@ -619,7 +644,7 @@
   color:
     #8e98a5;
 
-  font-size: 8px;
+  font-size: 13px;
   font-weight: 600;
 
   letter-spacing: 0.2em;
@@ -663,7 +688,7 @@
   color:
     var(--roleta-muted);
 
-  font-size: 10px;
+  font-size: 16px;
 
   line-height: 1.85;
 }
@@ -713,7 +738,7 @@
   color:
     #667181;
 
-  font-size: 8px;
+  font-size: 14px;
   font-weight: 500;
 }
 

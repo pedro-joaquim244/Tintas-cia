@@ -155,7 +155,7 @@ body {
 
   color: #8b94a0;
 
-  font-size: 9px;
+  font-size: 16px;
   font-weight: 600;
 
   letter-spacing: 0.2em;
@@ -189,7 +189,7 @@ body {
 
   color: var(--muted);
 
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 300;
 
   line-height: 1.8;
@@ -267,7 +267,7 @@ body {
 .card span {
   color: #87919e;
 
-  font-size: 8px;
+  font-size: 13px;
   font-weight: 600;
 
   letter-spacing: 0.12em;
@@ -283,12 +283,7 @@ body {
     "Cormorant Garamond",
     serif;
 
-  font-size:
-    clamp(
-      38px,
-      3vw,
-      50px
-    );
+  font-size:clamp(48px, 3.8vw, 68px);
 
   font-weight: 500;
 
@@ -378,7 +373,7 @@ body {
 
   color: var(--text);
 
-  font-size: 10px;
+  font-size: 16px;
 
   transition:
     border-color 0.22s ease,
@@ -443,7 +438,7 @@ body {
 
   text-decoration: none;
 
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 600;
 
   letter-spacing: 0.02em;
@@ -508,7 +503,7 @@ body {
 
   color: #596474;
 
-  font-size: 9px;
+  font-size: 16px;
   font-weight: 500;
 
   cursor: pointer;
@@ -591,7 +586,7 @@ body {
     "Cormorant Garamond",
     serif;
 
-  font-size: 24px;
+  font-size: 35px;
   font-weight: 600;
 
   line-height: 1;
@@ -600,7 +595,7 @@ body {
 .tableHeader span {
   color: #8a94a1;
 
-  font-size: 8px;
+  font-size: 16px;
 }
 
 
@@ -644,7 +639,7 @@ body {
 
   color: #828c99;
 
-  font-size: 7px;
+  font-size: 16px;
   font-weight: 600;
 
   letter-spacing: 0.13em;
@@ -730,7 +725,7 @@ body {
 
   color: #949da8;
 
-  font-size: 7px;
+  font-size: 13px;
 
   text-align: center;
 }
@@ -751,7 +746,7 @@ body {
 
   color: var(--text);
 
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 600;
 
   text-overflow: ellipsis;
@@ -761,7 +756,7 @@ body {
 .productInfo span {
   color: #929ba6;
 
-  font-size: 7px;
+  font-size: 15px;
 
   letter-spacing: 0.03em;
 }
@@ -785,7 +780,7 @@ body {
 
   border-radius: 0;
 
-  font-size: 7px;
+  font-size: 15px;
   font-weight: 600;
 
   line-height: 1.35;
@@ -826,7 +821,7 @@ body {
     "Cormorant Garamond",
     serif;
 
-  font-size: 16px;
+  font-size: 29px;
   font-weight: 600;
 
   white-space: nowrap;
@@ -840,7 +835,7 @@ body {
 .estoque {
   color: #5b6777;
 
-  font-size: 9px;
+  font-size: 16px;
   font-weight: 500;
 
   white-space: nowrap;
@@ -864,7 +859,7 @@ body {
 
   color: #a55d29;
 
-  font-size: 7px;
+  font-size: 13px;
   font-weight: 600;
 
   white-space: nowrap;
@@ -877,7 +872,7 @@ body {
     "Cormorant Garamond",
     serif;
 
-  font-size: 17px;
+  font-size: 28px;
   font-weight: 600;
 }
 
@@ -900,7 +895,7 @@ body {
 
   border-radius: 0;
 
-  font-size: 7px;
+  font-size: 13px;
   font-weight: 600;
 
   white-space: nowrap;
@@ -1002,7 +997,7 @@ body {
 
   border-radius: 0;
 
-  font-size: 7px;
+  font-size: 14px;
   font-weight: 600;
 
   text-decoration: none;
@@ -1257,6 +1252,35 @@ body {
   font-size: 25px;
 }
 
+.modalError {
+  width: 62px;
+  height: 62px;
+
+  margin:
+    8px
+    auto
+    21px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid
+    rgba(191, 119, 35, 0.24);
+
+  border-radius: 50%;
+
+  background:
+    rgba(191, 119, 35, 0.07);
+
+  color: #ad681c;
+}
+
+.modalError svg {
+  font-size: 27px;
+}
+
 
 /* =========================================================
    TEXTO DO MODAL
@@ -1293,6 +1317,11 @@ body {
   font-weight: 600;
 }
 
+.modal .modalErrorText {
+  font-size: 14px;
+  line-height: 1.7;
+}
+
 
 /* =========================================================
    BOTÕES DO MODAL
@@ -1307,7 +1336,8 @@ body {
 }
 
 .btnModal,
-.btnDanger {
+.btnDanger,
+.btnError {
   flex: 1;
 
   min-height: 46px;
@@ -1367,6 +1397,23 @@ body {
   background: #9f3f3f;
 
   border-color: #9f3f3f;
+
+  transform:
+    translateY(-1px);
+}
+
+.btnError {
+  border:
+    1px solid
+    var(--navy);
+
+  background: var(--navy);
+  color: #ffffff;
+}
+
+.btnError:hover {
+  border-color: var(--blue);
+  background: var(--blue);
 
   transform:
     translateY(-1px);
@@ -1552,7 +1599,7 @@ body {
   }
 
   .topbar p {
-    font-size: 9px;
+    font-size: 13px;
   }
 
   .cards {
@@ -1585,7 +1632,8 @@ body {
   }
 
   .btnModal,
-  .btnDanger {
+  .btnDanger,
+  .btnError {
     width: 100%;
   }
 }
@@ -1603,4 +1651,709 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
   }
+}
+/* =========================================================
+   GERENCIAMENTO DO CATÁLOGO
+========================================================= */
+
+.catalogoSection {
+  margin-bottom: 36px;
+  padding: 32px 0;
+
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+.catalogoSectionHeader {
+  margin-bottom: 26px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 30px;
+}
+
+.catalogoSectionHeader > div:first-child {
+  max-width: 650px;
+}
+
+.catalogoSectionHeader > div:first-child > span {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: var(--blue);
+
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.18em;
+}
+
+.catalogoSectionHeader h2 {
+  margin: 0;
+
+  color: var(--text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 53px;
+  font-weight: 500;
+
+  line-height: 1;
+}
+
+.catalogoSectionHeader p {
+  margin-top: 9px;
+
+  color: var(--muted);
+
+  font-size: 16px;
+  font-weight: 300;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   TOTAL
+========================================================= */
+
+.catalogoTotal {
+  display: flex;
+  align-items: flex-end;
+
+  gap: 8px;
+}
+
+.catalogoTotal strong {
+  color: var(--text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 37px;
+  font-weight: 500;
+
+  line-height: 1;
+}
+
+.catalogoTotal span {
+  padding-bottom: 4px;
+
+  color: #929ba7;
+
+  font-size: 8px;
+}
+
+
+/* =========================================================
+   FEEDBACK
+========================================================= */
+
+.catalogoFeedback {
+  min-height: 58px;
+
+  margin-bottom: 20px;
+  padding: 12px 18px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  border: 1px solid;
+
+  font-size: 15px;
+  font-weight: 500;
+
+  line-height: 1.5;
+}
+
+.catalogoFeedback svg {
+  flex-shrink: 0;
+
+  font-size: 21px;
+}
+
+.catalogoFeedbackSucesso {
+  border-color: rgba(32, 137, 81, 0.25);
+
+  background: rgba(32, 137, 81, 0.055);
+
+  color: #207b4b;
+}
+
+.catalogoFeedbackErro {
+  border-color: rgba(183, 76, 76, 0.25);
+
+  background: rgba(183, 76, 76, 0.055);
+
+  color: #a64040;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.catalogoGrid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.catalogoCard {
+  min-width: 0;
+
+  padding: 24px;
+
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.38
+    );
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.catalogoCardHeader {
+  display: grid;
+
+  grid-template-columns:
+    auto 1fr auto;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.catalogoCardIcon {
+  width: 43px;
+  height: 43px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--line);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.55
+    );
+
+  color: var(--blue);
+
+  font-size: 28px;
+}
+
+.catalogoCardHeader > div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.catalogoCardHeader > div:nth-child(2) > span {
+  color: #939ca8;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  letter-spacing: 0.16em;
+}
+
+.catalogoCardHeader h3 {
+  margin: 0;
+
+  color: var(--text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 40px;
+  font-weight: 600;
+
+  line-height: 1;
+}
+
+.catalogoQuantidade {
+  color: #929ba7;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 27px;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   DESCRIÇÃO
+========================================================= */
+
+.catalogoDescricao {
+  min-height: 40px;
+
+  margin: 17px 0;
+
+  color: #7f8996;
+
+  font-size: 14px;
+  font-weight: 300;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   FORM NORMAL
+========================================================= */
+
+.catalogoForm {
+  display: grid;
+
+  grid-template-columns:
+    1fr 46px;
+
+  margin-bottom: 18px;
+}
+
+.catalogoForm input {
+  width: 100%;
+  height: 46px;
+
+  min-width: 0;
+
+  padding: 0 13px;
+
+  border: 1px solid var(--line);
+  border-right: none;
+
+  border-radius: 0;
+
+  outline: none;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.55
+    );
+
+  color: var(--text);
+
+  font-size: 15px;
+}
+
+.catalogoForm input:focus {
+  border-color:
+    rgba(
+      50,
+      100,
+      200,
+      0.5
+    );
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.9
+    );
+}
+
+.catalogoForm button {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--navy);
+
+  background: var(--navy);
+
+  color: #ffffff;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.catalogoForm button:hover:not(:disabled) {
+  border-color: var(--blue);
+
+  background: var(--blue);
+}
+
+.catalogoForm button:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   FORM COR
+========================================================= */
+
+.catalogoFormCor {
+  display: grid;
+
+  grid-template-columns:
+    minmax(90px, 1fr)
+    46px
+    90px
+    46px;
+
+  margin-bottom: 18px;
+}
+
+.catalogoFormCor input[type="text"] {
+  width: 100%;
+  height: 46px;
+
+  min-width: 0;
+
+  padding: 0 11px;
+
+  border: 1px solid var(--line);
+  border-right: none;
+
+  border-radius: 0;
+
+  outline: none;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.55
+    );
+
+  color: var(--text);
+
+  font-size: 14px;
+}
+
+.catalogoFormCor input[type="text"]:focus {
+  border-color:
+    rgba(
+      50,
+      100,
+      200,
+      0.5
+    );
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.9
+    );
+}
+
+.catalogoColorPicker {
+  width: 46px;
+  height: 46px;
+
+  padding: 4px;
+
+  border: 1px solid var(--line);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.55
+    );
+}
+
+.catalogoColorPicker input {
+  width: 100%;
+  height: 100%;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.catalogoHex {
+  text-transform: uppercase;
+}
+
+.catalogoAddCor {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--navy);
+
+  background: var(--navy);
+
+  color: #ffffff;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.catalogoAddCor:hover:not(:disabled) {
+  border-color: var(--blue);
+
+  background: var(--blue);
+}
+
+.catalogoAddCor:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   LISTA
+========================================================= */
+
+.catalogoLista {
+  max-height: 230px;
+
+  overflow-y: auto;
+
+  border-top:
+    1px solid
+    var(--line-soft);
+}
+
+.catalogoLista::-webkit-scrollbar {
+  width: 4px;
+}
+
+.catalogoLista::-webkit-scrollbar-thumb {
+  background:
+    rgba(
+      24,
+      34,
+      53,
+      0.18
+    );
+}
+
+
+/* =========================================================
+   ITEM
+========================================================= */
+
+.catalogoItem {
+  min-height: 40px;
+
+  padding: 8px 3px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  border-bottom:
+    1px solid
+    var(--line-soft);
+
+  color: #596574;
+
+  font-size: 13px;
+}
+
+.catalogoItem svg {
+  flex-shrink: 0;
+
+  color: #8794a5;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   CORES
+========================================================= */
+
+.catalogoListaCores {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 0 11px;
+}
+
+.catalogoCorItem {
+  min-width: 0;
+  min-height: 52px;
+
+  padding: 7px 2px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  border-bottom:
+    1px solid
+    var(--line-soft);
+}
+
+.catalogoAmostra {
+  width: 29px;
+  height: 29px;
+
+  flex-shrink: 0;
+
+  border:
+    1px solid
+    rgba(
+      24,
+      34,
+      53,
+      0.13
+    );
+
+  box-shadow:
+    0 2px 5px
+    rgba(
+      15,
+      23,
+      42,
+      0.06
+    );
+}
+
+.catalogoCorItem > div {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.catalogoCorItem strong {
+  overflow: hidden;
+
+  color: #4f5d6e;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.catalogoCorItem small {
+  color: #969fab;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   VAZIO
+========================================================= */
+
+.catalogoVazio {
+  padding: 18px 4px;
+
+  color: #929ba7;
+
+  font-size: 8px;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   RESPONSIVO CATÁLOGO
+========================================================= */
+
+@media (max-width: 1250px) {
+
+  .catalogoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .catalogoDescricao {
+    min-height: 0;
+  }
+
+}
+
+
+@media (max-width: 720px) {
+
+  .catalogoSectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .catalogoFormCor {
+    grid-template-columns:
+      1fr 46px;
+  }
+
+  .catalogoHex {
+    border-top: none !important;
+  }
+
+  .catalogoAddCor {
+    border-top: none;
+  }
+
+  .catalogoListaCores {
+    grid-template-columns: 1fr;
+  }
+
 }

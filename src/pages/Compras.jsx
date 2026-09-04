@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import style from "../styles/Compra.module.css";
+import style from "../styles/compra.module.css";
 
 import { api } from "../services/api";
 import { useAuth } from "../contexts/authContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
     FiArrowLeft,
     FiCreditCard,
@@ -21,7 +21,12 @@ import {
     FiRefreshCw,
     FiClock,
     FiExternalLink,
-    FiX
+    FiDownload,
+    FiX,
+    FiTruck,
+    FiPackage,
+    FiMapPin,
+    FiAlertCircle
 } from "react-icons/fi";
 import Cabecalho from "../components/Cabeçalho-Users/index.jsx";
 
@@ -34,8 +39,43 @@ const CARTAO_VAZIO = {
     parcelas: "1"
 };
 
+function normalizarFretePersistido(dados) {
+    if (!dados || typeof dados !== "object") {
+        return null;
+    }
+
+    const tipoEntrega = String(
+        dados.tipo_entrega || (dados.retirada ? "RETIRADA" : "ENTREGA")
+    )
+        .trim()
+        .toUpperCase();
+
+    if (tipoEntrega !== "ENTREGA" && tipoEntrega !== "RETIRADA") {
+        return null;
+    }
+
+    const subtotalReferencia = Number(
+        dados.subtotal_calculado ?? dados.subtotal_referencia
+    );
+
+    if (!Number.isFinite(subtotalReferencia) || subtotalReferencia < 0) {
+        return null;
+    }
+
+    return {
+        ...dados,
+        disponivel: dados.disponivel !== false,
+        tipo_entrega: tipoEntrega,
+        retirada: tipoEntrega === "RETIRADA",
+        subtotal_calculado: subtotalReferencia,
+        subtotal_referencia: subtotalReferencia,
+        valor_frete: Number(dados.valor_frete || 0)
+    };
+}
+
 export default function Compra() {
     const { usuario } = useAuth();
+    const location = useLocation();
     const navigate = useNavigate();
 
     const [produtos, setProdutos] = useState([]);
@@ -58,6 +98,17 @@ export default function Compra() {
     const [verificandoPix, setVerificandoPix] = useState(false);
 
     // =====================================================
+    // BOLETO / MERCADO PAGO
+    // =====================================================
+
+    const [boleto, setBoleto] = useState(null);
+    const [modalBoleto, setModalBoleto] = useState(false);
+    const [copiadoBoleto, setCopiadoBoleto] = useState(false);
+    const [cpfBoleto, setCpfBoleto] = useState("");
+    const [cepBoleto, setCepBoleto] = useState("");
+    const [erroBoleto, setErroBoleto] = useState("");
+
+    // =====================================================
     // CUPOM
     // =====================================================
 
@@ -66,6 +117,21 @@ export default function Compra() {
     const [carregandoCupom, setCarregandoCupom] = useState(false);
     const [mensagemCupom, setMensagemCupom] = useState("");
     const [erroCupom, setErroCupom] = useState("");
+
+    // =====================================================
+    // FRETE
+    // =====================================================
+
+    const [tipoEntrega, setTipoEntrega] = useState("ENTREGA");
+    const [ruaFrete, setRuaFrete] = useState("");
+    const [numeroFrete, setNumeroFrete] = useState("");
+    const [bairroFrete, setBairroFrete] = useState("");
+    const [cidadeFrete, setCidadeFrete] = useState("");
+    const [estadoFrete, setEstadoFrete] = useState("");
+    const [freteResultado, setFreteResultado] = useState(null);
+    const [calculandoFrete, setCalculandoFrete] = useState(false);
+    const [erroFrete, setErroFrete] = useState("");
+    const [totalPedidoConfirmado, setTotalPedidoConfirmado] = useState(null);
 
     // =====================================================
     // CARTÃO
@@ -90,9 +156,20 @@ export default function Compra() {
 
         try {
             const resposta = await api.get(`/carrinho/${usuario.id}`);
-            setProdutos(resposta.data);
+            const dados = resposta.data;
+
+            if (Array.isArray(dados)) {
+                setProdutos(dados);
+            } else if (Array.isArray(dados?.itens)) {
+                setProdutos(dados.itens);
+            } else if (Array.isArray(dados?.produtos)) {
+                setProdutos(dados.produtos);
+            } else {
+                setProdutos([]);
+            }
         } catch (error) {
             console.error("Erro ao buscar carrinho:", error);
+            setProdutos([]);
         }
     }
 
@@ -138,6 +215,96 @@ export default function Compra() {
         buscarCartoesSalvos();
     }, [usuario?.id]);
 
+    useEffect(() => {
+        if (!usuario?.cep) return;
+
+        setCepBoleto((valorAtual) =>
+            valorAtual || String(usuario.cep).replace(/\D/g, "").slice(0, 8)
+        );
+    }, [usuario?.cep]);
+
+    // =====================================================
+    // RECUPERAR O FRETE ESCOLHIDO NO CARRINHO
+    // =====================================================
+
+    useEffect(() => {
+        if (!usuario?.id) return;
+
+        let dadosFrete = null;
+
+        try {
+            const salvo = localStorage.getItem(
+                `frete_checkout_${usuario.id}`
+            );
+
+            dadosFrete = salvo ? JSON.parse(salvo) : null;
+        } catch (error) {
+            console.error("Erro ao recuperar frete do carrinho:", error);
+            localStorage.removeItem(`frete_checkout_${usuario.id}`);
+        }
+
+        dadosFrete = dadosFrete || location.state?.frete || null;
+
+        const freteSalvo = normalizarFretePersistido(dadosFrete);
+
+        if (freteSalvo) {
+            setTipoEntrega(freteSalvo.tipo_entrega);
+            setRuaFrete(
+                String(
+                    freteSalvo.rua ||
+                        freteSalvo.endereco ||
+                        usuario.endereco ||
+                        ""
+                ).trim()
+            );
+            setNumeroFrete(
+                String(freteSalvo.numero || usuario.numero || "").trim()
+            );
+            setBairroFrete(
+                String(freteSalvo.bairro || usuario.bairro || "").trim()
+            );
+            setCidadeFrete(
+                freteSalvo.tipo_entrega === "ENTREGA"
+                    ? String(freteSalvo.cidade || usuario.cidade || "").trim()
+                    : String(usuario.cidade || "").trim()
+            );
+            setEstadoFrete(
+                freteSalvo.tipo_entrega === "ENTREGA"
+                    ? String(freteSalvo.estado || usuario.estado || "")
+                          .trim()
+                          .toUpperCase()
+                    : String(usuario.estado || "").trim().toUpperCase()
+            );
+            setFreteResultado(freteSalvo);
+            setErroFrete("");
+            return;
+        }
+
+        setRuaFrete((valorAtual) =>
+            valorAtual || String(usuario.endereco || "").trim()
+        );
+        setNumeroFrete((valorAtual) =>
+            valorAtual || String(usuario.numero || "").trim()
+        );
+        setBairroFrete((valorAtual) =>
+            valorAtual || String(usuario.bairro || "").trim()
+        );
+        setCidadeFrete((valorAtual) =>
+            valorAtual || String(usuario.cidade || "").trim()
+        );
+        setEstadoFrete((valorAtual) =>
+            valorAtual || String(usuario.estado || "").trim().toUpperCase()
+        );
+    }, [
+        usuario?.id,
+        usuario?.endereco,
+        usuario?.numero,
+        usuario?.bairro,
+        usuario?.cidade,
+        usuario?.estado,
+        location.state
+    ]);
+
     // =====================================================
     // VERIFICAR PIX AUTOMATICAMENTE
     // =====================================================
@@ -167,7 +334,32 @@ export default function Compra() {
         }, 0);
     }, [produtos]);
 
-    const frete = subtotal > 0 ? 29.9 : 0;
+    const subtotalFrete = Number(
+        freteResultado?.subtotal_calculado ??
+            freteResultado?.subtotal_referencia
+    );
+
+    const valorFreteCalculado = Number(freteResultado?.valor_frete || 0);
+
+    const enderecoEntregaCompleto =
+        tipoEntrega === "RETIRADA" ||
+        Boolean(
+            ruaFrete.trim() &&
+                numeroFrete.trim() &&
+                bairroFrete.trim() &&
+                cidadeFrete.trim() &&
+                estadoFrete.trim().length === 2
+        );
+
+    const fretePronto =
+        Boolean(freteResultado?.disponivel) &&
+        enderecoEntregaCompleto &&
+        Number.isFinite(subtotalFrete) &&
+        Math.round(subtotalFrete * 100) === Math.round(subtotal * 100) &&
+        Number.isFinite(valorFreteCalculado) &&
+        valorFreteCalculado >= 0;
+
+    const frete = fretePronto ? valorFreteCalculado : 0;
 
     let desconto = 0;
 
@@ -231,6 +423,26 @@ export default function Compra() {
             .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
     }
 
+    function formatarCep(valor) {
+        const numeros = String(valor || "")
+            .replace(/\D/g, "")
+            .slice(0, 8);
+
+        return numeros.replace(/(\d{5})(\d)/, "$1-$2");
+    }
+
+    function formatarVencimentoBoleto(valor) {
+        if (!valor) return "Não informado";
+
+        const data = new Date(valor);
+
+        if (Number.isNaN(data.getTime())) {
+            return "Não informado";
+        }
+
+        return data.toLocaleDateString("pt-BR");
+    }
+
     function descobrirBandeira(numero) {
         const numeros = String(numero).replace(/\D/g, "");
 
@@ -247,6 +459,219 @@ export default function Compra() {
     function ultimosQuatro(numero) {
         return String(numero).replace(/\D/g, "").slice(-4);
     }
+
+    // =====================================================
+    // FRETE
+    // =====================================================
+
+    function formatarPrazoFrete(resultado) {
+        if (!resultado) return "";
+
+        if (
+            resultado.retirada ||
+            resultado.tipo_entrega === "RETIRADA"
+        ) {
+            return "Retirada disponível em até 1 dia útil.";
+        }
+
+        const prazoMin = Number(resultado.prazo_min || 0);
+        const prazoMax = Number(resultado.prazo_max || prazoMin);
+
+        if (prazoMin <= 0 && prazoMax <= 0) return "";
+
+        if (prazoMin === prazoMax) {
+            return prazoMin === 1 ? "1 dia útil" : `${prazoMin} dias úteis`;
+        }
+
+        return `${prazoMin} a ${prazoMax} dias úteis`;
+    }
+
+    function salvarFreteCheckout(resultado) {
+        if (!usuario?.id || !resultado) return null;
+
+        const tipoResultado = String(
+            resultado.tipo_entrega || tipoEntrega
+        )
+            .trim()
+            .toUpperCase();
+
+        const dadosFrete = {
+            disponivel: true,
+            tipo_entrega: tipoResultado,
+            retirada: tipoResultado === "RETIRADA",
+            rua:
+                tipoResultado === "ENTREGA" ? ruaFrete.trim() : null,
+            endereco:
+                tipoResultado === "ENTREGA" ? ruaFrete.trim() : null,
+            numero:
+                tipoResultado === "ENTREGA" ? numeroFrete.trim() : null,
+            bairro:
+                tipoResultado === "ENTREGA" ? bairroFrete.trim() : null,
+            cidade:
+                tipoResultado === "ENTREGA"
+                    ? String(resultado.cidade || cidadeFrete).trim()
+                    : null,
+            estado:
+                tipoResultado === "ENTREGA"
+                    ? String(resultado.estado || estadoFrete)
+                          .trim()
+                          .toUpperCase()
+                    : null,
+            valor_original: Number(resultado.valor_original || 0),
+            valor_frete: Number(resultado.valor_frete || 0),
+            frete_gratis: Boolean(resultado.frete_gratis),
+            frete_gratis_acima:
+                resultado.frete_gratis_acima ?? null,
+            falta_para_frete_gratis:
+                resultado.falta_para_frete_gratis ?? null,
+            prazo_min: Number(resultado.prazo_min || 0),
+            prazo_max: Number(resultado.prazo_max || 0),
+            prazo_texto: formatarPrazoFrete(resultado),
+            subtotal_calculado: Number(subtotal || 0),
+            subtotal_referencia: Number(subtotal || 0)
+        };
+
+        localStorage.setItem(
+            `frete_checkout_${usuario.id}`,
+            JSON.stringify(dadosFrete)
+        );
+
+        return dadosFrete;
+    }
+
+    function limparFreteCalculado() {
+        setFreteResultado(null);
+        setErroFrete("");
+
+        if (usuario?.id) {
+            localStorage.removeItem(`frete_checkout_${usuario.id}`);
+        }
+    }
+
+    async function calcularFrete(tipo = tipoEntrega, silencioso = false) {
+        if (produtos.length === 0 || subtotal <= 0) return null;
+
+        const tipoNormalizado = String(tipo || "ENTREGA")
+            .trim()
+            .toUpperCase();
+        const endereco = ruaFrete.trim();
+        const numero = numeroFrete.trim();
+        const bairro = bairroFrete.trim();
+        const cidade = cidadeFrete.trim();
+        const estado = estadoFrete.trim().toUpperCase();
+
+        if (
+            tipoNormalizado === "ENTREGA" &&
+            (!endereco || !numero || !bairro || !cidade || !estado)
+        ) {
+            setErroFrete(
+                "Informe rua, número, bairro, cidade e UF para calcular o frete."
+            );
+            setFreteResultado(null);
+            return null;
+        }
+
+        if (tipoNormalizado === "ENTREGA" && estado.length !== 2) {
+            setErroFrete("Informe uma UF válida. Ex.: SP.");
+            setFreteResultado(null);
+            return null;
+        }
+
+        try {
+            if (!silencioso) setCalculandoFrete(true);
+
+            setErroFrete("");
+
+            const payload = {
+                tipo_entrega: tipoNormalizado,
+                subtotal: Number(subtotal)
+            };
+
+            if (tipoNormalizado === "ENTREGA") {
+                payload.cidade = cidade;
+                payload.estado = estado;
+            }
+
+            const resposta = await api.post("/frete/calcular", payload);
+            const resultado = resposta.data;
+
+            if (!resultado?.disponivel) {
+                setFreteResultado(null);
+                setErroFrete(
+                    resultado?.erro ||
+                        "Não foi possível calcular o frete para este endereço."
+                );
+                return null;
+            }
+
+            const resultadoComSubtotal = {
+                ...resultado,
+                subtotal_calculado: Number(subtotal),
+                subtotal_referencia: Number(subtotal)
+            };
+
+            setFreteResultado(resultadoComSubtotal);
+            salvarFreteCheckout(resultadoComSubtotal);
+
+            return resultadoComSubtotal;
+        } catch (error) {
+            console.error(
+                "Erro ao calcular frete:",
+                error.response?.data || error
+            );
+
+            setFreteResultado(null);
+            setErroFrete(
+                error.response?.data?.erro ||
+                    "Não foi possível calcular o frete para este endereço."
+            );
+
+            if (usuario?.id) {
+                localStorage.removeItem(`frete_checkout_${usuario.id}`);
+            }
+
+            return null;
+        } finally {
+            if (!silencioso) setCalculandoFrete(false);
+        }
+    }
+
+    async function selecionarTipoEntrega(novoTipo) {
+        const tipo = String(novoTipo || "ENTREGA")
+            .trim()
+            .toUpperCase();
+
+        if (tipo === tipoEntrega && fretePronto) return;
+
+        setTipoEntrega(tipo);
+        limparFreteCalculado();
+
+        if (tipo === "RETIRADA") {
+            await calcularFrete("RETIRADA");
+        }
+    }
+
+    useEffect(() => {
+        if (!freteResultado?.disponivel || subtotal <= 0) return;
+
+        const subtotalAnterior = Number(
+            freteResultado.subtotal_calculado ??
+                freteResultado.subtotal_referencia
+        );
+
+        if (
+            Number.isFinite(subtotalAnterior) &&
+            Math.round(subtotalAnterior * 100) === Math.round(subtotal * 100)
+        ) {
+            return;
+        }
+
+        const temporizador = window.setTimeout(() => {
+            calcularFrete(tipoEntrega, true);
+        }, 300);
+
+        return () => window.clearTimeout(temporizador);
+    }, [subtotal]);
 
     // =====================================================
     // ALTERAR CARTÃO
@@ -355,7 +780,12 @@ export default function Compra() {
             setCupom(null);
 
             const resposta = await api.get(
-                `/cupons/validar/${codigo}`
+                `/cupons/validar/${codigo}`,
+                {
+                    params: {
+                        usuario_id: usuario?.id
+                    }
+                }
             );
 
             setCupom(resposta.data);
@@ -391,6 +821,10 @@ export default function Compra() {
         if (tipo !== "Cartão") {
             setCartaoVirado(false);
             setErroCartao("");
+        }
+
+        if (tipo !== "Boleto") {
+            setErroBoleto("");
         }
     }
 
@@ -441,11 +875,74 @@ export default function Compra() {
     function confirmarCompra() {
         if (produtos.length === 0) return;
 
+        if (!fretePronto) {
+            setErroFrete(
+                tipoEntrega === "RETIRADA"
+                    ? "Selecione novamente a retirada na loja."
+                    : "Calcule o frete antes de finalizar a compra."
+            );
+            document
+                .getElementById("secao-frete")
+                ?.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+        }
+
         if (pagamento === "Cartão" && !validarCartao()) {
             document
                 .getElementById("secao-cartao")
                 ?.scrollIntoView({ behavior: "smooth", block: "center" });
             return;
+        }
+
+        if (pagamento === "Boleto") {
+            const cpfLimpo = cpfBoleto.replace(/\D/g, "");
+            const cepLimpo = cepBoleto.replace(/\D/g, "");
+
+            const enderecoBoleto =
+                ruaFrete.trim() || String(usuario?.endereco || "").trim();
+            const numeroBoleto =
+                numeroFrete.trim() || String(usuario?.numero || "").trim();
+            const bairroBoleto =
+                bairroFrete.trim() || String(usuario?.bairro || "").trim();
+            const cidadeBoleto =
+                cidadeFrete.trim() || String(usuario?.cidade || "").trim();
+            const estadoBoleto =
+                estadoFrete.trim().toUpperCase() ||
+                String(usuario?.estado || "").trim().toUpperCase();
+
+            if (cpfLimpo.length !== 11) {
+                setErroBoleto("Digite um CPF válido para gerar o boleto.");
+                document
+                    .getElementById("secao-boleto")
+                    ?.scrollIntoView({ behavior: "smooth", block: "center" });
+                return;
+            }
+
+            if (cepLimpo.length !== 8) {
+                setErroBoleto("Digite um CEP válido para gerar o boleto.");
+                document
+                    .getElementById("secao-boleto")
+                    ?.scrollIntoView({ behavior: "smooth", block: "center" });
+                return;
+            }
+
+            if (
+                !enderecoBoleto ||
+                !numeroBoleto ||
+                !bairroBoleto ||
+                !cidadeBoleto ||
+                estadoBoleto.length !== 2
+            ) {
+                setErroBoleto(
+                    "Complete o endereço de entrega ou o endereço do seu perfil para gerar o boleto."
+                );
+                document
+                    .getElementById("secao-boleto")
+                    ?.scrollIntoView({ behavior: "smooth", block: "center" });
+                return;
+            }
+
+            setErroBoleto("");
         }
 
         setModal(true);
@@ -514,6 +1011,425 @@ export default function Compra() {
                 setCopiadoPix(false);
             }, 2500);
         }
+    }
+
+    // =====================================================
+    // BOLETO - COPIAR LINHA DIGITÁVEL
+    // =====================================================
+
+    async function copiarLinhaBoleto() {
+        if (!boleto?.linha_digitavel) return;
+
+        try {
+            await navigator.clipboard.writeText(
+                boleto.linha_digitavel
+            );
+
+            setCopiadoBoleto(true);
+
+            window.setTimeout(() => {
+                setCopiadoBoleto(false);
+            }, 2500);
+        } catch (error) {
+            console.error("Erro ao copiar linha digitável:", error);
+
+            const campoTemporario = document.createElement("textarea");
+            campoTemporario.value = boleto.linha_digitavel;
+            document.body.appendChild(campoTemporario);
+            campoTemporario.select();
+            document.execCommand("copy");
+            document.body.removeChild(campoTemporario);
+
+            setCopiadoBoleto(true);
+
+            window.setTimeout(() => {
+                setCopiadoBoleto(false);
+            }, 2500);
+        }
+    }
+
+    // =====================================================
+    // BOLETO - BAIXAR PDF
+    // =====================================================
+
+    function baixarBoletoPdf() {
+        if (!boleto) return;
+
+        const pagamentoBoleto =
+            boleto?.dados?.transactions?.payments?.[0] || {};
+
+        const valorBoleto = formatarMoeda(
+            Number(
+                boleto?.valor ||
+                    totalPedidoConfirmado ||
+                    total ||
+                    0
+            )
+        );
+
+        const vencimentoBoleto =
+            formatarVencimentoBoleto(
+                pagamentoBoleto?.date_of_expiration
+            );
+
+        const referenciaBoleto =
+            boleto?.external_reference ||
+            boleto?.order_id ||
+            "boleto";
+
+        const linhaDigitavel =
+            boleto?.linha_digitavel ||
+            pagamentoBoleto?.payment_method?.digitable_line ||
+            "Não informada";
+
+        const codigoBarras =
+            boleto?.codigo_barras ||
+            pagamentoBoleto?.payment_method?.barcode_content ||
+            "Não informado";
+
+        const boletoUrl =
+            boleto?.boleto_url ||
+            boleto?.ticket_url ||
+            "";
+
+        function normalizarTextoPdf(valor) {
+            return String(valor ?? "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^\x20-\x7E]/g, " ")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        function escaparTextoPdf(valor) {
+            return normalizarTextoPdf(valor)
+                .replace(/\\/g, "\\\\")
+                .replace(/\(/g, "\\(")
+                .replace(/\)/g, "\\)");
+        }
+
+        function quebrarTextoPdf(valor, limite = 78) {
+            const texto = normalizarTextoPdf(valor);
+
+            if (!texto) {
+                return [""];
+            }
+
+            const palavras = texto.split(" ");
+            const linhas = [];
+            let atual = "";
+
+            for (const palavraOriginal of palavras) {
+                let palavra = palavraOriginal;
+
+                while (palavra.length > limite) {
+                    if (atual) {
+                        linhas.push(atual);
+                        atual = "";
+                    }
+
+                    linhas.push(
+                        palavra.slice(0, limite)
+                    );
+
+                    palavra =
+                        palavra.slice(limite);
+                }
+
+                const tentativa =
+                    atual
+                        ? `${atual} ${palavra}`
+                        : palavra;
+
+                if (
+                    tentativa.length >
+                    limite
+                ) {
+                    if (atual) {
+                        linhas.push(atual);
+                    }
+
+                    atual = palavra;
+                } else {
+                    atual = tentativa;
+                }
+            }
+
+            if (atual) {
+                linhas.push(atual);
+            }
+
+            return linhas.length
+                ? linhas
+                : [""];
+        }
+
+        const linhasPdf = [
+            {
+                texto: "PIXEL COLOR",
+                tamanho: 20,
+                espaco: 30
+            },
+            {
+                texto: "BOLETO BANCARIO",
+                tamanho: 15,
+                espaco: 25
+            },
+            {
+                texto: "Dados de pagamento emitidos pelo Mercado Pago",
+                tamanho: 10,
+                espaco: 28
+            },
+            {
+                texto: `Referencia: ${referenciaBoleto}`,
+                tamanho: 11,
+                espaco: 19
+            },
+            {
+                texto: `Status: Aguardando pagamento`,
+                tamanho: 11,
+                espaco: 19
+            },
+            {
+                texto: `Valor: ${valorBoleto}`,
+                tamanho: 12,
+                espaco: 21
+            },
+            {
+                texto: `Vencimento: ${vencimentoBoleto}`,
+                tamanho: 11,
+                espaco: 28
+            },
+            {
+                texto: "Linha digitavel:",
+                tamanho: 11,
+                espaco: 18
+            },
+            ...quebrarTextoPdf(
+                linhaDigitavel,
+                72
+            ).map((linha) => ({
+                texto: linha,
+                tamanho: 10,
+                espaco: 17
+            })),
+            {
+                texto: "",
+                tamanho: 10,
+                espaco: 8
+            },
+            {
+                texto: "Codigo de barras:",
+                tamanho: 11,
+                espaco: 18
+            },
+            ...quebrarTextoPdf(
+                codigoBarras,
+                72
+            ).map((linha) => ({
+                texto: linha,
+                tamanho: 10,
+                espaco: 17
+            })),
+            {
+                texto: "",
+                tamanho: 10,
+                espaco: 12
+            },
+            {
+                texto: "Link oficial do boleto:",
+                tamanho: 11,
+                espaco: 18
+            },
+            ...quebrarTextoPdf(
+                boletoUrl ||
+                    "Nao informado",
+                72
+            ).map((linha) => ({
+                texto: linha,
+                tamanho: 8,
+                espaco: 14
+            })),
+            {
+                texto: "",
+                tamanho: 10,
+                espaco: 16
+            },
+            {
+                texto: "Utilize a linha digitavel ou abra o boleto oficial para realizar o pagamento.",
+                tamanho: 9,
+                espaco: 15
+            }
+        ];
+
+        let posicaoY = 800;
+
+        const comandos = [
+            "BT"
+        ];
+
+        for (
+            const linha
+            of linhasPdf
+        ) {
+            if (
+                posicaoY < 55
+            ) {
+                break;
+            }
+
+            comandos.push(
+                `/F1 ${linha.tamanho} Tf`
+            );
+
+            comandos.push(
+                `1 0 0 1 48 ${posicaoY} Tm`
+            );
+
+            comandos.push(
+                `(${escaparTextoPdf(linha.texto)}) Tj`
+            );
+
+            posicaoY -=
+                linha.espaco;
+        }
+
+        comandos.push("ET");
+
+        const conteudo =
+            comandos.join("\n");
+
+        const encoder =
+            new TextEncoder();
+
+        const objetos = [
+            `1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+`,
+            `2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+`,
+            `3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+`,
+            `4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+`,
+            `5 0 obj
+<< /Length ${encoder.encode(conteudo).length} >>
+stream
+${conteudo}
+endstream
+endobj
+`
+        ];
+
+        let pdf =
+            "%PDF-1.4\n";
+
+        const offsets =
+            [0];
+
+        for (
+            const objeto
+            of objetos
+        ) {
+            offsets.push(
+                encoder.encode(pdf).length
+            );
+
+            pdf +=
+                objeto;
+        }
+
+        const inicioXref =
+            encoder.encode(pdf).length;
+
+        pdf +=
+            `xref
+0 ${objetos.length + 1}
+0000000000 65535 f 
+`;
+
+        for (
+            let indice = 1;
+            indice <= objetos.length;
+            indice += 1
+        ) {
+            pdf +=
+                `${String(offsets[indice]).padStart(10, "0")} 00000 n 
+`;
+        }
+
+        pdf +=
+            `trailer
+<< /Size ${objetos.length + 1} /Root 1 0 R >>
+startxref
+${inicioXref}
+%%EOF`;
+
+        const blob =
+            new Blob(
+                [
+                    encoder.encode(pdf)
+                ],
+                {
+                    type:
+                        "application/pdf"
+                }
+            );
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+        const nomeArquivo =
+            String(
+                referenciaBoleto
+            )
+                .replace(
+                    /[^a-zA-Z0-9_-]/g,
+                    "-"
+                )
+                .replace(
+                    /-+/g,
+                    "-"
+                );
+
+        link.href =
+            url;
+
+        link.download =
+            `boleto-${nomeArquivo}.pdf`;
+
+        document.body.appendChild(
+            link
+        );
+
+        link.click();
+
+        document.body.removeChild(
+            link
+        );
+
+        window.setTimeout(
+            () => {
+                URL.revokeObjectURL(
+                    url
+                );
+            },
+            1000
+        );
     }
 
     // =====================================================
@@ -604,6 +1520,15 @@ export default function Compra() {
             return;
         }
 
+        if (!fretePronto || !freteResultado) {
+            setModal(false);
+            setErroFrete("Calcule o frete novamente antes de continuar.");
+            document
+                .getElementById("secao-frete")
+                ?.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+        }
+
         if (pagamento === "Cartão" && !validarCartao()) {
             setModal(false);
             return;
@@ -647,8 +1572,50 @@ export default function Compra() {
                 parcelas:
                     pagamento === "Cartão"
                         ? Number(cartao.parcelas)
+                        : null,
+                tipo_entrega: freteResultado.tipo_entrega,
+                rua:
+                    freteResultado.tipo_entrega === "ENTREGA"
+                        ? ruaFrete.trim()
+                        : null,
+                endereco:
+                    freteResultado.tipo_entrega === "ENTREGA"
+                        ? ruaFrete.trim()
+                        : null,
+                numero:
+                    freteResultado.tipo_entrega === "ENTREGA"
+                        ? numeroFrete.trim()
+                        : null,
+                bairro:
+                    freteResultado.tipo_entrega === "ENTREGA"
+                        ? bairroFrete.trim()
+                        : null,
+                cidade:
+                    freteResultado.tipo_entrega === "ENTREGA"
+                        ? freteResultado.cidade || cidadeFrete.trim()
+                        : null,
+                estado:
+                    freteResultado.tipo_entrega === "ENTREGA"
+                        ? String(
+                              freteResultado.estado || estadoFrete
+                          ).toUpperCase()
                         : null
             });
+
+            const totalRetornado = Number(resposta.data?.pedido?.total);
+            const totalConfirmado = Number.isFinite(totalRetornado)
+                ? totalRetornado
+                : total;
+
+            setTotalPedidoConfirmado(totalConfirmado);
+            localStorage.removeItem(`frete_checkout_${usuario.id}`);
+
+            if (cupom) {
+                setCupom(null);
+                setCodigoCupom("");
+                setMensagemCupom("");
+                setErroCupom("");
+            }
 
             setFidelidadeCompra(
                 resposta.data?.fidelidade || null
@@ -677,7 +1644,7 @@ export default function Compra() {
                 const respostaPix = await api.post(
                     "/api/mercado-pago/pix",
                     {
-                        valor: Number(total.toFixed(2)),
+                        valor: Number(totalConfirmado.toFixed(2)),
 
                         // Credenciais de teste: usamos somente o e-mail
                         // de teste. Não enviamos nome "APRO", pois esse
@@ -698,16 +1665,82 @@ export default function Compra() {
                 return;
             }
 
+            // =================================================
+            // BOLETO REAL - MERCADO PAGO
+            // =================================================
+
+            if (pagamento === "Boleto") {
+                const pedidoId =
+                    resposta.data?.pedido?.id ||
+                    resposta.data?.pedido_id ||
+                    resposta.data?.id;
+
+                if (!pedidoId) {
+                    throw new Error(
+                        "O pedido foi criado, mas o backend não retornou o ID do pedido."
+                    );
+                }
+
+                const enderecoBoleto =
+                    ruaFrete.trim() || String(usuario?.endereco || "").trim();
+                const numeroBoleto =
+                    numeroFrete.trim() || String(usuario?.numero || "").trim();
+                const bairroBoleto =
+                    bairroFrete.trim() || String(usuario?.bairro || "").trim();
+                const cidadeBoleto =
+                    cidadeFrete.trim() || String(usuario?.cidade || "").trim();
+                const estadoBoleto =
+                    estadoFrete.trim().toUpperCase() ||
+                    String(usuario?.estado || "").trim().toUpperCase();
+
+                const respostaBoleto = await api.post(
+                    "/api/mercado-pago/boleto",
+                    {
+                        valor: Number(totalConfirmado.toFixed(2)),
+                        pedido_id: pedidoId,
+                        nome: usuario?.nome || "Cliente Pixel Color",
+                        email: import.meta.env.DEV
+                            ? "test_user_br@testuser.com"
+                            : usuario?.email,
+                        cpf: cpfBoleto.replace(/\D/g, ""),
+                        cep: cepBoleto.replace(/\D/g, ""),
+                        endereco: enderecoBoleto,
+                        numero: numeroBoleto,
+                        bairro: bairroBoleto,
+                        cidade: cidadeBoleto,
+                        estado: estadoBoleto
+                    }
+                );
+
+                setBoleto(respostaBoleto.data);
+                setCopiadoBoleto(false);
+                setModal(false);
+                setModalBoleto(true);
+
+                return;
+            }
+
             setModal(false);
             setModalSucesso(true);
         } catch (error) {
             console.error("Erro ao finalizar compra:", error);
+            console.error("STATUS DO BACKEND:", error.response?.status);
+            console.error("RESPOSTA DO BACKEND:", error.response?.data);
+
+            const respostaBackend = error.response?.data;
+
+            const mensagemErro =
+                respostaBackend?.mensagem ||
+                respostaBackend?.erro ||
+                respostaBackend?.detalhe?.message ||
+                respostaBackend?.detalhe ||
+                error.message ||
+                "Erro ao finalizar compra.";
 
             alert(
-                error.response?.data?.mensagem ||
-                    error.response?.data?.erro ||
-                    error.message ||
-                    "Erro ao finalizar compra."
+                typeof mensagemErro === "string"
+                    ? mensagemErro
+                    : JSON.stringify(mensagemErro)
             );
         } finally {
             setFinalizando(false);
@@ -773,9 +1806,7 @@ export default function Compra() {
                         </button>
 
                         <div className={style.titleGroup}>
-                            <span className={style.eyebrow}>
-                                Checkout seguro
-                            </span>
+                            
                             <h1>Finalizar compra</h1>
                             <p>
                                 Revise seu pedido e escolha a melhor forma de pagamento.
@@ -833,6 +1864,377 @@ export default function Compra() {
                                                 </strong>
                                             </div>
                                         ))}
+                                    </div>
+                                )}
+                            </section>
+
+                            {/* ENTREGA */}
+                            <section
+                                className={`${style.cardSection} ${style.freteSection}`}
+                                id="secao-frete"
+                            >
+                                <div className={style.sectionHeader}>
+                                    <div>
+                                        <span className={style.sectionStep}>02</span>
+                                        <h2>Entrega</h2>
+                                    </div>
+
+                                    <span
+                                        className={
+                                            fretePronto
+                                                ? style.freteConcluido
+                                                : style.fretePendente
+                                        }
+                                    >
+                                        {fretePronto ? (
+                                            <>
+                                                <FiCheckCircle /> Calculado
+                                            </>
+                                        ) : (
+                                            "Escolha uma opção"
+                                        )}
+                                    </span>
+                                </div>
+
+                                <div className={style.tipoEntregaGrid}>
+                                    <button
+                                        type="button"
+                                        className={`${style.entregaOpcao} ${
+                                            tipoEntrega === "ENTREGA"
+                                                ? style.entregaOpcaoAtiva
+                                                : ""
+                                        }`}
+                                        onClick={() =>
+                                            selecionarTipoEntrega("ENTREGA")
+                                        }
+                                        disabled={
+                                            calculandoFrete ||
+                                            produtos.length === 0
+                                        }
+                                        aria-pressed={tipoEntrega === "ENTREGA"}
+                                    >
+                                        <span className={style.entregaIcone}>
+                                            <FiTruck />
+                                        </span>
+                                        <span className={style.entregaTexto}>
+                                            <strong>Receber no endereço</strong>
+                                            <small>
+                                                Valor e prazo conforme sua região
+                                            </small>
+                                        </span>
+                                        <span className={style.entregaRadio} />
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className={`${style.entregaOpcao} ${
+                                            tipoEntrega === "RETIRADA"
+                                                ? style.entregaOpcaoAtiva
+                                                : ""
+                                        }`}
+                                        onClick={() =>
+                                            selecionarTipoEntrega("RETIRADA")
+                                        }
+                                        disabled={
+                                            calculandoFrete ||
+                                            produtos.length === 0
+                                        }
+                                        aria-pressed={tipoEntrega === "RETIRADA"}
+                                    >
+                                        <span className={style.entregaIcone}>
+                                            <FiPackage />
+                                        </span>
+                                        <span className={style.entregaTexto}>
+                                            <strong>Retirar na loja</strong>
+                                            <small>Sem custo de frete</small>
+                                        </span>
+                                        <span className={style.entregaRadio} />
+                                    </button>
+                                </div>
+
+                                {tipoEntrega === "ENTREGA" && (
+                                    <form
+                                        className={style.freteForm}
+                                        onSubmit={(event) => {
+                                            event.preventDefault();
+                                            calcularFrete("ENTREGA");
+                                        }}
+                                    >
+                                        <div
+                                            className={`${style.freteCampo} ${style.freteRua}`}
+                                        >
+                                            <label htmlFor="checkout-frete-rua">
+                                                Rua / Avenida
+                                            </label>
+                                            <div>
+                                                <FiMapPin />
+                                                <input
+                                                    id="checkout-frete-rua"
+                                                    type="text"
+                                                    value={ruaFrete}
+                                                    onChange={(event) => {
+                                                        setRuaFrete(
+                                                            event.target.value
+                                                        );
+                                                        limparFreteCalculado();
+                                                    }}
+                                                    placeholder="Nome da rua ou avenida"
+                                                    autoComplete="address-line1"
+                                                    maxLength={255}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            className={`${style.freteCampo} ${style.freteNumero}`}
+                                        >
+                                            <label htmlFor="checkout-frete-numero">
+                                                Número
+                                            </label>
+                                            <input
+                                                id="checkout-frete-numero"
+                                                type="text"
+                                                value={numeroFrete}
+                                                onChange={(event) => {
+                                                    setNumeroFrete(
+                                                        event.target.value
+                                                    );
+                                                    limparFreteCalculado();
+                                                }}
+                                                placeholder="Nº"
+                                                autoComplete="address-line2"
+                                                maxLength={20}
+                                            />
+                                        </div>
+
+                                        <div
+                                            className={`${style.freteCampo} ${style.freteBairro}`}
+                                        >
+                                            <label htmlFor="checkout-frete-bairro">
+                                                Bairro
+                                            </label>
+                                            <input
+                                                id="checkout-frete-bairro"
+                                                type="text"
+                                                value={bairroFrete}
+                                                onChange={(event) => {
+                                                    setBairroFrete(
+                                                        event.target.value
+                                                    );
+                                                    limparFreteCalculado();
+                                                }}
+                                                placeholder="Seu bairro"
+                                                autoComplete="address-level3"
+                                                maxLength={100}
+                                            />
+                                        </div>
+
+                                        <div
+                                            className={`${style.freteCampo} ${style.freteCidade}`}
+                                        >
+                                            <label htmlFor="checkout-frete-cidade">
+                                                Cidade
+                                            </label>
+                                            <div>
+                                                <FiMapPin />
+                                                <input
+                                                    id="checkout-frete-cidade"
+                                                    type="text"
+                                                    value={cidadeFrete}
+                                                    onChange={(event) => {
+                                                        setCidadeFrete(
+                                                            event.target.value
+                                                        );
+                                                        limparFreteCalculado();
+                                                    }}
+                                                    placeholder="Sua cidade"
+                                                    autoComplete="address-level2"
+                                                    maxLength={80}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            className={`${style.freteCampo} ${style.freteUf}`}
+                                        >
+                                            <label htmlFor="checkout-frete-estado">
+                                                UF
+                                            </label>
+                                            <input
+                                                id="checkout-frete-estado"
+                                                type="text"
+                                                value={estadoFrete}
+                                                onChange={(event) => {
+                                                    setEstadoFrete(
+                                                        event.target.value
+                                                            .replace(
+                                                                /[^a-zA-Z]/g,
+                                                                ""
+                                                            )
+                                                            .slice(0, 2)
+                                                            .toUpperCase()
+                                                    );
+                                                    limparFreteCalculado();
+                                                }}
+                                                placeholder="SP"
+                                                autoComplete="address-level1"
+                                                maxLength={2}
+                                            />
+                                        </div>
+
+                                        <button
+                                            type="submit"
+                                            className={style.calcularFrete}
+                                            disabled={
+                                                calculandoFrete ||
+                                                produtos.length === 0
+                                            }
+                                        >
+                                            <FiRefreshCw
+                                                className={
+                                                    calculandoFrete
+                                                        ? style.freteSpin
+                                                        : ""
+                                                }
+                                            />
+                                            {calculandoFrete
+                                                ? "Calculando..."
+                                                : fretePronto
+                                                  ? "Recalcular"
+                                                  : "Calcular frete"}
+                                        </button>
+                                    </form>
+                                )}
+
+                                {tipoEntrega === "RETIRADA" &&
+                                    !fretePronto &&
+                                    !erroFrete && (
+                                        <div className={style.retiradaCarregando}>
+                                            <FiRefreshCw
+                                                className={style.freteSpin}
+                                            />
+                                            Preparando a retirada grátis...
+                                        </div>
+                                    )}
+
+                                {erroFrete && (
+                                    <div
+                                        className={style.freteErro}
+                                        role="alert"
+                                    >
+                                        <FiAlertCircle />
+                                        <span>{erroFrete}</span>
+                                    </div>
+                                )}
+
+                                {fretePronto && freteResultado && (
+                                    <div className={style.freteResultado}>
+                                        <div className={style.freteResultadoTopo}>
+                                            <div className={style.freteResultadoTitulo}>
+                                                <span className={style.freteResultadoIcone}>
+                                                    {freteResultado.retirada ? (
+                                                        <FiPackage />
+                                                    ) : (
+                                                        <FiTruck />
+                                                    )}
+                                                </span>
+                                                <div>
+                                                    <span>
+                                                        {freteResultado.retirada
+                                                            ? "RETIRADA CONFIRMADA"
+                                                            : "ENTREGA DISPONÍVEL"}
+                                                    </span>
+                                                    <strong>
+                                                        {freteResultado.retirada
+                                                            ? "Loja Pixel Color"
+                                                            : `${ruaFrete}, ${numeroFrete}`}
+                                                    </strong>
+                                                    {!freteResultado.retirada && (
+                                                        <small>
+                                                            {bairroFrete} •{" "}
+                                                            {freteResultado.cidade ||
+                                                                cidadeFrete}{" "}
+                                                            -{" "}
+                                                            {freteResultado.estado ||
+                                                                estadoFrete}
+                                                        </small>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <strong
+                                                className={style.freteResultadoValor}
+                                            >
+                                                {frete === 0
+                                                    ? "Grátis"
+                                                    : formatarMoeda(frete)}
+                                            </strong>
+                                        </div>
+
+                                        <div className={style.fretePrazo}>
+                                            <FiClock />
+                                            <span>
+                                                {formatarPrazoFrete(
+                                                    freteResultado
+                                                )}
+                                            </span>
+                                        </div>
+
+                                        {!freteResultado.frete_gratis &&
+                                            Number(
+                                                freteResultado.frete_gratis_acima ||
+                                                    0
+                                            ) > 0 &&
+                                            Number(
+                                                freteResultado.falta_para_frete_gratis ||
+                                                    0
+                                            ) > 0 && (
+                                                <div
+                                                    className={
+                                                        style.freteGratisProgresso
+                                                    }
+                                                >
+                                                    <p>
+                                                        Faltam{" "}
+                                                        <strong>
+                                                            {formatarMoeda(
+                                                                freteResultado.falta_para_frete_gratis
+                                                            )}
+                                                        </strong>{" "}
+                                                        para ganhar frete grátis.
+                                                    </p>
+                                                    <div>
+                                                        <span
+                                                            style={{
+                                                                width: `${Math.min(
+                                                                    100,
+                                                                    Math.max(
+                                                                        0,
+                                                                        (subtotal /
+                                                                            Number(
+                                                                                freteResultado.frete_gratis_acima ||
+                                                                                    1
+                                                                            )) *
+                                                                            100
+                                                                    )
+                                                                )}%`
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                        {freteResultado.frete_gratis &&
+                                            !freteResultado.retirada && (
+                                                <p
+                                                    className={
+                                                        style.freteGratisMensagem
+                                                    }
+                                                >
+                                                    Você atingiu o valor mínimo e
+                                                    ganhou frete grátis.
+                                                </p>
+                                            )}
                                     </div>
                                 )}
                             </section>
@@ -924,14 +2326,68 @@ export default function Compra() {
                                 )}
 
                                 {pagamento === "Boleto" && (
-                                    <div className={style.infoPagamento}>
-                                        <FiFileText />
-                                        <div>
-                                            <strong>Pagamento por boleto</strong>
-                                            <span>
-                                                A confirmação pode levar até 3 dias úteis após o pagamento.
-                                            </span>
+                                    <div id="secao-boleto" className={style.boletoArea}>
+                                        <div className={style.infoPagamento}>
+                                            <FiFileText />
+                                            <div>
+                                                <strong>Pagamento por boleto</strong>
+                                                <span>
+                                                    A confirmação pode levar até 3 dias úteis após o pagamento.
+                                                </span>
+                                            </div>
                                         </div>
+
+                                        <div className={style.boletoForm}>
+                                            <div className={style.formGroup}>
+                                                <label htmlFor="cpf-boleto">
+                                                    CPF do pagador
+                                                </label>
+                                                <input
+                                                    id="cpf-boleto"
+                                                    type="text"
+                                                    inputMode="numeric"
+                                                    placeholder="000.000.000-00"
+                                                    value={cpfBoleto}
+                                                    onChange={(event) => {
+                                                        setCpfBoleto(
+                                                            formatarCpf(event.target.value)
+                                                        );
+                                                        setErroBoleto("");
+                                                    }}
+                                                />
+                                            </div>
+
+                                            <div className={style.formGroup}>
+                                                <label htmlFor="cep-boleto">
+                                                    CEP do pagador
+                                                </label>
+                                                <input
+                                                    id="cep-boleto"
+                                                    type="text"
+                                                    inputMode="numeric"
+                                                    placeholder="00000-000"
+                                                    value={formatarCep(cepBoleto)}
+                                                    onChange={(event) => {
+                                                        setCepBoleto(
+                                                            event.target.value
+                                                                .replace(/\D/g, "")
+                                                                .slice(0, 8)
+                                                        );
+                                                        setErroBoleto("");
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <p className={style.boletoEnderecoAviso}>
+                                            O boleto usará o endereço informado na entrega ou, se necessário, o endereço salvo no seu perfil.
+                                        </p>
+
+                                        {erroBoleto && (
+                                            <div className={style.cardError}>
+                                                {erroBoleto}
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 
@@ -1250,9 +2706,7 @@ export default function Compra() {
                                                         </span>
                                                         <span>
                                                             <strong>Salvar cartão para próximas compras</strong>
-                                                            <small>
-                                                                Serão armazenados apenas dados seguros e o token do gateway. O CVV não é salvo.
-                                                            </small>
+                                                            
                                                         </span>
                                                     </label>
 
@@ -1292,7 +2746,6 @@ export default function Compra() {
                             <section className={`${style.cardSection} ${style.cupomResumo}`}>
                                 <div className={style.sectionHeader}>
                                     <div>
-                                        <span className={style.sectionStep}>02</span>
                                         <h2>Cupom de desconto</h2>
                                     </div>
                                 </div>
@@ -1365,8 +2818,35 @@ export default function Compra() {
 
                             <div className={style.summaryLine}>
                                 <span>Frete</span>
-                                <strong>{formatarMoeda(frete)}</strong>
+                                <strong
+                                    className={
+                                        fretePronto && frete === 0
+                                            ? style.freteGratisResumo
+                                            : ""
+                                    }
+                                >
+                                    {!fretePronto
+                                        ? "A calcular"
+                                        : frete === 0
+                                          ? "Grátis"
+                                          : formatarMoeda(frete)}
+                                </strong>
                             </div>
+
+                            {fretePronto && (
+                                <div className={style.resumoEntregaDetalhe}>
+                                    {freteResultado?.retirada ? (
+                                        <FiPackage />
+                                    ) : (
+                                        <FiTruck />
+                                    )}
+                                    <span>
+                                        {freteResultado?.retirada
+                                            ? "Retirada na loja"
+                                            : `${ruaFrete}, ${numeroFrete} • ${bairroFrete} • ${freteResultado?.cidade || cidadeFrete} - ${freteResultado?.estado || estadoFrete}`}
+                                    </span>
+                                </div>
+                            )}
 
                             {cupom && (
                                 <div className={`${style.summaryLine} ${style.desconto}`}>
@@ -1391,11 +2871,22 @@ export default function Compra() {
                                 <strong>{formatarMoeda(total)}</strong>
                             </div>
 
+                            {!fretePronto && (
+                                <p className={style.freteResumoAviso}>
+                                    Frete ainda não incluído no total.
+                                </p>
+                            )}
+
                             <button
                                 type="button"
                                 className={style.finalizar}
                                 onClick={confirmarCompra}
-                                disabled={produtos.length === 0}
+                                disabled={
+                                    produtos.length === 0 ||
+                                    !fretePronto ||
+                                    calculandoFrete ||
+                                    finalizando
+                                }
                             >
                                 <FiLock />
                                 Finalizar compra
@@ -1428,6 +2919,28 @@ export default function Compra() {
                             <div className={style.modalData}>
                                 <span>Forma de pagamento</span>
                                 <strong>{pagamento}</strong>
+                            </div>
+
+                            <div className={style.modalData}>
+                                <span>
+                                    {freteResultado?.retirada
+                                        ? "Retirada"
+                                        : "Entrega"}
+                                </span>
+                                <strong>
+                                    {freteResultado?.retirada
+                                        ? "Loja Pixel Color"
+                                        : `${ruaFrete}, ${numeroFrete} • ${bairroFrete} • ${freteResultado?.cidade || cidadeFrete} - ${freteResultado?.estado || estadoFrete}`}
+                                </strong>
+                            </div>
+
+                            <div className={style.modalData}>
+                                <span>Frete</span>
+                                <strong>
+                                    {frete === 0
+                                        ? "Grátis"
+                                        : formatarMoeda(frete)}
+                                </strong>
                             </div>
 
                             {pagamento === "Cartão" && (
@@ -1542,7 +3055,11 @@ export default function Compra() {
                                             <span>Total do pedido</span>
                                             <strong>
                                                 {formatarMoeda(
-                                                    Number(pix.valor || total)
+                                                    Number(
+                                                        pix.valor ||
+                                                            totalPedidoConfirmado ||
+                                                            total
+                                                    )
                                                 )}
                                             </strong>
                                         </div>
@@ -1626,6 +3143,120 @@ export default function Compra() {
                     </div>
                 )}
 
+                {/* MODAL BOLETO */}
+                {modalBoleto && boleto && (
+                    <div className={style.modalBoletoOverlay}>
+                        <div className={style.modalBoleto}>
+                            <div className={style.boletoModalHeader}>
+                                <button
+                                    type="button"
+                                    className={style.boletoCloseButton}
+                                    onClick={() => setModalBoleto(false)}
+                                    aria-label="Fechar boleto"
+                                    title="Fechar"
+                                >
+                                    <FiX />
+                                </button>
+
+                                <div className={style.boletoModalIcon}>
+                                    <FiFileText />
+                                </div>
+
+                                <span className={style.boletoStatusBadge}>
+                                    Aguardando pagamento
+                                </span>
+
+                                <h2>Boleto gerado com sucesso</h2>
+
+                                <p>
+                                    Abra o boleto para pagamento ou copie a linha digitável abaixo.
+                                </p>
+                            </div>
+
+                            <div className={style.boletoModalContent}>
+                                <div className={style.boletoOrderInfo}>
+                                    <div>
+                                        <span>Total do pedido</span>
+                                        <strong>
+                                            {formatarMoeda(
+                                                Number(
+                                                    boleto.valor ||
+                                                        totalPedidoConfirmado ||
+                                                        total
+                                                )
+                                            )}
+                                        </strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Vencimento</span>
+                                        <strong>
+                                            {formatarVencimentoBoleto(
+                                                boleto?.dados?.transactions?.payments?.[0]
+                                                    ?.date_of_expiration
+                                            )}
+                                        </strong>
+                                    </div>
+                                </div>
+
+                                <div className={style.boletoCodeArea}>
+                                    <label htmlFor="linha-digitavel-boleto">
+                                        Linha digitável
+                                    </label>
+
+                                    <div className={style.boletoCopyBox}>
+                                        <input
+                                            id="linha-digitavel-boleto"
+                                            type="text"
+                                            readOnly
+                                            value={boleto.linha_digitavel || ""}
+                                        />
+
+                                        <button
+                                            type="button"
+                                            onClick={copiarLinhaBoleto}
+                                            disabled={!boleto.linha_digitavel}
+                                        >
+                                            <FiCopy />
+                                            {copiadoBoleto ? "Copiado" : "Copiar"}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className={style.boletoActions}>
+                                    {(boleto.boleto_url || boleto.ticket_url) && (
+                                        <a
+                                            className={style.boletoAbrirButton}
+                                            href={boleto.boleto_url || boleto.ticket_url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            <FiExternalLink />
+                                            Abrir boleto
+                                        </a>
+                                    )}
+
+                                    <button
+                                        type="button"
+                                        className={style.boletoDownloadButton}
+                                        onClick={baixarBoletoPdf}
+                                    >
+                                        <FiDownload />
+                                        Baixar PDF
+                                    </button>
+                                </div>
+
+                                <div className={style.boletoWaitingNotice}>
+                                    <FiClock />
+                                    <span>
+                                        O pedido ficará aguardando o pagamento do boleto até a confirmação do Mercado Pago.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* MODAL SUCESSO */}
                 {modalSucesso && (
                     <div className={style.modalSucessoOverlay}>
@@ -1651,8 +3282,21 @@ export default function Compra() {
                                 )}
 
                                 <div>
+                                    <span>Entrega</span>
+                                    <strong>
+                                        {freteResultado?.retirada
+                                            ? "Retirada na loja"
+                                            : "Entrega no endereço"}
+                                    </strong>
+                                </div>
+
+                                <div>
                                     <span>Total</span>
-                                    <strong>{formatarMoeda(total)}</strong>
+                                    <strong>
+                                        {formatarMoeda(
+                                            totalPedidoConfirmado ?? total
+                                        )}
+                                    </strong>
                                 </div>
 
                                 {fidelidadeCompra && (

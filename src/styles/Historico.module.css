@@ -227,7 +227,7 @@ button {
     color:
         var(--muted);
 
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 300;
 
     line-height: 1.8;
@@ -563,7 +563,7 @@ button {
 
 
 .cardTopo span {
-    font-size: 7px;
+    font-size: 16px;
     font-weight: 600;
 
     letter-spacing:
@@ -572,8 +572,8 @@ button {
 
 
 .cardTopo svg {
-    width: 17px;
-    height: 17px;
+    width: 25px;
+    height: 25px;
 
     color:
         var(--blue);
@@ -591,11 +591,7 @@ button {
         serif;
 
     font-size:
-        clamp(
-            31px,
-            2.6vw,
-            45px
-        );
+        clamp(48px, 3.8vw, 68px);
 
     font-weight: 500;
 
@@ -628,7 +624,7 @@ button {
     color:
         var(--text);
 
-    font-size: 8px;
+    font-size: 16px;
     font-weight: 600;
 
     letter-spacing:
@@ -645,7 +641,7 @@ button {
     color:
         var(--muted-2);
 
-    font-size: 7px;
+    font-size: 12px;
 
     line-height: 1.5;
 
@@ -722,7 +718,7 @@ button {
     color:
         #8b94a0;
 
-    font-size: 8px;
+    font-size: 15px;
     font-weight: 600;
 
     letter-spacing:
@@ -856,7 +852,7 @@ button {
     color:
         #9aa1ab;
 
-    font-size: 7px;
+    font-size: 16px;
     font-weight: 600;
 }
 
@@ -920,7 +916,7 @@ button {
     color:
         var(--blue);
 
-    font-size: 6px;
+    font-size: 13px;
     font-weight: 600;
 
     letter-spacing:
@@ -943,7 +939,7 @@ button {
         "Cormorant Garamond",
         serif;
 
-    font-size: 20px;
+    font-size: 35px;
     font-weight: 600;
 
     line-height: 1.05;
@@ -961,7 +957,7 @@ button {
     color:
         #929aa5;
 
-    font-size: 7px;
+    font-size: 16rankingMetapx;
 }
 
 
@@ -982,7 +978,7 @@ button {
         "Cormorant Garamond",
         serif;
 
-    font-size: 22px;
+    font-size: 32px;
     font-weight: 600;
 
     line-height: 1;
@@ -993,7 +989,7 @@ button {
     color:
         #929aa5;
 
-    font-size: 6px;
+    font-size: 13px;
 }
 
 
@@ -1048,7 +1044,7 @@ button {
     color:
         #969da7;
 
-    font-size: 6px;
+    font-size: 13px;
 }
 
 
@@ -1056,7 +1052,7 @@ button {
     color:
         #657082;
 
-    font-size: 7px;
+    font-size: 14px;
     font-weight: 600;
 }
 
@@ -1120,7 +1116,7 @@ button {
             0.42
         );
 
-    font-size: 8px;
+    font-size: 14px;
     font-weight: 600;
 
     letter-spacing:
@@ -1184,16 +1180,13 @@ button {
             0.48
         );
 
-    font-size: 9px;
+    font-size: 16px;
     font-weight: 300;
 
     line-height: 1.75;
 }
 
 
-.conversao {
-    margin-top: 36px;
-}
 
 
 .conversao strong {
@@ -1225,8 +1218,8 @@ button {
             255,
             0.38
         );
-
-    font-size: 7px;
+margin-top: 13px;
+    font-size: 12px;
 
     letter-spacing:
         0.08em;
@@ -1311,7 +1304,7 @@ button {
             0.36
         );
 
-    font-size: 6px;
+    font-size: 13px;
 
     letter-spacing:
         0.08em;
@@ -1331,7 +1324,7 @@ button {
         "Cormorant Garamond",
         serif;
 
-    font-size: 24px;
+    font-size: 35px;
     font-weight: 500;
 }
 
@@ -1368,7 +1361,7 @@ button {
             0.42
         );
 
-    font-size: 7px;
+    font-size: 14px;
 }
 
 
@@ -1535,7 +1528,7 @@ button {
     color:
         var(--blue);
 
-    font-size: 6px;
+    font-size: 13px;
     font-weight: 600;
 
     letter-spacing:
@@ -1550,7 +1543,7 @@ button {
     color:
         #9aa1aa;
 
-    font-size: 6px;
+    font-size: 14px;
 }
 
 
@@ -1566,7 +1559,7 @@ button {
         "Cormorant Garamond",
         serif;
 
-    font-size: 20px;
+    font-size: 35px;
     font-weight: 600;
 
     line-height: 1.08;
@@ -1581,7 +1574,7 @@ button {
     color:
         #7b8491;
 
-    font-size: 7px;
+    font-size: 13px;
 
     line-height: 1.6;
 }
@@ -1625,13 +1618,13 @@ button {
     color:
         #89929e;
 
-    font-size: 7px;
+    font-size: 13px;
 }
 
 
 .alteracao svg {
-    width: 10px;
-    height: 10px;
+    width: 13px;
+    height: 13px;
 
     color:
         var(--blue);
@@ -1642,7 +1635,7 @@ button {
     color:
         var(--blue);
 
-    font-size: 7px;
+    font-size: 13px;
     font-weight: 600;
 }
 
@@ -1664,7 +1657,7 @@ button {
     color:
         #9ca3ac;
 
-    font-size: 6px;
+    font-size: 13px;
 }
 
 
@@ -2378,4 +2371,113 @@ body,
   .table td small {
     font-size: 14px !important;
   }
+}
+
+
+/* =========================================================
+   TOPO DO HISTÓRICO — MESMO PADRÃO DE PEDIDOS
+========================================================= */
+
+.hero {
+    min-height: 210px;
+
+    margin-bottom: 38px;
+
+    padding:
+        16px
+        0
+        32px;
+
+    align-items: flex-end;
+    gap: 28px;
+}
+
+.hero::before {
+    width: 72px;
+}
+
+.eyebrow {
+    margin-bottom: 17px;
+
+    color: #8b94a0;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    letter-spacing: 0.2em;
+}
+
+.hero h1 {
+    margin:
+        0
+        0
+        13px;
+
+    color: var(--text);
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        clamp(
+            60px,
+            5.6vw,
+            88px
+        );
+
+    font-weight: 400;
+
+    line-height: 0.88;
+    letter-spacing: -0.052em;
+}
+
+.hero p {
+    max-width: 600px;
+
+    margin-top: 0;
+
+    color: var(--muted);
+
+    font-size: 16px;
+    font-weight: 300;
+
+    line-height: 1.8;
+}
+
+@media (max-width: 1100px) {
+    .hero {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        min-height: auto;
+
+        padding-top: 28px;
+    }
+
+    .hero h1 {
+        font-size: 54px;
+    }
+}
+
+@media (max-width: 520px) {
+    .hero {
+        margin-bottom: 29px;
+    }
+
+    .eyebrow {
+        font-size: 13px;
+    }
+
+    .hero h1 {
+        font-size: 48px;
+    }
+
+    .hero p {
+        font-size: 13px;
+    }
 }

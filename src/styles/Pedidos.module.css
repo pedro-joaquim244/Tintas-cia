@@ -1043,6 +1043,48 @@ body {
   line-height: 0.95;
 }
 
+
+.enderecoPedido {
+  margin-top: 22px;
+
+  padding: 16px 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+
+  border: 1px solid var(--line);
+
+  background: rgba(255, 255, 255, 0.5);
+}
+
+
+.enderecoPedido span {
+  color: #8d96a2;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+
+.enderecoPedido strong {
+  color: var(--text);
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+.enderecoPedido small {
+  color: #7a8592;
+
+  font-size: 11px;
+}
+
 .closeBtn {
   width: 42px;
   height: 42px;

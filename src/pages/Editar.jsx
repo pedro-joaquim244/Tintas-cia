@@ -102,6 +102,8 @@ export default function Editar() {
 
         "ANJO",
 
+        "PIXEL COLOR",
+
     ];
 
 
@@ -110,6 +112,21 @@ export default function Editar() {
     // =====================================================
 
     const gruposCores = [
+
+        {
+
+            titulo: "Sem pigmentação",
+
+            descricao:
+                "Produtos sem cor, como pincéis, rolos e acessórios.",
+
+            cores: [
+
+                { nome: "Incolor", cor: "#F8FAFC" },
+
+            ],
+
+        },
 
         {
             titulo: "Brancos",

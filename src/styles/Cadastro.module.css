@@ -2,6 +2,7 @@
   "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap"
 );
 
+
 /* =========================================================
    RESET
 ========================================================= */
@@ -18,37 +19,31 @@ html {
 
 body {
   margin: 0;
-
   background: #f4f1e9;
-
   color: #182235;
-
-  font-family:
-    "Poppins",
-    sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 button,
-input {
-  font-family:
-    "Poppins",
-    sans-serif;
+input,
+a {
+  font-family: "Poppins", sans-serif;
 }
 
 
 /* =========================================================
-   VARIÁVEIS / CONTAINER
+   CONTAINER
 ========================================================= */
 
 .container {
   --navy: #172033;
   --navy-2: #24324f;
+
   --blue: #3264c8;
   --blue-soft: #89abe8;
 
-  --ivory: #f4f1e9;
-  --ivory-2: #ebe6da;
   --paper: #fbfaf6;
+  --ivory: #f4f1e9;
 
   --text: #182235;
   --muted: #747f8e;
@@ -62,22 +57,22 @@ input {
   display: grid;
 
   grid-template-columns:
-    minmax(380px, 0.92fr)
-    minmax(520px, 1.08fr);
+    minmax(390px, 0.95fr)
+    minmax(560px, 1.05fr);
 
   background:
     linear-gradient(
       90deg,
       var(--navy) 0%,
-      var(--navy) 44%,
-      var(--paper) 44%,
+      var(--navy) 43%,
+      var(--paper) 43%,
       var(--paper) 100%
     );
 }
 
 
 /* =========================================================
-   LADO ESQUERDO — EDITORIAL
+   LADO ESQUERDO
 ========================================================= */
 
 .left {
@@ -88,9 +83,10 @@ input {
   min-height: 100vh;
 
   padding:
-    clamp(42px, 5vw, 72px);
+    clamp(34px, 5vw, 72px);
 
   display: flex;
+
   align-items: flex-end;
 
   overflow: hidden;
@@ -118,44 +114,151 @@ input {
 
 
 /* =========================================================
-   DETALHES DECORATIVOS
+   DECORAÇÕES
 ========================================================= */
 
-.left::before {
-  content: "";
-
+.decorCircleOne,
+.decorCircleTwo,
+.decorDotOne,
+.decorDotTwo {
   position: absolute;
 
-  top: 44px;
-  left: 44px;
-
-  width: 72px;
-  height: 2px;
-
-  background: var(--blue-soft);
+  pointer-events: none;
 }
 
-.left::after {
-  content: "PIXEL COLOR";
 
+.decorCircleOne {
+  width: 360px;
+  height: 360px;
+
+  top: -190px;
+  right: -150px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.07);
+}
+
+
+.decorCircleTwo {
+  width: 520px;
+  height: 520px;
+
+  right: -310px;
+  bottom: -300px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.05);
+}
+
+
+.decorDotOne {
+  width: 9px;
+  height: 9px;
+
+  top: 28%;
+  left: 18%;
+
+  border-radius: 50%;
+
+  background: var(--blue-soft);
+
+  opacity: 0.6;
+
+  box-shadow:
+    0 0 0 8px
+    rgba(137, 171, 232, 0.06);
+}
+
+
+.decorDotTwo {
+  width: 5px;
+  height: 5px;
+
+  right: 20%;
+  bottom: 28%;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  opacity: 0.45;
+
+  box-shadow:
+    0 0 0 10px
+    rgba(255, 255, 255, 0.03);
+}
+
+
+/* =========================================================
+   VOLTAR
+========================================================= */
+
+.backButton {
   position: absolute;
 
-  top: 64px;
-  left: 44px;
+  top: 34px;
+  left: 34px;
+
+  z-index: 3;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
 
   color:
     rgba(
       255,
       255,
       255,
-      0.42
+      0.72
     );
 
-  font-size: 8px;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
 
-  letter-spacing: 0.25em;
+  gap: 8px;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
 }
+
+
+.backButton svg {
+  font-size: 14px;
+
+  transition:
+    transform 0.25s ease;
+}
+
+
+.backButton:hover {
+  color: #ffffff;
+}
+
+
+.backButton:hover svg {
+  transform:
+    translateX(-3px);
+}
+
+
+/* =========================================================
+   CONTEÚDO ESQUERDO
+========================================================= */
 
 .leftContent {
   position: relative;
@@ -166,29 +269,102 @@ input {
   max-width: 680px;
 }
 
-.leftContent::before {
-  content: "";
+
+/* Mantém o conteúdo próximo ao botão de retorno no desktop. */
+@media (min-width: 851px) {
+  .container {
+    height: 100vh;
+    min-height: 0;
+
+    overflow: hidden;
+  }
+
+  .left {
+    height: 100vh;
+    min-height: 0;
+
+    align-items: flex-start;
+  }
+
+  .leftContent {
+    margin-top: 9px;
+  }
+
+  .right {
+    height: 100vh;
+    min-height: 0;
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo {
+  width:
+    clamp(
+      120px,
+      16vw,
+      230px
+    );
+
+  max-width: 75%;
+
+  height: auto;
 
   display: block;
 
-  width: 100%;
-  max-width: 470px;
-  height: 1px;
+  margin-bottom: 22px;
 
-  margin-bottom: 32px;
+  object-fit: contain;
 
-  background:
-    linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.42),
-      rgba(255, 255, 255, 0.04)
-    );
+  border-radius: 10px;
 }
 
-.left h1 {
-  max-width: 640px;
 
-  margin-bottom: 24px;
+.leftMiniTitle {
+  display: block;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.45
+    );
+
+  font-size: 13px;
+  font-weight: 600;
+
+  letter-spacing: 0.24em;
+}
+
+
+.leftLine {
+  width: 78px;
+  height: 2px;
+
+  margin:
+    18px
+    0
+    28px;
+
+  background: var(--blue-soft);
+}
+
+
+/* =========================================================
+   TÍTULO ESQUERDO
+========================================================= */
+
+.left h1 {
+  max-width: 840px;
+
+  margin: 0;
 
   color: #ffffff;
 
@@ -196,21 +372,20 @@ input {
     "Cormorant Garamond",
     serif;
 
-  font-size:
-    clamp(
-      64px,
-      6.6vw,
-      105px
-    );
+  font-size:90px;
 
   font-weight: 400;
 
-  line-height: 0.78;
-  letter-spacing: -0.062em;
+  line-height: 0.83;
+
+  letter-spacing: -0.055em;
 }
 
-.left p {
-  max-width: 460px;
+
+.leftText {
+  max-width: 470px;
+
+  margin-top: 24px;
 
   color:
     rgba(
@@ -220,7 +395,7 @@ input {
       0.58
     );
 
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 300;
 
   line-height: 1.9;
@@ -228,32 +403,97 @@ input {
 
 
 /* =========================================================
-   LOGO — CASO VOCÊ USE DEPOIS NO JSX
+   BENEFÍCIOS ESQUERDOS
 ========================================================= */
 
-.logo {
-  width: 180px;
+.leftBenefits {
+  width: 100%;
+  max-width: 470px;
 
-  margin-bottom: 30px;
+  margin-top: 30px;
 
-  object-fit: contain;
+  display: grid;
+
+  gap: 0;
+}
+
+
+.benefitItem {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 12px;
+
+  padding:
+    12px
+    0;
+
+  border-top:
+    1px solid
+    rgba(255, 255, 255, 0.09);
+}
+
+
+.benefitItem svg {
+  flex-shrink: 0;
+
+  margin-top: 2px;
+
+  font-size: 15px;
+
+  color: var(--blue-soft);
+}
+
+
+.benefitItem strong {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+.benefitItem span {
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.48
+    );
+
+  font-size: 13px;
+
+  line-height: 1.7;
 }
 
 
 /* =========================================================
    LADO DIREITO
+   SUBIDO MAIS PARA O TOPO
 ========================================================= */
 
 .right {
   min-height: 100vh;
 
+  /*
+   * Antes estava com muito espaço superior.
+   * Agora começa praticamente no topo.
+   */
   padding:
-    58px
-    clamp(42px, 5vw, 82px)
-    65px;
+    18px
+    clamp(28px, 5vw, 82px)
+    60px;
 
   display: flex;
+
   align-items: flex-start;
+
   justify-content: center;
 
   overflow-y: auto;
@@ -268,25 +508,60 @@ input {
 }
 
 
-/* =========================================================
-   FORMULÁRIO
-========================================================= */
-
-.form {
-  position: relative;
-
-  width: 100%;
-  max-width: 620px;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 13px;
-
-  padding-top: 34px;
+.right::-webkit-scrollbar {
+  width: 6px;
 }
 
-.form::before {
+
+.right::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.right::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+
+  background:
+    rgba(
+      24,
+      34,
+      53,
+      0.16
+    );
+}
+
+
+/* =========================================================
+   WRAPPER
+========================================================= */
+
+.formWrapper {
+  width: 100%;
+  max-width: 700px;
+
+  margin: 0;
+
+  padding: 0;
+}
+
+
+/* =========================================================
+   TOPO DO FORMULÁRIO
+========================================================= */
+
+.topo {
+  position: relative;
+
+  /*
+   * Reduzido para aproximar o título do topo.
+   */
+  padding-top: 16px;
+
+  margin-bottom: 24px;
+}
+
+
+.topo::before {
   content: "";
 
   position: absolute;
@@ -294,18 +569,30 @@ input {
   top: 0;
   left: 0;
 
-  width: 72px;
+  width: 74px;
   height: 2px;
 
   background: var(--blue);
 }
 
 
-/* =========================================================
-   TÍTULO
-========================================================= */
+.eyebrow {
+  display: block;
 
-.form h1 {
+  margin-bottom: 10px;
+
+  color: #8c95a0;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+}
+
+
+.topo h2 {
   margin: 0;
 
   color: var(--text);
@@ -318,26 +605,33 @@ input {
     clamp(
       54px,
       5vw,
-      72px
+      76px
     );
 
   font-weight: 400;
 
   line-height: 0.9;
+
   letter-spacing: -0.052em;
 }
 
-.subtitulo {
-  max-width: 460px;
 
-  margin:
-    3px
-    0
-    18px;
+.topo h2 em {
+  color: var(--blue);
+
+  font-style: normal;
+  font-weight: 400;
+}
+
+
+.topo p {
+  width: 730px;
+
+  margin-top: 12px;
 
   color: var(--muted);
 
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 300;
 
   line-height: 1.8;
@@ -345,65 +639,248 @@ input {
 
 
 /* =========================================================
-   TÍTULOS DAS SEÇÕES
+   ALERTAS
 ========================================================= */
 
-.tituloSecao {
-  position: relative;
+.erro,
+.sucesso {
+  width: 100%;
 
-  margin-top: 18px;
-  margin-bottom: 4px;
-  padding-bottom: 9px;
+  padding:
+    12px
+    14px;
 
-  border-bottom:
-    1px solid
-    var(--line-soft);
+  margin-bottom: 18px;
 
-  color: #697484;
+  border-radius: 0;
 
   font-size: 8px;
-  font-weight: 600;
+  font-weight: 500;
 
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  line-height: 1.7;
 }
 
-.tituloSecao::after {
-  content: "";
 
-  position: absolute;
+.erro {
+  border:
+    1px solid
+    rgba(183, 76, 76, 0.22);
 
-  bottom: -1px;
-  left: 0;
+  background:
+    rgba(183, 76, 76, 0.045);
 
-  width: 34px;
-  height: 1px;
+  color: #a74747;
+}
 
-  background: var(--blue);
+
+.sucesso {
+  border:
+    1px solid
+    rgba(62, 129, 82, 0.18);
+
+  background:
+    rgba(62, 129, 82, 0.045);
+
+  color: #4d7d5a;
 }
 
 
 /* =========================================================
-   GRID DOS CAMPOS
+   FORMULÁRIO
 ========================================================= */
 
-.grid {
+.form {
+  width: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+
+/* =========================================================
+   CARDS DAS ETAPAS
+========================================================= */
+
+.sectionCard {
+  width: 100%;
+
+  padding: 20px;
+
+  border:
+    1px solid
+    var(--line-soft);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.48
+    );
+
+  transition:
+    border-color 0.22s ease,
+    transform 0.22s ease,
+    background 0.22s ease;
+}
+
+
+.sectionCard:hover {
+  border-color:
+    rgba(
+      50,
+      100,
+      200,
+      0.18
+    );
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.74
+    );
+}
+
+
+/* =========================================================
+   CABEÇALHO DOS CARDS
+========================================================= */
+
+.sectionHeader {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  margin-bottom: 16px;
+
+  padding-bottom: 13px;
+
+  border-bottom:
+    1px solid
+    var(--line-soft);
+}
+
+
+.sectionIcon {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(
+      50,
+      100,
+      200,
+      0.06
+    );
+
+  border:
+    1px solid
+    rgba(
+      50,
+      100,
+      200,
+      0.12
+    );
+
+  color: var(--blue);
+
+  font-size: 17px;
+}
+
+
+.sectionHeader span {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #8e97a3;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+}
+
+
+.sectionHeader h3 {
+  margin: 0;
+
+  color: var(--text);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 30px;
+  font-weight: 600;
+
+  line-height: 1;
+}
+
+
+/* =========================================================
+   CAMPOS
+========================================================= */
+
+.fields {
   width: 100%;
 
   display: grid;
 
   grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
 
-  gap: 11px;
+  gap: 13px;
 }
 
 
-/* =========================================================
-   INPUTS
-========================================================= */
+.field {
+  min-width: 0;
 
-.form input {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+
+.full {
+  grid-column: 1 / -1;
+}
+
+
+.field label {
+  color: #596575;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  letter-spacing: 0.05em;
+
+  text-transform: uppercase;
+}
+
+
+.field input {
   width: 100%;
   height: 48px;
 
@@ -424,12 +901,12 @@ input {
       255,
       255,
       255,
-      0.58
+      0.6
     );
 
   color: var(--text);
 
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 500;
 
   transition:
@@ -438,40 +915,54 @@ input {
     box-shadow 0.22s ease;
 }
 
-.form input::placeholder {
+
+.field input::placeholder {
   color: #a1a8b1;
 }
 
-.form input:hover {
+
+.field input:hover {
   border-color:
-    rgba(24, 34, 53, 0.22);
+    rgba(
+      24,
+      34,
+      53,
+      0.22
+    );
 
   background:
     rgba(
       255,
       255,
       255,
-      0.78
+      0.8
     );
 }
 
-.form input:focus {
+
+.field input:focus {
   border-color:
-    rgba(50, 100, 200, 0.5);
+    rgba(
+      50,
+      100,
+      200,
+      0.5
+    );
 
   background: #ffffff;
 
   box-shadow:
     0 0 0 3px
-    rgba(50, 100, 200, 0.06);
+    rgba(
+      50,
+      100,
+      200,
+      0.06
+    );
 }
 
 
-/* =========================================================
-   DATA
-========================================================= */
-
-.form input[type="date"] {
+.field input[type="date"] {
   color: #667281;
 }
 
@@ -480,17 +971,21 @@ input {
    BOTÃO PRINCIPAL
 ========================================================= */
 
-.form button {
+.submitButton {
   width: 100%;
-  min-height: 49px;
 
-  margin-top: 16px;
+  min-height: 50px;
+
+  margin-top: 4px;
+
   padding:
     0
     18px;
 
-  display: inline-flex;
+  display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   border:
@@ -503,7 +998,7 @@ input {
 
   color: #ffffff;
 
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 600;
 
   letter-spacing: 0.02em;
@@ -517,7 +1012,8 @@ input {
     opacity 0.22s ease;
 }
 
-.form button:hover:not(:disabled) {
+
+.submitButton:hover:not(:disabled) {
   border-color: var(--blue);
 
   background: var(--blue);
@@ -526,75 +1022,19 @@ input {
     translateY(-1px);
 }
 
-.form button:active:not(:disabled) {
+
+.submitButton:active:not(:disabled) {
   transform:
     translateY(0);
 }
 
-.form button:disabled {
-  opacity: 0.5;
+
+.submitButton:disabled {
+  opacity: 0.55;
 
   cursor: not-allowed;
 
   transform: none;
-}
-
-
-/* =========================================================
-   ERRO
-========================================================= */
-
-.erro {
-  width: 100%;
-
-  padding:
-    11px
-    13px;
-
-  border:
-    1px solid
-    rgba(183, 76, 76, 0.22);
-
-  border-radius: 0;
-
-  background:
-    rgba(183, 76, 76, 0.045);
-
-  color: #a74747;
-
-  font-size: 8px;
-  font-weight: 500;
-
-  line-height: 1.6;
-}
-
-
-/* =========================================================
-   SUCESSO
-========================================================= */
-
-.sucesso {
-  width: 100%;
-
-  padding:
-    11px
-    13px;
-
-  border:
-    1px solid
-    rgba(62, 129, 82, 0.18);
-
-  border-radius: 0;
-
-  background:
-    rgba(62, 129, 82, 0.045);
-
-  color: #4d7d5a;
-
-  font-size: 8px;
-  font-weight: 500;
-
-  line-height: 1.6;
 }
 
 
@@ -604,7 +1044,7 @@ input {
 
 .loginText {
   margin:
-    8px
+    4px
     0
     0;
 
@@ -612,13 +1052,15 @@ input {
 
   color: #87919e;
 
-  font-size: 8px;
+  font-size: 13px;
 }
+
 
 .link {
   display: inline-block;
 
   margin-left: 5px;
+
   padding-bottom: 2px;
 
   border-bottom:
@@ -636,6 +1078,7 @@ input {
     border-color 0.2s ease;
 }
 
+
 .link:hover {
   border-color: var(--blue);
 
@@ -644,40 +1087,17 @@ input {
 
 
 /* =========================================================
-   SCROLLBAR
+   RESPONSIVO — 1200PX
 ========================================================= */
 
-.right::-webkit-scrollbar {
-  width: 6px;
-}
+@media (max-width: 1200px) {
 
-.right::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.right::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-
-  background:
-    rgba(
-      24,
-      34,
-      53,
-      0.16
-    );
-}
-
-
-/* =========================================================
-   RESPONSIVO — 1100PX
-========================================================= */
-
-@media (max-width: 1100px) {
   .container {
     grid-template-columns:
-      minmax(330px, 0.78fr)
-      minmax(500px, 1.22fr);
+      minmax(350px, 0.85fr)
+      minmax(520px, 1.15fr);
   }
+
 
   .left {
     padding:
@@ -685,15 +1105,64 @@ input {
       38px;
   }
 
+
   .left h1 {
-    font-size: 66px;
+    font-size: 68px;
   }
+
 
   .right {
     padding:
-      50px
-      34px;
+      18px
+      30px
+      52px;
   }
+
+}
+
+
+/* =========================================================
+   RESPONSIVO — 1000PX
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .container {
+    grid-template-columns:
+      minmax(320px, 0.78fr)
+      minmax(500px, 1.22fr);
+  }
+
+
+  .left {
+    padding:
+      46px
+      30px;
+  }
+
+
+  .left h1 {
+    font-size: 61px;
+  }
+
+
+  .logo {
+    width: 160px;
+  }
+
+
+  .right {
+    padding:
+      18px
+      24px
+      50px;
+  }
+
+
+  .sectionCard {
+    padding: 18px;
+  }
+
 }
 
 
@@ -702,6 +1171,7 @@ input {
 ========================================================= */
 
 @media (max-width: 850px) {
+
   .container {
     display: block;
 
@@ -710,62 +1180,73 @@ input {
     background: var(--paper);
   }
 
+
   .left {
     position: relative;
 
     width: 100%;
-    min-height: 310px;
+
+    min-height: 390px;
 
     padding:
-      46px
-      28px;
+      90px
+      28px
+      40px;
 
     align-items: flex-end;
   }
 
-  .left::before {
-    top: 30px;
+
+  .backButton {
+    top: 24px;
     left: 28px;
   }
 
-  .left::after {
-    top: 48px;
-    left: 28px;
+
+  .logo {
+    width: 170px;
+
+    margin-bottom: 18px;
   }
 
-  .leftContent::before {
-    margin-bottom: 23px;
-  }
 
   .left h1 {
-    max-width: 460px;
-
-    margin-bottom: 16px;
-
-    font-size: 58px;
+    font-size: 56px;
   }
 
-  .left p {
-    max-width: 420px;
 
+  .leftText {
     font-size: 10px;
   }
 
+
+  .leftBenefits {
+    display: none;
+  }
+
+
   .right {
     width: 100%;
+
     min-height: auto;
 
+    /*
+     * No tablet/mobile também começa
+     * mais próximo do topo.
+     */
     padding:
-      40px
       24px
-      55px;
+      22px
+      54px;
 
     overflow: visible;
   }
 
-  .form {
-    max-width: 650px;
+
+  .formWrapper {
+    max-width: 680px;
   }
+
 }
 
 
@@ -774,51 +1255,83 @@ input {
 ========================================================= */
 
 @media (max-width: 600px) {
+
   .left {
-    min-height: 270px;
+    min-height: 330px;
 
     padding:
-      42px
-      20px
-      30px;
+      84px
+      18px
+      32px;
   }
 
-  .left::before {
-    left: 20px;
+
+  .backButton {
+    left: 18px;
   }
 
-  .left::after {
-    left: 20px;
+
+  .logo {
+    width: 140px;
+
+    margin-bottom: 16px;
   }
+
 
   .left h1 {
-    font-size: 49px;
+    font-size: 46px;
   }
 
-  .left p {
+
+  .leftText {
     font-size: 9px;
   }
 
+
   .right {
     padding:
-      34px
-      16px
-      48px;
+      20px
+      14px
+      44px;
   }
 
-  .form h1 {
-    font-size: 51px;
+
+  .topo {
+    padding-top: 14px;
+
+    margin-bottom: 22px;
   }
 
-  .grid {
+
+  .topo h2 {
+    font-size: 50px;
+  }
+
+
+  .fields {
     grid-template-columns: 1fr;
-
-    gap: 10px;
   }
 
-  .form input {
+
+  .full {
+    grid-column: auto;
+  }
+
+
+  .sectionCard {
+    padding: 18px;
+  }
+
+
+  .sectionHeader {
+    margin-bottom: 15px;
+  }
+
+
+  .field input {
     height: 47px;
   }
+
 }
 
 
@@ -827,36 +1340,58 @@ input {
 ========================================================= */
 
 @media (max-width: 430px) {
+
   .left {
-    min-height: 240px;
+    min-height: 290px;
 
-    padding-left: 15px;
-    padding-right: 15px;
+    padding:
+      84px
+      14px
+      26px;
   }
 
-  .left::before,
-  .left::after {
-    left: 15px;
+
+  .backButton {
+    left: 14px;
+
+    font-size: 9px;
   }
+
+
+  .logo {
+    width: 125px;
+  }
+
 
   .left h1 {
-    font-size: 43px;
+    font-size: 40px;
   }
+
 
   .right {
     padding:
-      30px
-      12px
-      42px;
+      18px
+      10px
+      40px;
   }
 
-  .form h1 {
-    font-size: 45px;
+
+  .topo h2 {
+    font-size: 43px;
   }
 
-  .subtitulo {
-    font-size: 9px;
+
+  .sectionCard {
+    padding:
+      16px
+      13px;
   }
+
+
+  .sectionHeader h3 {
+    font-size: 23px;
+  }
+
 }
 
 
@@ -865,6 +1400,7 @@ input {
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -872,4 +1408,5 @@ input {
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
   }
+
 }

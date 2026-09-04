@@ -607,12 +607,13 @@ export default function SobreNos() {
 
                         <p>
 
-                            Acreditamos que uma cor
-                            pode transformar muito
-                            mais do que uma parede.
-                            Ela muda sensações,
-                            ambientes e a forma como
-                            vivemos cada espaço.
+                            Acreditamos que uma cor transforma muito mais
+                            do que uma parede: ela desperta sensações,
+                            revela personalidades e dá vida a cada ambiente.
+                            Por isso, unimos inspiração, variedade e cuidado
+                            em cada atendimento para ajudar você a encontrar
+                            o tom certo e criar espaços que realmente contam
+                            a sua história.
 
                         </p>
 
@@ -636,7 +637,7 @@ export default function SobreNos() {
                             }}
                         >
 
-                            Nossa história
+                            Conheça nossa história
 
                             <ArrowRight
                                 size={17}
@@ -1248,61 +1249,6 @@ export default function SobreNos() {
                     MARCAS
                 ================================================= */}
 
-                <section
-                    className={
-                        style.marcas
-                    }
-                >
-
-                    <span
-                        className={
-                            style.marcasTitulo
-                        }
-                    >
-
-                        GRANDES MARCAS,
-                        GRANDES RESULTADOS
-
-                    </span>
-
-
-                    <div
-                        className={
-                            style.marcasLista
-                        }
-                    >
-
-                        <strong>
-                            SUVINIL
-                        </strong>
-
-                        <i />
-
-                        <strong>
-                            CORAL
-                        </strong>
-
-                        <i />
-
-                        <strong>
-                            SHERWIN-WILLIAMS
-                        </strong>
-
-                        <i />
-
-                        <strong>
-                            EUCATEX
-                        </strong>
-
-                        <i />
-
-                        <strong>
-                            ANJO
-                        </strong>
-
-                    </div>
-
-                </section>
 
 
                 {/* =================================================
@@ -1447,8 +1393,7 @@ export default function SobreNos() {
 
                             Encontre a unidade
                             mais próxima e descubra
-                            de perto nossas cores,
-                            produtos e soluções.
+                            de perto nossas cores   e soluções.
 
                         </p>
 

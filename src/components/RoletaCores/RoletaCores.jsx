@@ -310,8 +310,8 @@ export default function RoletaCores() {
           PIXEL COLOR • GUIA CROMÁTICO
         </span>
         <h2 id="titulo-roleta-cores">
-          Gire a paleta.
-          <em> Encontre sua atmosfera.</em>
+          <span>Gire a paleta</span>
+          <em>Encontre sua atmosfera.</em>
         </h2>
         <p>
           Arraste a roleta ou use as setas para explorar as sensações de

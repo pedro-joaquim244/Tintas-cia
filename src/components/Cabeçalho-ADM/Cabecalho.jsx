@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import styles from "./Cabecalho.module.css";
 
 import {
@@ -8,10 +10,13 @@ import {
   FiTag,
   FiUsers,
   FiClock,
+  FiMail,
+  FiBriefcase,
 } from "react-icons/fi";
 
 import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../../contexts/authContext.jsx";
+import { urlFotoUsuario } from "../../services/api.js";
 
 import Logo from "../../assets/imagens/logo.jfif";
 
@@ -19,6 +24,10 @@ export default function Cabecalho() {
   const navigate = useNavigate();
 
   const { logout, usuario } = useAuth();
+  const [fotoComErro, setFotoComErro] = useState("");
+
+  const fotoUsuario = urlFotoUsuario(usuario?.foto);
+  const fotoFalhou = fotoUsuario && fotoComErro === fotoUsuario;
 
   function Sair() {
     logout();
@@ -41,13 +50,6 @@ export default function Cabecalho() {
         >
           <img src={Logo} alt="Logo" />
         </NavLink>
-
-        {/* IDENTIFICAÇÃO */}
-
-        <div className={styles.adminLabel}>
-          <span>Área administrativa</span>
-          <small>Gestão Pixel Color</small>
-        </div>
 
         {/* MENU */}
 
@@ -124,6 +126,32 @@ export default function Cabecalho() {
             <FiClock size={19} />
             <span>Histórico</span>
           </NavLink>
+          <NavLink
+            to="/admin/emails"
+            title="E-mails"
+            aria-label="Abrir central de e-mails"
+            className={({ isActive }) =>
+              isActive
+                ? `${styles.menuItem} ${styles.active}`
+                : styles.menuItem
+            }
+          >
+            <FiMail size={19} />
+            <span>E-mails</span>
+          </NavLink>
+          <NavLink
+            to="/admin/fornecedores"
+            title="Fornecedores"
+            aria-label="Abrir fornecedores"
+            className={({ isActive }) =>
+              isActive
+                ? `${styles.menuItem} ${styles.active}`
+                : styles.menuItem
+            }
+          >
+            <FiBriefcase size={19} />
+            <span>Fornecedores</span>
+          </NavLink>
         </nav>
       </div>
 
@@ -143,7 +171,15 @@ export default function Cabecalho() {
           }
         >
           <div className={styles.avatar}>
-            {usuario?.nome?.charAt(0).toUpperCase() || "A"}
+            {fotoUsuario && !fotoFalhou ? (
+              <img
+                src={fotoUsuario}
+                alt={`Foto de ${usuario?.nome || "Administrador"}`}
+                onError={() => setFotoComErro(fotoUsuario)}
+              />
+            ) : (
+              usuario?.nome?.charAt(0).toUpperCase() || "A"
+            )}
           </div>
 
           <div className={styles.userInfo}>

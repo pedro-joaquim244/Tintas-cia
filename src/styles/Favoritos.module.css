@@ -1,0 +1,2550 @@
+@import url(
+    "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap"
+);
+
+
+/* =========================================================
+   PÁGINA
+========================================================= */
+
+.pagina {
+    min-height: 100vh;
+
+    background:
+        #f7f6f2;
+
+    color:
+        #172033;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+}
+
+
+.main {
+    width:
+        min(
+            1420px,
+            calc(100% - 70px)
+        );
+
+    margin:
+        0 auto;
+
+    padding:
+        115px
+        0
+        110px;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+    position: relative;
+
+    min-height: 235px;
+
+    margin-bottom:
+        46px;
+
+    padding:
+        46px
+        52px;
+
+    display: flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        40px;
+
+    overflow:
+        hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #13223a 0%,
+            #1a3154 55%,
+            #234879 100%
+        );
+
+    color:
+        #ffffff;
+}
+
+
+.heroDecoracao {
+    position:
+        absolute;
+
+    width:
+        380px;
+
+    height:
+        380px;
+
+    top:
+        -245px;
+
+    right:
+        100px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.09
+        );
+
+    border-radius:
+        50%;
+}
+
+
+.hero::before {
+    content:
+        "";
+
+    position:
+        absolute;
+
+    width:
+        520px;
+
+    height:
+        520px;
+
+    top:
+        -350px;
+
+    right:
+        -180px;
+
+    border-radius:
+        50%;
+
+    background:
+        rgba(
+            116,
+            158,
+            224,
+            0.12
+        );
+}
+
+
+.heroConteudo {
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    max-width:
+        700px;
+}
+
+
+.eyebrow {
+    display:
+        block;
+
+    margin-bottom:
+        12px;
+
+    color:
+        #91b4e7;
+
+    font-size:
+        10px;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        0.24em;
+}
+
+
+.hero h1 {
+    margin:
+        0;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        clamp(
+            46px,
+            4.6vw,
+            68px
+        );
+
+    font-weight:
+        500;
+
+    line-height:
+        0.92;
+
+    letter-spacing:
+        -0.045em;
+}
+
+
+.hero h1 em {
+    color:
+        #a9c5eb;
+
+    font-weight:
+        400;
+}
+
+
+.hero p {
+    max-width:
+        570px;
+
+    margin:
+        19px
+        0
+        0;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.58
+        );
+
+    font-size:
+        12px;
+
+    font-weight:
+        300;
+
+    line-height:
+        1.75;
+}
+
+
+/* =========================================================
+   RESUMO HERO
+========================================================= */
+
+.heroResumo {
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    min-width:
+        300px;
+
+    padding:
+        22px
+        0;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        flex-end;
+
+    gap:
+        28px;
+}
+
+
+.heroResumo > div {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        flex-end;
+
+    gap:
+        3px;
+}
+
+
+.heroResumo span {
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.4
+        );
+
+    font-size:
+        8px;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        0.18em;
+}
+
+
+.heroResumo strong {
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        48px;
+
+    font-weight:
+        400;
+
+    line-height:
+        1;
+}
+
+
+.heroResumo .linhaHero {
+    width:
+        1px;
+
+    height:
+        55px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.15
+        );
+}
+
+
+/* =========================================================
+   CABEÇALHO DA VITRINE
+========================================================= */
+
+.cabecalhoVitrine {
+    margin-bottom:
+        22px;
+
+    display:
+        flex;
+
+    align-items:
+        flex-end;
+
+    justify-content:
+        space-between;
+
+    gap:
+        30px;
+}
+
+
+.tituloVitrine span {
+    color:
+        #3264c8;
+
+    font-size:
+        9px;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        0.18em;
+}
+
+
+.tituloVitrine h2 {
+    margin:
+        3px
+        0
+        0;
+
+    color:
+        #172033;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        37px;
+
+    font-weight:
+        500;
+
+    letter-spacing:
+        -0.035em;
+}
+
+
+/* =========================================================
+   CONTROLES
+========================================================= */
+
+.controles {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+}
+
+
+.busca {
+    width:
+        310px;
+
+    height:
+        43px;
+
+    padding:
+        0
+        14px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    border:
+        1px solid
+        #dfddd6;
+
+    background:
+        #ffffff;
+
+    box-sizing:
+        border-box;
+}
+
+
+.busca svg {
+    width:
+        14px;
+
+    height:
+        14px;
+
+    flex-shrink:
+        0;
+
+    color:
+        #9298a1;
+}
+
+
+.busca input {
+    width:
+        100%;
+
+    border:
+        none;
+
+    outline:
+        none;
+
+    background:
+        transparent;
+
+    color:
+        #172033;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+
+    font-size:
+        11px;
+}
+
+
+.busca input::placeholder {
+    color:
+        #a3a7ad;
+}
+
+
+/* =========================================================
+   SELECIONAR TODOS
+========================================================= */
+
+.selecionarTodos,
+.selecionarTodosAtivo {
+    height:
+        43px;
+
+    padding:
+        0
+        14px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    border:
+        1px solid
+        #d8d6cf;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+
+    font-size:
+        10px;
+
+    font-weight:
+        500;
+
+    cursor:
+        pointer;
+
+    transition:
+        0.25s ease;
+}
+
+
+.selecionarTodos {
+    background:
+        #ffffff;
+
+    color:
+        #5d6572;
+}
+
+
+.selecionarTodos:hover {
+    border-color:
+        #172033;
+
+    color:
+        #172033;
+}
+
+
+.selecionarTodosAtivo {
+    border-color:
+        #172033;
+
+    background:
+        #172033;
+
+    color:
+        #ffffff;
+}
+
+
+.checkboxPequeno {
+    width:
+        16px;
+
+    height:
+        16px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        1px solid
+        currentColor;
+}
+
+
+.checkboxPequeno svg {
+    width:
+        11px;
+
+    height:
+        11px;
+}
+
+
+/* =========================================================
+   VITRINE
+========================================================= */
+
+.vitrine {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(
+                0,
+                1fr
+            )
+        );
+
+    gap:
+        20px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.card {
+    position:
+        relative;
+
+    min-width:
+        0;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid
+        #e1dfd8;
+
+    background:
+        #ffffff;
+
+    transition:
+        border-color 0.3s ease,
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+.card:hover {
+    transform:
+        translateY(
+            -4px
+        );
+
+    border-color:
+        #cdd4df;
+
+    box-shadow:
+        0
+        18px
+        45px
+        rgba(
+            23,
+            32,
+            51,
+            0.07
+        );
+}
+
+
+.cardSelecionado {
+    border-color:
+        #3264c8;
+
+    box-shadow:
+        inset
+        0
+        0
+        0
+        1px
+        #3264c8;
+}
+
+
+/* =========================================================
+   IMAGEM
+========================================================= */
+
+.imagemArea {
+    position:
+        relative;
+
+    height:
+        285px;
+
+    overflow:
+        hidden;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f0eee8,
+            #faf9f6
+        );
+}
+
+
+.imagemArea img {
+    width:
+        100%;
+
+    height:
+        100%;
+
+    padding:
+        34px;
+
+    display:
+        block;
+
+    object-fit:
+        contain;
+
+    box-sizing:
+        border-box;
+
+    transition:
+        transform
+        0.45s
+        cubic-bezier(
+            0.16,
+            1,
+            0.3,
+            1
+        );
+}
+
+
+.card:hover
+.imagemArea img {
+    transform:
+        scale(
+            1.045
+        );
+}
+
+
+/* =========================================================
+   BOTÃO SELECIONAR
+========================================================= */
+
+.botaoSelecionar,
+.botaoSelecionarAtivo {
+    position:
+        absolute;
+
+    z-index:
+        5;
+
+    top:
+        14px;
+
+    left:
+        14px;
+
+    min-height:
+        34px;
+
+    padding:
+        0
+        10px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    border:
+        1px solid
+        rgba(
+            23,
+            32,
+            51,
+            0.13
+        );
+
+    font-family:
+        "Poppins",
+        sans-serif;
+
+    font-size:
+        8px;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        0.06em;
+
+    text-transform:
+        uppercase;
+
+    cursor:
+        pointer;
+
+    transition:
+        0.25s ease;
+}
+
+
+.botaoSelecionar {
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.92
+        );
+
+    color:
+        #455064;
+}
+
+
+.botaoSelecionar:hover {
+    border-color:
+        #172033;
+
+    background:
+        #172033;
+
+    color:
+        #ffffff;
+}
+
+
+.botaoSelecionarAtivo {
+    border-color:
+        #3264c8;
+
+    background:
+        #3264c8;
+
+    color:
+        #ffffff;
+}
+
+
+.botaoSelecionar span,
+.botaoSelecionarAtivo span {
+    width:
+        15px;
+
+    height:
+        15px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        1px solid
+        currentColor;
+}
+
+
+.botaoSelecionar svg,
+.botaoSelecionarAtivo svg {
+    width:
+        10px;
+
+    height:
+        10px;
+}
+
+
+.botaoSelecionar:disabled {
+    opacity:
+        0.55;
+
+    cursor:
+        not-allowed;
+}
+
+
+/* =========================================================
+   FAVORITO
+========================================================= */
+
+.botaoFavorito {
+    position:
+        absolute;
+
+    z-index:
+        5;
+
+    top:
+        14px;
+
+    right:
+        14px;
+
+    width:
+        35px;
+
+    height:
+        35px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        1px solid
+        rgba(
+            23,
+            32,
+            51,
+            0.12
+        );
+
+    border-radius:
+        50%;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.93
+        );
+
+    color:
+        #3264c8;
+
+    cursor:
+        pointer;
+
+    transition:
+        0.25s ease;
+}
+
+
+.botaoFavorito svg {
+    width:
+        15px;
+
+    height:
+        15px;
+
+    fill:
+        currentColor;
+}
+
+
+.botaoFavorito:hover {
+    border-color:
+        #172033;
+
+    background:
+        #172033;
+
+    color:
+        #ffffff;
+}
+
+
+/* =========================================================
+   MARCA
+========================================================= */
+
+.marcaImagem {
+    position:
+        absolute;
+
+    left:
+        14px;
+
+    bottom:
+        13px;
+
+    padding:
+        5px
+        8px;
+
+    background:
+        rgba(
+            23,
+            32,
+            51,
+            0.89
+        );
+
+    color:
+        #ffffff;
+
+    font-size:
+        7px;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        0.14em;
+
+    text-transform:
+        uppercase;
+}
+
+
+/* =========================================================
+   SEM IMAGEM
+========================================================= */
+
+.semImagem {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    color:
+        #bdc0c5;
+}
+
+
+.semImagem svg {
+    width:
+        34px;
+
+    height:
+        34px;
+
+    stroke-width:
+        1;
+}
+
+
+.semImagem span {
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        18px;
+}
+
+
+/* =========================================================
+   CONTEÚDO
+========================================================= */
+
+.cardConteudo {
+    min-height:
+        205px;
+
+    padding:
+        19px;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    justify-content:
+        space-between;
+
+    box-sizing:
+        border-box;
+}
+
+
+.meta {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        10px;
+
+    min-height:
+        18px;
+}
+
+
+.meta > span:first-child {
+    color:
+        #6684b7;
+
+    font-size:
+        8px;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        0.1em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.disponivel,
+.indisponivel {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        5px;
+
+    font-size:
+        7px;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        0.08em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.disponivel {
+    color:
+        #3d8459;
+}
+
+
+.indisponivel {
+    color:
+        #a55353;
+}
+
+
+.disponivel i,
+.indisponivel i {
+    width:
+        5px;
+
+    height:
+        5px;
+
+    border-radius:
+        50%;
+
+    background:
+        currentColor;
+}
+
+
+.cardConteudo h2 {
+    margin:
+        8px
+        0
+        7px;
+
+    color:
+        #172033;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        25px;
+
+    font-weight:
+        600;
+
+    line-height:
+        1;
+
+    letter-spacing:
+        -0.025em;
+}
+
+
+.cardConteudo p {
+    min-height:
+        35px;
+
+    margin:
+        0;
+
+    display:
+        -webkit-box;
+
+    overflow:
+        hidden;
+
+    -webkit-line-clamp:
+        2;
+
+    -webkit-box-orient:
+        vertical;
+
+    color:
+        #858b94;
+
+    font-size:
+        9px;
+
+    line-height:
+        1.65;
+}
+
+
+/* =========================================================
+   RODAPÉ CARD
+========================================================= */
+
+.cardRodape {
+    margin-top:
+        15px;
+
+    padding-top:
+        13px;
+
+    display:
+        flex;
+
+    align-items:
+        flex-end;
+
+    justify-content:
+        space-between;
+
+    gap:
+        10px;
+
+    border-top:
+        1px solid
+        #ebe8e1;
+}
+
+
+.preco {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+}
+
+
+.preco small {
+    color:
+        #9ca0a7;
+
+    font-size:
+        7px;
+
+    text-transform:
+        uppercase;
+}
+
+
+.preco strong {
+    color:
+        #172033;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        25px;
+
+    font-weight:
+        600;
+}
+
+
+.remover {
+    width:
+        34px;
+
+    height:
+        34px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        1px solid
+        #dfddd6;
+
+    background:
+        transparent;
+
+    color:
+        #9599a0;
+
+    cursor:
+        pointer;
+
+    transition:
+        0.25s ease;
+}
+
+
+.remover:hover {
+    border-color:
+        #a64d4d;
+
+    background:
+        #a64d4d;
+
+    color:
+        #ffffff;
+}
+
+
+/* =========================================================
+   ALERTAS
+========================================================= */
+
+.erro,
+.sucesso {
+    min-height:
+        45px;
+
+    margin-bottom:
+        18px;
+
+    padding:
+        0
+        15px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    border:
+        1px solid;
+
+    font-size:
+        11px;
+}
+
+
+.erro {
+    border-color:
+        rgba(
+            165,
+            75,
+            75,
+            0.2
+        );
+
+    background:
+        rgba(
+            165,
+            75,
+            75,
+            0.05
+        );
+
+    color:
+        #9c4949;
+}
+
+
+.sucesso {
+    border-color:
+        rgba(
+            55,
+            133,
+            83,
+            0.2
+        );
+
+    background:
+        rgba(
+            55,
+            133,
+            83,
+            0.05
+        );
+
+    color:
+        #377f54;
+}
+
+
+/* =========================================================
+   CONTINUAR
+========================================================= */
+
+.continuar {
+    margin-top:
+        62px;
+
+    padding:
+        30px
+        0;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        30px;
+
+    border-top:
+        1px solid
+        #d9d6cf;
+
+    border-bottom:
+        1px solid
+        #d9d6cf;
+}
+
+
+.continuar span {
+    color:
+        #3264c8;
+
+    font-size:
+        8px;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        0.18em;
+}
+
+
+.continuar h2 {
+    margin:
+        4px
+        0
+        0;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        37px;
+
+    font-weight:
+        500;
+}
+
+
+.continuar h2 em {
+    color:
+        #5479b8;
+
+    font-weight:
+        400;
+}
+
+
+.continuar button,
+.vazio button {
+    min-height:
+        45px;
+
+    padding:
+        0
+        18px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        10px;
+
+    border:
+        1px solid
+        #172033;
+
+    background:
+        #172033;
+
+    color:
+        #ffffff;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+
+    font-size:
+        9px;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        0.05em;
+
+    cursor:
+        pointer;
+
+    transition:
+        0.25s ease;
+}
+
+
+.continuar button:hover,
+.vazio button:hover {
+    background:
+        transparent;
+
+    color:
+        #172033;
+}
+
+
+/* =========================================================
+   VAZIO
+========================================================= */
+
+.vazio {
+    min-height:
+        480px;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    text-align:
+        center;
+}
+
+
+.vazioIcone {
+    width:
+        67px;
+
+    height:
+        67px;
+
+    margin-bottom:
+        19px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        1px solid
+        #d5d2cb;
+
+    border-radius:
+        50%;
+
+    color:
+        #5176b5;
+}
+
+
+.vazioIcone svg {
+    width:
+        24px;
+
+    height:
+        24px;
+}
+
+
+.vazio > span {
+    color:
+        #3264c8;
+
+    font-size:
+        8px;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        0.2em;
+}
+
+
+.vazio h2 {
+    max-width:
+        620px;
+
+    margin:
+        11px
+        0
+        13px;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        50px;
+
+    font-weight:
+        500;
+
+    line-height:
+        0.95;
+}
+
+
+.vazio h2 em {
+    color:
+        #5278b6;
+
+    font-weight:
+        400;
+}
+
+
+.vazio p {
+    max-width:
+        470px;
+
+    margin:
+        0
+        0
+        22px;
+
+    color:
+        #858a92;
+
+    font-size:
+        11px;
+
+    line-height:
+        1.8;
+}
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+.estado {
+    min-height:
+        340px;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        8px;
+
+    color:
+        #8a9099;
+
+    text-align:
+        center;
+}
+
+
+.estado > svg {
+    width:
+        27px;
+
+    height:
+        27px;
+
+    color:
+        #5e83c1;
+}
+
+
+.estado strong {
+    color:
+        #555d69;
+
+    font-size:
+        12px;
+}
+
+
+.estado span {
+    font-size:
+        9px;
+}
+
+
+/* =========================================================
+   LOADERS
+========================================================= */
+
+.loader {
+    width:
+        26px;
+
+    height:
+        26px;
+
+    margin-bottom:
+        7px;
+
+    border:
+        2px solid
+        rgba(
+            23,
+            32,
+            51,
+            0.12
+        );
+
+    border-top-color:
+        #3264c8;
+
+    border-radius:
+        50%;
+
+    animation:
+        carregar
+        0.8s
+        linear
+        infinite;
+}
+
+
+.loaderBotao {
+    width:
+        13px;
+
+    height:
+        13px;
+
+    border:
+        2px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.3
+        );
+
+    border-top-color:
+        #ffffff;
+
+    border-radius:
+        50%;
+
+    animation:
+        carregar
+        0.7s
+        linear
+        infinite;
+}
+
+
+@keyframes carregar {
+
+    to {
+        transform:
+            rotate(
+                360deg
+            );
+    }
+
+}
+
+
+/* =========================================================
+   BARRA DE COMPRAS
+========================================================= */
+
+.barraCompras {
+    position:
+        fixed;
+
+    z-index:
+        9000;
+
+    left:
+        50%;
+
+    bottom:
+        22px;
+
+    width:
+        min(
+            920px,
+            calc(
+                100% - 40px
+            )
+        );
+
+    transform:
+        translateX(
+            -50%
+        );
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.1
+        );
+
+    background:
+        rgba(
+            19,
+            34,
+            58,
+            0.97
+        );
+
+    color:
+        #ffffff;
+
+    box-shadow:
+        0
+        24px
+        70px
+        rgba(
+            12,
+            22,
+            38,
+            0.28
+        );
+
+    backdrop-filter:
+        blur(
+            14px
+        );
+
+    animation:
+        aparecerBarra
+        0.35s
+        cubic-bezier(
+            0.16,
+            1,
+            0.3,
+            1
+        );
+}
+
+
+.barraConteudo {
+    min-height:
+        78px;
+
+    padding:
+        11px
+        13px
+        11px
+        17px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        28px;
+
+    box-sizing:
+        border-box;
+}
+
+
+.resumoCompras {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        12px;
+}
+
+
+.iconeCarrinho {
+    width:
+        43px;
+
+    height:
+        43px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
+
+    color:
+        #9bb9e8;
+}
+
+
+.iconeCarrinho svg {
+    width:
+        18px;
+
+    height:
+        18px;
+}
+
+
+.resumoCompras > div:last-child {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+}
+
+
+.resumoCompras span,
+.totalCompras span {
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.42
+        );
+
+    font-size:
+        7px;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        0.16em;
+}
+
+
+.resumoCompras strong {
+    margin-top:
+        1px;
+
+    font-size:
+        12px;
+
+    font-weight:
+        500;
+}
+
+
+/* =========================================================
+   TOTAL
+========================================================= */
+
+.totalCompras {
+    margin-left:
+        auto;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        flex-end;
+}
+
+
+.totalCompras strong {
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        26px;
+
+    font-weight:
+        500;
+}
+
+
+/* =========================================================
+   AÇÕES BARRA
+========================================================= */
+
+.acoesCompras {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+}
+
+
+.limparSelecao,
+.irCompras {
+    min-height:
+        48px;
+
+    padding:
+        0
+        17px;
+
+    border:
+        1px solid;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+
+    font-size:
+        9px;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        0.06em;
+
+    text-transform:
+        uppercase;
+
+    cursor:
+        pointer;
+
+    transition:
+        0.25s ease;
+}
+
+
+.limparSelecao {
+    border-color:
+        rgba(
+            255,
+            255,
+            255,
+            0.14
+        );
+
+    background:
+        transparent;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.65
+        );
+}
+
+
+.limparSelecao:hover {
+    border-color:
+        rgba(
+            255,
+            255,
+            255,
+            0.4
+        );
+
+    color:
+        #ffffff;
+}
+
+
+.irCompras {
+    min-width:
+        174px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        10px;
+
+    border-color:
+        #ffffff;
+
+    background:
+        #ffffff;
+
+    color:
+        #172033;
+}
+
+
+.irCompras:hover {
+    background:
+        #91b4e7;
+
+    border-color:
+        #91b4e7;
+}
+
+
+.irCompras:disabled,
+.limparSelecao:disabled {
+    opacity:
+        0.55;
+
+    cursor:
+        not-allowed;
+}
+
+
+@keyframes aparecerBarra {
+
+    from {
+        opacity:
+            0;
+
+        transform:
+            translate(
+                -50%,
+                20px
+            );
+    }
+
+    to {
+        opacity:
+            1;
+
+        transform:
+            translate(
+                -50%,
+                0
+            );
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVO - 1200
+========================================================= */
+
+@media (
+    max-width: 1200px
+) {
+
+    .vitrine {
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(
+                    0,
+                    1fr
+                )
+            );
+    }
+
+
+    .heroResumo {
+        min-width:
+            230px;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVO - 950
+========================================================= */
+
+@media (
+    max-width: 950px
+) {
+
+    .main {
+        width:
+            calc(
+                100% - 38px
+            );
+    }
+
+
+    .hero {
+        padding:
+            40px
+            35px;
+    }
+
+
+    .heroResumo {
+        display:
+            none;
+    }
+
+
+    .cabecalhoVitrine {
+        align-items:
+            flex-start;
+
+        flex-direction:
+            column;
+    }
+
+
+    .controles {
+        width:
+            100%;
+    }
+
+
+    .busca {
+        flex:
+            1;
+
+        width:
+            auto;
+    }
+
+
+    .vitrine {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(
+                    0,
+                    1fr
+                )
+            );
+    }
+
+
+    .barraConteudo {
+        gap:
+            15px;
+    }
+
+
+    .totalCompras {
+        display:
+            none;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVO - 650
+========================================================= */
+
+@media (
+    max-width: 650px
+) {
+
+    .main {
+        width:
+            calc(
+                100% - 26px
+            );
+
+        padding:
+            100px
+            0
+            150px;
+    }
+
+
+    .hero {
+        min-height:
+            245px;
+
+        padding:
+            32px
+            23px;
+
+        align-items:
+            flex-end;
+    }
+
+
+    .hero h1 {
+        font-size:
+            45px;
+    }
+
+
+    .hero p {
+        font-size:
+            10px;
+    }
+
+
+    .tituloVitrine h2 {
+        font-size:
+            32px;
+    }
+
+
+    .controles {
+        align-items:
+            stretch;
+
+        flex-direction:
+            column;
+    }
+
+
+    .busca {
+        width:
+            100%;
+    }
+
+
+    .selecionarTodos,
+    .selecionarTodosAtivo {
+        width:
+            100%;
+
+        justify-content:
+            center;
+    }
+
+
+    .vitrine {
+        grid-template-columns:
+            1fr;
+
+        gap:
+            15px;
+    }
+
+
+    .imagemArea {
+        height:
+            320px;
+    }
+
+
+    .cardConteudo {
+        min-height:
+            auto;
+    }
+
+
+    .continuar {
+        align-items:
+            flex-start;
+
+        flex-direction:
+            column;
+    }
+
+
+    .barraCompras {
+        width:
+            calc(
+                100% - 20px
+            );
+
+        bottom:
+            10px;
+    }
+
+
+    .barraConteudo {
+        min-height:
+            auto;
+
+        padding:
+            11px;
+
+        flex-wrap:
+            wrap;
+    }
+
+
+    .resumoCompras {
+        flex:
+            1;
+    }
+
+
+    .acoesCompras {
+        width:
+            100%;
+    }
+
+
+    .limparSelecao {
+        flex:
+            0 0
+            82px;
+    }
+
+
+    .irCompras {
+        flex:
+            1;
+
+        min-width:
+            0;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVO - 420
+========================================================= */
+
+@media (
+    max-width: 420px
+) {
+
+    .hero {
+        min-height:
+            225px;
+
+        padding:
+            29px
+            19px;
+    }
+
+
+    .hero h1 {
+        font-size:
+            40px;
+    }
+
+
+    .imagemArea {
+        height:
+            290px;
+    }
+
+
+    .botaoSelecionar,
+    .botaoSelecionarAtivo {
+        padding:
+            0
+            8px;
+
+        font-size:
+            7px;
+    }
+
+
+    .vazio h2 {
+        font-size:
+            41px;
+    }
+
+}

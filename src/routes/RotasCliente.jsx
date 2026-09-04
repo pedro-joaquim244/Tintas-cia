@@ -1,6 +1,7 @@
 import {
     Navigate,
-    Outlet
+    Outlet,
+    useLocation
 } from "react-router-dom";
 
 
@@ -11,6 +12,8 @@ import "../styles/clientTheme.css";
 
 
 export default function RotasCliente(){
+
+    const location = useLocation();
 
 
     const {
@@ -40,6 +43,9 @@ export default function RotasCliente(){
             <Navigate
                 to="/login"
                 replace
+                state={{
+                    from: `${location.pathname}${location.search}${location.hash}`
+                }}
             />
 
         );

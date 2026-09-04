@@ -1,0 +1,1753 @@
+@import url(
+    "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap"
+);
+
+
+/* =========================================================
+   BASE
+========================================================= */
+
+.container {
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at 88% 4%,
+            rgba(50, 100, 200, 0.08),
+            transparent 24%
+        ),
+        #f4f1e9;
+
+    color: #172033;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+}
+
+
+/* =========================================================
+   CONTEÚDO PRINCIPAL
+   ESPAÇO RESERVADO PARA SIDEBAR
+========================================================= */
+
+.main {
+    width:
+        calc(100% - 270px);
+
+    min-height: 100vh;
+
+    margin-left:
+        270px;
+
+    padding:
+        52px
+        40px
+        80px;
+
+    box-sizing:
+        border-box;
+}
+
+
+/* =========================================================
+   TOPO
+========================================================= */
+
+.topo {
+    display: flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap: 40px;
+
+    margin-bottom: 38px;
+}
+
+
+.eyebrow {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #3264c8;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.22em;
+}
+
+
+.topo h1 {
+    margin: 0;
+
+    color: #172033;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size:
+        clamp(
+            48px,
+            5vw,
+            72px
+        );
+
+    font-weight: 500;
+
+    line-height: 0.95;
+
+    letter-spacing: -0.05em;
+}
+
+
+.topo h1 em {
+    color: #3264c8;
+
+    font-weight: 400;
+}
+
+
+.topo p {
+    max-width: 590px;
+
+    margin:
+        13px
+        0
+        0;
+
+    color: #6d7480;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+
+.iconeTopo {
+    width: 76px;
+
+    height: 76px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border:
+        1px solid
+        rgba(23, 32, 51, 0.1);
+
+    background: #fbfaf6;
+
+    color: #3264c8;
+
+    box-shadow:
+        0 20px 50px
+        rgba(23, 32, 51, 0.06);
+}
+
+
+.iconeTopo svg {
+    width: 28px;
+
+    height: 28px;
+
+    stroke-width: 1.4;
+}
+
+
+/* =========================================================
+   ALERTAS
+========================================================= */
+
+.alertaErro,
+.alertaSucesso {
+    min-height: 48px;
+
+    margin-bottom: 20px;
+
+    padding:
+        0
+        17px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border: 1px solid;
+
+    font-size: 13px;
+
+    animation:
+        aparecer
+        0.25s
+        ease;
+}
+
+
+.alertaErro {
+    border-color:
+        rgba(193, 63, 63, 0.18);
+
+    background:
+        rgba(193, 63, 63, 0.06);
+
+    color: #a43b3b;
+}
+
+
+.alertaSucesso {
+    border-color:
+        rgba(52, 143, 84, 0.18);
+
+    background:
+        rgba(52, 143, 84, 0.06);
+
+    color: #2f8050;
+}
+
+
+/* =========================================================
+   RESUMO
+========================================================= */
+
+.resumo {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(0, 1fr)
+        );
+
+    gap: 14px;
+
+    margin-bottom: 22px;
+}
+
+
+.cardResumo {
+    min-height: 126px;
+
+    padding:
+        22px
+        23px;
+
+    border:
+        1px solid
+        rgba(23, 32, 51, 0.09);
+
+    background:
+        rgba(251, 250, 246, 0.83);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.cardResumo:hover {
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 18px 40px
+        rgba(23, 32, 51, 0.06);
+}
+
+
+.cardResumo > span {
+    color: #7c818b;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.cardResumo div {
+    margin-top: 13px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+
+.cardResumo strong {
+    color: #172033;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 42px;
+
+    font-weight: 500;
+
+    line-height: 1;
+}
+
+
+.cardResumo svg {
+    width: 21px;
+
+    height: 21px;
+
+    color: #7b9dd7;
+
+    stroke-width: 1.5;
+}
+
+
+/* =========================================================
+   CONTROLES
+========================================================= */
+
+.controles {
+    min-height: 70px;
+
+    margin-bottom: 16px;
+
+    padding: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    border:
+        1px solid
+        rgba(23, 32, 51, 0.09);
+
+    background:
+        #fbfaf6;
+}
+
+
+.busca {
+    min-height: 44px;
+
+    flex: 1;
+
+    padding:
+        0
+        14px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border:
+        1px solid
+        #d9d6ce;
+
+    background:
+        #ffffff;
+
+    color: #8a8f98;
+}
+
+
+.busca svg {
+    flex-shrink: 0;
+
+    width: 16px;
+
+    height: 16px;
+}
+
+
+.busca input {
+    width: 100%;
+
+    border: none;
+
+    outline: none;
+
+    background:
+        transparent;
+
+    color: #172033;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+
+    font-size: 13px;
+}
+
+
+.busca input::placeholder {
+    color: #a1a5ac;
+}
+
+
+/* =========================================================
+   FILTROS
+========================================================= */
+
+.filtros {
+    display: flex;
+
+    border:
+        1px solid
+        #d9d6ce;
+}
+
+
+.filtros button {
+    min-height: 42px;
+
+    padding:
+        0
+        17px;
+
+    border: none;
+
+    border-right:
+        1px solid
+        #d9d6ce;
+
+    background:
+        transparent;
+
+    color: #727884;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+
+.filtros button:last-child {
+    border-right: none;
+}
+
+
+.filtros button:hover {
+    color: #172033;
+}
+
+
+.filtros .filtroAtivo {
+    background: #172033;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   ATUALIZAR
+========================================================= */
+
+.atualizar {
+    min-height: 44px;
+
+    padding:
+        0
+        17px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    border:
+        1px solid
+        #172033;
+
+    background:
+        transparent;
+
+    color: #172033;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease;
+}
+
+
+.atualizar:hover {
+    background: #172033;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   PAINEL
+========================================================= */
+
+.painel {
+    width: 100%;
+
+    border:
+        1px solid
+        rgba(23, 32, 51, 0.09);
+
+    background:
+        #fbfaf6;
+
+    box-sizing:
+        border-box;
+}
+
+
+.painelTopo {
+    min-height: 86px;
+
+    padding:
+        17px
+        22px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-bottom:
+        1px solid
+        rgba(23, 32, 51, 0.08);
+}
+
+
+.painelTopo > div > span {
+    color: #3264c8;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.2em;
+}
+
+
+.painelTopo h2 {
+    margin:
+        3px
+        0
+        0;
+
+    color: #172033;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 29px;
+
+    font-weight: 500;
+}
+
+
+.quantidade {
+    padding:
+        6px
+        10px;
+
+    border:
+        1px solid
+        rgba(23, 32, 51, 0.09);
+
+    color: #7a808b;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   TABELA
+========================================================= */
+
+.tabelaWrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.tabela {
+    width: 100%;
+
+    min-width: 1050px;
+
+    border-collapse:
+        collapse;
+}
+
+
+.tabela th {
+    padding:
+        14px
+        17px;
+
+    border-bottom:
+        1px solid
+        rgba(23, 32, 51, 0.08);
+
+    background:
+        #f7f5ef;
+
+    color: #8b9099;
+
+    text-align: left;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.1em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.tabela td {
+    padding:
+        16px
+        17px;
+
+    border-bottom:
+        1px solid
+        rgba(23, 32, 51, 0.07);
+
+    vertical-align: middle;
+}
+
+
+.tabela tbody tr {
+    transition:
+        background 0.2s ease;
+}
+
+
+.tabela tbody tr:hover {
+    background:
+        rgba(50, 100, 200, 0.025);
+}
+
+
+.tabela tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   FORNECEDOR
+========================================================= */
+
+.fornecedorPrincipal {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.avatarFornecedor {
+    width: 42px;
+
+    height: 42px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #172033;
+
+    color: #ffffff;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 20px;
+
+    font-weight: 500;
+}
+
+
+.fornecedorPrincipal > div:last-child {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.fornecedorPrincipal strong {
+    color: #20293a;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+.fornecedorPrincipal span {
+    color: #9599a1;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   MARCAS
+========================================================= */
+
+.marcas {
+    max-width: 260px;
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 5px;
+}
+
+
+.marcas span {
+    padding:
+        4px
+        7px;
+
+    border:
+        1px solid
+        rgba(50, 100, 200, 0.13);
+
+    background:
+        rgba(50, 100, 200, 0.05);
+
+    color: #4569a8;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    text-transform:
+        uppercase;
+}
+
+
+.marcas small {
+    color: #9a9ea6;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   CONTATO
+========================================================= */
+
+.contato {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.contato strong {
+    color: #343c4a;
+
+    font-size: 12px;
+
+    font-weight: 500;
+}
+
+
+.contato span {
+    color: #8c9199;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   LOCALIZAÇÃO
+========================================================= */
+
+.localizacao {
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    color: #6f7580;
+
+    font-size: 11px;
+}
+
+
+.localizacao svg {
+    width: 13px;
+
+    height: 13px;
+
+    color: #7596cb;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.statusAtivo,
+.statusInativo {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.05em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.statusAtivo {
+    color: #3d8d5d;
+}
+
+
+.statusInativo {
+    color: #a35959;
+}
+
+
+.statusAtivo i,
+.statusInativo i {
+    width: 6px;
+
+    height: 6px;
+
+    border-radius: 50%;
+}
+
+
+.statusAtivo i {
+    background: #4d9b68;
+}
+
+
+.statusInativo i {
+    background: #b16464;
+}
+
+
+/* =========================================================
+   AÇÕES
+========================================================= */
+
+.acoes {
+    display: flex;
+
+    gap: 5px;
+}
+
+
+.acoes button {
+    width: 34px;
+
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid
+        #dcd9d2;
+
+    background:
+        transparent;
+
+    color: #667080;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.acoes button:hover {
+    border-color: #172033;
+
+    background: #172033;
+
+    color: #ffffff;
+}
+
+
+.acoes button:disabled {
+    opacity: 0.4;
+
+    cursor: not-allowed;
+}
+
+
+.acoes .botaoExcluir:hover {
+    border-color: #a64b4b;
+
+    background: #a64b4b;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   ESTADO VAZIO
+========================================================= */
+
+.estadoVazio {
+    min-height: 280px;
+
+    padding: 40px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    text-align: center;
+
+    color: #878d96;
+}
+
+
+.estadoVazio svg {
+    width: 28px;
+
+    height: 28px;
+
+    margin-bottom: 6px;
+
+    color: #7797ca;
+}
+
+
+.estadoVazio strong {
+    color: #4e5663;
+
+    font-size: 14px;
+}
+
+
+.estadoVazio span {
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modalOverlay {
+    position: fixed;
+
+    z-index: 9999;
+
+    inset: 0;
+
+    padding: 25px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow-y: auto;
+
+    background:
+        rgba(10, 16, 27, 0.72);
+
+    backdrop-filter:
+        blur(7px);
+}
+
+
+.modal {
+    position: relative;
+
+    width:
+        min(
+            760px,
+            100%
+        );
+
+    max-height:
+        calc(100vh - 50px);
+
+    overflow-y: auto;
+
+    padding: 31px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    background:
+        #fbfaf6;
+
+    box-shadow:
+        0 35px 90px
+        rgba(0, 0, 0, 0.25);
+
+    animation:
+        modalEntrada
+        0.3s
+        cubic-bezier(
+            0.16,
+            1,
+            0.3,
+            1
+        );
+
+    box-sizing:
+        border-box;
+}
+
+
+.fecharModal {
+    position: absolute;
+
+    top: 18px;
+
+    right: 18px;
+
+    width: 36px;
+
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid
+        #ddd9d0;
+
+    background:
+        transparent;
+
+    color: #68707d;
+
+    cursor: pointer;
+}
+
+
+.fecharModal:hover {
+    background: #172033;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.modalCabecalho {
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    padding-right: 50px;
+}
+
+
+.modalIcone {
+    width: 60px;
+
+    height: 60px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #172033;
+
+    color: #ffffff;
+}
+
+
+.modalIcone svg {
+    width: 23px;
+
+    height: 23px;
+
+    stroke-width: 1.4;
+}
+
+
+.modalCabecalho span {
+    color: #3264c8;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.18em;
+}
+
+
+.modalCabecalho h2 {
+    margin:
+        1px
+        0
+        0;
+
+    color: #172033;
+
+    font-family:
+        "Cormorant Garamond",
+        serif;
+
+    font-size: 34px;
+
+    font-weight: 500;
+
+    line-height: 1;
+}
+
+
+.modalCabecalho p {
+    margin:
+        5px
+        0
+        0;
+
+    color: #8d929a;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   MODAL STATUS
+========================================================= */
+
+.modalStatus {
+    margin:
+        25px
+        0
+        16px;
+
+    padding:
+        13px
+        15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border:
+        1px solid
+        #e0ddd5;
+
+    background:
+        #f7f5ef;
+}
+
+
+.modalStatus span {
+    color: #858a93;
+
+    font-size: 11px;
+}
+
+
+.modalStatus strong {
+    font-size: 11px;
+
+    font-weight: 600;
+
+    text-transform:
+        uppercase;
+}
+
+
+.textoAtivo {
+    color: #438b5b;
+}
+
+
+.textoInativo {
+    color: #a24d4d;
+}
+
+
+/* =========================================================
+   DETALHES
+========================================================= */
+
+.modalGrid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 12px;
+}
+
+
+.blocoDetalhe,
+.blocoMarcasModal {
+    padding: 17px;
+
+    border:
+        1px solid
+        #e0ddd5;
+
+    background: #ffffff;
+}
+
+
+.tituloDetalhe {
+    margin-bottom: 13px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color: #7d8490;
+}
+
+
+.tituloDetalhe svg {
+    width: 14px;
+
+    height: 14px;
+
+    color: #668bc8;
+}
+
+
+.tituloDetalhe span {
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.12em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.blocoDetalhe > strong {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #303949;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+.blocoDetalhe p {
+    margin:
+        4px
+        0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    color: #7d828b;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+.blocoDetalhe p svg {
+    width: 12px;
+
+    height: 12px;
+
+    flex-shrink: 0;
+}
+
+
+.blocoMarcasModal {
+    margin-top: 12px;
+}
+
+
+.marcasModal {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+}
+
+
+.marcasModal span {
+    padding:
+        7px
+        10px;
+
+    border:
+        1px solid
+        rgba(50, 100, 200, 0.14);
+
+    background:
+        rgba(50, 100, 200, 0.05);
+
+    color: #466ba9;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    text-transform:
+        uppercase;
+}
+
+
+.marcasModal p {
+    margin: 0;
+
+    color: #999da4;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   MODAL AÇÕES
+========================================================= */
+
+.modalAcoes {
+    margin-top: 20px;
+
+    padding-top: 17px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    border-top:
+        1px solid
+        #e1ded6;
+}
+
+
+.modalAcoes button {
+    min-height: 42px;
+
+    padding:
+        0
+        15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    border:
+        1px solid
+        #172033;
+
+    background:
+        transparent;
+
+    color: #172033;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.modalAcoes button:hover {
+    background: #172033;
+
+    color: #ffffff;
+}
+
+
+.modalAcoes button:disabled {
+    opacity: 0.45;
+
+    cursor: not-allowed;
+}
+
+
+.modalAcoes .modalExcluir {
+    border-color: #a54f4f;
+
+    color: #a54f4f;
+}
+
+
+.modalAcoes .modalExcluir:hover {
+    background: #a54f4f;
+
+    color: #ffffff;
+}
+
+
+.modalAcoes .modalFechar {
+    margin-left: auto;
+
+    border-color: transparent;
+
+    background: #172033;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   ANIMAÇÕES
+========================================================= */
+
+@keyframes aparecer {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+
+}
+
+
+@keyframes modalEntrada {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(18px)
+            scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+@keyframes girar {
+
+    to {
+        transform:
+            rotate(360deg);
+    }
+
+}
+
+
+.girando {
+    animation:
+        girar
+        1s
+        linear
+        infinite;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .main {
+        padding:
+            40px
+            26px
+            70px;
+    }
+
+
+    .resumo {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+
+    .controles {
+        flex-wrap: wrap;
+    }
+
+
+    .busca {
+        flex-basis: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .main {
+        width: 100%;
+
+        margin-left: 0;
+
+        padding:
+            90px
+            20px
+            60px;
+    }
+
+
+    .topo {
+        align-items: flex-start;
+
+        gap: 20px;
+    }
+
+
+    .iconeTopo {
+        width: 58px;
+
+        height: 58px;
+    }
+
+
+    .topo h1 {
+        font-size: 48px;
+    }
+
+
+    .resumo {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .cardResumo {
+        min-height: 105px;
+    }
+
+
+    .filtros {
+        width: 100%;
+    }
+
+
+    .filtros button {
+        flex: 1;
+    }
+
+
+    .atualizar {
+        width: 100%;
+
+        justify-content: center;
+    }
+
+
+    .painelTopo {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .modal {
+        padding:
+            25px
+            18px;
+    }
+
+
+    .modalGrid {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .modalCabecalho {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .modalAcoes {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+
+    .modalAcoes button,
+    .modalAcoes .modalFechar {
+        width: 100%;
+
+        margin-left: 0;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE PEQUENO
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .main {
+        padding:
+            82px
+            14px
+            50px;
+    }
+
+
+    .topo h1 {
+        font-size: 42px;
+    }
+
+
+    .topo p {
+        font-size: 12px;
+    }
+
+
+    .iconeTopo {
+        display: none;
+    }
+
+
+    .controles {
+        padding: 9px;
+    }
+
+
+    .painelTopo {
+        padding:
+            15px;
+    }
+
+}

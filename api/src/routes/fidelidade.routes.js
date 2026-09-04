@@ -1055,6 +1055,23 @@ router.post("/cupons/salvar", async (req, res) => {
             });
         }
 
+        const [usoAnterior] = await db.query(
+            `
+            SELECT id
+            FROM pedidos
+            WHERE usuario_id = ?
+              AND cupom_id = ?
+            LIMIT 1
+            `,
+            [usuario_id, cupom_id]
+        );
+
+        if (usoAnterior.length > 0) {
+            return res.status(409).json({
+                erro: "Este cupom já foi utilizado e não pode ser guardado novamente."
+            });
+        }
+
         await db.query(
             `
             INSERT INTO cupons_usuarios (usuario_id, cupom_id)
@@ -1098,7 +1115,13 @@ router.get("/:usuario_id/cupons", async (req, res) => {
                 cu.salvo_em
             FROM cupons_usuarios cu
             INNER JOIN cupons c ON c.id = cu.cupom_id
-            WHERE cu.usuario_id = ?
+                        WHERE cu.usuario_id = ?
+                            AND NOT EXISTS (
+                                    SELECT 1
+                                    FROM pedidos p
+                                    WHERE p.usuario_id = cu.usuario_id
+                                        AND p.cupom_id = cu.cupom_id
+                            )
             ORDER BY cu.salvo_em DESC
             `,
             [req.params.usuario_id]

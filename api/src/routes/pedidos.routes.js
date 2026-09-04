@@ -1,6 +1,7 @@
 import express from "express";
 import pool from "../database.js";
 import { registrarAtividade } from "../services/historico.service.js";
+import { calcularFrete } from "../services/frete.service.js";
 import {
     autenticarToken,
     autorizarTipos
@@ -25,6 +26,32 @@ function gerarCodigoFidelidade(rank) {
     return rank.toUpperCase();
 }
 
+function normalizarCampoEndereco(
+    valor,
+    {
+        aceitarNumero = false
+    } = {}
+) {
+    const valorTextual =
+        typeof valor === "string";
+
+    const valorNumericoValido =
+        aceitarNumero &&
+        typeof valor === "number" &&
+        Number.isFinite(valor);
+
+    if (
+        !valorTextual &&
+        !valorNumericoValido
+    ) {
+        return "";
+    }
+
+    return String(valor ?? "")
+        .trim()
+        .replace(/\s+/g, " ");
+}
+
 
 // =====================================================
 // FINALIZAR COMPRA
@@ -41,7 +68,14 @@ router.post("/", async (req, res) => {
             usuario_id,
             metodo_pagamento,
             cupom_id,
-            orcamento_id
+            orcamento_id,
+            tipo_entrega,
+            cidade,
+            estado,
+            endereco,
+            rua,
+            numero: numeroEnderecoInformado,
+            bairro
         } = req.body;
 
 
@@ -68,6 +102,45 @@ router.post("/", async (req, res) => {
                 mensagem: "Forma de pagamento não informada."
             });
 
+        }
+
+
+        // Mantém bancos antigos compatíveis com o endereço do pedido.
+        // A versão do MySQL em uso não aceita ADD COLUMN IF NOT EXISTS.
+        const colunasEndereco = [
+            ["endereco", "VARCHAR(255) NULL"],
+            ["numero", "VARCHAR(20) NULL"],
+            ["bairro", "VARCHAR(100) NULL"],
+            ["cidade", "VARCHAR(100) NULL"],
+            ["estado", "VARCHAR(2) NULL"]
+        ];
+
+        for (const [nomeColuna, definicaoColuna] of colunasEndereco) {
+            const [colunaExistente] = await connection.query(
+                `
+                SELECT 1
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                  AND TABLE_NAME = 'pedidos'
+                  AND COLUMN_NAME = ?
+                LIMIT 1
+                `,
+                [nomeColuna]
+            );
+
+            if (colunaExistente.length > 0) {
+                continue;
+            }
+
+            try {
+                await connection.query(
+                    `ALTER TABLE pedidos ADD COLUMN ${nomeColuna} ${definicaoColuna}`
+                );
+            } catch (error) {
+                if (error.code !== "ER_DUP_FIELDNAME") {
+                    throw error;
+                }
+            }
         }
 
 
@@ -121,14 +194,28 @@ router.post("/", async (req, res) => {
 
         }
 
+
+        // =================================================
+        // VALIDAR ESTOQUE
+        // =================================================
+
         for (const produto of carrinho) {
-            if (Number(produto.quantidade) > Number(produto.estoque_disponivel)) {
+
+            if (
+                Number(produto.quantidade) >
+                Number(produto.estoque_disponivel)
+            ) {
+
                 await connection.rollback();
 
                 return res.status(409).json({
-                    mensagem: `Estoque insuficiente para ${produto.nome}. Disponível: ${produto.estoque_disponivel} unidade(s).`
+                    mensagem:
+                        `Estoque insuficiente para ${produto.nome}. ` +
+                        `Disponível: ${produto.estoque_disponivel} unidade(s).`
                 });
+
             }
+
         }
 
 
@@ -151,10 +238,141 @@ router.post("/", async (req, res) => {
         // FRETE
         // =================================================
 
+        const tipoEntregaNormalizado =
+            String(
+                tipo_entrega ||
+                "ENTREGA"
+            )
+                .trim()
+                .toUpperCase();
+
+
+        const enderecoEntrega =
+            normalizarCampoEndereco(
+                endereco
+            ) ||
+            normalizarCampoEndereco(
+                rua
+            );
+
+
+        const numeroEndereco =
+            normalizarCampoEndereco(
+                numeroEnderecoInformado,
+                {
+                    aceitarNumero:
+                        true
+                }
+            );
+
+
+        const bairroEntrega =
+            normalizarCampoEndereco(
+                bairro
+            );
+
+
+        if (
+            tipoEntregaNormalizado === "ENTREGA" &&
+            (
+                !enderecoEntrega ||
+                !numeroEndereco ||
+                !bairroEntrega
+            )
+        ) {
+
+            await connection.rollback();
+
+            const mensagemEndereco =
+                "Informe o endereço, o número e o bairro para a entrega.";
+
+            return res
+                .status(400)
+                .json({
+                    mensagem:
+                        mensagemEndereco,
+                    erro:
+                        mensagemEndereco
+                });
+
+        }
+
+
+        const resultadoFrete =
+            await calcularFrete({
+                tipo_entrega:
+                    tipoEntregaNormalizado,
+                cidade,
+                estado,
+                subtotal,
+                executor:
+                    connection
+            });
+
+
+        if (
+            resultadoFrete.status !== 200 ||
+            !resultadoFrete.dados?.disponivel
+        ) {
+
+            await connection.rollback();
+
+            const mensagemFrete =
+                resultadoFrete.dados?.erro ||
+                "Não foi possível calcular o frete para este pedido.";
+
+            return res
+                .status(
+                    resultadoFrete.status
+                )
+                .json({
+                    mensagem:
+                        mensagemFrete,
+                    erro:
+                        mensagemFrete,
+                    frete:
+                        resultadoFrete.dados
+                });
+
+        }
+
+
+        const dadosFrete =
+            resultadoFrete.dados;
+
+
+        const dadosEntrega = {
+
+            ...dadosFrete,
+
+            endereco:
+                dadosFrete.tipo_entrega === "ENTREGA"
+                    ? enderecoEntrega
+                    : null,
+
+            rua:
+                dadosFrete.tipo_entrega === "ENTREGA"
+                    ? enderecoEntrega
+                    : null,
+
+            numero:
+                dadosFrete.tipo_entrega === "ENTREGA"
+                    ? numeroEndereco
+                    : null,
+
+            bairro:
+                dadosFrete.tipo_entrega === "ENTREGA"
+                    ? bairroEntrega
+                    : null
+
+        };
+
+
         const frete =
-            subtotal > 0
-                ? 29.90
-                : 0;
+            Number(
+                dadosFrete.valor_frete ||
+                0
+            );
 
 
         // =================================================
@@ -177,13 +395,20 @@ router.post("/", async (req, res) => {
                         id,
                         codigo,
                         tipo,
-                        desconto AS valor
+                        desconto AS valor,
+                        valor_minimo,
+                        limite_uso,
+                        usos,
+                        validade_inicio,
+                        validade_fim,
+                        status
 
                     FROM cupons
 
                     WHERE id = ?
 
                     LIMIT 1
+                    FOR UPDATE
                     `,
                     [cupom_id]
                 );
@@ -194,16 +419,149 @@ router.post("/", async (req, res) => {
                 await connection.rollback();
 
                 return res.status(400).json({
-                    mensagem: "Cupom não encontrado."
+                    mensagem:
+                        "Cupom não encontrado."
                 });
 
             }
 
 
-            cupomUtilizado = cupons[0];
+            cupomUtilizado =
+                cupons[0];
 
             codigoCupom =
                 cupomUtilizado.codigo;
+
+
+            // =============================================
+            // GARANTIR USO ÚNICO POR CLIENTE
+            // =============================================
+
+            const [usoAnterior] =
+                await connection.query(
+                    `
+                    SELECT id
+
+                    FROM pedidos
+
+                    WHERE
+                        usuario_id = ?
+                        AND cupom_id = ?
+
+                    LIMIT 1
+                    `,
+                    [
+                        usuario_id,
+                        cupomUtilizado.id
+                    ]
+                );
+
+
+            if (usoAnterior.length > 0) {
+
+                await connection.rollback();
+
+                return res.status(409).json({
+                    mensagem:
+                        "Você já utilizou este cupom."
+                });
+
+            }
+
+
+            // =============================================
+            // VALIDAR DISPONIBILIDADE DO CUPOM
+            // =============================================
+
+            const agora =
+                new Date();
+
+
+            if (
+                cupomUtilizado.status !==
+                "Ativo"
+            ) {
+
+                await connection.rollback();
+
+                return res.status(400).json({
+                    mensagem:
+                        "Este cupom está inativo."
+                });
+
+            }
+
+
+            if (
+                cupomUtilizado.validade_inicio &&
+                new Date(
+                    cupomUtilizado.validade_inicio
+                ) > agora
+            ) {
+
+                await connection.rollback();
+
+                return res.status(400).json({
+                    mensagem:
+                        "Este cupom ainda não está disponível."
+                });
+
+            }
+
+
+            if (
+                cupomUtilizado.validade_fim &&
+                new Date(
+                    cupomUtilizado.validade_fim
+                ) < agora
+            ) {
+
+                await connection.rollback();
+
+                return res.status(400).json({
+                    mensagem:
+                        "Este cupom está expirado."
+                });
+
+            }
+
+
+            if (
+                cupomUtilizado.limite_uso !== null &&
+                Number(
+                    cupomUtilizado.usos ||
+                    0
+                ) >=
+                Number(
+                    cupomUtilizado.limite_uso
+                )
+            ) {
+
+                await connection.rollback();
+
+                return res.status(400).json({
+                    mensagem:
+                        "Este cupom atingiu o limite de uso."
+                });
+
+            }
+
+
+            if (
+                Number(
+                    cupomUtilizado.valor_minimo ||
+                    0
+                ) > subtotal
+            ) {
+
+                await connection.rollback();
+
+                return res.status(400).json({
+                    mensagem:
+                        "O valor mínimo para usar este cupom não foi atingido."
+                });
+
+            }
 
 
             // =============================================
@@ -244,9 +602,13 @@ router.post("/", async (req, res) => {
             // LIMITAR DESCONTO
             // =============================================
 
-            if (desconto > subtotal) {
+            if (
+                desconto >
+                subtotal
+            ) {
 
-                desconto = subtotal;
+                desconto =
+                    subtotal;
 
             }
 
@@ -280,21 +642,55 @@ router.post("/", async (req, res) => {
                     status,
                     cupom_id,
                     codigo_cupom,
-                    desconto
+                    desconto,
+                    endereco,
+                    numero,
+                    bairro,
+                    cidade,
+                    estado
                 )
 
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?
+                )
                 `,
                 [
                     usuario_id,
+
                     total,
+
                     metodo_pagamento,
+
                     "pendente",
+
                     cupomUtilizado
                         ? cupomUtilizado.id
                         : null,
+
                     codigoCupom,
-                    desconto
+
+                    desconto,
+
+                    dadosEntrega.endereco,
+
+                    dadosEntrega.numero,
+
+                    dadosEntrega.bairro,
+
+                    dadosEntrega.cidade,
+
+                    dadosEntrega.estado
                 ]
             );
 
@@ -302,14 +698,44 @@ router.post("/", async (req, res) => {
         const pedidoId =
             resultadoPedido.insertId;
 
-        let orcamentoConvertido = null;
+
+        // =================================================
+        // CONTABILIZAR USO DO CUPOM
+        // =================================================
+
+        if (cupomUtilizado) {
+
+            await connection.query(
+                `
+                UPDATE cupons
+
+                SET
+                    usos =
+                    COALESCE(usos, 0) + 1
+
+                WHERE id = ?
+                `,
+                [
+                    cupomUtilizado.id
+                ]
+            );
+
+        }
+
+
+        let orcamentoConvertido =
+            null;
 
 
         // =================================================
         // INSERIR ITENS DO PEDIDO
         // =================================================
 
-        for (const produto of carrinho) {
+        for (
+            const produto
+            of carrinho
+        ) {
+
             await connection.query(
                 `
                 INSERT INTO itens_pedidos (
@@ -319,7 +745,12 @@ router.post("/", async (req, res) => {
                     preco
                 )
 
-                VALUES (?, ?, ?, ?)
+                VALUES (
+                    ?,
+                    ?,
+                    ?,
+                    ?
+                )
                 `,
                 [
                     pedidoId,
@@ -337,70 +768,163 @@ router.post("/", async (req, res) => {
         // =================================================
 
         if (orcamento_id) {
-            const [resultadoConversao] = await connection.query(
-                `
-                UPDATE orcamentos
-                SET status = 'convertido'
-                WHERE id = ?
-                  AND usuario_id = ?
-                  AND status IN ('aberto', 'aprovado')
-                  AND (validade IS NULL OR validade >= CURDATE())
-                `,
-                [orcamento_id, usuario_id]
-            );
 
-            if (resultadoConversao.affectedRows > 0) {
-                orcamentoConvertido = Number(orcamento_id);
+            const [resultadoConversao] =
+                await connection.query(
+                    `
+                    UPDATE orcamentos
+
+                    SET
+                        status = 'convertido'
+
+                    WHERE
+                        id = ?
+                        AND usuario_id = ?
+                        AND status IN (
+                            'aberto',
+                            'aprovado'
+                        )
+                        AND (
+                            validade IS NULL
+                            OR validade >= CURDATE()
+                        )
+                    `,
+                    [
+                        orcamento_id,
+                        usuario_id
+                    ]
+                );
+
+
+            if (
+                resultadoConversao.affectedRows >
+                0
+            ) {
+
+                orcamentoConvertido =
+                    Number(
+                        orcamento_id
+                    );
+
             }
+
         }
 
 
         // =================================================
         // FIDELIDADE
-        // 1 ponto para cada real efetivamente pago.
-        // Ao subir de rank, o cupom correspondente é criado
-        // na mesma transação do pedido.
         // =================================================
 
-        const pontosGanhos = Math.floor(Number(total));
-        let saldoPontos = 0;
-        let cupomFidelidade = null;
+        const pontosGanhos =
+            Math.floor(
+                Number(total)
+            );
 
-        const [usuarios] = await connection.query(
-            `
-            SELECT id, pontos
-            FROM usuarios
-            WHERE id = ?
-            FOR UPDATE
-            `,
-            [usuario_id]
-        );
 
-        if (usuarios.length === 0) {
-            await connection.rollback();
+        let saldoPontos =
+            0;
 
-            return res.status(404).json({
-                mensagem: "Usuário não encontrado."
-            });
-        }
 
-        const saldoAnterior = Number(usuarios[0].pontos || 0);
-        const rankAnterior = obterRankFidelidade(saldoAnterior);
+        let cupomFidelidade =
+            null;
 
-        saldoPontos = saldoAnterior + pontosGanhos;
-        const rankAtual = obterRankFidelidade(saldoPontos);
 
-        await connection.query(
-            `UPDATE usuarios SET pontos = ? WHERE id = ?`,
-            [saldoPontos, usuario_id]
-        );
-
-        if (pontosGanhos > 0) {
+        const [usuarios] =
             await connection.query(
                 `
-                INSERT INTO historico_pontos
-                    (usuario_id, pedido_id, pontos, tipo, descricao)
-                VALUES (?, ?, ?, 'GANHO', ?)
+                SELECT
+                    id,
+                    pontos
+
+                FROM usuarios
+
+                WHERE id = ?
+
+                FOR UPDATE
+                `,
+                [
+                    usuario_id
+                ]
+            );
+
+
+        if (
+            usuarios.length === 0
+        ) {
+
+            await connection.rollback();
+
+            return res
+                .status(404)
+                .json({
+                    mensagem:
+                        "Usuário não encontrado."
+                });
+
+        }
+
+
+        const saldoAnterior =
+            Number(
+                usuarios[0].pontos ||
+                0
+            );
+
+
+        const rankAnterior =
+            obterRankFidelidade(
+                saldoAnterior
+            );
+
+
+        saldoPontos =
+            saldoAnterior +
+            pontosGanhos;
+
+
+        const rankAtual =
+            obterRankFidelidade(
+                saldoPontos
+            );
+
+
+        await connection.query(
+            `
+            UPDATE usuarios
+
+            SET pontos = ?
+
+            WHERE id = ?
+            `,
+            [
+                saldoPontos,
+                usuario_id
+            ]
+        );
+
+
+        if (
+            pontosGanhos >
+            0
+        ) {
+
+            await connection.query(
+                `
+                INSERT INTO historico_pontos (
+                    usuario_id,
+                    pedido_id,
+                    pontos,
+                    tipo,
+                    descricao
+                )
+
+                VALUES (
+                    ?,
+                    ?,
+                    ?,
+                    'GANHO',
+                    ?
+                )
                 `,
                 [
                     usuario_id,
@@ -409,44 +933,107 @@ router.post("/", async (req, res) => {
                     `Pontos da compra #${pedidoId}`
                 ]
             );
+
         }
 
-        const subiuDeRank = rankAtual.pontos > rankAnterior.pontos;
+
+        const subiuDeRank =
+            rankAtual.pontos >
+            rankAnterior.pontos;
+
 
         if (subiuDeRank) {
-            const codigo = gerarCodigoFidelidade(rankAtual.nome);
-            const [cuponsDoRank] = await connection.query(
-                `SELECT id FROM cupons WHERE codigo = ? LIMIT 1`,
-                [codigo]
-            );
 
-            let cupomId = cuponsDoRank[0]?.id;
+            const codigo =
+                gerarCodigoFidelidade(
+                    rankAtual.nome
+                );
 
-            if (!cupomId) {
-                const [resultadoCupom] = await connection.query(
+
+            const [cuponsDoRank] =
+                await connection.query(
                     `
-                    INSERT INTO cupons
-                        (codigo, tipo, desconto, valor_minimo, limite_uso,
-                         usos, validade_inicio, validade_fim, status)
-                    VALUES (?, 'porcentagem', ?, 0, NULL, 0, NULL, NULL, 'Ativo')
+                    SELECT id
+
+                    FROM cupons
+
+                    WHERE codigo = ?
+
+                    LIMIT 1
                     `,
                     [
-                        codigo,
-                        rankAtual.desconto
+                        codigo
                     ]
                 );
 
-                cupomId = resultadoCupom.insertId;
+
+            let cupomId =
+                cuponsDoRank[0]?.id;
+
+
+            if (!cupomId) {
+
+                const [resultadoCupom] =
+                    await connection.query(
+                        `
+                        INSERT INTO cupons (
+                            codigo,
+                            tipo,
+                            desconto,
+                            valor_minimo,
+                            limite_uso,
+                            usos,
+                            validade_inicio,
+                            validade_fim,
+                            status
+                        )
+
+                        VALUES (
+                            ?,
+                            'porcentagem',
+                            ?,
+                            0,
+                            NULL,
+                            0,
+                            NULL,
+                            NULL,
+                            'Ativo'
+                        )
+                        `,
+                        [
+                            codigo,
+                            rankAtual.desconto
+                        ]
+                    );
+
+
+                cupomId =
+                    resultadoCupom.insertId;
+
             }
 
+
             cupomFidelidade = {
-                id: cupomId,
+
+                id:
+                    cupomId,
+
                 codigo,
-                rank: rankAtual.nome,
-                tipo: "porcentagem",
-                desconto: rankAtual.desconto,
-                validade_fim: null
+
+                rank:
+                    rankAtual.nome,
+
+                tipo:
+                    "porcentagem",
+
+                desconto:
+                    rankAtual.desconto,
+
+                validade_fim:
+                    null
+
             };
+
         }
 
 
@@ -460,34 +1047,93 @@ router.post("/", async (req, res) => {
 
             WHERE usuario_id = ?
             `,
-            [usuario_id]
+            [
+                usuario_id
+            ]
         );
 
-        await registrarAtividade(connection, {
-            usuario_id: Number(usuario_id),
-            tipo: "pedido",
-            acao: "criar",
-            titulo: `Novo pedido #${pedidoId}`,
-            descricao: `Pedido realizado no valor de R$ ${Number(total).toFixed(2)}.`,
-            referencia_id: pedidoId,
-            valor_novo: {
-                status: "pendente",
-                total: Number(total),
-                metodo_pagamento
-            }
-        });
 
-        if (orcamentoConvertido) {
-            await registrarAtividade(connection, {
-                usuario_id: Number(usuario_id),
-                tipo: "orcamento",
-                acao: "converter",
-                titulo: `Orcamento #${orcamentoConvertido} convertido`,
-                descricao: `O orcamento originou o pedido #${pedidoId}.`,
-                referencia_id: orcamentoConvertido,
-                valor_anterior: "aberto",
-                valor_novo: "convertido"
-            });
+        // =================================================
+        // HISTÓRICO
+        // =================================================
+
+        await registrarAtividade(
+            connection,
+            {
+
+                usuario_id:
+                    Number(
+                        usuario_id
+                    ),
+
+                tipo:
+                    "pedido",
+
+                acao:
+                    "criar",
+
+                titulo:
+                    `Novo pedido #${pedidoId}`,
+
+                descricao:
+                    `Pedido realizado no valor de R$ ${Number(total).toFixed(2)}.`,
+
+                referencia_id:
+                    pedidoId,
+
+                valor_novo: {
+
+                    status:
+                        "pendente",
+
+                    total:
+                        Number(total),
+
+                    metodo_pagamento
+
+                }
+
+            }
+        );
+
+
+        if (
+            orcamentoConvertido
+        ) {
+
+            await registrarAtividade(
+                connection,
+                {
+
+                    usuario_id:
+                        Number(
+                            usuario_id
+                        ),
+
+                    tipo:
+                        "orcamento",
+
+                    acao:
+                        "converter",
+
+                    titulo:
+                        `Orcamento #${orcamentoConvertido} convertido`,
+
+                    descricao:
+                        `O orcamento originou o pedido #${pedidoId}.`,
+
+                    referencia_id:
+                        orcamentoConvertido,
+
+                    valor_anterior:
+                        "aberto",
+
+                    valor_novo:
+                        "convertido"
+
+                }
+            );
+
         }
 
 
@@ -502,69 +1148,115 @@ router.post("/", async (req, res) => {
         // RESPOSTA
         // =================================================
 
-        return res.status(201).json({
+        return res
+            .status(201)
+            .json({
 
-            mensagem:
-                "Compra realizada com sucesso.",
+                mensagem:
+                    "Compra realizada com sucesso.",
 
-            pedido: {
+                pedido: {
 
-                id:
-                    pedidoId,
+                    id:
+                        pedidoId,
 
-                usuario_id:
-                    Number(usuario_id),
+                    usuario_id:
+                        Number(
+                            usuario_id
+                        ),
 
-                subtotal:
-                    Number(subtotal),
+                    subtotal:
+                        Number(
+                            subtotal
+                        ),
 
-                frete:
-                    Number(frete),
+                    frete:
+                        Number(
+                            frete
+                        ),
 
-                desconto:
-                    Number(desconto),
+                    entrega: {
 
-                total:
-                    Number(total),
+                        ...dadosEntrega,
 
-                metodo_pagamento:
-                    metodo_pagamento,
+                        subtotal_referencia:
+                            Number(
+                                subtotal
+                            )
 
-                status:
-                    "pendente",
+                    },
 
-                cupom_id:
-                    cupomUtilizado
-                        ? cupomUtilizado.id
-                        : null,
+                    desconto:
+                        Number(
+                            desconto
+                        ),
 
-                codigo_cupom:
-                    codigoCupom
+                    total:
+                        Number(
+                            total
+                        ),
 
-            },
+                    metodo_pagamento:
+                        metodo_pagamento,
 
-            fidelidade: {
-                pontos_ganhos: pontosGanhos,
-                saldo_atual: saldoPontos,
-                rank_anterior: rankAnterior.nome,
-                rank_atual: rankAtual.nome,
-                subiu_de_rank: subiuDeRank,
-                cupom: cupomFidelidade
-            },
+                    status:
+                        "pendente",
 
-            orcamento: {
-                id: orcamentoConvertido,
-                convertido: Boolean(orcamentoConvertido)
-            }
+                    cupom_id:
+                        cupomUtilizado
+                            ? cupomUtilizado.id
+                            : null,
 
-        });
+                    codigo_cupom:
+                        codigoCupom
+
+                },
+
+                fidelidade: {
+
+                    pontos_ganhos:
+                        pontosGanhos,
+
+                    saldo_atual:
+                        saldoPontos,
+
+                    rank_anterior:
+                        rankAnterior.nome,
+
+                    rank_atual:
+                        rankAtual.nome,
+
+                    subiu_de_rank:
+                        subiuDeRank,
+
+                    cupom:
+                        cupomFidelidade
+
+                },
+
+                orcamento: {
+
+                    id:
+                        orcamentoConvertido,
+
+                    convertido:
+                        Boolean(
+                            orcamentoConvertido
+                        )
+
+                }
+
+            });
 
 
     } catch (error) {
 
         if (connection) {
+
             await connection.rollback();
+
         }
+
 
         console.error(
             "ERRO AO FINALIZAR COMPRA:",
@@ -572,21 +1264,25 @@ router.post("/", async (req, res) => {
         );
 
 
-        return res.status(500).json({
+        return res
+            .status(500)
+            .json({
 
-            mensagem:
-                "Erro ao finalizar compra.",
+                mensagem:
+                    "Erro ao finalizar compra.",
 
-            detalhes:
-                error.message
+                detalhes:
+                    error.message
 
-        });
+            });
 
 
     } finally {
 
         if (connection) {
+
             connection.release();
+
         }
 
     }
@@ -599,111 +1295,120 @@ router.post("/", async (req, res) => {
 // GET /pedidos
 // =====================================================
 
-router.get("/", async (req, res) => {
+router.get(
+    "/",
+    async (_req, res) => {
 
-    try {
+        try {
 
-        const [pedidos] =
-            await pool.query(
-                `
-                SELECT
-                    p.id,
-                    p.usuario_id,
+            const [pedidos] =
+                await pool.query(
+                    `
+                    SELECT
+                        p.id,
+                        p.usuario_id,
 
-                    u.nome AS cliente,
-                    u.email AS email_cliente,
-                    u.telefone AS telefone_cliente,
+                        u.nome AS cliente,
+                        u.email AS email_cliente,
+                        u.telefone AS telefone_cliente,
 
-                    p.total,
-                    p.metodo_pagamento,
-                    p.status,
-                    p.criado_em,
-                    p.cupom_id,
-                    p.codigo_cupom,
-                    p.desconto
+                        p.total,
+                        p.metodo_pagamento,
+                        p.status,
+                        p.criado_em,
+                        p.cupom_id,
+                        p.codigo_cupom,
+                        p.desconto
 
-                FROM pedidos p
+                    FROM pedidos p
 
-                INNER JOIN usuarios u
-                    ON u.id = p.usuario_id
+                    INNER JOIN usuarios u
+                        ON u.id = p.usuario_id
 
-                ORDER BY
-                    p.criado_em DESC,
-                    p.id DESC
-                `
+                    ORDER BY
+                        p.criado_em DESC,
+                        p.id DESC
+                    `
+                );
+
+
+            return res.json(
+
+                pedidos.map(
+                    pedido => ({
+
+                        id:
+                            pedido.id,
+
+                        usuario_id:
+                            pedido.usuario_id,
+
+                        cliente:
+                            pedido.cliente,
+
+                        email_cliente:
+                            pedido.email_cliente,
+
+                        telefone_cliente:
+                            pedido.telefone_cliente,
+
+                        total:
+                            Number(
+                                pedido.total ||
+                                0
+                            ),
+
+                        metodo_pagamento:
+                            pedido.metodo_pagamento,
+
+                        status:
+                            pedido.status,
+
+                        criado_em:
+                            pedido.criado_em,
+
+                        cupom_id:
+                            pedido.cupom_id,
+
+                        codigo_cupom:
+                            pedido.codigo_cupom,
+
+                        desconto:
+                            Number(
+                                pedido.desconto ||
+                                0
+                            )
+
+                    })
+                )
+
             );
 
 
-        return res.json(
+        } catch (error) {
 
-            pedidos.map(pedido => ({
-
-                id:
-                    pedido.id,
-
-                usuario_id:
-                    pedido.usuario_id,
-
-                cliente:
-                    pedido.cliente,
-
-                email_cliente:
-                    pedido.email_cliente,
-
-                telefone_cliente:
-                    pedido.telefone_cliente,
-
-                total:
-                    Number(
-                        pedido.total || 0
-                    ),
-
-                metodo_pagamento:
-                    pedido.metodo_pagamento,
-
-                status:
-                    pedido.status,
-
-                criado_em:
-                    pedido.criado_em,
-
-                cupom_id:
-                    pedido.cupom_id,
-
-                codigo_cupom:
-                    pedido.codigo_cupom,
-
-                desconto:
-                    Number(
-                        pedido.desconto || 0
-                    )
-
-            }))
-
-        );
+            console.error(
+                "ERRO AO BUSCAR TODOS OS PEDIDOS:",
+                error
+            );
 
 
-    } catch (error) {
+            return res
+                .status(500)
+                .json({
 
-        console.error(
-            "ERRO AO BUSCAR TODOS OS PEDIDOS:",
-            error
-        );
+                    erro:
+                        "Erro ao buscar pedidos.",
 
+                    detalhes:
+                        error.message
 
-        return res.status(500).json({
+                });
 
-            erro:
-                "Erro ao buscar pedidos.",
-
-            detalhes:
-                error.message
-
-        });
+        }
 
     }
-
-});
+);
 
 
 // =====================================================
@@ -717,355 +1422,609 @@ router.put(
     autorizarTipos("admin"),
     async (req, res) => {
 
-    let connection;
+        let connection;
 
-    try {
+        try {
 
-        connection = await pool.getConnection();
-
-        const { id } =
-            req.params;
-
-        const { status } =
-            req.body;
+            connection =
+                await pool.getConnection();
 
 
-        // =================================================
-        // STATUS PERMITIDOS
-        // =================================================
-
-        const statusPermitidos = [
-
-            "pendente",
-
-            "processando",
-
-            "em transporte",
-
-            "entregue",
-
-            "cancelado"
-
-        ];
+            const { id } =
+                req.params;
 
 
-        // =================================================
-        // VALIDAR STATUS
-        // =================================================
-
-        if (!status) {
-
-            return res.status(400).json({
-
-                erro:
-                    "Status não informado."
-
-            });
-
-        }
+            const { status } =
+                req.body;
 
 
-        const statusNormalizado =
-            String(status)
-                .trim()
-                .toLowerCase();
+            // =================================================
+            // STATUS PERMITIDOS
+            // =================================================
+
+            const statusPermitidos = [
+
+                "pendente",
+
+                "processando",
+
+                "em transporte",
+
+                "entregue",
+
+                "cancelado"
+
+            ];
 
 
-        if (
-            !statusPermitidos.includes(
-                statusNormalizado
-            )
-        ) {
+            // =================================================
+            // VALIDAR STATUS
+            // =================================================
 
-            return res.status(400).json({
+            if (!status) {
 
-                erro:
-                    "Status inválido.",
+                return res
+                    .status(400)
+                    .json({
 
-                statusPermitidos
+                        erro:
+                            "Status não informado."
 
-            });
-
-        }
-
-        // Garante compatibilidade com bancos criados antes da central de
-        // notificacoes. O DDL precisa acontecer antes de abrir a transacao.
-        await connection.query(
-            `
-            CREATE TABLE IF NOT EXISTS notificacoes (
-                id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-                usuario_id INT UNSIGNED NOT NULL,
-                titulo VARCHAR(150) NOT NULL,
-                mensagem VARCHAR(500) NOT NULL,
-                tipo VARCHAR(30) NOT NULL DEFAULT 'sistema',
-                referencia_id INT UNSIGNED NULL,
-                lida TINYINT(1) NOT NULL DEFAULT 0,
-                criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                PRIMARY KEY (id),
-                KEY idx_notificacoes_usuario_lida (usuario_id, lida),
-                CONSTRAINT fk_notificacoes_usuario
-                    FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
-                    ON DELETE CASCADE ON UPDATE CASCADE
-            )
-            `
-        );
-
-
-        // =================================================
-        // VERIFICAR PEDIDO
-        // =================================================
-
-        await connection.beginTransaction();
-
-        const [pedidoExistente] =
-            await connection.query(
-                `
-                SELECT
-                    id,
-                    usuario_id,
-                    status
-
-                FROM pedidos
-
-                WHERE id = ?
-
-                LIMIT 1
-                `,
-                [id]
-            );
-
-
-        if (
-            pedidoExistente.length === 0
-        ) {
-
-            await connection.rollback();
-
-            return res.status(404).json({
-
-                erro:
-                    "Pedido não encontrado."
-
-            });
-
-        }
-
-        const pedidoAtual = pedidoExistente[0];
-        const statusAnterior = String(pedidoAtual.status || "")
-            .trim()
-            .toLowerCase();
-        const deveBaixarEstoque =
-            statusAnterior === "pendente" &&
-            ["processando", "em transporte", "entregue"].includes(statusNormalizado);
-
-        if (deveBaixarEstoque) {
-            const [itensPedido] = await connection.query(
-                `
-                SELECT ip.produto_id, ip.quantidade, i.nome
-                FROM itens_pedidos ip
-                INNER JOIN itens i ON i.id = ip.produto_id
-                WHERE ip.pedido_id = ?
-                FOR UPDATE
-                `,
-                [id]
-            );
-
-            for (const item of itensPedido) {
-                const [estoque] = await connection.query(
-                    `SELECT quantidade FROM itens WHERE id = ? FOR UPDATE`,
-                    [item.produto_id]
-                );
-
-                if (!estoque.length || Number(estoque[0].quantidade) < Number(item.quantidade)) {
-                    await connection.rollback();
-                    return res.status(409).json({
-                        erro: `Estoque insuficiente para ${item.nome}.`
                     });
-                }
 
-                item.estoque_anterior = Number(estoque[0].quantidade);
             }
 
-            for (const item of itensPedido) {
+
+            const statusNormalizado =
+                String(status)
+                    .trim()
+                    .toLowerCase();
+
+
+            if (
+                !statusPermitidos.includes(
+                    statusNormalizado
+                )
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+
+                        erro:
+                            "Status inválido.",
+
+                        statusPermitidos
+
+                    });
+
+            }
+
+
+            // =================================================
+            // GARANTIR TABELA DE NOTIFICAÇÕES
+            // =================================================
+
+            await connection.query(
+                `
+                CREATE TABLE IF NOT EXISTS notificacoes (
+
+                    id INT UNSIGNED
+                        NOT NULL
+                        AUTO_INCREMENT,
+
+                    usuario_id INT UNSIGNED
+                        NOT NULL,
+
+                    titulo VARCHAR(150)
+                        NOT NULL,
+
+                    mensagem VARCHAR(500)
+                        NOT NULL,
+
+                    tipo VARCHAR(30)
+                        NOT NULL
+                        DEFAULT 'sistema',
+
+                    referencia_id INT UNSIGNED
+                        NULL,
+
+                    lida TINYINT(1)
+                        NOT NULL
+                        DEFAULT 0,
+
+                    criado_em TIMESTAMP
+                        NOT NULL
+                        DEFAULT CURRENT_TIMESTAMP,
+
+                    PRIMARY KEY (id),
+
+                    KEY idx_notificacoes_usuario_lida (
+                        usuario_id,
+                        lida
+                    ),
+
+                    CONSTRAINT fk_notificacoes_usuario
+
+                        FOREIGN KEY (
+                            usuario_id
+                        )
+
+                        REFERENCES usuarios (
+                            id
+                        )
+
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE
+                )
+                `
+            );
+
+
+            // =================================================
+            // VERIFICAR PEDIDO
+            // =================================================
+
+            await connection
+                .beginTransaction();
+
+
+            const [pedidoExistente] =
                 await connection.query(
                     `
-                    UPDATE itens
-                    SET
-                        status = CASE
-                            WHEN quantidade = ? THEN 'Inativo'
-                            ELSE status
-                        END,
-                        quantidade = quantidade - ?
+                    SELECT
+                        id,
+                        usuario_id,
+                        status
+
+                    FROM pedidos
+
                     WHERE id = ?
+
+                    LIMIT 1
                     `,
-                    [item.quantidade, item.quantidade, item.produto_id]
+                    [
+                        id
+                    ]
                 );
 
-                await registrarAtividade(connection, {
-                    usuario_id: req.usuario?.id || null,
-                    tipo: "estoque",
-                    acao: "saida_pedido",
-                    titulo: `Estoque de "${item.nome}" atualizado`,
-                    descricao: `Baixa de ${item.quantidade} unidade(s) pelo pedido #${id}.`,
-                    referencia_id: item.produto_id,
-                    valor_anterior: item.estoque_anterior,
-                    valor_novo:
-                        item.estoque_anterior - Number(item.quantidade)
-                });
+
+            if (
+                pedidoExistente.length ===
+                0
+            ) {
+
+                await connection.rollback();
+
+                return res
+                    .status(404)
+                    .json({
+
+                        erro:
+                            "Pedido não encontrado."
+
+                    });
+
             }
 
-        }
+
+            const pedidoAtual =
+                pedidoExistente[0];
 
 
-        // =================================================
-        // ATUALIZAR STATUS
-        // =================================================
+            const statusAnterior =
+                String(
+                    pedidoAtual.status ||
+                    ""
+                )
+                    .trim()
+                    .toLowerCase();
 
-        await connection.query(
-            `
-            UPDATE pedidos
 
-            SET status = ?
+            const deveBaixarEstoque =
 
-            WHERE id = ?
-            `,
-            [
-                statusNormalizado,
-                id
-            ]
-        );
+                statusAnterior ===
+                    "pendente" &&
 
-        // A notificacao faz parte da mesma transacao do pedido: ou ambos sao
-        // gravados, ou nenhum deles e gravado.
-        if (statusAnterior !== statusNormalizado) {
-            const mensagensPorStatus = {
-                pendente: "Seu pedido esta pendente e aguardando processamento.",
-                processando: "Seu pedido esta sendo preparado.",
-                "em transporte": "Seu pedido saiu para transporte.",
-                entregue: "Seu pedido foi entregue.",
-                cancelado: "Seu pedido foi cancelado."
-            };
+                [
+                    "processando",
+                    "em transporte",
+                    "entregue"
+                ].includes(
+                    statusNormalizado
+                );
+
+
+            // =================================================
+            // BAIXAR ESTOQUE
+            // =================================================
+
+            if (
+                deveBaixarEstoque
+            ) {
+
+                const [itensPedido] =
+                    await connection.query(
+                        `
+                        SELECT
+                            ip.produto_id,
+                            ip.quantidade,
+                            i.nome
+
+                        FROM itens_pedidos ip
+
+                        INNER JOIN itens i
+                            ON i.id =
+                                ip.produto_id
+
+                        WHERE ip.pedido_id = ?
+
+                        FOR UPDATE
+                        `,
+                        [
+                            id
+                        ]
+                    );
+
+
+                for (
+                    const item
+                    of itensPedido
+                ) {
+
+                    const [estoque] =
+                        await connection.query(
+                            `
+                            SELECT
+                                quantidade
+
+                            FROM itens
+
+                            WHERE id = ?
+
+                            FOR UPDATE
+                            `,
+                            [
+                                item.produto_id
+                            ]
+                        );
+
+
+                    if (
+                        !estoque.length ||
+                        Number(
+                            estoque[0].quantidade
+                        ) <
+                        Number(
+                            item.quantidade
+                        )
+                    ) {
+
+                        await connection.rollback();
+
+                        return res
+                            .status(409)
+                            .json({
+
+                                erro:
+                                    `Estoque insuficiente para ${item.nome}.`
+
+                            });
+
+                    }
+
+
+                    item.estoque_anterior =
+                        Number(
+                            estoque[0].quantidade
+                        );
+
+                }
+
+
+                for (
+                    const item
+                    of itensPedido
+                ) {
+
+                    await connection.query(
+                        `
+                        UPDATE itens
+
+                        SET
+
+                            status =
+                                CASE
+
+                                    WHEN quantidade = ?
+                                        THEN 'Inativo'
+
+                                    ELSE status
+
+                                END,
+
+                            quantidade =
+                                quantidade - ?
+
+                        WHERE id = ?
+                        `,
+                        [
+                            item.quantidade,
+                            item.quantidade,
+                            item.produto_id
+                        ]
+                    );
+
+
+                    await registrarAtividade(
+                        connection,
+                        {
+
+                            usuario_id:
+                                req.usuario?.id ||
+                                null,
+
+                            tipo:
+                                "estoque",
+
+                            acao:
+                                "saida_pedido",
+
+                            titulo:
+                                `Estoque de "${item.nome}" atualizado`,
+
+                            descricao:
+                                `Baixa de ${item.quantidade} unidade(s) pelo pedido #${id}.`,
+
+                            referencia_id:
+                                item.produto_id,
+
+                            valor_anterior:
+                                item.estoque_anterior,
+
+                            valor_novo:
+                                item.estoque_anterior -
+                                Number(
+                                    item.quantidade
+                                )
+
+                        }
+                    );
+
+                }
+
+            }
+
+
+            // =================================================
+            // ATUALIZAR STATUS
+            // =================================================
 
             await connection.query(
                 `
-                INSERT INTO notificacoes
-                    (usuario_id, titulo, mensagem, tipo, referencia_id, lida)
-                VALUES (?, ?, ?, 'pedido', ?, FALSE)
+                UPDATE pedidos
+
+                SET
+                    status = ?
+
+                WHERE id = ?
                 `,
                 [
-                    pedidoAtual.usuario_id,
-                    `Status do pedido #${id} atualizado`,
-                    mensagensPorStatus[statusNormalizado],
+                    statusNormalizado,
                     id
                 ]
             );
 
-            await registrarAtividade(connection, {
-                usuario_id: req.usuario?.id || null,
-                tipo: "pedido",
-                acao: "alterar_status",
-                titulo: `Status do pedido #${id} alterado`,
-                descricao: `O pedido passou de "${statusAnterior}" para "${statusNormalizado}".`,
-                referencia_id: Number(id),
-                valor_anterior: statusAnterior,
-                valor_novo: statusNormalizado
-            });
-        }
+
+            // =================================================
+            // NOTIFICAÇÃO
+            // =================================================
+
+            if (
+                statusAnterior !==
+                statusNormalizado
+            ) {
+
+                const mensagensPorStatus = {
+
+                    pendente:
+                        "Seu pedido esta pendente e aguardando processamento.",
+
+                    processando:
+                        "Seu pedido esta sendo preparado.",
+
+                    "em transporte":
+                        "Seu pedido saiu para transporte.",
+
+                    entregue:
+                        "Seu pedido foi entregue.",
+
+                    cancelado:
+                        "Seu pedido foi cancelado."
+
+                };
 
 
-        // =================================================
-        // BUSCAR PEDIDO ATUALIZADO
-        // =================================================
-
-        const [pedidoAtualizado] =
-            await connection.query(
-                `
-                SELECT
-                    p.id,
-                    p.usuario_id,
-
-                    u.nome AS cliente,
-                    u.email AS email_cliente,
-                    u.telefone AS telefone_cliente,
-
-                    p.total,
-                    p.metodo_pagamento,
-                    p.status,
-                    p.criado_em,
-                    p.cupom_id,
-                    p.codigo_cupom,
-                    p.desconto
-
-                FROM pedidos p
-
-                INNER JOIN usuarios u
-                    ON u.id = p.usuario_id
-
-                WHERE p.id = ?
-
-                LIMIT 1
-                `,
-                [id]
-            );
-
-
-        // =================================================
-        // RESPOSTA
-        // =================================================
-
-        await connection.commit();
-
-        return res.json({
-
-            mensagem:
-                "Status do pedido atualizado com sucesso.",
-
-            pedido: {
-
-                ...pedidoAtualizado[0],
-
-                total:
-                    Number(
-                        pedidoAtualizado[0].total || 0
-                    ),
-
-                desconto:
-                    Number(
-                        pedidoAtualizado[0].desconto || 0
+                await connection.query(
+                    `
+                    INSERT INTO notificacoes (
+                        usuario_id,
+                        titulo,
+                        mensagem,
+                        tipo,
+                        referencia_id,
+                        lida
                     )
+
+                    VALUES (
+                        ?,
+                        ?,
+                        ?,
+                        'pedido',
+                        ?,
+                        FALSE
+                    )
+                    `,
+                    [
+                        pedidoAtual.usuario_id,
+
+                        `Status do pedido #${id} atualizado`,
+
+                        mensagensPorStatus[
+                            statusNormalizado
+                        ],
+
+                        id
+                    ]
+                );
+
+
+                await registrarAtividade(
+                    connection,
+                    {
+
+                        usuario_id:
+                            req.usuario?.id ||
+                            null,
+
+                        tipo:
+                            "pedido",
+
+                        acao:
+                            "alterar_status",
+
+                        titulo:
+                            `Status do pedido #${id} alterado`,
+
+                        descricao:
+                            `O pedido passou de "${statusAnterior}" para "${statusNormalizado}".`,
+
+                        referencia_id:
+                            Number(id),
+
+                        valor_anterior:
+                            statusAnterior,
+
+                        valor_novo:
+                            statusNormalizado
+
+                    }
+                );
 
             }
 
-        });
+
+            // =================================================
+            // BUSCAR PEDIDO ATUALIZADO
+            // =================================================
+
+            const [pedidoAtualizado] =
+                await connection.query(
+                    `
+                    SELECT
+                        p.id,
+                        p.usuario_id,
+
+                        u.nome AS cliente,
+                        u.email AS email_cliente,
+                        u.telefone AS telefone_cliente,
+
+                        p.total,
+                        p.metodo_pagamento,
+                        p.status,
+                        p.criado_em,
+                        p.cupom_id,
+                        p.codigo_cupom,
+                        p.desconto
+
+                    FROM pedidos p
+
+                    INNER JOIN usuarios u
+                        ON u.id =
+                            p.usuario_id
+
+                    WHERE p.id = ?
+
+                    LIMIT 1
+                    `,
+                    [
+                        id
+                    ]
+                );
 
 
-    } catch (error) {
+            // =================================================
+            // FINALIZAR TRANSAÇÃO
+            // =================================================
 
-        if (connection) {
-            await connection.rollback();
+            await connection.commit();
+
+
+            return res.json({
+
+                mensagem:
+                    "Status do pedido atualizado com sucesso.",
+
+                pedido: {
+
+                    ...pedidoAtualizado[0],
+
+                    total:
+                        Number(
+                            pedidoAtualizado[0]
+                                .total ||
+                            0
+                        ),
+
+                    desconto:
+                        Number(
+                            pedidoAtualizado[0]
+                                .desconto ||
+                            0
+                        )
+
+                }
+
+            });
+
+
+        } catch (error) {
+
+            if (connection) {
+
+                await connection.rollback();
+
+            }
+
+
+            console.error(
+                "ERRO AO ALTERAR STATUS:",
+                error
+            );
+
+
+            return res
+                .status(500)
+                .json({
+
+                    erro:
+                        "Erro ao alterar status do pedido.",
+
+                    detalhes:
+                        error.message
+
+                });
+
+
+        } finally {
+
+            if (connection) {
+
+                connection.release();
+
+            }
+
         }
-
-        console.error(
-            "ERRO AO ALTERAR STATUS:",
-            error
-        );
-
-
-        return res.status(500).json({
-
-            erro:
-                "Erro ao alterar status do pedido.",
-
-            detalhes:
-                error.message
-
-        });
-
-    } finally {
-        if (connection) {
-            connection.release();
-        }
-    }
 
     }
 );
@@ -1082,8 +2041,9 @@ router.get(
 
         try {
 
-            const { usuario_id } =
-                req.params;
+            const {
+                usuario_id
+            } = req.params;
 
 
             // =================================================
@@ -1092,12 +2052,14 @@ router.get(
 
             if (!usuario_id) {
 
-                return res.status(400).json({
+                return res
+                    .status(400)
+                    .json({
 
-                    erro:
-                        "ID do usuário não informado."
+                        erro:
+                            "ID do usuário não informado."
 
-                });
+                    });
 
             }
 
@@ -1127,7 +2089,8 @@ router.get(
                     FROM pedidos p
 
                     INNER JOIN usuarios u
-                        ON u.id = p.usuario_id
+                        ON u.id =
+                            p.usuario_id
 
                     WHERE p.usuario_id = ?
 
@@ -1135,7 +2098,9 @@ router.get(
                         p.criado_em DESC,
                         p.id DESC
                     `,
-                    [usuario_id]
+                    [
+                        usuario_id
+                    ]
                 );
 
 
@@ -1144,7 +2109,8 @@ router.get(
             // =================================================
 
             if (
-                pedidos.length === 0
+                pedidos.length ===
+                0
             ) {
 
                 return res.json([]);
@@ -1189,7 +2155,8 @@ router.get(
                     FROM itens_pedidos ip
 
                     LEFT JOIN itens i
-                        ON i.id = ip.produto_id
+                        ON i.id =
+                            ip.produto_id
 
                     WHERE ip.pedido_id IN (?)
 
@@ -1197,7 +2164,9 @@ router.get(
                         ip.pedido_id DESC,
                         ip.id ASC
                     `,
-                    [idsPedidos]
+                    [
+                        idsPedidos
+                    ]
                 );
 
 
@@ -1211,15 +2180,19 @@ router.get(
 
                         const itensDoPedido =
                             itens
+
                                 .filter(
                                     item =>
+
                                         Number(
                                             item.pedido_id
                                         ) ===
+
                                         Number(
                                             pedido.id
                                         )
                                 )
+
                                 .map(
                                     item => ({
 
@@ -1279,7 +2252,8 @@ router.get(
 
                             total:
                                 Number(
-                                    pedido.total || 0
+                                    pedido.total ||
+                                    0
                                 ),
 
                             metodo_pagamento:
@@ -1299,7 +2273,8 @@ router.get(
 
                             desconto:
                                 Number(
-                                    pedido.desconto || 0
+                                    pedido.desconto ||
+                                    0
                                 ),
 
                             itens:
@@ -1324,15 +2299,17 @@ router.get(
             );
 
 
-            return res.status(500).json({
+            return res
+                .status(500)
+                .json({
 
-                erro:
-                    "Erro ao buscar histórico de pedidos.",
+                    erro:
+                        "Erro ao buscar histórico de pedidos.",
 
-                detalhes:
-                    error.message
+                    detalhes:
+                        error.message
 
-            });
+                });
 
         }
 
@@ -1345,221 +2322,258 @@ router.get(
 // GET /pedidos/:id
 // =====================================================
 
-router.get("/:id", async (req, res) => {
+router.get(
+    "/:id",
+    async (req, res) => {
 
-    try {
+        try {
 
-        const { id } =
-            req.params;
-
-
-        // =================================================
-        // BUSCAR PEDIDO + CLIENTE
-        // =================================================
-
-        const [pedidos] =
-            await pool.query(
-                `
-                SELECT
-                    p.id,
-                    p.usuario_id,
-
-                    u.nome AS cliente,
-                    u.email AS email_cliente,
-                    u.telefone AS telefone_cliente,
-
-                    p.total,
-                    p.metodo_pagamento,
-                    p.status,
-                    p.criado_em,
-                    p.cupom_id,
-                    p.codigo_cupom,
-                    p.desconto
-
-                FROM pedidos p
-
-                INNER JOIN usuarios u
-                    ON u.id = p.usuario_id
-
-                WHERE p.id = ?
-
-                LIMIT 1
-                `,
-                [id]
-            );
+            const { id } =
+                req.params;
 
 
-        // =================================================
-        // PEDIDO NÃO ENCONTRADO
-        // =================================================
+            // =================================================
+            // BUSCAR PEDIDO + CLIENTE
+            // =================================================
 
-        if (
-            pedidos.length === 0
-        ) {
+            const [pedidos] =
+                await pool.query(
+                    `
+                    SELECT
+                        p.id,
+                        p.usuario_id,
 
-            return res.status(404).json({
+                        u.nome AS cliente,
+                        u.email AS email_cliente,
+                        u.telefone AS telefone_cliente,
 
-                erro:
-                    "Pedido não encontrado."
+                        p.total,
+                        p.metodo_pagamento,
+                        p.status,
+                        p.criado_em,
+                        p.cupom_id,
+                        p.codigo_cupom,
+                        p.desconto,
+                        p.endereco,
+                        p.numero,
+                        p.bairro,
+                        p.cidade,
+                        p.estado
+
+                    FROM pedidos p
+
+                    INNER JOIN usuarios u
+                        ON u.id =
+                            p.usuario_id
+
+                    WHERE p.id = ?
+
+                    LIMIT 1
+                    `,
+                    [
+                        id
+                    ]
+                );
+
+
+            // =================================================
+            // PEDIDO NÃO ENCONTRADO
+            // =================================================
+
+            if (
+                pedidos.length ===
+                0
+            ) {
+
+                return res
+                    .status(404)
+                    .json({
+
+                        erro:
+                            "Pedido não encontrado."
+
+                    });
+
+            }
+
+
+            const pedido =
+                pedidos[0];
+
+
+            // =================================================
+            // BUSCAR ITENS
+            // =================================================
+
+            const [itens] =
+                await pool.query(
+                    `
+                    SELECT
+                        ip.id,
+                        ip.pedido_id,
+                        ip.produto_id,
+                        ip.quantidade,
+                        ip.preco,
+
+                        (
+                            ip.quantidade *
+                            ip.preco
+                        ) AS subtotal,
+
+                        i.nome,
+                        i.descricao,
+                        i.foto
+
+                    FROM itens_pedidos ip
+
+                    LEFT JOIN itens i
+                        ON i.id =
+                            ip.produto_id
+
+                    WHERE ip.pedido_id = ?
+
+                    ORDER BY
+                        ip.id ASC
+                    `,
+                    [
+                        id
+                    ]
+                );
+
+
+            // =================================================
+            // RESPOSTA
+            // =================================================
+
+            return res.json({
+
+                id:
+                    pedido.id,
+
+                usuario_id:
+                    pedido.usuario_id,
+
+                cliente:
+                    pedido.cliente,
+
+                email_cliente:
+                    pedido.email_cliente,
+
+                telefone_cliente:
+                    pedido.telefone_cliente,
+
+                total:
+                    Number(
+                        pedido.total ||
+                        0
+                    ),
+
+                metodo_pagamento:
+                    pedido.metodo_pagamento,
+
+                status:
+                    pedido.status,
+
+                criado_em:
+                    pedido.criado_em,
+
+                cupom_id:
+                    pedido.cupom_id,
+
+                codigo_cupom:
+                    pedido.codigo_cupom,
+
+                desconto:
+                    Number(
+                        pedido.desconto ||
+                        0
+                    ),
+
+                endereco:
+                    pedido.endereco,
+
+                numero:
+                    pedido.numero,
+
+                bairro:
+                    pedido.bairro,
+
+                cidade:
+                    pedido.cidade,
+
+                estado:
+                    pedido.estado,
+
+                itens:
+                    itens.map(
+                        item => ({
+
+                            id:
+                                item.id,
+
+                            pedido_id:
+                                item.pedido_id,
+
+                            produto_id:
+                                item.produto_id,
+
+                            nome:
+                                item.nome ||
+                                "Produto não encontrado",
+
+                            descricao:
+                                item.descricao ||
+                                "",
+
+                            quantidade:
+                                Number(
+                                    item.quantidade
+                                ),
+
+                            preco:
+                                Number(
+                                    item.preco
+                                ),
+
+                            subtotal:
+                                Number(
+                                    item.subtotal
+                                ),
+
+                            foto:
+                                item.foto ||
+                                null
+
+                        })
+                    )
 
             });
 
-        }
 
+        } catch (error) {
 
-        const pedido =
-            pedidos[0];
-
-
-        // =================================================
-        // BUSCAR ITENS
-        // =================================================
-
-        const [itens] =
-            await pool.query(
-                `
-                SELECT
-                    ip.id,
-                    ip.pedido_id,
-                    ip.produto_id,
-                    ip.quantidade,
-                    ip.preco,
-
-                    (
-                        ip.quantidade *
-                        ip.preco
-                    ) AS subtotal,
-
-                    i.nome,
-                    i.descricao,
-                    i.foto
-
-                FROM itens_pedidos ip
-
-                LEFT JOIN itens i
-                    ON i.id = ip.produto_id
-
-                WHERE ip.pedido_id = ?
-
-                ORDER BY ip.id ASC
-                `,
-                [id]
+            console.error(
+                "ERRO AO BUSCAR PEDIDO:",
+                error
             );
 
 
-        // =================================================
-        // RESPOSTA
-        // =================================================
+            return res
+                .status(500)
+                .json({
 
-        return res.json({
+                    erro:
+                        "Erro ao buscar pedido.",
 
-            id:
-                pedido.id,
+                    detalhes:
+                        error.message
 
-            usuario_id:
-                pedido.usuario_id,
+                });
 
-            cliente:
-                pedido.cliente,
-
-            email_cliente:
-                pedido.email_cliente,
-
-            telefone_cliente:
-                pedido.telefone_cliente,
-
-            total:
-                Number(
-                    pedido.total || 0
-                ),
-
-            metodo_pagamento:
-                pedido.metodo_pagamento,
-
-            status:
-                pedido.status,
-
-            criado_em:
-                pedido.criado_em,
-
-            cupom_id:
-                pedido.cupom_id,
-
-            codigo_cupom:
-                pedido.codigo_cupom,
-
-            desconto:
-                Number(
-                    pedido.desconto || 0
-                ),
-
-            itens:
-                itens.map(
-                    item => ({
-
-                        id:
-                            item.id,
-
-                        pedido_id:
-                            item.pedido_id,
-
-                        produto_id:
-                            item.produto_id,
-
-                        nome:
-                            item.nome ||
-                            "Produto não encontrado",
-
-                        descricao:
-                            item.descricao ||
-                            "",
-
-                        quantidade:
-                            Number(
-                                item.quantidade
-                            ),
-
-                        preco:
-                            Number(
-                                item.preco
-                            ),
-
-                        subtotal:
-                            Number(
-                                item.subtotal
-                            ),
-
-                        foto:
-                            item.foto ||
-                            null
-
-                    })
-                )
-
-        });
-
-
-    } catch (error) {
-
-        console.error(
-            "ERRO AO BUSCAR PEDIDO:",
-            error
-        );
-
-
-        return res.status(500).json({
-
-            erro:
-                "Erro ao buscar pedido.",
-
-            detalhes:
-                error.message
-
-        });
+        }
 
     }
-
-});
+);
 
 
 export default router;

@@ -96,6 +96,7 @@ app.use(
 const pastaUploads =
     path.join(
         __dirname,
+        "..",
         "uploads"
     );
 

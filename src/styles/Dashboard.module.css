@@ -362,9 +362,9 @@ serif;
 
 font-size:
 clamp(
-48px,
-3.8vw,
-68px
+46px,
+3.6vw,
+64px
 );
 
 font-weight: 500;
@@ -384,314 +384,790 @@ line-height: 1.6;
 }
 
 /* =========================================================
-GRÁFICO
+GRÁFICO — VISUAL EDITORIAL PIXEL COLOR
 ========================================================= */
 
 .chartSection {
-margin-bottom: 32px;
-padding: 30px;
+  position: relative;
 
-border:
-1px solid
-var(--line);
+  margin-bottom: 32px;
 
-background:
-rgba(
-255,
-255,
-255,
-0.52
-);
+  padding:
+    34px
+    34px
+    30px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(24, 34, 53, 0.11);
+
+  background:
+    radial-gradient(
+      circle at 88% 8%,
+      rgba(127, 163, 232, 0.08),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #172033 0%,
+      #1b2944 56%,
+      #21375f 100%
+    );
+
+  box-shadow:
+    0 22px 50px
+    rgba(23, 32, 51, 0.11);
 }
 
-.chartHeader {
-margin-bottom: 32px;
 
-display: flex;
-align-items: flex-start;
-justify-content: space-between;
+/* detalhe editorial superior */
 
-gap: 24px;
+.chartAccent {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 82px;
+  height: 3px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #7fa3e8,
+      #3264c8
+    );
 }
 
-.chartHeader h3 {
-color: var(--text);
-
-font-family:
-"Cormorant Garamond",
-serif;
-
-font-size: 40px;
-font-weight: 600;
-
-line-height: 1;
-}
-
-.chartHeader p {
-margin-top: 7px;
-
-color: #87919e;
-
-font-size: 12px;
-
-line-height: 1.6;
-}
-
-.chartBadge {
-flex-shrink: 0;
-
-padding:
-7px
-10px;
-
-border:
-1px solid
-rgba(50, 100, 200, 0.16);
-
-background:
-rgba(50, 100, 200, 0.055);
-
-color: var(--blue);
-
-font-size: 11px;
-font-weight: 600;
-
-letter-spacing: 0.05em;
-}
 
 /* =========================================================
-GRÁFICO DE ONDA
+HEADER DO GRÁFICO
 ========================================================= */
 
-.waveChart {
-position: relative;
+.chartHeader {
+  position: relative;
 
-min-height: 350px;
+  z-index: 3;
 
-padding:
-10px
-10px
-0;
+  margin-bottom: 28px;
 
-border-top:
-1px solid
-var(--line-soft);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 30px;
 }
 
+
+.chartTitleGroup {
+  min-width: 0;
+}
+
+
+.chartEyebrow {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 12px;
+
+  color:
+    rgba(255, 255, 255, 0.48);
+
+  font-size: 10px;
+  font-weight: 600;
+
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+
+.chartEyebrow svg {
+  width: 14px;
+  height: 14px;
+
+  color: #9db8ee;
+}
+
+
+.chartHeader h3 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:
+    clamp(
+      38px,
+      3.4vw,
+      52px
+    );
+
+  font-weight: 500;
+
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
+
+.chartHeader p {
+  margin-top: 9px;
+
+  color:
+    rgba(255, 255, 255, 0.54);
+
+  font-size: 12px;
+
+  line-height: 1.7;
+}
+
+
+.chartBadge {
+  flex-shrink: 0;
+
+  min-height: 36px;
+
+  padding:
+    0
+    13px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid
+    rgba(157, 184, 238, 0.24);
+
+  background:
+    rgba(157, 184, 238, 0.08);
+
+  color: #c8d6f3;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  letter-spacing: 0.06em;
+}
+
+
 /* =========================================================
-LINHAS HORIZONTAIS DO GRÁFICO
+ÁREA VISUAL
+========================================================= */
+
+.chartVisual {
+  position: relative;
+
+  z-index: 2;
+}
+
+
+/* =========================================================
+MÉTRICAS SUPERIORES
+========================================================= */
+
+.chartMetrics {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  margin-bottom: 26px;
+
+  border-top:
+    1px solid
+    rgba(255, 255, 255, 0.09);
+
+  border-left:
+    1px solid
+    rgba(255, 255, 255, 0.09);
+}
+
+
+.chartMetric {
+  min-width: 0;
+
+  min-height: 105px;
+
+  padding:
+    18px
+    20px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  border-right:
+    1px solid
+    rgba(255, 255, 255, 0.09);
+
+  border-bottom:
+    1px solid
+    rgba(255, 255, 255, 0.09);
+
+  background:
+    rgba(255, 255, 255, 0.025);
+}
+
+
+.chartMetric > span {
+  margin-bottom: 9px;
+
+  color:
+    rgba(255, 255, 255, 0.45);
+
+  font-size: 9px;
+  font-weight: 600;
+
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+
+.chartMetric strong {
+  overflow: hidden;
+
+  color: #ffffff;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:
+    clamp(
+      26px,
+      2.2vw,
+      36px
+    );
+
+  font-weight: 500;
+
+  line-height: 1;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.chartMetric small {
+  margin-top: 7px;
+
+  color:
+    rgba(255, 255, 255, 0.38);
+
+  font-size: 9px;
+
+  line-height: 1.5;
+}
+
+
+.chartMetricDestaque {
+  position: relative;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(127, 163, 232, 0.09),
+      rgba(50, 100, 200, 0.04)
+    );
+}
+
+
+.chartMetricDestaque::after {
+  content: "";
+
+  position: absolute;
+
+  right: 17px;
+  top: 17px;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #8eb0ef;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(142, 176, 239, 0.09);
+}
+
+
+/* =========================================================
+FRAME DO GRÁFICO
+========================================================= */
+
+.chartFrame {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    72px
+    minmax(0, 1fr);
+
+  align-items: stretch;
+
+  gap: 14px;
+}
+
+
+/* =========================================================
+EIXO Y
+========================================================= */
+
+.chartAxis {
+  height: 270px;
+
+  padding:
+    15px
+    0
+    17px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  text-align: right;
+}
+
+
+.chartAxis span {
+  color:
+    rgba(255, 255, 255, 0.34);
+
+  font-size: 9px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+PLOT
+========================================================= */
+
+.chartPlot {
+  position: relative;
+
+  height: 270px;
+
+  min-width: 0;
+
+  overflow: visible;
+}
+
+
+/* =========================================================
+GRID
 ========================================================= */
 
 .chartGridLines {
-position: absolute;
+  position: absolute;
 
-top: 25px;
-left: 10px;
-right: 10px;
+  z-index: 1;
 
-height: 220px;
+  inset:
+    15px
+    0
+    17px;
 
-display: flex;
-flex-direction: column;
-justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
-pointer-events: none;
+  pointer-events: none;
 }
+
 
 .chartGridLines span {
-width: 100%;
+  width: 100%;
 
-border-top:
-1px dashed
-rgba(
-24,
-34,
-53,
-0.08
-);
+  border-top:
+    1px solid
+    rgba(255, 255, 255, 0.075);
 }
 
+
+.chartGridLines span:first-child {
+  border-top-color:
+    rgba(157, 184, 238, 0.12);
+}
+
+
 /* =========================================================
-SVG DA ONDA
+SVG
 ========================================================= */
 
 .waveSvg {
-position: relative;
+  position: relative;
 
-z-index: 2;
+  z-index: 2;
 
-width: 100%;
-height: 280px;
+  width: 100%;
+  height: 270px;
 
-display: block;
+  display: block;
 
-overflow: visible;
+  overflow: visible;
 }
 
-/* =========================================================
-ÁREA PREENCHIDA DA ONDA
-========================================================= */
 
 .waveArea {
-opacity: 1;
-
-transition:
-opacity 0.3s ease;
+  opacity: 1;
 }
 
-/* =========================================================
-LINHA PRINCIPAL
-========================================================= */
 
 .waveLine {
-filter:
-drop-shadow(
-0
-8px
-10px
-rgba(
-50,
-100,
-200,
-0.16
-)
-);
+  filter:
+    drop-shadow(
+      0
+      8px
+      11px
+      rgba(50, 100, 200, 0.26)
+    );
 
-transition:
-d 0.4s ease;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
+
 /* =========================================================
-PONTOS DO GRÁFICO
+GUIAS VERTICAIS
+========================================================= */
+
+.chartDayGuide {
+  stroke:
+    rgba(255, 255, 255, 0.045);
+
+  stroke-width: 1;
+
+  vector-effect:
+    non-scaling-stroke;
+}
+
+.chartGuide {
+  stroke:
+    rgba(157, 184, 238, 0.42);
+
+  stroke-width: 1;
+
+  stroke-dasharray:
+    4
+    5;
+
+  vector-effect:
+    non-scaling-stroke;
+}
+
+
+/* =========================================================
+ÁREAS DE INTERAÇÃO DOS DIAS
 ========================================================= */
 
 .wavePoint {
-cursor: pointer;
+  cursor: pointer;
+
+  outline: none;
 }
 
-.wavePoint circle:first-child {
-fill: #ffffff;
-
-stroke:
-#3264c8;
-
-stroke-width: 3;
-
-transition:
-r 0.2s ease,
-stroke-width 0.2s ease;
+.wavePoint:focus-visible {
+  outline: none;
 }
 
-.pointGlow {
-fill:
-rgba(
-50,
-100,
-200,
-0.08
-);
-
-stroke: none;
-
-opacity: 0;
-
-transition:
-opacity 0.2s ease;
-}
-
-.wavePoint:hover circle:first-child {
-r: 8;
-}
-
-.wavePoint:hover .pointGlow {
-opacity: 1;
-}
 
 /* =========================================================
-DIAS DO GRÁFICO
+TOOLTIP
+========================================================= */
+
+.chartTooltip {
+  position: absolute;
+
+  z-index: 10;
+
+  left:
+    clamp(
+      90px,
+      var(--tooltip-x),
+      calc(100% - 90px)
+    );
+
+  top:
+    clamp(
+      58px,
+      calc(
+        var(--tooltip-y) - 13px
+      ),
+      205px
+    );
+
+  min-width: 150px;
+
+  padding:
+    12px
+    13px;
+
+  transform:
+    translate(
+      -50%,
+      -100%
+    );
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.14);
+
+  background:
+    rgba(10, 17, 31, 0.94);
+
+  box-shadow:
+    0 15px 35px
+    rgba(0, 0, 0, 0.24);
+
+  backdrop-filter:
+    blur(10px);
+
+  -webkit-backdrop-filter:
+    blur(10px);
+
+  pointer-events: none;
+}
+
+
+.chartTooltip::after {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  bottom: -5px;
+
+  width: 9px;
+  height: 9px;
+
+  transform:
+    translateX(-50%)
+    rotate(45deg);
+
+  border-right:
+    1px solid
+    rgba(255, 255, 255, 0.14);
+
+  border-bottom:
+    1px solid
+    rgba(255, 255, 255, 0.14);
+
+  background:
+    rgba(10, 17, 31, 0.94);
+}
+
+
+.chartTooltip span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color:
+    rgba(255, 255, 255, 0.45);
+
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+
+.chartTooltip strong {
+  display: block;
+
+  color: #ffffff;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 22px;
+  font-weight: 600;
+}
+
+
+.chartTooltip small {
+  display: block;
+
+  margin-top: 4px;
+
+  color:
+    rgba(255, 255, 255, 0.48);
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+DIAS
 ========================================================= */
 
 .waveDays {
-position: relative;
+  display: grid;
 
-z-index: 3;
+  grid-template-columns:
+    repeat(7, minmax(0, 1fr));
 
-display: grid;
+  gap: 0;
 
-grid-template-columns:
-repeat(7, minmax(0, 1fr));
-
-gap: 10px;
-
-margin-top: -4px;
+  margin:
+    10px
+    0
+    0
+    86px;
 }
+
 
 .waveDay {
-min-width: 0;
+  position: relative;
 
-display: flex;
-flex-direction: column;
-align-items: center;
+  min-width: 0;
 
-gap: 4px;
+  padding:
+    12px
+    5px
+    10px;
 
-text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-cursor: default;
+  gap: 4px;
+
+  text-align: center;
+
+  border-top:
+    1px solid
+    rgba(255, 255, 255, 0.07);
 }
+
 
 .waveDay > span {
-color: #87919e;
+  color:
+    rgba(255, 255, 255, 0.42);
 
-font-size: 12px;
-font-weight: 600;
+  font-size: 10px;
+  font-weight: 600;
 
-text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
+
 
 .waveDay strong {
-color: var(--text);
+  overflow: hidden;
 
-font-size: 13px;
-font-weight: 600;
+  max-width: 100%;
 
-white-space: nowrap;
+  color:
+    rgba(255, 255, 255, 0.9);
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
 
 .waveDay small {
-color: #9aa3ae;
+  color:
+    rgba(255, 255, 255, 0.34);
 
-font-size: 10px;
+  font-size: 8px;
 
-white-space: nowrap;
+  white-space: nowrap;
 }
+
+
+.waveDayDestaque {
+  background:
+    rgba(127, 163, 232, 0.055);
+
+  border-top-color:
+    #7fa3e8;
+}
+
+
+.waveDayDestaque > span {
+  color: #a9c2f3;
+}
+
 
 /* =========================================================
-ÁREA DE HOVER / TOOLTIP
+RESPONSIVO DO GRÁFICO
 ========================================================= */
 
-.waveTooltips {
-position: absolute;
+@media (max-width: 900px) {
 
-top: 25px;
-left: 10px;
-right: 10px;
+  .chartSection {
+    padding:
+      28px
+      24px
+      25px;
+  }
 
-height: 220px;
+  .chartMetrics {
+    grid-template-columns: 1fr;
+  }
 
-display: grid;
+  .chartMetric {
+    min-height: 88px;
+  }
 
-grid-template-columns:
-repeat(7, 1fr);
+  .chartFrame {
+    grid-template-columns:
+      58px
+      minmax(0, 1fr);
+  }
 
-z-index: 5;
+  .waveDays {
+    margin-left: 72px;
+  }
 
-pointer-events: none;
 }
 
-.waveTooltips > div {
-height: 100%;
+
+@media (max-width: 560px) {
+
+  .chartSection {
+    padding:
+      24px
+      18px
+      22px;
+
+    overflow-x: auto;
+  }
+
+  .chartHeader {
+    min-width: 720px;
+
+    align-items: flex-start;
+  }
+
+  .chartVisual {
+    min-width: 720px;
+  }
+
+  .chartBadge {
+    margin-top: 3px;
+  }
+
 }
+
 
 /* =========================================================
 GRID: VENDAS + ESTOQUE
@@ -1759,4 +2235,81 @@ body,
 
 .empty {
   font-size: 16px;
+}
+
+
+/* =========================================================
+   AJUSTES FINAIS DO GRÁFICO
+   Mantêm as proporções do novo layout após os media queries
+   antigos do dashboard.
+========================================================= */
+
+.chartHeader p {
+  font-size: 12px;
+}
+
+.chartBadge {
+  font-size: 11px;
+}
+
+.waveDay > span {
+  font-size: 10px;
+}
+
+.waveDay strong {
+  font-size: 11px;
+}
+
+.waveDay small {
+  font-size: 8px;
+}
+
+@media (max-width: 768px) {
+
+  .chartSection {
+    padding:
+      26px
+      20px
+      24px;
+  }
+
+  .chartFrame {
+    grid-template-columns:
+      58px
+      minmax(0, 1fr);
+  }
+
+  .chartPlot,
+  .chartAxis,
+  .waveSvg {
+    height: 260px;
+  }
+
+  .waveDays {
+    margin-left: 72px;
+  }
+
+}
+
+@media (max-width: 560px) {
+
+  .chartSection {
+    padding:
+      22px
+      17px;
+
+    overflow-x: auto;
+  }
+
+  .chartHeader,
+  .chartVisual {
+    min-width: 720px;
+  }
+
+  .chartPlot,
+  .chartAxis,
+  .waveSvg {
+    height: 260px;
+  }
+
 }

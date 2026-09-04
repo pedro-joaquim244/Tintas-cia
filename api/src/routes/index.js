@@ -13,23 +13,29 @@ import cartoesRoutes from "./cartoes.routes.js";
 import notificacoesRoutes from "./notificacoes.routes.js";
 import orcamentoRoutes from "./orcamento.routes.js";
 import historicoRoutes from "./hsitorico.routes.js";
-
+import newsletterRoutes from "./newsletter.routes.js";
+import emailsRoutes from "./adminEmails.routes.js";
+import catalogoRoutes from "./catalogo.routes.js";
+import freteRoutes from "./frete.routes.js";
+import fornecedoresRoutes from "./fornecedores.routes.js";
+import favoritosRoutes from "./favoritos.routes.js";
 import mercadoPagoRoutes from "./mercadoPago.routes.js";
 
 
-const routes =
-    express.Router();
+const routes = express.Router();
 
 
 // =====================================================
 // TESTE API
 // =====================================================
 
-routes.get("/", (req, res) => {
+routes.get("/", (_req, res) => {
 
-    return res.status(200).json({
-        mensagem: "API funcionando!"
-    });
+    return res
+        .status(200)
+        .json({
+            mensagem: "API funcionando!"
+        });
 
 });
 
@@ -51,6 +57,46 @@ routes.use(
 routes.use(
     "/usuarios",
     usuariosRoutes
+);
+
+
+// =====================================================
+// FORNECEDORES
+// =====================================================
+
+routes.use(
+    "/fornecedores",
+    fornecedoresRoutes
+);
+
+
+// =====================================================
+// FAVORITOS
+// =====================================================
+
+routes.use(
+    "/favoritos",
+    favoritosRoutes
+);
+
+
+// =====================================================
+// NEWSLETTER
+// =====================================================
+
+routes.use(
+    "/newsletter",
+    newsletterRoutes
+);
+
+
+// =====================================================
+// FRETE
+// =====================================================
+
+routes.use(
+    "/frete",
+    freteRoutes
 );
 
 
@@ -165,9 +211,39 @@ routes.use(
 
 
 // =====================================================
+// CATÁLOGO
+//
+// GET  /catalogo-opcoes
+//
+// POST /catalogo-opcoes/categorias
+// POST /catalogo-opcoes/marcas
+// POST /catalogo-opcoes/cores
+// =====================================================
+
+routes.use(
+    "/catalogo-opcoes",
+    catalogoRoutes
+);
+
+
+// =====================================================
+// ADMIN - E-MAILS
+//
+// GET  /admin/emails/status
+// GET  /admin/emails/destinatarios
+// GET  /admin/emails/resumo
+// POST /admin/emails/enviar
+// =====================================================
+
+routes.use(
+    "/admin/emails",
+    emailsRoutes
+);
+
+
+// =====================================================
 // MERCADO PAGO
 //
-// URL FINAL:
 // /api/mercado-pago/...
 // =====================================================
 

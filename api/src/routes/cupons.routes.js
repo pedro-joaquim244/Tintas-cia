@@ -305,6 +305,32 @@ router.get(
 
 
             // ==========================
+            // USO ÚNICO POR CLIENTE
+            // ==========================
+
+            const usuarioId = Number(req.query.usuario_id);
+
+            if (Number.isInteger(usuarioId) && usuarioId > 0) {
+                const [usoAnterior] = await pool.query(
+                    `
+                    SELECT id
+                    FROM pedidos
+                    WHERE usuario_id = ?
+                      AND cupom_id = ?
+                    LIMIT 1
+                    `,
+                    [usuarioId, cupom.id]
+                );
+
+                if (usoAnterior.length > 0) {
+                    return res.status(409).json({
+                        mensagem: "Você já utilizou este cupom."
+                    });
+                }
+            }
+
+
+            // ==========================
             // STATUS
             // ==========================
 

@@ -20,15 +20,19 @@ import {
     FaArrowRight,
     FaPaintRoller,
     FaBoxOpen,
-    FaTimes
+    FaTimes,
+    FaHeart,
+    FaRegHeart
 } from "react-icons/fa";
 
 import {
-    useNavigate
+    useNavigate,
+    useSearchParams
 } from "react-router-dom";
 
 import {
-    api
+    api,
+    urlArquivo
 } from "../services/api";
 
 import {
@@ -44,6 +48,20 @@ import Banner1 from "../assets/imagens/banner1.png";
 import Banner2 from "../assets/imagens/banner2.png";
 import Banner3 from "../assets/imagens/banner3.png";
 
+const NOMES_CATEGORIAS = [
+    "Tintas para Parede",
+    "Tintas para Área Externa",
+    "Tintas para Madeira",
+    "Tintas para Metal",
+    "Efeitos e Acabamentos",
+    "Proteção e Segurança",
+    "Pincéis e Acessórios",
+    "Ferramentas",
+    "Preparação de Superfície",
+    "Complementos",
+    "Outros"
+];
+
 
 export default function Produtos() {
 
@@ -53,6 +71,11 @@ export default function Produtos() {
 
     const navigate =
         useNavigate();
+
+    const [
+        parametrosBusca,
+        setParametrosBusca
+    ] = useSearchParams();
 
 
     // =====================================================
@@ -69,10 +92,26 @@ export default function Produtos() {
         setBusca
     ] = useState("");
 
-    const [
-        categoriaSelecionada,
-        setCategoriaSelecionada
-    ] = useState("Todos");
+    const categoriaParametro =
+        parametrosBusca.get("categoria");
+
+    const categoriaSelecionada =
+        NOMES_CATEGORIAS.includes(categoriaParametro)
+            ? categoriaParametro
+            : "Todos";
+
+    function setCategoriaSelecionada(categoria) {
+        const novosParametros =
+            new URLSearchParams(parametrosBusca);
+
+        if (categoria === "Todos") {
+            novosParametros.delete("categoria");
+        } else {
+            novosParametros.set("categoria", categoria);
+        }
+
+        setParametrosBusca(novosParametros);
+    }
 
     const [
         modalCarrinho,
@@ -88,6 +127,38 @@ export default function Produtos() {
         slideAtual,
         setSlideAtual
     ] = useState(0);
+
+    const [
+        favoritosIds,
+        setFavoritosIds
+    ] = useState(() => new Set());
+
+    const [
+        favoritoCarregandoId,
+        setFavoritoCarregandoId
+    ] = useState(null);
+
+    useEffect(() => {
+        if (!usuario) {
+            setFavoritosIds(new Set());
+            return;
+        }
+
+        api.get("/favoritos")
+            .then((resposta) => {
+                const ids = Array.isArray(resposta.data)
+                    ? resposta.data.map((item) => Number(item.id))
+                    : [];
+
+                setFavoritosIds(new Set(ids));
+            })
+            .catch((error) => {
+                console.error(
+                    "Erro ao carregar favoritos:",
+                    error.response?.data || error
+                );
+            });
+    }, [usuario]);
 
     useEffect(() => {
         if (!produtoSelecionado) {
@@ -988,21 +1059,7 @@ export default function Produtos() {
         }
 
 
-        if (
-            produto.foto.startsWith(
-                "http://"
-            ) ||
-            produto.foto.startsWith(
-                "https://"
-            )
-        ) {
-
-            return produto.foto;
-
-        }
-
-
-        return `http://localhost:3333/${produto.foto}`;
+        return urlArquivo(produto.foto);
 
     }
 
@@ -1127,6 +1184,58 @@ export default function Produtos() {
                 error.response?.data || error
             );
         });
+    }
+
+
+    async function alternarFavorito(produto) {
+        if (!usuario) {
+            alert("Faça login para adicionar produtos aos favoritos");
+            navigate("/login");
+            return;
+        }
+
+        const itemId = Number(produto?.id);
+
+        if (!itemId || favoritoCarregandoId === itemId) {
+            return;
+        }
+
+        const estaFavorito = favoritosIds.has(itemId);
+        setFavoritoCarregandoId(itemId);
+
+        try {
+            if (estaFavorito) {
+                await api.delete(`/favoritos/${itemId}`);
+            } else {
+                await api.post("/favoritos", {
+                    item_id: itemId
+                });
+            }
+
+            setFavoritosIds((atuais) => {
+                const novosIds = new Set(atuais);
+
+                if (estaFavorito) {
+                    novosIds.delete(itemId);
+                } else {
+                    novosIds.add(itemId);
+                }
+
+                return novosIds;
+            });
+        } catch (error) {
+            console.error(
+                "Erro ao atualizar favorito:",
+                error.response?.data || error
+            );
+
+            alert(
+                error.response?.data?.erro ||
+                "Não foi possível atualizar os favoritos."
+            );
+        } finally {
+            setFavoritoCarregandoId(null);
+        }
     }
 
 
@@ -1971,6 +2080,20 @@ export default function Produtos() {
                                                                                 }}
                                                                             />
 
+                                                                            <button
+                                                                                type="button"
+                                                                                className={`${style.botaoFavoritoProduto} ${favoritosIds.has(Number(produto.id)) ? style.botaoFavoritoAtivo : ""}`}
+                                                                                onClick={(event) => {
+                                                                                    event.stopPropagation();
+                                                                                    alternarFavorito(produto);
+                                                                                }}
+                                                                                aria-label={favoritosIds.has(Number(produto.id)) ? "Remover produto dos favoritos" : "Adicionar produto aos favoritos"}
+                                                                                aria-pressed={favoritosIds.has(Number(produto.id))}
+                                                                                disabled={favoritoCarregandoId === Number(produto.id)}
+                                                                            >
+                                                                                {favoritosIds.has(Number(produto.id)) ? <FaHeart /> : <FaRegHeart />}
+                                                                            </button>
+
                                                                         </div>
 
 
@@ -2347,6 +2470,17 @@ export default function Produtos() {
                             aria-label="Fechar detalhes do produto"
                         >
                             <FaTimes />
+                        </button>
+
+                        <button
+                            type="button"
+                            className={`${style.modalProdutoFavorito} ${favoritosIds.has(Number(produtoSelecionado.id)) ? style.modalProdutoFavoritoAtivo : ""}`}
+                            onClick={() => alternarFavorito(produtoSelecionado)}
+                            aria-label={favoritosIds.has(Number(produtoSelecionado.id)) ? "Remover produto dos favoritos" : "Adicionar produto aos favoritos"}
+                            aria-pressed={favoritosIds.has(Number(produtoSelecionado.id))}
+                            disabled={favoritoCarregandoId === Number(produtoSelecionado.id)}
+                        >
+                            {favoritosIds.has(Number(produtoSelecionado.id)) ? <FaHeart /> : <FaRegHeart />}
                         </button>
 
 

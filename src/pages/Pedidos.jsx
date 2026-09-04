@@ -1375,6 +1375,30 @@ export default function Pedidos() {
 
                                 </div>
 
+                                <div className={styles.enderecoPedido}>
+
+                                    <span>Endereço de entrega</span>
+
+                                    <strong>
+                                        {pedidoSelecionado.endereco
+                                            ? `${pedidoSelecionado.endereco}, ${pedidoSelecionado.numero || "s/n"}`
+                                            : "Retirada na loja ou endereço não informado"}
+                                    </strong>
+
+                                    {pedidoSelecionado.endereco && (
+                                        <small>
+                                            {[
+                                                pedidoSelecionado.bairro,
+                                                pedidoSelecionado.cidade,
+                                                pedidoSelecionado.estado
+                                            ]
+                                                .filter(Boolean)
+                                                .join(" - ")}
+                                        </small>
+                                    )}
+
+                                </div>
+
 
                                 {/* =================================================
                                     STATUS

@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import {
+    FiHeart,
+    FiShoppingCart
+} from "react-icons/fi";
 
 import { useAuth } from "../../contexts/authContext.jsx";
+import { urlFotoUsuario } from "../../services/api.js";
 
 import styles from "./style.module.css";
 
@@ -12,78 +17,19 @@ export default function Header() {
 
     const [menuAberto, setMenuAberto] = useState(false);
 
-    const { usuario } = useAuth();
+    const { usuario, ehCliente } = useAuth();
 
 
     // =====================================================
     // URL DA FOTO DO USUÁRIO
     // =====================================================
 
-    function obterUrlFoto(foto) {
-
-        if (!foto) {
-            return null;
-        }
-
-
-        let caminho = String(foto)
-            .trim()
-            .replace(/\\/g, "/");
-
-
-        if (!caminho) {
-            return null;
-        }
-
-
-        // Se já for uma URL completa
-        if (
-            caminho.startsWith("http://") ||
-            caminho.startsWith("https://")
-        ) {
-
-            return caminho;
-
-        }
-
-
-        /*
-         * O banco pode ter:
-         *
-         * usuarios/usuario-123.webp
-         *
-         * ou:
-         *
-         * uploads/usuarios/usuario-123.webp
-         */
-
-
-        // Remove "./" do início
-        caminho = caminho.replace(/^\.?\//, "");
-
-
-        // Caso já esteja salvo com uploads/
-        if (caminho.startsWith("uploads/")) {
-
-            return `http://localhost:3333/${caminho}`;
-
-        }
-
-
-        // Caso esteja salvo como:
-        // usuarios/foto.webp
-
-        return `http://localhost:3333/uploads/${caminho}`;
-
-    }
-
-
     // =====================================================
     // FOTO DO USUÁRIO
     // =====================================================
 
     const fotoUsuario =
-        obterUrlFoto(usuario?.foto);
+        urlFotoUsuario(usuario?.foto);
 
 
     // =====================================================
@@ -160,7 +106,7 @@ export default function Header() {
     </NavLink>
 
     <NavLink
-        to="/cliente/Livro"
+        to="/cliente/livro"
         className={({ isActive }) =>
             isActive ? styles.linkAtivo : ""
         }
@@ -168,14 +114,16 @@ export default function Header() {
         Livro de Cores
     </NavLink>
 
-    <NavLink
-        to="/cliente/produtos"
-        className={({ isActive }) =>
-            isActive ? styles.linkAtivo : ""
-        }
-    >
-        Produtos
-    </NavLink>
+    {ehCliente && (
+        <NavLink
+            to="/cliente/produtos"
+            className={({ isActive }) =>
+                isActive ? styles.linkAtivo : ""
+            }
+        >
+            Produtos
+        </NavLink>
+    )}
 
     <NavLink
         to="/cliente/sobre-nos"
@@ -186,26 +134,37 @@ export default function Header() {
         Sobre nós
     </NavLink>
 
-    <NavLink
-        to="/cliente/carrinho"
-        className={({ isActive }) =>
-            isActive ? styles.linkAtivo : ""
-        }
-    >
-        Carrinho
-    </NavLink>
-
 </nav>
 
             {/* =================================================
                 USUÁRIO DESKTOP
             ================================================= */}
 
-            <Link
-                to="/perfil"
-                className={styles.usuario}
-                title={usuario?.nome || "Meu perfil"}
-            >
+            {ehCliente ? (
+                <div className={styles.acoesUsuario}>
+                    <Link
+                        to="/cliente/favoritos"
+                        className={styles.favoritosIcone}
+                        title="Meus favoritos"
+                        aria-label="Abrir meus favoritos"
+                    >
+                        <FiHeart size={21} />
+                    </Link>
+
+                    <Link
+                        to="/cliente/carrinho"
+                        className={styles.carrinhoIcone}
+                        title="Meu carrinho"
+                        aria-label="Abrir meu carrinho"
+                    >
+                        <FiShoppingCart size={21} />
+                    </Link>
+
+                    <Link
+                        to="/cliente/perfil"
+                        className={styles.usuario}
+                        title={usuario.nome || "Meu perfil"}
+                    >
 
                 {fotoUsuario ? (
 
@@ -264,7 +223,18 @@ export default function Header() {
 
                 </div>
 
-            </Link>
+                    </Link>
+                </div>
+            ) : (
+                <Link
+                    to="/login"
+                    className={styles.loginButton}
+                    title="Fazer login"
+                    onClick={fecharMenu}
+                >
+                    Login
+                </Link>
+            )}
 
 
             {/* =================================================
@@ -325,19 +295,21 @@ export default function Header() {
 
 
                 <Link
-                    to="/cliente/Livro"
+                    to="/cliente/livro"
                     onClick={fecharMenu}
                 >
                     Livro de Cores
                 </Link>
 
 
-                <Link
-                    to="/cliente/produtos"
-                    onClick={fecharMenu}
-                >
-                    Produtos
-                </Link>
+                {ehCliente && (
+                    <Link
+                        to="/cliente/produtos"
+                        onClick={fecharMenu}
+                    >
+                        Produtos
+                    </Link>
+                )}
 
 
                 <Link
@@ -348,23 +320,36 @@ export default function Header() {
                 </Link>
 
 
-                <Link
-                    to="/cliente/carrinho"
-                    onClick={fecharMenu}
-                >
-                    Carrinho
-                </Link>
+                {ehCliente && (
+                    <Link
+                        to="/cliente/carrinho"
+                        onClick={fecharMenu}
+                    >
+                        Carrinho
+                    </Link>
+                )}
+
+
+                {ehCliente && (
+                    <Link
+                        to="/cliente/favoritos"
+                        onClick={fecharMenu}
+                    >
+                        Favoritos
+                    </Link>
+                )}
 
 
                 {/* =================================================
                     USUÁRIO MOBILE
                 ================================================= */}
 
-                <Link
-                    to="/perfil"
-                    className={styles.usuarioMobile}
-                    onClick={fecharMenu}
-                >
+                {ehCliente ? (
+                    <Link
+                        to="/cliente/perfil"
+                        className={styles.usuarioMobile}
+                        onClick={fecharMenu}
+                    >
 
                     <div className={styles.avatarMobile}>
 
@@ -426,7 +411,16 @@ export default function Header() {
                             "Usuário"}
                     </span>
 
-                </Link>
+                    </Link>
+                ) : (
+                    <Link
+                        to="/login"
+                        className={styles.loginMobile}
+                        onClick={fecharMenu}
+                    >
+                        Fazer login
+                    </Link>
+                )}
 
             </div>
 

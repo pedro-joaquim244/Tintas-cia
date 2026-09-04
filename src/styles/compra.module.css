@@ -37,19 +37,15 @@ select {
 }
 
 .backButton {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
     min-height: 44px;
-    padding: 0 15px;
-    border: 1px solid #d9e2ef;
-    border-radius: 11px;
-    background: #ffffff;
-    color: #18345f;
-    font-size: 13px;
-    font-weight: 650;
-    cursor: pointer;
-    transition: 0.2s ease;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #788393;
+    font-size: 90px;
+    margin-bottom: 126px;
+    gap: 32px;
 }
 
 .backButton:hover {
@@ -328,7 +324,7 @@ select {
     display: flex;
     flex-direction: column;
     color: #64748b;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .cupomAplicado strong {
@@ -440,6 +436,8 @@ select {
     border-radius: 13px;
     background: #f8fbff;
     color: #2563eb;
+    display: flex;
+    align-items: center;
 }
 
 .infoPagamento > div {
@@ -450,12 +448,12 @@ select {
 
 .infoPagamento strong {
     color: #172033;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .infoPagamento span {
     color: #64748b;
-    font-size: 10px;
+    font-size: 13px;
     line-height: 1.5;
 }
 
@@ -544,7 +542,7 @@ select {
 .savedCardInfo strong {
     overflow: hidden;
     color: #172033;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -552,7 +550,7 @@ select {
 
 .savedCardInfo small {
     color: #64748b;
-    font-size: 9px;
+    font-size: 12px;
 }
 
 .principalBadge {
@@ -563,7 +561,7 @@ select {
     border-radius: 5px;
     background: #dbeafe;
     color: #1d4ed8;
-    font-size: 7px;
+    font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
 }
@@ -977,7 +975,7 @@ select {
 .saveCardCheck {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
-    gap: 9px;
+    gap: 16px;
     align-items: start;
     margin-top: 4px;
     padding: 11px;
@@ -1020,12 +1018,12 @@ select {
 
 .saveCardCheck strong {
     color: #172033;
-    font-size: 10px;
+    font-size: 14px;
 }
 
 .saveCardCheck small {
     color: #64748b;
-    font-size: 8px;
+    font-size: 9px;
     line-height: 1.45;
 }
 
@@ -1067,17 +1065,17 @@ select {
 
 .selectedSavedCard span {
     color: #64748b;
-    font-size: 9px;
+    font-size: 13px;
 }
 
 .selectedSavedCard strong {
     color: #172033;
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .selectedSavedCard small {
     color: #64748b;
-    font-size: 9px;
+    font-size: 13px;
 }
 
 .selectedCheck {
@@ -1111,7 +1109,7 @@ select {
 }
 
 .cupomResumo .sectionHeader h2 {
-    font-size: 15px;
+    font-size: 32px;
 }
 
 .cupomResumo .cupomInput input {
@@ -1156,7 +1154,7 @@ select {
     justify-content: space-between;
     margin-bottom: 5px;
     color: #2563eb;
-    font-size: 9px;
+    font-size: 13px;
     font-weight: 800;
     letter-spacing: 0.09em;
     text-transform: uppercase;
@@ -1183,7 +1181,7 @@ select {
 .summaryLine strong,
 .installmentSummary strong {
     color: #334155;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 650;
     text-align: right;
 }
@@ -1294,7 +1292,7 @@ select {
     justify-content: center;
     gap: 6px;
     color: #94a3b8;
-    font-size: 8px;
+    font-size: 13px;
     line-height: 1.5;
     text-align: center;
 }
@@ -1749,12 +1747,17 @@ select {
     padding: 0;
     align-self: start;
 
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
     border: 0;
     border-radius: 0;
     background: transparent;
     color: #788393;
 
-    font-size: 10px;
+    font-size: 16px;
     font-weight: 500;
 }
 
@@ -1786,7 +1789,7 @@ select {
     max-width: 560px;
     margin-top: 17px;
     color: var(--pc-muted);
-    font-size: 11px;
+    font-size: 16px;
     font-weight: 300;
     line-height: 1.8;
 }
@@ -1800,7 +1803,7 @@ select {
     background: rgba(255,255,255,.42);
 
     color: #617083;
-    font-size: 9px;
+    font-size: 13px;
     font-weight: 600;
 }
 
@@ -1864,14 +1867,14 @@ select {
     background: transparent;
     color: var(--pc-blue);
 
-    font-size: 8px;
+    font-size: 12px;
     font-weight: 700;
 }
 
 .sectionHeader h2 {
     color: var(--pc-text);
     font-family: "Cormorant Garamond", serif;
-    font-size: 27px;
+    font-size: 35px;
     font-weight: 600;
     letter-spacing: -.02em;
 }
@@ -1879,7 +1882,7 @@ select {
 .itemCount,
 .securityText {
     color: #8993a0;
-    font-size: 9px;
+    font-size: 14px;
     font-weight: 500;
 }
 
@@ -1912,7 +1915,7 @@ select {
 .produtoInfo h3 {
     color: var(--pc-text);
     font-family: "Cormorant Garamond", serif;
-    font-size: 22px;
+    font-size: 32px;
     font-weight: 600;
     line-height: 1.05;
 }
@@ -1920,13 +1923,13 @@ select {
 .produtoInfo p {
     margin-top: 7px;
     color: #8a94a1;
-    font-size: 9px;
+    font-size: 16px;
 }
 
 .produto > strong {
     color: var(--pc-text);
     font-family: "Cormorant Garamond", serif;
-    font-size: 22px;
+    font-size: 35px;
     font-weight: 600;
 }
 
@@ -2015,8 +2018,8 @@ select {
 }
 
 .paymentIcon {
-    width: 37px;
-    height: 37px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     background: rgba(24,34,53,.06);
     color: #5d697a;
@@ -2028,12 +2031,12 @@ select {
 }
 
 .paymentOption strong {
-    font-size: 10px;
+    font-size: 15px;
     font-weight: 600;
 }
 
 .paymentOption small {
-    font-size: 8px;
+    font-size: 13px;
 }
 
 .paymentOptionActive strong {
@@ -2070,12 +2073,12 @@ select {
 .savedCardsHeader strong {
     color: var(--pc-text);
     font-family: "Cormorant Garamond", serif;
-    font-size: 19px;
+    font-size: 29px;
     font-weight: 600;
 }
 
 .savedCardsHeader span {
-    font-size: 9px;
+    font-size: 14px;
 }
 
 .savedCard {
@@ -2164,19 +2167,19 @@ select {
 
 .formIntro span {
     color: var(--pc-blue);
-    font-size: 7px;
+    font-size: 13px;
 }
 
 .formIntro h3 {
     color: var(--pc-text);
     font-family: "Cormorant Garamond", serif;
-    font-size: 22px;
+    font-size: 32px;
     font-weight: 600;
 }
 
 .formGroup label {
     color: #536071;
-    font-size: 9px;
+    font-size: 13px;
     font-weight: 500;
 }
 
@@ -2186,7 +2189,7 @@ select {
     border: 1px solid var(--pc-line);
     border-radius: 0;
     background: rgba(255,255,255,.82);
-    font-size: 11px;
+    font-size: 14px;
 }
 
 .saveCardCheck {
@@ -2232,7 +2235,7 @@ select {
 
 .summaryTop span {
     color: rgba(255,255,255,.4);
-    font-size: 8px;
+    font-size: 13px;
     letter-spacing: .18em;
 }
 
@@ -2258,19 +2261,19 @@ select {
 .summaryLine span,
 .installmentSummary span {
     color: rgba(255,255,255,.48);
-    font-size: 9px;
+    font-size: 15px;
 }
 
 .summaryLine strong,
 .installmentSummary strong {
     color: rgba(255,255,255,.9);
-    font-size: 10px;
+    font-size: 16px;
     font-weight: 500;
 }
 
 .desconto span,
 .desconto strong {
-    color: #98d4a6;
+    color: #0f7727;
 }
 
 .resumo hr {
@@ -2280,7 +2283,7 @@ select {
 
 .total span {
     color: rgba(255,255,255,.48);
-    font-size: 8px;
+    font-size: 14px;
     letter-spacing: .13em;
 }
 
@@ -2299,7 +2302,7 @@ select {
     background: #fff;
     color: var(--pc-navy);
 
-    font-size: 10px;
+    font-size: 16px;
     font-weight: 600;
 }
 
@@ -2310,7 +2313,7 @@ select {
 
 .secureFooter {
     color: rgba(255,255,255,.36);
-    font-size: 7px;
+    font-size: 11px;
 }
 
 .secureFooter svg {
@@ -3083,6 +3086,946 @@ select {
     .pixCloseButton {
         width: 36px;
         height: 36px;
+        font-size: 16px;
+    }
+}
+
+/* =========================================================
+   ENTREGA / FRETE NO CHECKOUT
+========================================================= */
+
+.freteSection {
+    scroll-margin-top: 130px;
+}
+
+.freteConcluido,
+.fretePendente {
+    min-height: 30px;
+    padding: 0 11px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    border: 1px solid var(--pc-line);
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.freteConcluido {
+    border-color: rgba(48, 125, 73, 0.2);
+    background: rgba(48, 125, 73, 0.07);
+    color: #2f7546;
+}
+
+.freteConcluido svg {
+    font-size: 14px;
+}
+
+.fretePendente {
+    color: #8993a0;
+}
+
+.tipoEntregaGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px;
+}
+
+.entregaOpcao {
+    min-width: 0;
+    min-height: 96px;
+    padding: 17px;
+
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 13px;
+
+    border: 1px solid var(--pc-line);
+    border-radius: 0;
+
+    background: rgba(255, 255, 255, 0.48);
+    color: var(--pc-text);
+
+    text-align: left;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.entregaOpcao:hover:not(:disabled) {
+    border-color: rgba(50, 100, 200, 0.34);
+    background: rgba(255, 255, 255, 0.76);
+}
+
+.entregaOpcao:disabled {
+    opacity: 0.58;
+    cursor: not-allowed;
+}
+
+.entregaOpcaoAtiva,
+.entregaOpcaoAtiva:hover:not(:disabled) {
+    border-color: var(--pc-navy);
+    background: var(--pc-navy);
+    color: #ffffff;
+}
+
+.entregaIcone {
+    width: 45px;
+    height: 45px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(24, 34, 53, 0.06);
+    color: #5d697a;
+    font-size: 19px;
+}
+
+.entregaOpcaoAtiva .entregaIcone {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--pc-blue-soft);
+}
+
+.entregaTexto {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.entregaTexto strong {
+    color: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.entregaTexto small {
+    color: #8993a0;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+.entregaOpcaoAtiva .entregaTexto small {
+    color: rgba(255, 255, 255, 0.48);
+}
+
+.entregaRadio {
+    width: 17px;
+    height: 17px;
+
+    border: 1px solid #9aa4b1;
+    border-radius: 50%;
+}
+
+.entregaOpcaoAtiva .entregaRadio {
+    border-color: #ffffff;
+    background: #ffffff;
+    box-shadow: inset 0 0 0 4px var(--pc-navy);
+}
+
+.freteForm {
+    margin-top: 18px;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 92px 178px;
+    align-items: end;
+    gap: 11px;
+}
+
+.freteCampo {
+    min-width: 0;
+}
+
+.freteCampo label {
+    display: block;
+    margin-bottom: 7px;
+
+    color: #536071;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.freteCampo > div {
+    position: relative;
+}
+
+.freteCampo > div > svg {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    z-index: 1;
+
+    color: #8793a3;
+    font-size: 16px;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
+.freteCampo input {
+    width: 100%;
+    height: 50px;
+    padding: 0 14px;
+
+    border: 1px solid var(--pc-line);
+    border-radius: 0;
+    outline: none;
+
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--pc-text);
+
+    font-family: "Poppins", sans-serif;
+    font-size: 13px;
+    transition: 0.2s ease;
+}
+
+.freteCampo > div > input {
+    padding-left: 41px;
+}
+
+.freteCampo input:focus {
+    border-color: rgba(50, 100, 200, 0.58);
+    box-shadow: 0 0 0 3px rgba(50, 100, 200, 0.07);
+}
+
+.freteCampo input::placeholder {
+    color: #a1a9b4;
+}
+
+.freteUf input {
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.calcularFrete {
+    width: 100%;
+    min-height: 50px;
+    padding: 0 15px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    border: 1px solid var(--pc-navy);
+    border-radius: 0;
+
+    background: var(--pc-navy);
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.calcularFrete:hover:not(:disabled) {
+    border-color: var(--pc-blue);
+    background: var(--pc-blue);
+}
+
+.calcularFrete:disabled {
+    opacity: 0.55;
+    cursor: wait;
+}
+
+.freteSpin {
+    animation: freteSpin 0.8s linear infinite;
+}
+
+@keyframes freteSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.retiradaCarregando,
+.freteErro {
+    margin-top: 16px;
+    padding: 14px 15px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    border: 1px solid var(--pc-line);
+
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.retiradaCarregando {
+    background: rgba(50, 100, 200, 0.035);
+    color: #687589;
+}
+
+.retiradaCarregando svg {
+    flex-shrink: 0;
+    color: var(--pc-blue);
+}
+
+.freteErro {
+    align-items: flex-start;
+    border-color: rgba(177, 68, 68, 0.2);
+    background: rgba(177, 68, 68, 0.055);
+    color: #994646;
+}
+
+.freteErro svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 17px;
+}
+
+.freteResultado {
+    margin-top: 18px;
+    padding: 19px;
+
+    border: 1px solid rgba(50, 100, 200, 0.16);
+    background: rgba(50, 100, 200, 0.035);
+}
+
+.freteResultadoTopo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.freteResultadoTitulo {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.freteResultadoIcone {
+    width: 39px;
+    height: 39px;
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    background: var(--pc-navy);
+    color: var(--pc-blue-soft);
+    font-size: 17px;
+}
+
+.freteResultadoTitulo > div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.freteResultadoTitulo > div > span {
+    color: var(--pc-blue);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+
+.freteResultadoTitulo > div > strong {
+    overflow: hidden;
+    color: var(--pc-text);
+    font-size: 14px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.freteResultadoTitulo > div > small {
+    overflow: hidden;
+    color: #7d8998;
+    font-size: 11px;
+    line-height: 1.45;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.freteResultadoValor {
+    flex-shrink: 0;
+    color: #2f7546;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 27px;
+    font-weight: 600;
+}
+
+.fretePrazo {
+    margin-top: 13px;
+    padding-top: 12px;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    border-top: 1px solid rgba(24, 34, 53, 0.09);
+    color: #687589;
+    font-size: 12px;
+}
+
+.fretePrazo svg {
+    flex-shrink: 0;
+    color: var(--pc-blue);
+}
+
+.freteGratisProgresso {
+    margin-top: 13px;
+}
+
+.freteGratisProgresso p,
+.freteGratisMensagem {
+    margin: 0;
+    color: #687589;
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+.freteGratisProgresso p strong {
+    color: var(--pc-blue);
+}
+
+.freteGratisProgresso > div {
+    width: 100%;
+    height: 4px;
+    margin-top: 8px;
+    overflow: hidden;
+    background: rgba(24, 34, 53, 0.09);
+}
+
+.freteGratisProgresso > div > span {
+    display: block;
+    height: 100%;
+    background: var(--pc-blue);
+    transition: width 0.3s ease;
+}
+
+.freteGratisMensagem {
+    margin-top: 12px;
+    color: #2f7546;
+    font-weight: 600;
+}
+
+.freteGratisResumo {
+    color: #9bd6aa !important;
+}
+
+.resumoEntregaDetalhe {
+    margin: -3px 0 17px;
+    padding: 10px 11px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.52);
+
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+.resumoEntregaDetalhe svg {
+    flex-shrink: 0;
+    color: var(--pc-blue-soft);
+    font-size: 15px;
+}
+
+.freteResumoAviso {
+    margin: 9px 0 0;
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 10px;
+    line-height: 1.5;
+    text-align: right;
+}
+
+@media (max-width: 760px) {
+    .tipoEntregaGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .freteForm {
+        grid-template-columns: 110px minmax(0, 1fr);
+    }
+
+    .freteRua,
+    .freteCidade {
+        grid-column: 1 / -1;
+    }
+
+    .freteNumero,
+    .freteUf {
+        grid-column: 1;
+    }
+
+    .freteBairro,
+    .calcularFrete {
+        grid-column: 2;
+    }
+}
+
+@media (max-width: 480px) {
+    .freteConcluido,
+    .fretePendente {
+        align-self: flex-start;
+    }
+
+    .entregaOpcao {
+        min-height: 86px;
+        padding: 14px;
+    }
+
+    .entregaIcone {
+        width: 39px;
+        height: 39px;
+    }
+
+    .freteForm {
+        grid-template-columns: 1fr;
+    }
+
+    .freteRua,
+    .freteNumero,
+    .freteBairro,
+    .freteCidade,
+    .freteUf,
+    .calcularFrete {
+        grid-column: auto;
+    }
+
+    .freteResultadoTopo {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 13px;
+    }
+
+    .freteResultadoValor {
+        padding-left: 51px;
+    }
+
+    .freteResultadoTitulo > div > strong {
+        white-space: normal;
+    }
+
+    .freteResultadoTitulo > div > small {
+        white-space: normal;
+    }
+}
+
+/* =========================================================
+   BOLETO / MERCADO PAGO
+   Adicionado sem alterar os estilos existentes.
+========================================================= */
+
+.boletoArea {
+    margin-top: 16px;
+}
+
+.boletoArea .infoPagamento {
+    margin-top: 0;
+}
+
+.boletoForm {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+    padding: 16px;
+    border: 1px solid #dbe3ec;
+    border-radius: 13px;
+    background: #fbfdff;
+}
+
+.boletoForm .formGroup {
+    margin-bottom: 0;
+}
+
+.boletoEnderecoAviso {
+    margin-top: 9px;
+    color: #64748b;
+    font-size: 10px;
+    line-height: 1.55;
+}
+
+.modalBoletoOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10030;
+    padding: clamp(10px, 2vw, 24px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: rgba(8, 14, 24, 0.78);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: overlayIn 0.22s ease;
+}
+
+.modalBoleto {
+    position: relative;
+    width: min(760px, calc(100vw - 24px));
+    max-height: calc(100dvh - 24px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    background: #ffffff;
+    color: #172033;
+    font-size: 16px;
+    box-shadow: 0 30px 80px rgba(15, 23, 42, 0.28);
+    animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.boletoModalHeader {
+    position: relative;
+    flex-shrink: 0;
+    padding: 26px 64px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-bottom: 1px solid #e8eef6;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.12), transparent 52%),
+        linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+}
+
+.boletoCloseButton {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dbe4ef;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #64748b;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.boletoCloseButton:hover {
+    transform: translateY(-1px);
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.boletoModalIcon {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #bfdbfe;
+    border-radius: 18px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 26px;
+    box-shadow: 0 8px 22px rgba(37, 99, 235, 0.1);
+}
+
+.boletoStatusBadge {
+    margin-bottom: 10px;
+    padding: 6px 11px;
+    border: 1px solid #fde68a;
+    border-radius: 999px;
+    background: #fffbeb;
+    color: #a16207;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.boletoModalHeader h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: clamp(24px, 3vw, 30px);
+    line-height: 1.2;
+    font-weight: 760;
+    letter-spacing: -0.5px;
+}
+
+.boletoModalHeader p {
+    max-width: 560px;
+    margin: 10px 0 0;
+    color: #64748b;
+    font-size: 16px;
+    line-height: 1.65;
+}
+
+.boletoModalContent {
+    min-height: 0;
+    margin-top: 0;
+    padding: 24px 30px 28px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+}
+
+.boletoOrderInfo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: hidden;
+    border: 1px solid #dfe7f1;
+    border-radius: 16px;
+    background: #f8fafc;
+}
+
+.boletoOrderInfo > div {
+    min-width: 0;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.boletoOrderInfo > div + div {
+    border-left: 1px solid #dfe7f1;
+}
+
+.boletoOrderInfo span {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.boletoOrderInfo strong {
+    color: #172033;
+    font-size: 18px;
+    line-height: 1.35;
+    font-weight: 750;
+}
+
+.boletoCodeArea {
+    margin-top: 20px;
+}
+
+.boletoCodeArea label {
+    display: block;
+    margin-bottom: 8px;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.boletoCopyBox {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    overflow: hidden;
+    border: 1px solid #dbe3ec;
+    border-radius: 13px;
+    background: #ffffff;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.boletoCopyBox input {
+    min-width: 0;
+    height: 54px;
+    padding: 0 16px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 550;
+    letter-spacing: 0.01em;
+}
+
+.boletoCopyBox button {
+    min-width: 118px;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    border-left: 1px solid #dbe3ec;
+    background: #172033;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.boletoCopyBox button:hover:not(:disabled) {
+    background: #2563eb;
+}
+
+.boletoCopyBox button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.boletoActions {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 12px;
+}
+
+.boletoAbrirButton,
+.boletoDownloadButton {
+    width: 100%;
+    min-height: 52px;
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border-radius: 13px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.boletoAbrirButton {
+    border: 1px solid #2563eb;
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    color: #ffffff;
+}
+
+.boletoAbrirButton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 9px 20px rgba(37, 99, 235, 0.2);
+}
+
+.boletoDownloadButton {
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #172033;
+}
+
+.boletoDownloadButton:hover {
+    transform: translateY(-1px);
+    border-color: #93c5fd;
+    background: #f8fbff;
+    color: #1d4ed8;
+    box-shadow: 0 9px 20px rgba(15, 23, 42, 0.08);
+}
+
+.boletoWaitingNotice {
+    margin-top: 18px;
+    padding: 15px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    border: 1px solid #dbeafe;
+    border-radius: 13px;
+    background: #f8fbff;
+    color: #64748b;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.boletoWaitingNotice svg {
+    flex-shrink: 0;
+    margin-top: 3px;
+    color: #2563eb;
+    font-size: 19px;
+}
+
+@media (max-width: 700px) {
+    .boletoForm {
+        grid-template-columns: 1fr;
+    }
+
+    .modalBoletoOverlay {
+        padding: 8px;
+    }
+
+    .modalBoleto {
+        width: 100%;
+        max-height: calc(100dvh - 16px);
+        border-radius: 18px;
+    }
+
+    .boletoModalHeader {
+        padding: 22px 52px 18px 20px;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .boletoCloseButton {
+        top: 12px;
+        right: 12px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .boletoModalIcon {
+        width: 50px;
+        height: 50px;
+        border-radius: 15px;
+        font-size: 22px;
+    }
+
+    .boletoModalHeader h2 {
+        font-size: 24px;
+    }
+
+    .boletoModalHeader p {
+        font-size: 16px;
+    }
+
+    .boletoModalContent {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 520px) {
+    .boletoOrderInfo {
+        grid-template-columns: 1fr;
+    }
+
+    .boletoOrderInfo > div + div {
+        border-left: none;
+        border-top: 1px solid #dfe7f1;
+    }
+
+    .boletoCopyBox {
+        grid-template-columns: 1fr;
+    }
+
+    .boletoCopyBox input {
+        height: 52px;
+        font-size: 13px;
+    }
+
+    .boletoCopyBox button {
+        min-height: 48px;
+        border-left: none;
+        border-top: 1px solid #dbe3ec;
+    }
+
+    .boletoActions {
+        grid-template-columns: 1fr;
+    }
+
+    .boletoWaitingNotice {
         font-size: 16px;
     }
 }

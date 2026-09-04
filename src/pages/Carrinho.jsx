@@ -22,7 +22,7 @@ import {
     FiX
 } from "react-icons/fi";
 
-import style from "../styles/carrinho.module.css";
+import style from "../styles/Carrinho.module.css";
 
 import { api } from "../services/api";
 
@@ -85,6 +85,41 @@ export default function Carrinho() {
         orcamentoGerado,
         setOrcamentoGerado
     ] = useState(null);
+
+
+    // =====================================================
+    // FRETE
+    // =====================================================
+
+    const [
+        tipoEntrega,
+        setTipoEntrega
+    ] = useState("ENTREGA");
+
+    const [
+        cidadeFrete,
+        setCidadeFrete
+    ] = useState("");
+
+    const [
+        estadoFrete,
+        setEstadoFrete
+    ] = useState("");
+
+    const [
+        freteResultado,
+        setFreteResultado
+    ] = useState(null);
+
+    const [
+        calculandoFrete,
+        setCalculandoFrete
+    ] = useState(false);
+
+    const [
+        erroFrete,
+        setErroFrete
+    ] = useState("");
 
 
     // =====================================================
@@ -188,6 +223,40 @@ export default function Carrinho() {
             setCarregando(false);
 
         }
+
+    }, [usuario]);
+
+
+    // =====================================================
+    // PREENCHER ENDEREÇO DO FRETE COM DADOS DO USUÁRIO
+    // =====================================================
+
+    useEffect(() => {
+
+        if (!usuario) {
+            return;
+        }
+
+        setCidadeFrete(
+            (valorAtual) =>
+                valorAtual ||
+                String(
+                    usuario?.cidade ||
+                    ""
+                )
+                    .trim()
+        );
+
+        setEstadoFrete(
+            (valorAtual) =>
+                valorAtual ||
+                String(
+                    usuario?.estado ||
+                    ""
+                )
+                    .trim()
+                    .toUpperCase()
+        );
 
     }, [usuario]);
 
@@ -871,7 +940,6 @@ export default function Carrinho() {
         const colProduto = margem;
         const colQtd = 126;
         const colUnit = 143;
-        const colSubtotal = 172;
 
 
         function desenharCabecalhoTabela() {
@@ -1622,9 +1690,25 @@ export default function Carrinho() {
         );
 
 
+    const fretePronto =
+        Boolean(
+            freteResultado?.disponivel
+        ) &&
+        Number(
+            freteResultado?.subtotal_calculado ??
+            subtotal
+        ) ===
+        Number(
+            subtotal
+        );
+
+
     const frete =
-        subtotal > 0
-            ? 29.90
+        fretePronto
+            ? Number(
+                freteResultado?.valor_frete ||
+                0
+            )
             : 0;
 
 
@@ -1646,6 +1730,606 @@ export default function Carrinho() {
                 ),
             0
         );
+
+
+    // =====================================================
+    // FORMATAR PRAZO DO FRETE
+    // =====================================================
+
+    function formatarPrazoFrete(
+        resultado
+    ) {
+
+        if (!resultado) {
+            return "";
+        }
+
+
+        if (
+            resultado?.retirada ||
+            resultado?.tipo_entrega ===
+                "RETIRADA"
+        ) {
+
+            return "Retirada disponível em até 1 dia útil.";
+
+        }
+
+
+        const prazoMin =
+            Number(
+                resultado?.prazo_min ||
+                0
+            );
+
+
+        const prazoMax =
+            Number(
+                resultado?.prazo_max ||
+                prazoMin
+            );
+
+
+        if (
+            prazoMin <= 0 &&
+            prazoMax <= 0
+        ) {
+
+            return "";
+
+        }
+
+
+        if (
+            prazoMin ===
+            prazoMax
+        ) {
+
+            return prazoMin === 1
+                ? "1 dia útil"
+                : `${prazoMin} dias úteis`;
+
+        }
+
+
+        return `${prazoMin} a ${prazoMax} dias úteis`;
+
+    }
+
+
+    // =====================================================
+    // SALVAR FRETE PARA A TELA DE COMPRA
+    // =====================================================
+
+    function salvarFreteCheckout(
+        resultado
+    ) {
+
+        if (
+            !usuario?.id ||
+            !resultado
+        ) {
+
+            return;
+
+        }
+
+
+        const tipoResultado =
+            String(
+                resultado?.tipo_entrega ||
+                tipoEntrega
+            )
+                .trim()
+                .toUpperCase();
+
+
+        const dadosFrete = {
+
+            disponivel:
+                Boolean(
+                    resultado?.disponivel
+                ),
+
+            tipo_entrega:
+                tipoResultado,
+
+            retirada:
+                Boolean(
+                    resultado?.retirada
+                ),
+
+            cidade:
+                tipoResultado ===
+                    "ENTREGA"
+                    ? (
+                        resultado?.cidade ||
+                        cidadeFrete.trim()
+                    )
+                    : null,
+
+            estado:
+                tipoResultado ===
+                    "ENTREGA"
+                    ? (
+                        resultado?.estado ||
+                        estadoFrete
+                            .trim()
+                            .toUpperCase()
+                    )
+                    : null,
+
+            valor_original:
+                Number(
+                    resultado?.valor_original ||
+                    0
+                ),
+
+            valor_frete:
+                Number(
+                    resultado?.valor_frete ||
+                    0
+                ),
+
+            frete_gratis:
+                Boolean(
+                    resultado?.frete_gratis
+                ),
+
+            frete_gratis_acima:
+                resultado?.frete_gratis_acima ??
+                null,
+
+            falta_para_frete_gratis:
+                resultado?.falta_para_frete_gratis ??
+                null,
+
+            prazo_min:
+                Number(
+                    resultado?.prazo_min ||
+                    0
+                ),
+
+            prazo_max:
+                Number(
+                    resultado?.prazo_max ||
+                    0
+                ),
+
+            prazo_texto:
+                formatarPrazoFrete(
+                    resultado
+                ),
+
+            subtotal_referencia:
+                Number(
+                    subtotal ||
+                    0
+                )
+
+        };
+
+
+        localStorage.setItem(
+            `frete_checkout_${usuario.id}`,
+            JSON.stringify(
+                dadosFrete
+            )
+        );
+
+
+        return dadosFrete;
+
+    }
+
+
+    // =====================================================
+    // LIMPAR FRETE CALCULADO
+    // =====================================================
+
+    function limparFreteCalculado() {
+
+        setFreteResultado(
+            null
+        );
+
+        setErroFrete(
+            ""
+        );
+
+
+        if (
+            usuario?.id
+        ) {
+
+            localStorage.removeItem(
+                `frete_checkout_${usuario.id}`
+            );
+
+        }
+
+    }
+
+
+    // =====================================================
+    // CALCULAR FRETE NA API
+    //
+    // POST /frete/calcular
+    // =====================================================
+
+    async function calcularFrete(
+        tipo = tipoEntrega,
+        silencioso = false
+    ) {
+
+        if (
+            produtos.length === 0 ||
+            subtotal <= 0
+        ) {
+
+            return;
+
+        }
+
+
+        const tipoNormalizado =
+            String(
+                tipo ||
+                "ENTREGA"
+            )
+                .trim()
+                .toUpperCase();
+
+
+        const cidade =
+            cidadeFrete
+                .trim();
+
+
+        const estado =
+            estadoFrete
+                .trim()
+                .toUpperCase();
+
+
+        if (
+            tipoNormalizado ===
+                "ENTREGA" &&
+            (
+                !cidade ||
+                !estado
+            )
+        ) {
+
+            setErroFrete(
+                "Informe sua cidade e UF para calcular o frete."
+            );
+
+            setFreteResultado(
+                null
+            );
+
+            return;
+
+        }
+
+
+        if (
+            tipoNormalizado ===
+                "ENTREGA" &&
+            estado.length !== 2
+        ) {
+
+            setErroFrete(
+                "Informe uma UF válida. Ex.: SP."
+            );
+
+            setFreteResultado(
+                null
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            if (!silencioso) {
+
+                setCalculandoFrete(
+                    true
+                );
+
+            }
+
+
+            setErroFrete(
+                ""
+            );
+
+
+            const payload = {
+
+                tipo_entrega:
+                    tipoNormalizado,
+
+                subtotal:
+                    Number(
+                        subtotal
+                    )
+
+            };
+
+
+            if (
+                tipoNormalizado ===
+                "ENTREGA"
+            ) {
+
+                payload.cidade =
+                    cidade;
+
+                payload.estado =
+                    estado;
+
+            }
+
+
+            const resposta =
+                await api.post(
+                    "/frete/calcular",
+                    payload
+                );
+
+
+            const resultado =
+                resposta.data;
+
+
+            if (
+                !resultado?.disponivel
+            ) {
+
+                setFreteResultado(
+                    null
+                );
+
+                setErroFrete(
+                    resultado?.erro ||
+                    "Não foi possível calcular o frete para este endereço."
+                );
+
+                return;
+
+            }
+
+
+            const resultadoComSubtotal = {
+
+                ...resultado,
+
+                subtotal_calculado:
+                    Number(
+                        subtotal
+                    )
+
+            };
+
+
+            setFreteResultado(
+                resultadoComSubtotal
+            );
+
+
+            salvarFreteCheckout(
+                resultadoComSubtotal
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao calcular frete:",
+                error.response?.data ||
+                error
+            );
+
+
+            setFreteResultado(
+                null
+            );
+
+
+            setErroFrete(
+                error.response?.data?.erro ||
+                "Não foi possível calcular o frete para este endereço."
+            );
+
+
+            if (
+                usuario?.id
+            ) {
+
+                localStorage.removeItem(
+                    `frete_checkout_${usuario.id}`
+                );
+
+            }
+
+
+        } finally {
+
+            if (!silencioso) {
+
+                setCalculandoFrete(
+                    false
+                );
+
+            }
+
+        }
+
+    }
+
+
+    // =====================================================
+    // TROCAR TIPO DE ENTREGA
+    // =====================================================
+
+    async function selecionarTipoEntrega(
+        novoTipo
+    ) {
+
+        const tipo =
+            String(
+                novoTipo ||
+                "ENTREGA"
+            )
+                .trim()
+                .toUpperCase();
+
+
+        setTipoEntrega(
+            tipo
+        );
+
+
+        setErroFrete(
+            ""
+        );
+
+
+        setFreteResultado(
+            null
+        );
+
+
+        if (
+            usuario?.id
+        ) {
+
+            localStorage.removeItem(
+                `frete_checkout_${usuario.id}`
+            );
+
+        }
+
+
+        if (
+            tipo ===
+            "RETIRADA"
+        ) {
+
+            await calcularFrete(
+                "RETIRADA"
+            );
+
+        }
+
+    }
+
+
+    // =====================================================
+    // ATUALIZAR FRETE QUANDO O SUBTOTAL MUDAR
+    //
+    // Ex.: usuário aumenta ou diminui a quantidade depois
+    // de já ter calculado o frete.
+    // =====================================================
+
+    useEffect(() => {
+
+        if (
+            !freteResultado?.disponivel
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            subtotal <= 0
+        ) {
+
+            setFreteResultado(
+                null
+            );
+
+            return;
+
+        }
+
+
+        const temporizador =
+            setTimeout(
+                () => {
+
+                    calcularFrete(
+                        tipoEntrega,
+                        true
+                    );
+
+                },
+                300
+            );
+
+
+        return () =>
+            clearTimeout(
+                temporizador
+            );
+
+    }, [subtotal]);
+
+
+    // =====================================================
+    // IR PARA A TELA DE COMPRA
+    // =====================================================
+
+    function finalizarCompra() {
+
+        if (
+            produtos.length === 0 ||
+            carregando
+        ) {
+
+            return;
+
+        }
+
+
+        if (!fretePronto) {
+
+            setErroFrete(
+                tipoEntrega ===
+                    "RETIRADA"
+                    ? "Selecione novamente a retirada na loja."
+                    : "Calcule o frete antes de finalizar a compra."
+            );
+
+            return;
+
+        }
+
+
+        const dadosFrete =
+            salvarFreteCheckout(
+                freteResultado
+            );
+
+
+        navigate(
+            "/cliente/compra",
+            {
+                state: {
+                    frete:
+                        dadosFrete
+                }
+            }
+        );
+
+    }
 
 
     // =====================================================
@@ -2493,6 +3177,483 @@ export default function Carrinho() {
                         </div>
 
 
+                        {/* =============================================
+                            FRETE
+                        ============================================= */}
+
+                        <div
+                            className={
+                                style.freteBox
+                            }
+                        >
+
+                            <div
+                                className={
+                                    style.freteCabecalho
+                                }
+                            >
+
+                                <div>
+
+                                    <FiTruck />
+
+                                    <div>
+
+                                        <span>
+                                            ENTREGA
+                                        </span>
+
+                                        <strong>
+                                            Como deseja receber?
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                {
+                                    freteResultado?.frete_gratis &&
+                                    fretePronto && (
+
+                                        <span
+                                            className={
+                                                style.freteGratisBadge
+                                            }
+                                        >
+                                            GRÁTIS
+                                        </span>
+
+                                    )
+                                }
+
+                            </div>
+
+
+                            {/* =========================================
+                                TIPO DE ENTREGA
+                            ========================================= */}
+
+                            <div
+                                className={
+                                    style.tipoEntrega
+                                }
+                            >
+
+                                <button
+                                    type="button"
+                                    className={
+                                        tipoEntrega ===
+                                        "ENTREGA"
+                                            ? style.tipoEntregaAtivo
+                                            : ""
+                                    }
+                                    onClick={() =>
+                                        selecionarTipoEntrega(
+                                            "ENTREGA"
+                                        )
+                                    }
+                                >
+                                    Receber no endereço
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    className={
+                                        tipoEntrega ===
+                                        "RETIRADA"
+                                            ? style.tipoEntregaAtivo
+                                            : ""
+                                    }
+                                    onClick={() =>
+                                        selecionarTipoEntrega(
+                                            "RETIRADA"
+                                        )
+                                    }
+                                    disabled={
+                                        calculandoFrete
+                                    }
+                                >
+                                    Retirar na loja
+                                </button>
+
+                            </div>
+
+
+                            {/* =========================================
+                                ENTREGA NO ENDEREÇO
+                            ========================================= */}
+
+                            {
+                                tipoEntrega ===
+                                "ENTREGA" && (
+
+                                    <>
+
+                                        <div
+                                            className={
+                                                style.freteEndereco
+                                            }
+                                        >
+
+                                            <div>
+
+                                                <label
+                                                    htmlFor="frete-cidade"
+                                                >
+                                                    Cidade
+                                                </label>
+
+                                                <input
+                                                    id="frete-cidade"
+                                                    type="text"
+                                                    value={
+                                                        cidadeFrete
+                                                    }
+                                                    onChange={
+                                                        (
+                                                            event
+                                                        ) => {
+
+                                                            setCidadeFrete(
+                                                                event
+                                                                    .target
+                                                                    .value
+                                                            );
+
+                                                            limparFreteCalculado();
+
+                                                        }
+                                                    }
+                                                    placeholder="Ex.: Jaboticabal"
+                                                    autoComplete="address-level2"
+                                                />
+
+                                            </div>
+
+
+                                            <div
+                                                className={
+                                                    style.freteUf
+                                                }
+                                            >
+
+                                                <label
+                                                    htmlFor="frete-estado"
+                                                >
+                                                    UF
+                                                </label>
+
+                                                <input
+                                                    id="frete-estado"
+                                                    type="text"
+                                                    value={
+                                                        estadoFrete
+                                                    }
+                                                    onChange={
+                                                        (
+                                                            event
+                                                        ) => {
+
+                                                            setEstadoFrete(
+                                                                event
+                                                                    .target
+                                                                    .value
+                                                                    .replace(
+                                                                        /[^a-zA-Z]/g,
+                                                                        ""
+                                                                    )
+                                                                    .slice(
+                                                                        0,
+                                                                        2
+                                                                    )
+                                                                    .toUpperCase()
+                                                            );
+
+                                                            limparFreteCalculado();
+
+                                                        }
+                                                    }
+                                                    placeholder="SP"
+                                                    maxLength={2}
+                                                    autoComplete="address-level1"
+                                                />
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <button
+                                            type="button"
+                                            className={
+                                                style.calcularFrete
+                                            }
+                                            disabled={
+                                                calculandoFrete ||
+                                                produtos.length ===
+                                                    0
+                                            }
+                                            onClick={() =>
+                                                calcularFrete(
+                                                    "ENTREGA"
+                                                )
+                                            }
+                                        >
+
+                                            {
+                                                calculandoFrete
+                                                    ? "Calculando..."
+                                                    : fretePronto
+                                                        ? "Recalcular frete"
+                                                        : "Calcular frete"
+                                            }
+
+                                            <FiArrowRight />
+
+                                        </button>
+
+                                    </>
+
+                                )
+                            }
+
+
+                            {/* =========================================
+                                RETIRADA
+                            ========================================= */}
+
+                            {
+                                tipoEntrega ===
+                                "RETIRADA" &&
+                                !fretePronto &&
+                                !erroFrete && (
+
+                                    <div
+                                        className={
+                                            style.retiradaCarregando
+                                        }
+                                    >
+
+                                        <FiPackage />
+
+                                        <p>
+                                            Preparando a opção
+                                            de retirada grátis...
+                                        </p>
+
+                                    </div>
+
+                                )
+                            }
+
+
+                            {/* =========================================
+                                ERRO DO FRETE
+                            ========================================= */}
+
+                            {
+                                erroFrete && (
+
+                                    <div
+                                        className={
+                                            style.freteErro
+                                        }
+                                    >
+
+                                        <FiAlertCircle />
+
+                                        <span>
+                                            {erroFrete}
+                                        </span>
+
+                                    </div>
+
+                                )
+                            }
+
+
+                            {/* =========================================
+                                RESULTADO
+                            ========================================= */}
+
+                            {
+                                fretePronto &&
+                                freteResultado && (
+
+                                    <div
+                                        className={
+                                            style.freteResultado
+                                        }
+                                    >
+
+                                        <div
+                                            className={
+                                                style.freteResultadoTopo
+                                            }
+                                        >
+
+                                            <div>
+
+                                                <span>
+                                                    {
+                                                        freteResultado
+                                                            ?.retirada
+                                                            ? "RETIRADA NA LOJA"
+                                                            : "ENTREGA DISPONÍVEL"
+                                                    }
+                                                </span>
+
+                                                <strong>
+
+                                                    {
+                                                        freteResultado
+                                                            ?.retirada
+                                                            ? "Pixel Color"
+                                                            : `${freteResultado?.cidade || cidadeFrete} - ${freteResultado?.estado || estadoFrete}`
+                                                    }
+
+                                                </strong>
+
+                                            </div>
+
+
+                                            <strong
+                                                className={
+                                                    style.freteResultadoValor
+                                                }
+                                            >
+
+                                                {
+                                                    frete === 0
+                                                        ? "Grátis"
+                                                        : formatarPreco(
+                                                            frete
+                                                        )
+                                                }
+
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div
+                                            className={
+                                                style.fretePrazo
+                                            }
+                                        >
+
+                                            <FiCheck />
+
+                                            <span>
+                                                {
+                                                    formatarPrazoFrete(
+                                                        freteResultado
+                                                    )
+                                                }
+                                            </span>
+
+                                        </div>
+
+
+                                        {
+                                            !freteResultado
+                                                ?.frete_gratis &&
+                                            Number(
+                                                freteResultado
+                                                    ?.frete_gratis_acima ||
+                                                0
+                                            ) > 0 &&
+                                            Number(
+                                                freteResultado
+                                                    ?.falta_para_frete_gratis ||
+                                                0
+                                            ) > 0 && (
+
+                                                <div
+                                                    className={
+                                                        style.freteGratisProgresso
+                                                    }
+                                                >
+
+                                                    <p>
+
+                                                        Faltam{" "}
+
+                                                        <strong>
+                                                            {
+                                                                formatarPreco(
+                                                                    freteResultado
+                                                                        .falta_para_frete_gratis
+                                                                )
+                                                            }
+                                                        </strong>
+
+                                                        {" "}para ganhar
+                                                        frete grátis.
+
+                                                    </p>
+
+
+                                                    <div>
+
+                                                        <span
+                                                            style={{
+                                                                width:
+                                                                    `${Math.min(
+                                                                        100,
+                                                                        Math.max(
+                                                                            0,
+                                                                            (
+                                                                                subtotal /
+                                                                                Number(
+                                                                                    freteResultado
+                                                                                        .frete_gratis_acima ||
+                                                                                    1
+                                                                                )
+                                                                            ) *
+                                                                            100
+                                                                        )
+                                                                    )}%`
+                                                            }}
+                                                        />
+
+                                                    </div>
+
+                                                </div>
+
+                                            )
+                                        }
+
+
+                                        {
+                                            freteResultado
+                                                ?.frete_gratis &&
+                                            !freteResultado
+                                                ?.retirada && (
+
+                                                <p
+                                                    className={
+                                                        style.freteGratisMensagem
+                                                    }
+                                                >
+                                                    Você atingiu o valor
+                                                    mínimo e ganhou
+                                                    frete grátis.
+                                                </p>
+
+                                            )
+                                        }
+
+                                    </div>
+
+                                )
+                            }
+
+                        </div>
+
+
                         <div
                             className={
                                 style.linha
@@ -2504,36 +3665,26 @@ export default function Carrinho() {
                             </span>
 
 
-                            <strong>
+                            <strong
+                                className={
+                                    fretePronto &&
+                                    frete === 0
+                                        ? style.valorFreteGratis
+                                        : ""
+                                }
+                            >
 
                                 {
-                                    formatarPreco(
-                                        frete
-                                    )
+                                    !fretePronto
+                                        ? "A calcular"
+                                        : frete === 0
+                                            ? "Grátis"
+                                            : formatarPreco(
+                                                frete
+                                            )
                                 }
 
                             </strong>
-
-                        </div>
-
-
-                        <div
-                            className={
-                                style.freteInfo
-                            }
-                        >
-
-                            <FiTruck />
-
-
-                            <p>
-
-                                O valor final do frete
-                                poderá ser atualizado
-                                conforme o endereço da
-                                entrega.
-
-                            </p>
 
                         </div>
 
@@ -2552,7 +3703,11 @@ export default function Carrinho() {
 
 
                                 <small>
-                                    Impostos inclusos
+                                    {
+                                        fretePronto
+                                            ? "Impostos inclusos"
+                                            : "Frete ainda não incluído"
+                                    }
                                 </small>
 
                             </div>
@@ -2579,12 +3734,11 @@ export default function Carrinho() {
                             disabled={
                                 produtos.length ===
                                     0 ||
-                                carregando
+                                carregando ||
+                                !fretePronto
                             }
-                            onClick={() =>
-                                navigate(
-                                    "/cliente/compra"
-                                )
+                            onClick={
+                                finalizarCompra
                             }
                         >
 

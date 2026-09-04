@@ -18,8 +18,12 @@ import Compra from "../pages/Compras.jsx";
 import Cupons from "../pages/CriaCupons.jsx";
 import Usuarios from "../pages/Usuarios.jsx";
 import Historico from "../pages/Historico.jsx";
+import AdminEmails from "../pages/AdminEmails.jsx";
+import Fornecedores from "../pages/Fornecedoers.jsx";
+import Favoritos from "../pages/Favoritos.jsx";
 
 import RotasAdmin from "./RotasAdmin";
+import RotasAbertasCliente from "./RotasAbertasCliente";
 import RotasCliente from "./RotasCliente";
 import RotasPublicas from "./rotasPublicas";
 import { useAuth } from "../contexts/authContext";
@@ -28,7 +32,7 @@ function InicioPorPerfil() {
   const { usuario, carregando } = useAuth();
 
   if (carregando) return <p>Carregando...</p>;
-  if (!usuario) return <Navigate to="/login" replace />;
+  if (!usuario) return <Navigate to="/cliente/inicio" replace />;
 
   return (
     <Navigate
@@ -58,6 +62,8 @@ export function AppRoutes() {
         <Route path="/admin/Cupons" element={<Cupons />} />
         <Route path="/admin/Usuarios" element={<Usuarios />} />
         <Route path="/admin/historico" element={<Historico />} />
+        <Route path="/admin/emails" element={<AdminEmails />} />
+        <Route path="/admin/fornecedores" element={<Fornecedores />} />
         
 
         <Route path="/dashboard" element={<Navigate to="/admin/dashboard" replace />} />
@@ -66,21 +72,27 @@ export function AppRoutes() {
         <Route path="/itens/:id/editar" element={<EditarItem />} />
       </Route>
 
-      <Route element={<RotasCliente />}>
-    <Route path="/cliente/inicio" element={<Inicial />} />
-    <Route path="/cliente/sobre-nos" element={<SobreNos />} />
-    <Route path="/cliente/simulador" element={<SimuladorTinta />} />
-    <Route path="/cliente/perfil" element={<Perfil />} />
-    <Route path="/cliente/carrinho" element={<Carrinho />} />                            
-    <Route path="/cliente/produtos" element={<Produtos />} />
-    <Route path="/cliente/Livro" element={<Livro />} />
-    <Route path="/cliente/compra" element={<Compra />} />
+      <Route element={<RotasAbertasCliente />}>
+        <Route path="/cliente/inicio" element={<Inicial />} />
+        <Route path="/cliente/sobre-nos" element={<SobreNos />} />
+        <Route path="/cliente/simulador" element={<SimuladorTinta />} />
+        <Route path="/cliente/livro" element={<Livro />} />
 
-    <Route path="/inicial" element={<Navigate to="/cliente/inicio" replace />} />
-    <Route path="/sobre-nos" element={<Navigate to="/cliente/sobre-nos" replace />} />
-    <Route path="/simulador-tintas" element={<Navigate to="/cliente/simulador" replace />} />
-    <Route path="/perfil" element={<Navigate to="/cliente/perfil" replace />} />
-</Route>
+        <Route path="/inicial" element={<Navigate to="/cliente/inicio" replace />} />
+        <Route path="/sobre-nos" element={<Navigate to="/cliente/sobre-nos" replace />} />
+        <Route path="/simulador-tintas" element={<Navigate to="/cliente/simulador" replace />} />
+        <Route path="/livro-de-cores" element={<Navigate to="/cliente/livro" replace />} />
+      </Route>
+
+      <Route element={<RotasCliente />}>
+        <Route path="/cliente/perfil" element={<Perfil />} />
+        <Route path="/cliente/carrinho" element={<Carrinho />} />
+        <Route path="/cliente/favoritos" element={<Favoritos />} />
+        <Route path="/cliente/produtos" element={<Produtos />} />
+        <Route path="/cliente/compra" element={<Compra />} />
+
+        <Route path="/perfil" element={<Navigate to="/cliente/perfil" replace />} />
+      </Route>
 
       <Route path="*" element={<InicioPorPerfil />} />
     </Routes>

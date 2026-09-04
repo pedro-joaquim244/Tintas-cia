@@ -13,6 +13,7 @@ import style from "../styles/Livro.module.css";
 import Cabecalho from "../components/Cabeçalho-Users/index.jsx";
 import RoletaCores from "../components/RoletaCores/RoletaCores.jsx";
 import { api } from "../services/api";
+import { useAuth } from "../contexts/authContext.jsx";
 import { useNavigate } from "react-router-dom";
 
 const categorias = [
@@ -155,6 +156,7 @@ const categorias = [
 
 export default function Livro() {
   const navigate = useNavigate();
+  const { ehCliente } = useAuth();
 
   const [livroAberto, setLivroAberto] = useState(false);
   const [folhaAtual, setFolhaAtual] = useState(0);
@@ -250,6 +252,13 @@ export default function Livro() {
   }
 
   async function abrirModalCor(cor) {
+    if (!ehCliente) {
+      navigate("/login", {
+        state: { from: "/cliente/livro" },
+      });
+      return;
+    }
+
     setCorSelecionada(cor);
     setModalCorAberto(true);
     setProdutosCor([]);

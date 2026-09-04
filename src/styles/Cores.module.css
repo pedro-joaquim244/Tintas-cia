@@ -254,7 +254,7 @@
             0.55
         );
 
-    font-size: 9px;
+    font-size: 16px;
 
     font-weight: 600;
 
@@ -283,13 +283,7 @@
         "Cormorant Garamond",
         serif;
 
-    font-size:
-        clamp(
-            62px,
-            5.3vw,
-            92px
-        );
-
+    font-size: 35PX;
     font-weight: 400;
 
     line-height: 0.84;
@@ -328,7 +322,7 @@
             0.63
         );
 
-    font-size: 12px;
+    font-size: 16px;
 
     font-weight: 300;
 
@@ -371,7 +365,7 @@
         "Poppins",
         sans-serif;
 
-    font-size: 10px;
+    font-size: 16px;
 
     font-weight: 600;
 
@@ -741,7 +735,7 @@
     color:
         var(--cinza);
 
-    font-size: 12px;
+    font-size: 16px;
 
     font-weight: 300;
 
@@ -1073,7 +1067,7 @@
         "Poppins",
         sans-serif;
 
-    font-size: 10px;
+    font-size: 16px;
 
     font-weight: 500;
 
@@ -1215,7 +1209,7 @@
     color:
         #8d95a1;
 
-    font-size: 8px;
+    font-size: 14px;
 
     font-weight: 600;
 
@@ -1268,7 +1262,7 @@
     color:
         #8a929f;
 
-    font-size: 9px;
+    font-size: 14px;
 
     text-transform:
         uppercase;
@@ -1524,6 +1518,61 @@
 }
 
 
+.botaoFavoritoProduto {
+    position: absolute;
+
+    z-index: 5;
+
+    top: 18px;
+    right: 18px;
+
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+
+    place-items: center;
+
+    border: 1px solid rgba(24, 34, 53, 0.12);
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.86);
+
+    color: #687386;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease;
+}
+
+
+.botaoFavoritoProduto:hover,
+.botaoFavoritoAtivo {
+    border-color: #b44b68;
+
+    background: #fff1f4;
+
+    color: #b44b68;
+
+    transform: translateY(-2px);
+}
+
+
+.botaoFavoritoProduto:disabled,
+.modalProdutoFavorito:disabled {
+    opacity: 0.55;
+
+    cursor: wait;
+}
+
+
 .produto:hover
 .imagemProdutoBox img {
 
@@ -1624,7 +1673,7 @@
     color:
         var(--azul-claro);
 
-    font-size: 8px;
+    font-size: 12px;
 
     font-weight: 600;
 
@@ -1656,7 +1705,7 @@
         "Cormorant Garamond",
         serif;
 
-    font-size: 25px;
+    font-size: 30px;
 
     font-weight: 600;
 
@@ -1728,7 +1777,7 @@
     color:
         #39714c;
 
-    font-size: 9px;
+    font-size: 14px;
 
     font-weight: 600;
 
@@ -1757,7 +1806,7 @@
     color:
         #8b939f;
 
-    font-size: 8px;
+    font-size: 14px;
 
     font-weight: 400;
 
@@ -2140,7 +2189,7 @@
     color:
         #8caef1;
 
-    font-size: 22px;
+    font-size: 35px;
 
 }
 
@@ -2161,7 +2210,7 @@
     color:
         #ffffff;
 
-    font-size: 10px;
+    font-size: 19px;
 
     font-weight: 600;
 
@@ -2178,11 +2227,12 @@
             0.45
         );
 
-    font-size: 8px;
+    font-size: 16px;
 
     font-weight: 300;
 
     line-height: 1.55;
+    width: 290PX;
 
 }
 
@@ -2369,6 +2419,55 @@
 
     transform:
         rotate(90deg);
+}
+
+
+.modalProdutoFavorito {
+    position: absolute;
+
+    z-index: 12;
+
+    top: 19px;
+    right: 72px;
+
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+
+    place-items: center;
+
+    border: 1px solid rgba(24, 34, 53, 0.12);
+
+    border-radius: 50%;
+
+    background: rgba(244, 241, 233, 0.92);
+
+    color: #687386;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(10px);
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease;
+}
+
+
+.modalProdutoFavorito:hover,
+.modalProdutoFavoritoAtivo {
+    border-color: #b44b68;
+
+    background: #fff1f4;
+
+    color: #b44b68;
+
+    transform: translateY(-2px);
 }
 
 
@@ -4934,3 +5033,2041 @@
 }
 
 
+
+
+/* =========================================================
+   HERO / CARROSSEL DE PRODUTOS — FULL SCREEN
+   PADRÃO DA TELA INICIAL
+========================================================= */
+
+.page {
+    padding-top: 0;
+}
+
+.banner {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 720px;
+    margin: 0;
+    overflow: hidden;
+    background: #0f172a;
+    box-shadow: none;
+}
+
+.bannerImagemFundo {
+    position: absolute;
+    z-index: 1;
+    inset: -4%;
+    width: 108%;
+    height: 108%;
+    object-fit: cover;
+    object-position: center;
+    user-select: none;
+    pointer-events: none;
+    animation: trocarBanner 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform, opacity;
+}
+
+.bannerOverlay {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(6, 11, 20, 0.82) 0%,
+            rgba(6, 11, 20, 0.63) 30%,
+            rgba(6, 11, 20, 0.34) 52%,
+            rgba(6, 11, 20, 0.08) 78%,
+            rgba(6, 11, 20, 0.10) 100%
+        ),
+        linear-gradient(
+            180deg,
+            rgba(6, 11, 20, 0.12) 0%,
+            rgba(6, 11, 20, 0.02) 58%,
+            rgba(6, 11, 20, 0.30) 100%
+        );
+}
+
+.bannerConteudo {
+    position: relative;
+    z-index: 5;
+    width: min(1400px, calc(100% - 120px));
+    max-width: none;
+    height: 100%;
+    margin: 0 auto;
+    padding: 110px 70px 100px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    animation: entradaTexto 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bannerEyebrow {
+    display: inline-block;
+    margin-bottom: 22px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+}
+
+.bannerConteudo h1 {
+    max-width: 860px;
+    margin: 0;
+    color: #ffffff;
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(76px, 8vw, 132px);
+    font-weight: 400;
+    line-height: 0.83;
+    letter-spacing: -0.055em;
+}
+
+.bannerConteudo h1 em {
+    color: #a9c2f3;
+    font-weight: 400;
+}
+
+.bannerConteudo > p {
+    max-width: 510px;
+    margin-top: 34px;
+    color: rgba(255, 255, 255, 0.74);
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.8;
+}
+
+.botaoBanner {
+    min-height: 54px;
+    margin-top: 37px;
+    padding: 0 25px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    border: none;
+    background: #ffffff;
+    color: #111827;
+    font-family: "Poppins", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+
+.botaoBanner:hover {
+    transform: translateY(-3px);
+    background: #a9c2f3;
+    color: #111827;
+}
+
+.setaBanner {
+    position: absolute;
+    z-index: 20;
+    top: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.90);
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.setaBanner:hover {
+    background: #ffffff;
+    color: #172033;
+    transform: translateY(-50%) scale(1.06);
+}
+
+.esquerda {
+    left: 38px;
+}
+
+.direita {
+    right: 38px;
+}
+
+.indicadores {
+    position: absolute;
+    z-index: 20;
+    left: 50%;
+    bottom: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transform: translateX(-50%);
+}
+
+.indicador,
+.indicadorAtivo {
+    height: 3px;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    transition: width 0.3s ease, background 0.3s ease;
+}
+
+.indicador {
+    width: 24px;
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.indicadorAtivo {
+    width: 50px;
+    background: #a9c2f3;
+}
+
+/* EXPLORE — MESMO CONCEITO DO HERO INICIAL */
+.scrollIndicador {
+    position: absolute;
+    z-index: 20;
+    right: 50px;
+    bottom: 42px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.65);
+    font-family: "Poppins", sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    pointer-events: none;
+}
+
+.scrollIndicador svg {
+    font-size: 19px;
+    animation: produtoScrollBounce 1.7s infinite;
+}
+
+@keyframes produtoScrollBounce {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(8px);
+    }
+}
+
+.catalogoIntro {
+    padding-top: 100px;
+}
+
+@media (max-width: 1200px) {
+    .banner {
+        height: 100vh;
+        min-height: 680px;
+    }
+
+    .bannerConteudo {
+        width: calc(100% - 90px);
+        padding-right: 40px;
+    }
+
+    .bannerConteudo h1 {
+        font-size: clamp(70px, 8vw, 110px);
+    }
+
+    .bannerConteudo > p {
+        max-width: 470px;
+        font-size: 13px;
+    }
+
+    .esquerda {
+        left: 24px;
+    }
+
+    .direita {
+        right: 24px;
+    }
+}
+
+@media (max-width: 850px) {
+    .banner {
+        height: 100svh;
+        min-height: 680px;
+    }
+
+    .bannerImagemFundo {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-position: 65% center;
+    }
+
+    .bannerOverlay {
+        background:
+            linear-gradient(
+                90deg,
+                rgba(6, 11, 20, 0.86) 0%,
+                rgba(6, 11, 20, 0.68) 50%,
+                rgba(6, 11, 20, 0.28) 100%
+            );
+    }
+
+    .bannerConteudo {
+        width: calc(100% - 64px);
+        padding: 100px 55px 110px 0;
+    }
+
+    .bannerConteudo h1 {
+        max-width: 660px;
+        font-size: clamp(61px, 11vw, 88px);
+    }
+
+    .bannerConteudo > p {
+        max-width: 430px;
+        font-size: 12px;
+    }
+
+    .setaBanner {
+        width: 42px;
+        height: 42px;
+    }
+
+    .esquerda {
+        left: 14px;
+    }
+
+    .direita {
+        right: 14px;
+    }
+
+    .scrollIndicador {
+        right: 25px;
+        bottom: 25px;
+    }
+
+    .indicadores {
+        bottom: 28px;
+    }
+}
+
+@media (max-width: 600px) {
+    .banner {
+        height: 100svh;
+        min-height: 650px;
+    }
+
+    .bannerImagemFundo {
+        object-position: 68% center;
+    }
+
+    .bannerOverlay {
+        background:
+            linear-gradient(
+                90deg,
+                rgba(6, 11, 20, 0.90) 0%,
+                rgba(6, 11, 20, 0.74) 58%,
+                rgba(6, 11, 20, 0.38) 100%
+            ),
+            linear-gradient(
+                180deg,
+                rgba(6, 11, 20, 0.10),
+                rgba(6, 11, 20, 0.36)
+            );
+    }
+
+    .bannerConteudo {
+        width: calc(100% - 42px);
+        padding: 100px 35px 115px 0;
+    }
+
+    .bannerEyebrow {
+        margin-bottom: 17px;
+        font-size: 8px;
+    }
+
+    .bannerConteudo h1 {
+        max-width: 500px;
+        font-size: clamp(52px, 15vw, 74px);
+        line-height: 0.88;
+    }
+
+    .bannerConteudo > p {
+        max-width: 340px;
+        margin-top: 25px;
+        font-size: 11px;
+        line-height: 1.7;
+    }
+
+    .botaoBanner {
+        min-height: 49px;
+        margin-top: 28px;
+        padding: 0 20px;
+        font-size: 9px;
+    }
+
+    .setaBanner {
+        top: auto;
+        bottom: 85px;
+        width: 39px;
+        height: 39px;
+        transform: none;
+    }
+
+    .setaBanner:hover {
+        transform: scale(1.05);
+    }
+
+    .esquerda {
+        left: 20px;
+    }
+
+    .direita {
+        right: auto;
+        left: 68px;
+    }
+
+    .indicadores {
+        left: 50%;
+        bottom: 42px;
+    }
+
+    .scrollIndicador {
+        right: 20px;
+        bottom: 23px;
+        font-size: 8px;
+    }
+
+    .scrollIndicador svg {
+        font-size: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bannerImagemFundo,
+    .bannerConteudo,
+    .scrollIndicador svg {
+        animation: none;
+    }
+}
+
+
+/* =========================================================
+   AJUSTE FINAL DO HERO DE PRODUTOS
+   Texto mais compacto e sem invadir os elementos do banner
+========================================================= */
+
+.bannerOverlay {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(6, 11, 20, 0.88) 0%,
+            rgba(6, 11, 20, 0.76) 23%,
+            rgba(6, 11, 20, 0.50) 38%,
+            rgba(6, 11, 20, 0.18) 51%,
+            rgba(6, 11, 20, 0.03) 62%,
+            rgba(6, 11, 20, 0.00) 100%
+        ),
+        linear-gradient(
+            180deg,
+            rgba(6, 11, 20, 0.10) 0%,
+            rgba(6, 11, 20, 0.02) 62%,
+            rgba(6, 11, 20, 0.26) 100%
+        );
+}
+
+
+/* Bloco de texto mais estreito.
+   O lado direito fica livre para os elementos gráficos do banner. */
+.bannerConteudo {
+    width:
+        min(
+            500px,
+            37vw
+        );
+
+    max-width: 500px;
+
+    height: 100%;
+
+    margin:
+        0
+        0
+        0
+        clamp(
+            82px,
+            8vw,
+            150px
+        );
+
+    padding:
+        110px
+        0
+        100px;
+
+    justify-content: center;
+}
+
+
+/* Eyebrow um pouco mais discreto */
+.bannerEyebrow {
+    margin-bottom: 18px;
+
+    font-size: 9px;
+
+    letter-spacing: 0.23em;
+}
+
+
+/* Título menor e mais controlado */
+.bannerConteudo h1 {
+    width: 100%;
+
+    max-width: 500px;
+
+    font-size:
+        clamp(
+            58px,
+            5.2vw,
+            84px
+        );
+
+    line-height: 0.88;
+
+    letter-spacing: -0.048em;
+}
+
+
+/* Descrição também mais estreita */
+.bannerConteudo > p {
+    max-width: 405px;
+
+    margin-top: 27px;
+
+    font-size: 12px;
+
+    line-height: 1.75;
+}
+
+
+/* Botão um pouco mais compacto */
+.botaoBanner {
+    min-height: 50px;
+
+    margin-top: 29px;
+
+    padding:
+        0
+        21px;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   NOTEBOOK
+========================================================= */
+
+@media (max-width: 1400px) {
+
+    .bannerConteudo {
+        width:
+            min(
+                450px,
+                37vw
+            );
+
+        max-width: 450px;
+
+        margin-left:
+            clamp(
+                72px,
+                7vw,
+                105px
+            );
+    }
+
+
+    .bannerConteudo h1 {
+        max-width: 450px;
+
+        font-size:
+            clamp(
+                54px,
+                5vw,
+                74px
+            );
+    }
+
+
+    .bannerConteudo > p {
+        max-width: 365px;
+
+        font-size: 11px;
+    }
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .bannerConteudo {
+        width: 46%;
+
+        max-width: 390px;
+
+        margin-left: 62px;
+
+        padding:
+            100px
+            0
+            105px;
+    }
+
+
+    .bannerConteudo h1 {
+        max-width: 390px;
+
+        font-size:
+            clamp(
+                48px,
+                7vw,
+                64px
+            );
+    }
+
+
+    .bannerConteudo > p {
+        max-width: 335px;
+    }
+
+
+    .bannerOverlay {
+        background:
+            linear-gradient(
+                90deg,
+                rgba(6, 11, 20, 0.91) 0%,
+                rgba(6, 11, 20, 0.75) 43%,
+                rgba(6, 11, 20, 0.34) 67%,
+                rgba(6, 11, 20, 0.10) 100%
+            );
+    }
+
+}
+
+
+/* =========================================================
+   CELULAR
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .bannerConteudo {
+        width:
+            calc(
+                100% - 82px
+            );
+
+        max-width: 410px;
+
+        margin-left: 42px;
+
+        padding:
+            105px
+            0
+            130px;
+    }
+
+
+    .bannerConteudo h1 {
+        max-width: 360px;
+
+        font-size:
+            clamp(
+                44px,
+                13vw,
+                61px
+            );
+
+        line-height: 0.9;
+    }
+
+
+    .bannerConteudo > p {
+        max-width: 310px;
+
+        margin-top: 22px;
+
+        font-size: 10px;
+    }
+
+
+    .botaoBanner {
+        min-height: 46px;
+
+        margin-top: 24px;
+
+        padding:
+            0
+            18px;
+
+        font-size: 9px;
+    }
+
+}
+
+
+/* =========================================================
+   AJUSTE FINAL — BANNER DE PRODUTOS MENOR
+   - NÃO ocupa mais a tela inteira
+   - IMAGENS sem corte
+   - TEXTO separado dos elementos visuais
+========================================================= */
+
+/* devolve o espaçamento da página abaixo do cabeçalho */
+.page {
+    padding-top: 112px;
+}
+
+
+/* =========================================================
+   BANNER
+========================================================= */
+
+.banner {
+    position: relative;
+
+    width:
+        min(
+            1450px,
+            calc(100% - 80px)
+        );
+
+    height:
+        clamp(
+            560px,
+            64vh,
+            650px
+        );
+
+    min-height: 0;
+
+    margin:
+        0
+        auto;
+
+    overflow: hidden;
+
+    background:
+        #101a2c;
+
+    box-shadow:
+        0
+        24px
+        60px
+        rgba(
+            11,
+            19,
+            33,
+            0.14
+        );
+}
+
+
+/* =========================================================
+   IMAGEM — ÁREA PRÓPRIA À DIREITA
+   Isso evita que a imagem entre embaixo do texto.
+========================================================= */
+
+.bannerImagemFundo {
+    position: absolute;
+
+    z-index: 1;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: auto;
+
+    width: 64%;
+    height: 100%;
+
+    object-fit: contain;
+    object-position: right center;
+
+    user-select: none;
+    pointer-events: none;
+
+    animation:
+        trocarBannerSemCorte
+        0.65s
+        cubic-bezier(
+            0.22,
+            1,
+            0.36,
+            1
+        );
+
+    will-change:
+        opacity;
+}
+
+
+/* anima só a opacidade para não ampliar/cortar a imagem */
+@keyframes trocarBannerSemCorte {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+
+/* =========================================================
+   OVERLAY — SOMENTE PARA DAR LEITURA AO LADO ESQUERDO
+========================================================= */
+
+.bannerOverlay {
+    position: absolute;
+
+    z-index: 2;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(7, 14, 27, 0.95) 0%,
+            rgba(7, 14, 27, 0.88) 26%,
+            rgba(7, 14, 27, 0.63) 39%,
+            rgba(7, 14, 27, 0.24) 51%,
+            rgba(7, 14, 27, 0.03) 64%,
+            rgba(7, 14, 27, 0) 76%
+        );
+}
+
+
+/* =========================================================
+   CONTEÚDO — BLOCO MAIS ESTREITO
+========================================================= */
+
+.bannerConteudo {
+    position: relative;
+
+    z-index: 5;
+
+    width:
+        min(
+            430px,
+            31%
+        );
+
+    max-width: 430px;
+
+    height: 100%;
+
+    margin:
+        0
+        0
+        0
+        clamp(
+            68px,
+            6vw,
+            105px
+        );
+
+    padding:
+        70px
+        0
+        72px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    justify-content: center;
+
+    animation:
+        entradaTexto
+        0.7s
+        cubic-bezier(
+            0.22,
+            1,
+            0.36,
+            1
+        );
+}
+
+
+/* =========================================================
+   EYEBROW
+========================================================= */
+
+.bannerEyebrow {
+    margin-bottom: 16px;
+
+    font-size: 9px;
+
+    letter-spacing: 0.22em;
+}
+
+
+/* =========================================================
+   TÍTULO MENOR
+========================================================= */
+
+.bannerConteudo h1 {
+    width: 100%;
+
+    max-width: 430px;
+
+    font-size:
+        clamp(
+            52px,
+            4.3vw,
+            74px
+        );
+
+    line-height: 0.9;
+
+    letter-spacing: -0.045em;
+}
+
+
+/* =========================================================
+   DESCRIÇÃO
+========================================================= */
+
+.bannerConteudo > p {
+    max-width: 360px;
+
+    margin-top: 24px;
+
+    font-size: 11px;
+
+    line-height: 1.75;
+}
+
+
+/* =========================================================
+   BOTÃO
+========================================================= */
+
+.botaoBanner {
+    min-height: 48px;
+
+    margin-top: 26px;
+
+    padding:
+        0
+        20px;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   SETAS
+========================================================= */
+
+.setaBanner {
+    width: 43px;
+    height: 43px;
+}
+
+
+.esquerda {
+    left: 22px;
+}
+
+
+.direita {
+    right: 22px;
+}
+
+
+/* =========================================================
+   INDICADORES + EXPLORE
+========================================================= */
+
+.indicadores {
+    bottom: 27px;
+}
+
+
+.scrollIndicador {
+    right: 30px;
+    bottom: 24px;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   NOTEBOOK
+========================================================= */
+
+@media (max-width: 1250px) {
+
+    .banner {
+        width:
+            calc(
+                100% - 54px
+            );
+
+        height: 580px;
+    }
+
+
+    .bannerImagemFundo {
+        width: 62%;
+    }
+
+
+    .bannerConteudo {
+        width: 34%;
+
+        max-width: 390px;
+
+        margin-left: 58px;
+    }
+
+
+    .bannerConteudo h1 {
+        max-width: 390px;
+
+        font-size:
+            clamp(
+                48px,
+                4.7vw,
+                66px
+            );
+    }
+
+
+    .bannerConteudo > p {
+        max-width: 330px;
+    }
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .page {
+        padding-top: 90px;
+    }
+
+
+    .banner {
+        width:
+            calc(
+                100% - 34px
+            );
+
+        height: 540px;
+    }
+
+
+    .bannerImagemFundo {
+        width: 58%;
+
+        object-position: right center;
+    }
+
+
+    .bannerConteudo {
+        width: 39%;
+
+        max-width: 340px;
+
+        margin-left: 43px;
+
+        padding:
+            62px
+            0;
+    }
+
+
+    .bannerConteudo h1 {
+        max-width: 340px;
+
+        font-size:
+            clamp(
+                44px,
+                6vw,
+                58px
+            );
+    }
+
+
+    .bannerConteudo > p {
+        max-width: 285px;
+
+        margin-top: 19px;
+
+        font-size: 10px;
+    }
+
+
+    .botaoBanner {
+        min-height: 45px;
+
+        margin-top: 21px;
+    }
+
+
+    .esquerda {
+        left: 12px;
+    }
+
+
+    .direita {
+        right: 12px;
+    }
+
+}
+
+
+/* =========================================================
+   CELULAR — TEXTO E IMAGEM NÃO SE SOBREPÕEM
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .page {
+        padding-top: 78px;
+    }
+
+
+    .banner {
+        width:
+            calc(
+                100% - 24px
+            );
+
+        height: 650px;
+
+        min-height: 0;
+    }
+
+
+    /*
+     * No celular a imagem vai para a metade inferior.
+     * Assim nenhum elemento fica atrás do texto.
+     */
+    .bannerImagemFundo {
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        width: 100%;
+        height: 47%;
+
+        object-fit: contain;
+        object-position: center bottom;
+    }
+
+
+    .bannerOverlay {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(7, 14, 27, 0.98) 0%,
+                rgba(7, 14, 27, 0.94) 46%,
+                rgba(7, 14, 27, 0.62) 62%,
+                rgba(7, 14, 27, 0.10) 100%
+            );
+    }
+
+
+    .bannerConteudo {
+        width:
+            calc(
+                100% - 70px
+            );
+
+        max-width: 360px;
+
+        height: 53%;
+
+        margin:
+            0
+            0
+            0
+            35px;
+
+        padding:
+            40px
+            0
+            8px;
+
+        justify-content: center;
+    }
+
+
+    .bannerConteudo h1 {
+        max-width: 330px;
+
+        font-size:
+            clamp(
+                42px,
+                12vw,
+                56px
+            );
+
+        line-height: 0.92;
+    }
+
+
+    .bannerConteudo > p {
+        max-width: 300px;
+
+        margin-top: 17px;
+
+        font-size: 9px;
+
+        line-height: 1.65;
+    }
+
+
+    .botaoBanner {
+        min-height: 43px;
+
+        margin-top: 18px;
+
+        padding:
+            0
+            17px;
+    }
+
+
+    .setaBanner {
+        top: auto;
+
+        bottom: 18px;
+
+        width: 37px;
+        height: 37px;
+
+        transform: none;
+    }
+
+
+    .setaBanner:hover {
+        transform:
+            scale(1.04);
+    }
+
+
+    .esquerda {
+        left: 16px;
+    }
+
+
+    .direita {
+        right: auto;
+        left: 61px;
+    }
+
+
+    .indicadores {
+        bottom: 29px;
+    }
+
+
+    .scrollIndicador {
+        right: 15px;
+        bottom: 16px;
+
+        font-size: 7px;
+    }
+
+}
+
+
+/* =========================================================
+   CORREÇÃO FINAL DO BANNER DE PRODUTOS
+   - remove a faixa/borda azul em volta da imagem
+   - mantém TODA a imagem visível
+   - não deixa o texto sobre os objetos
+========================================================= */
+
+/*
+ * Os banners usados têm uma proporção próxima de 1.9:1.
+ * Fazendo o próprio container seguir essa proporção,
+ * o object-fit: contain consegue mostrar 100% da arte
+ * sem criar aquelas faixas grandes em cima e embaixo.
+ */
+.banner {
+    position: relative;
+
+    width:
+        min(
+            1250px,
+            calc(100% - 80px)
+        );
+
+    height: auto;
+    min-height: 0;
+
+    aspect-ratio:
+        1.9 / 1;
+
+    margin:
+        0
+        auto;
+
+    overflow: hidden;
+
+    border: 0;
+    outline: 0;
+
+    background:
+        #08101e;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   IMAGEM — 100% VISÍVEL E SEM FAIXA AZUL
+========================================================= */
+
+.bannerImagemFundo {
+    position: absolute;
+
+    z-index: 1;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    /*
+     * NÃO usar cover aqui.
+     * contain garante que nenhuma lata, rolo,
+     * pincel ou outro elemento seja cortado.
+     */
+    object-fit: contain;
+
+    object-position:
+        right center;
+
+    border: 0;
+    outline: 0;
+
+    transform: none;
+
+    user-select: none;
+    pointer-events: none;
+
+    animation:
+        trocarBannerSemCorte
+        0.65s
+        cubic-bezier(
+            0.22,
+            1,
+            0.36,
+            1
+        );
+}
+
+
+/* =========================================================
+   OVERLAY
+   Escurece somente a região do texto.
+========================================================= */
+
+.bannerOverlay {
+    position: absolute;
+
+    z-index: 2;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(8, 16, 30, 0.98) 0%,
+            rgba(8, 16, 30, 0.94) 22%,
+            rgba(8, 16, 30, 0.80) 34%,
+            rgba(8, 16, 30, 0.45) 44%,
+            rgba(8, 16, 30, 0.13) 53%,
+            rgba(8, 16, 30, 0.00) 63%
+        );
+}
+
+
+/* =========================================================
+   TEXTO
+   Mantém o bloco somente na parte esquerda.
+========================================================= */
+
+.bannerConteudo {
+    position: relative;
+
+    z-index: 5;
+
+    width: 34%;
+    max-width: 390px;
+
+    height: 100%;
+
+    margin:
+        0
+        0
+        0
+        clamp(
+            58px,
+            5.2vw,
+            88px
+        );
+
+    padding:
+        62px
+        0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    justify-content: center;
+}
+
+
+.bannerConteudo h1 {
+    width: 100%;
+    max-width: 390px;
+
+    font-size:
+        clamp(
+            48px,
+            4.4vw,
+            68px
+        );
+
+    line-height: 0.91;
+
+    letter-spacing:
+        -0.045em;
+}
+
+
+.bannerConteudo > p {
+    max-width: 325px;
+
+    margin-top: 20px;
+
+    font-size: 10px;
+
+    line-height: 1.7;
+}
+
+
+.bannerEyebrow {
+    margin-bottom: 14px;
+
+    font-size: 8px;
+}
+
+
+.botaoBanner {
+    min-height: 45px;
+
+    margin-top: 21px;
+
+    padding:
+        0
+        18px;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   SETAS / INDICADORES
+========================================================= */
+
+.setaBanner {
+    width: 41px;
+    height: 41px;
+}
+
+
+.esquerda {
+    left: 15px;
+}
+
+
+.direita {
+    right: 15px;
+}
+
+
+.indicadores {
+    bottom: 21px;
+}
+
+
+.scrollIndicador {
+    right: 24px;
+    bottom: 18px;
+}
+
+
+/* =========================================================
+   NOTEBOOK
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .banner {
+        width:
+            calc(
+                100% - 54px
+            );
+
+        aspect-ratio:
+            1.9 / 1;
+    }
+
+
+    .bannerConteudo {
+        width: 35%;
+
+        max-width: 350px;
+
+        margin-left: 52px;
+
+        padding:
+            52px
+            0;
+    }
+
+
+    .bannerConteudo h1 {
+        max-width: 350px;
+
+        font-size:
+            clamp(
+                44px,
+                4.7vw,
+                60px
+            );
+    }
+
+
+    .bannerConteudo > p {
+        max-width: 290px;
+
+        font-size: 9px;
+    }
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .banner {
+        width:
+            calc(
+                100% - 30px
+            );
+
+        /*
+         * Mantemos a mesma proporção da arte:
+         * continua sem cortar e sem faixa.
+         */
+        aspect-ratio:
+            1.9 / 1;
+    }
+
+
+    .bannerImagemFundo {
+        inset: 0;
+
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        object-position:
+            right center;
+    }
+
+
+    .bannerConteudo {
+        width: 37%;
+
+        max-width: 300px;
+
+        height: 100%;
+
+        margin-left: 38px;
+
+        padding:
+            40px
+            0;
+    }
+
+
+    .bannerConteudo h1 {
+        max-width: 300px;
+
+        font-size:
+            clamp(
+                38px,
+                5.7vw,
+                50px
+            );
+    }
+
+
+    .bannerConteudo > p {
+        max-width: 250px;
+
+        margin-top: 15px;
+
+        font-size: 8px;
+    }
+
+
+    .botaoBanner {
+        min-height: 41px;
+
+        margin-top: 16px;
+
+        padding:
+            0
+            15px;
+
+        font-size: 8px;
+    }
+
+}
+
+
+/* =========================================================
+   CELULAR
+   Aqui a arte e o texto ficam em áreas separadas.
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .banner {
+        width:
+            calc(
+                100% - 22px
+            );
+
+        height: 640px;
+
+        aspect-ratio: auto;
+    }
+
+
+    .bannerImagemFundo {
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        width: 100%;
+        height: 48%;
+
+        object-fit: contain;
+
+        object-position:
+            center bottom;
+    }
+
+
+    .bannerOverlay {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(8, 16, 30, 1) 0%,
+                rgba(8, 16, 30, 0.98) 47%,
+                rgba(8, 16, 30, 0.78) 60%,
+                rgba(8, 16, 30, 0.15) 100%
+            );
+    }
+
+
+    .bannerConteudo {
+        width:
+            calc(
+                100% - 64px
+            );
+
+        max-width: 335px;
+
+        height: 52%;
+
+        margin-left: 32px;
+
+        padding:
+            32px
+            0
+            5px;
+
+        justify-content: center;
+    }
+
+
+    .bannerConteudo h1 {
+        max-width: 315px;
+
+        font-size:
+            clamp(
+                40px,
+                11.5vw,
+                52px
+            );
+    }
+
+
+    .bannerConteudo > p {
+        max-width: 285px;
+
+        font-size: 9px;
+    }
+
+}
+
+
+/* =========================================================
+   PRODUTOS — AUMENTO GERAL DAS FONTES
+   Mantém a escala visual usada nas demais páginas.
+========================================================= */
+
+/* BANNER */
+.bannerEyebrow {
+    font-size: 11px;
+}
+
+.bannerConteudo h1 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(54px, 4.8vw, 74px);
+    font-weight: 400;
+    line-height: 0.84;
+    letter-spacing: -0.052em;
+}
+
+.bannerConteudo h1 em {
+    font-weight: 400;
+}
+
+.bannerConteudo > p {
+    font-size: 14px;
+}
+
+.botaoBanner {
+    font-size: 12px;
+}
+
+/* APRESENTAÇÃO E FILTROS */
+.sectionLabel {
+    font-size: 13px;
+}
+
+.catalogoIntro h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(64px, 6.2vw, 100px);
+    font-weight: 400;
+    line-height: 0.84;
+    letter-spacing: -0.052em;
+}
+
+.catalogoIntro h2 em {
+    font-weight: 400;
+}
+
+.catalogoIntro > p {
+    font-size: 18px;
+}
+
+.pesquisa input {
+    font-size: 14px;
+}
+
+.limparBusca {
+    font-size: 12px;
+}
+
+.resultadoBusca strong {
+    font-size: 31px;
+}
+
+.resultadoBusca span {
+    font-size: 11px;
+}
+
+.categoriaBotao,
+.categoriaAtiva {
+    font-size: 17px;
+}
+
+/* CATEGORIAS E CARDS */
+.tituloCategoriaTexto > span,
+.categoriaDireita > span {
+    font-size: 15px;
+}
+
+.tituloCategoria h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(42px, 4.3vw, 62px);
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: -0.045em;
+}
+
+.marcaImagem,
+.produtoMeta span {
+    font-size: 11px;
+}
+
+.produtoInfo h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 34px;
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+}
+
+.corProduto {
+    font-size: 12px;
+}
+
+.estoqueDisponivel,
+.estoqueDisponivel small {
+    font-size: 15px;
+}
+
+.precoBox > span {
+    font-size: 11px;
+}
+
+.precoBox strong {
+    font-size: 31px;
+}
+
+.semProdutos strong {
+    font-size: 30px;
+}
+
+.semProdutos p,
+.semProdutosGeral p {
+    font-size: 14px;
+}
+
+.semProdutosGeral > span {
+    font-size: 12px;
+}
+
+.semProdutosGeral h2 {
+    font-size: 54px;
+}
+
+/* DETALHES DO PRODUTO */
+.modalProdutoEtiqueta,
+.modalProdutoCategoria {
+    font-size: 11px;
+}
+
+.modalProdutoStatusImagem,
+.modalProdutoImagemRodape span {
+    font-size: 10px;
+}
+
+.modalProdutoImagemRodape strong {
+    font-size: 18px;
+}
+
+.modalProdutoConteudo h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(48px, 4.4vw, 68px);
+    font-weight: 400;
+    line-height: 0.84;
+    letter-spacing: -0.052em;
+}
+
+.modalProdutoResumo {
+    font-size: 12px;
+}
+
+.modalProdutoDescricaoBloco > span,
+.modalProdutoSecaoTitulo > span {
+    font-size: 10px;
+}
+
+.modalProdutoDescricao {
+    font-size: 13px;
+    line-height: 1.75;
+}
+
+.modalProdutoSecaoTitulo > strong {
+    font-size: 20px;
+}
+
+.modalProdutoDetalhes dt {
+    font-size: 10px;
+}
+
+.modalProdutoDetalhes dd {
+    font-size: 12px;
+}
+
+.modalProdutoDisponibilidade strong {
+    font-size: 12px;
+}
+
+.modalProdutoDisponibilidade span {
+    font-size: 11px;
+}
+
+.modalProdutoPreco > span {
+    font-size: 10px;
+}
+
+.modalProdutoPreco > strong {
+    font-size: 36px;
+}
+
+.modalProdutoPreco > small,
+.modalProdutoSeguranca {
+    font-size: 10px;
+}
+
+.modalProdutoCarrinho {
+    font-size: 12px;
+}
+
+/* CONFIRMAÇÃO DO CARRINHO */
+.modalLabel {
+    font-size: 11px;
+}
+
+.modalCarrinho h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 54px;
+    font-weight: 400;
+    line-height: 0.84;
+    letter-spacing: -0.052em;
+}
+
+.modalCarrinho p {
+    font-size: 14px;
+}
+
+.botoesModal button {
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   PRODUTOS — TIPOGRAFIA RESPONSIVA
+========================================================= */
+
+@media (max-width: 850px) {
+    .bannerConteudo h1 {
+        font-size: clamp(42px, 6vw, 56px);
+    }
+
+    .bannerConteudo > p {
+        font-size: 12px;
+    }
+
+    .bannerEyebrow,
+    .botaoBanner {
+        font-size: 10px;
+    }
+
+    .catalogoIntro h2 {
+        font-size: clamp(56px, 9vw, 78px);
+    }
+}
+
+@media (max-width: 600px) {
+    .bannerConteudo h1 {
+        font-size: clamp(42px, 12vw, 56px);
+    }
+
+    .bannerConteudo > p {
+        font-size: 12px;
+    }
+
+    .catalogoIntro h2 {
+        font-size: 50px;
+    }
+
+    .catalogoIntro > p {
+        font-size: 15px;
+    }
+
+    .sectionLabel,
+    .categoriaBotao,
+    .categoriaAtiva {
+        font-size: 12px;
+    }
+
+    .tituloCategoriaTexto > span,
+    .categoriaDireita > span {
+        font-size: 12px;
+    }
+
+    .tituloCategoria h2 {
+        font-size: 38px;
+    }
+
+    .produtoInfo h3 {
+        font-size: 32px;
+    }
+
+    .modalProdutoConteudo h2 {
+        font-size: 42px;
+    }
+
+    .modalProdutoImagemRodape strong {
+        font-size: 15px;
+    }
+
+    .modalCarrinho h2 {
+        font-size: 46px;
+    }
+}

@@ -31,7 +31,7 @@ import Cabecalho from "../components/Cabeçalho-ADM/Cabecalho.jsx";
 import HeaderUser from "../components/Cabeçalho-Users/index.jsx";
 
 import { useAuth } from "../contexts/authContext";
-import { api } from "../services/api.js";
+import { api, urlFotoUsuario } from "../services/api.js";
 
 import styles from "../styles/Perfil.module.css";
 
@@ -146,41 +146,7 @@ export default function Perfil() {
     // =====================================================
 
     function obterUrlFoto(foto) {
-
-        if (!foto) {
-            return null;
-        }
-
-        let caminho = String(foto)
-            .trim()
-            .replace(/\\/g, "/");
-
-        if (!caminho) {
-            return null;
-        }
-
-        // URL completa
-        if (
-            caminho.startsWith("http://") ||
-            caminho.startsWith("https://")
-        ) {
-            return caminho;
-        }
-
-        // Remove ./ do começo
-        caminho = caminho.replace(/^\.?\//, "");
-
-        // Caso o banco tenha salvo:
-        // uploads/usuarios/foto.jpg
-        if (caminho.startsWith("uploads/")) {
-
-            return `http://localhost:3333/${caminho}`;
-
-        }
-
-        // Caso o banco tenha salvo:
-        // usuarios/foto.jpg
-        return `http://localhost:3333/uploads/${caminho}`;
+        return urlFotoUsuario(foto) || null;
     }
 
 
@@ -981,6 +947,7 @@ export default function Perfil() {
             // =================================================
 
             const urlFoto =
+                resposta.data?.foto_url ||
                 obterUrlFoto(
                     fotoSalva
                 );
@@ -1031,7 +998,11 @@ export default function Perfil() {
                             usuarioAtualizado.telefone,
 
                         data_nascimento:
-                            usuarioAtualizado.data_nascimento,
+                            usuarioAtualizado.data_nascimento
+                                ? String(
+                                    usuarioAtualizado.data_nascimento
+                                ).substring(0, 10)
+                                : null,
 
                         endereco:
                             usuarioAtualizado.endereco,
@@ -1286,7 +1257,7 @@ export default function Perfil() {
 
         logout();
 
-        navigate("/login");
+        navigate("/cliente/inicio", { replace: true });
 
     }
 

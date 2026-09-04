@@ -115,7 +115,7 @@
 
   color: #7d8998;
 
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
 
   letter-spacing: 0.2em;
@@ -154,7 +154,7 @@
 
   color: var(--sim-muted);
 
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 300;
 
   line-height: 1.9;
@@ -301,13 +301,13 @@
 }
 
 .uploadBox p {
-  max-width: 420px;
+  max-width: 450px;
 
   margin: 18px 0 0;
 
   color: var(--sim-muted);
 
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 300;
 
   line-height: 1.8;
@@ -321,7 +321,7 @@
 
   color: #9aa2ad;
 
-  font-size: 8px;
+  font-size: 16px;
   font-weight: 600;
 
   letter-spacing: 0.14em;
@@ -342,7 +342,7 @@
 
   color: var(--sim-white);
 
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 600;
 
   transition:
@@ -399,7 +399,7 @@
 
   color: var(--sim-blue);
 
-  font-size: 8px;
+  font-size: 20px;
   font-weight: 600;
 
   letter-spacing: 0.18em;
@@ -422,7 +422,7 @@
 
   color: var(--sim-muted);
 
-  font-size: 9px;
+  font-size: 16px;
   font-weight: 300;
 }
 
@@ -445,7 +445,7 @@
 
   cursor: pointer;
 
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 600;
 
   transition:
@@ -506,7 +506,7 @@
 
   color: var(--sim-text);
 
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -684,7 +684,7 @@
 
   color: var(--sim-text);
 
-  font-size: 8px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -707,6 +707,8 @@
   margin: 0;
 
   line-height: 1.65;
+
+  font-size: 16px;
 }
 
 /* =========================================================
@@ -730,7 +732,7 @@
 
   color: #687588;
 
-  font-size: 9px;
+  font-size: 16px;
   line-height: 1.55;
 }
 
@@ -769,7 +771,7 @@
 
   cursor: pointer;
 
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 600;
 
   transition:
@@ -783,7 +785,7 @@
   border: 1px solid rgba(184, 80, 80, 0.2);
 
   background: transparent;
-
+  
   color: #9c5353;
 }
 
@@ -895,7 +897,7 @@
 
   color: rgba(255, 255, 255, 0.4);
 
-  font-size: 7px;
+  font-size: 14px;
   font-weight: 600;
 
   letter-spacing: 0.16em;
@@ -907,7 +909,7 @@
   color: var(--sim-white);
 
   font-family: "Cormorant Garamond", serif;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 500;
 }
 
@@ -949,14 +951,14 @@
 
   color: var(--sim-white);
 
-  font-size: 10px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .corSelecionada span {
   color: rgba(255, 255, 255, 0.38);
 
-  font-size: 8px;
+  font-size: 13px;
 }
 
 /* =========================================================
@@ -1040,7 +1042,7 @@
 
   color: rgba(255, 255, 255, 0.68);
 
-  font-size: 8px;
+  font-size: 13px;
   font-weight: 500;
 
   text-overflow: ellipsis;
@@ -1071,7 +1073,7 @@
 
   color: rgba(255, 255, 255, 0.72);
 
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -1094,13 +1096,13 @@
 
   color: rgba(255, 255, 255, 0.52);
 
-  font-size: 8px;
+  font-size: 14px;
 }
 
 .configuracoes label strong {
   color: var(--sim-blue-soft);
 
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -1136,7 +1138,7 @@
 
   cursor: pointer;
 
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 600;
 
   box-shadow: none;
